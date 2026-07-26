@@ -1,0 +1,79 @@
+export const metadata = {
+  title: "Our test server",
+  description:
+    "play.resourcepack.ai — a lobby, a shared plot, and a private sandbox world of your own.",
+};
+
+# Our test server
+
+The zero-setup way to see a pack in Minecraft. Nothing to install, no plugin,
+no server of your own.
+
+```
+play.resourcepack.ai
+```
+
+Join on Minecraft Java Edition. You'll land in the lobby.
+
+## Where to build
+
+<CardGroup>
+  <Card title="The shared plot" icon="blocks">
+    In front of you in the lobby. Everyone's, and it **wipes every hour** —
+    for a quick look at one block.
+  </Card>
+  <Card title="Your own world" icon="boxes">
+    Through the portal. Private, and **kept between visits** — for anything
+    you want to still be there tomorrow.
+  </Card>
+</CardGroup>
+
+Your sandbox world is tied to your account, so you get the same one every
+time. It's removed only after a long stretch with no visits.
+
+## Commands
+
+| Command | Does |
+| --- | --- |
+| `/help` | The in-game list of all of this |
+| `/invite <player>` | Let someone into your sandbox |
+| `/kick <player>` | Remove them again |
+| `/floor <block>` | Change your sandbox floor material |
+| `/reset` | Wipe your sandbox back to empty |
+| `/leave` | Leave the sandbox you're in |
+| `/hub`, `/lobby`, `/spawn` | Back to the lobby |
+
+<Callout type="tip">
+  `/floor` is more useful than it looks. Judging a texture against white
+  concrete, then grass, then deepslate tells you in ten seconds whether it
+  reads in the places people will actually build with it.
+</Callout>
+
+## Loading your pack
+
+The test server also runs the linking plugin, so getting your pack onto your
+client is the same flow as on your own server:
+
+<Steps>
+  <Step title="Get a code from studio">
+    Open the live-test panel for the pack. It shows a `/link` command with an
+    8-digit code.
+  </Step>
+  <Step title="Run it in game">
+    ```
+    /link 48213097
+    ```
+  </Step>
+  <Step title="Push">
+    Studio shows you as connected. Pushing sends the pack straight to your
+    client — no zip, no reconnect.
+  </Step>
+</Steps>
+
+Full detail on the linking flow, including how to run it on a server you own,
+is in [Your own server](/testing/your-server).
+
+<Callout type="note">
+  The pairing is to **you**, not to the server. Someone standing next to you
+  won't see your pack unless they link their own.
+</Callout>

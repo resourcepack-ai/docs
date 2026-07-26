@@ -1,0 +1,83 @@
+export const metadata = {
+  title: "Texture editor",
+  description: "The pixel editor — tools, layers, mirroring, and what resolution to work at.",
+};
+
+# Texture editor
+
+A texture is a PNG, and the pixel editor is where you finish one by hand. It
+opens full-screen from a texture asset, and from the model editor when you
+want to paint a face properly rather than dab at it in 3D.
+
+## Tools
+
+The rail on the left, with its hotkeys:
+
+| Tool | Key | Notes |
+| --- | --- | --- |
+| Pencil | `B` | The default. Paints the active colour |
+| Eraser | `E` | Paints transparency, not white |
+| Fill | `F` | Flood-fills contiguous same-coloured pixels |
+| Pick colour | `I` | Samples a pixel into the active colour |
+| Line | `L` | Click-drag from one point to another |
+| Rectangle | `R` | Filled or outline |
+| Ellipse | — | Filled or outline |
+| Select | `S` | Marquee for moving or clearing a region |
+
+Undo and redo are `Ctrl+Z` / `Ctrl+Y` and cover the whole stack, layers
+included.
+
+<Callout type="tip">
+  The eraser producing *transparency* rather than white matters more than it
+  sounds. A block texture with white where it should be see-through renders as
+  a solid white block in game, not a hole.
+</Callout>
+
+## Brush options
+
+- **Brush size** — any tool that paints uses it, including line and
+  rectangle, so you can draw a 2px outline in one pass.
+- **Mirror X / Mirror Y** — paints the mirrored counterpart of every stroke.
+  Both at once gives you four-way symmetry, which is how most tileable
+  textures and nearly all radially symmetric icons should be drawn.
+
+## Layers
+
+Textures are layered, topmost first, and flattened on save. Layers can be
+renamed (double-click), reordered, hidden and deleted.
+
+The workflow this is for: keep the AI's draft on a bottom layer, paint your
+corrections above it, and delete the draft when you no longer need it. You
+never lose the original by painting over it.
+
+## Resolution
+
+Everything is authored at **16×16** — the resolution vanilla Minecraft uses,
+and what AI generation produces.
+
+You can render a texture at 32, 64 or 128 for a crisper look. That's a
+nearest-neighbour block-upscale of the 16×16 source, which is exactly how real
+"HD" packs handle a low-res original: hard pixel edges, no blur, no invented
+detail.
+
+<Callout type="note">
+  Upscaling doesn't give you more detail to paint — it gives the same art
+  more screen pixels. If you want genuine 32×32 detail, that's a different
+  source texture, not a render setting.
+</Callout>
+
+## Getting a texture in
+
+Three ways in, and they end up in the same editor:
+
+<CardGroup cols={3}>
+  <Card title="Describe it" href="/generating" icon="sparkles">
+    AI drafts a 16×16 grid you then edit.
+  </Card>
+  <Card title="Upload a PNG" icon="download">
+    Existing art is decoded into the grid.
+  </Card>
+  <Card title="Start blank" icon="brush">
+    An empty transparent grid.
+  </Card>
+</CardGroup>
