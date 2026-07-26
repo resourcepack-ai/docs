@@ -94,9 +94,15 @@ compiled at build time by `@next/mdx`.
 the prev/next pager and the group label above each page title. A page that
 exists but isn't listed is reachable by URL and invisible everywhere else.
 
-`/reference/writing-docs` is the live style guide — every component, rendered,
-with its source. It's also the canary: if the MDX pipeline breaks, it breaks
-there first. Keep it current when you add a component.
+The components a page can use without importing anything — `Callout`, `Card`,
+`CardGroup`, `Steps`, `Step` — are registered in `src/mdx-components.tsx`;
+read that file for the props. `Card`'s `icon` comes from the fixed set in
+`src/components/mdx/icons.tsx`, which is deliberately small: widen it by
+adding a name there, not by letting `Card` take arbitrary nodes.
+
+There used to be a `/reference/writing-docs` page demoing all of it. It was
+removed — this is a product doc site, and a page about how to write the pages
+is for us, not for users.
 
 ## Things that will bite you
 

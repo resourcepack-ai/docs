@@ -17,8 +17,8 @@ import { Step, Steps } from "@/components/mdx/steps";
  *   2. expose our own components to every .mdx page WITHOUT an import, so
  *      content files stay content
  *
- * Anything added to `components` below is instantly usable in any page —
- * document it in /reference/writing-docs at the same time.
+ * Anything added to `components` below is instantly usable in any page, with
+ * no import — so keep the set small and give each one an obvious job.
  */
 
 /** Heading with a hover `#` that copies as a link to that section. */
