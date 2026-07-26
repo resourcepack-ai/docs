@@ -45,7 +45,8 @@ anyone touching `server.properties` or uploading a zip anywhere.
 <Steps>
   <Step title="Get a pairing code from studio">
     Open the live-test panel for the pack you want to push. It shows an
-    8-digit code as a ready-to-paste command.
+    8-digit code as a ready-to-paste command. There's no "generate" button —
+    a pack gets its code the first time you look.
   </Step>
   <Step title="Run /link in game">
     ```
@@ -62,41 +63,52 @@ anyone touching `server.properties` or uploading a zip anywhere.
   </Step>
 </Steps>
 
-<Callout type="warning" title="Codes are single-use and expire">
-  A code that's never claimed expires after about ten minutes. If `/link` says
-  it's invalid, generate a fresh one rather than retyping the old one.
+<Callout type="note" title="A code belongs to a pack, not to a session">
+  The code stays the same for that pack — it doesn't expire, and you can
+  re-run `/link` with it after a restart. Studio only mints a replacement
+  once the old pairing has been unlinked.
 </Callout>
 
 ## Commands and permissions
 
-| Command | Does |
-| --- | --- |
-| `/link <code>` | Claim a pairing code. Requires `resourcepackai.link` |
-| `/rpai status` | Show the connection and current pairings |
-| `/rpai reconnect` | Force a reconnect to the sync service |
+| Command | Permission | Does |
+| --- | --- | --- |
+| `/link <code>` | `resourcepackai.link` — everyone | Claim a pairing code |
+| `/rpai status` | `resourcepackai.admin` — op | Show the connection and current pairings |
+| `/rpai reconnect` | `resourcepackai.admin` — op | Force a reconnect to the sync service |
 
 The plugin only holds a connection open while something is actually linked, so
 a server with no active pairings sits idle.
 
 <Callout type="note">
-  Grant `resourcepackai.link` deliberately. Anyone who can run `/link` can
-  have a resource pack pushed to their own client — harmless, but it's still
-  a permission worth pointing at your build team rather than at everyone.
+  `/link` is open to every player on purpose. A claim only ever affects the
+  player who ran it — they get a pack on their own client — so there's nothing
+  to gate, and restricting it makes `/link` read as "Unknown command" to
+  everyone else, which looks like a broken plugin.
 </Callout>
 
 ## Bedrock players
 
 If your server runs [Geyser](https://geysermc.org/) alongside the plugin,
-linked Bedrock players are handled too. Bedrock clients only accept resource
-packs while joining, so applying a pack means the player is briefly
-transferred and reconnected — a few seconds — and served the pack on the way
-back in. Studio warns you before doing this.
+linked Bedrock players are handled too — they link with `/link` like anyone
+else, and studio tags them as Bedrock in the panel.
 
-<Callout type="warning">
-  Placed model rigs are **not** visible to Bedrock players yet. The pack
-  itself — textures, block models, fonts — applies normally; it's specifically
-  the placed, plugin-spawned models that don't render. Java players on the
-  same server see everything.
+The one visible difference is how a pack arrives. Bedrock clients only accept
+resource packs while joining, so applying one means the player is transferred
+back to the server they're already on — a few seconds of rejoin — and served
+the pack on the way in. Studio tells you this before it happens, and the
+pairing survives it.
+
+Placed models are visible to Bedrock players: the pushed pack defines each
+model as a native Bedrock entity, and the plugin spawns one per placement for
+each Bedrock session. Animations play **client-side** from the pack's own
+keyframes, which is actually smoother than the Java side's server-driven
+playback.
+
+<Callout type="note">
+  New models added since a player's last pack apply ride in on the next one —
+  the reconnect that installs the pack is also what teaches their client the
+  new models. No server restart needed.
 </Callout>
 
 ## Troubleshooting

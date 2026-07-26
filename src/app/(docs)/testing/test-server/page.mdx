@@ -13,7 +13,8 @@ no server of your own.
 play.resourcepack.ai
 ```
 
-Join on Minecraft Java Edition. You'll land in the lobby.
+Join on Minecraft Java **or** Bedrock — same address, same worlds, and you'll
+see each other. You'll land in the lobby.
 
 ## Where to build
 
@@ -39,15 +40,37 @@ time. It's removed only after a long stretch with no visits.
 | `/invite <player>` | Let someone into your sandbox |
 | `/kick <player>` | Remove them again |
 | `/floor <block>` | Change your sandbox floor material |
+| `/time <time>` | Set the time in your sandbox |
+| `/weather <clear\|rain\|thunder>` | Set the weather in your sandbox |
 | `/reset` | Wipe your sandbox back to empty |
 | `/leave` | Leave the sandbox you're in |
 | `/hub`, `/lobby`, `/spawn` | Back to the lobby |
 
 <Callout type="tip">
-  `/floor` is more useful than it looks. Judging a texture against white
-  concrete, then grass, then deepslate tells you in ten seconds whether it
-  reads in the places people will actually build with it.
+  `/floor`, `/time` and `/weather` are more useful than they look. Judging a
+  texture against white concrete, then grass, then deepslate — and once at
+  night — tells you in half a minute whether it reads in the places people
+  will actually build with it.
 </Callout>
+
+### Seeing a pack where players will actually see it
+
+A pack isn't only blocks. These put your own text and items into the places
+Minecraft renders them, which is the only honest way to check a custom font or
+a model's head slot:
+
+| Command | Does |
+| --- | --- |
+| `/head` | Wear the item you're holding, to judge the head display slot |
+| `/sit` | Sit down where you're standing |
+| `/sidebar <title> \| <line> \| ...` | Put your own text on the scoreboard sidebar |
+| `/actionbar <text>` | Put your own text on the action bar |
+| `/title <title> \| <subtitle>` | Show yourself a title |
+| `/bossbar <text> \| <colour> \| <style> \| <0.0-1.0>` | Put your own text on a boss bar |
+
+Each of them clears when run with no arguments. Paste a [custom font
+glyph](/editors/fonts) into any of them to see how it sits against real UI
+text.
 
 ## Loading your pack
 
@@ -66,7 +89,8 @@ client is the same flow as on your own server:
   </Step>
   <Step title="Push">
     Studio shows you as connected. Pushing sends the pack straight to your
-    client — no zip, no reconnect.
+    client — nothing to download or upload. On Java it swaps in where you
+    stand; on Bedrock you're briefly bounced out and back in.
   </Step>
 </Steps>
 

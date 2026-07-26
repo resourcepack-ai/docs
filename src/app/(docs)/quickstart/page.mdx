@@ -9,8 +9,8 @@ One full loop: make a pack, put something in it, look at it in Minecraft.
 Everything else in these docs is a variation on that loop.
 
 <Callout type="note" title="You'll need">
-  A ResourcePack AI account, and Minecraft Java Edition if you want to see the
-  result in game. Nothing to install for either.
+  A ResourcePack AI account, and Minecraft — **Java or Bedrock**, both work.
+  Nothing to install for either.
 </Callout>
 
 ## Make something
@@ -30,8 +30,8 @@ Everything else in these docs is a variation on that loop.
 
     > weathered copper roof tiles, blue-green patina, strong diagonal grain
 
-    Textures are drafted at 16×16 — the same resolution vanilla Minecraft
-    uses. See [Generating with AI](/generating).
+    You pick the texture's resolution when you add it — 16, 32, 64 or a custom
+    size. See [Generating with AI](/generating).
   </Step>
   <Step title="Edit it">
     Nothing generated is final, and that's the point: generation is a faster
@@ -53,9 +53,9 @@ The fastest route is our test server — no plugin, no setup.
     play.resourcepack.ai
     ```
 
-    You'll land in the lobby. Take the portal for a private world of your own,
-    which is kept between visits, or use the shared plot up front for a quick
-    look.
+    Java or Bedrock, same address. You'll land in the lobby. Take the portal
+    for a private world of your own, which is kept between visits, or use the
+    shared plot up front for a quick look.
   </Step>
   <Step title="Link and push">
     In studio, open the live-test panel for your pack and copy the `/link`
@@ -65,8 +65,11 @@ The fastest route is our test server — no plugin, no setup.
     /link 48213097
     ```
 
-    Run it in game. Studio will show you connected, and pushing sends the pack
-    to your client — no zips, no reconnect.
+    Run it in game. Studio shows you connected, and **Sync resource pack**
+    sends it straight to your client. Nothing is downloaded, zipped or
+    uploaded by you. On Java the pack swaps in where you're standing; on
+    Bedrock you're bounced out and back in for a few seconds, because Bedrock
+    only takes a pack while joining.
   </Step>
   <Step title="Iterate">
     Change something in studio, push again, look again. Most of the work is in
@@ -79,10 +82,12 @@ The fastest route is our test server — no plugin, no setup.
   plugin — see [Your own server](/testing/your-server).
 </Callout>
 
-## Export it
+## Export it (optional)
 
-A finished pack is an ordinary Minecraft resource pack. Download the `.zip`
-and drop it in your `resourcepacks` folder:
+You never have to do this to test — the loop above never touches a file. But a
+finished pack is an ordinary Minecraft resource pack, and you can take it with
+you: export Java `.zip` or Bedrock `.mcpack`. The `.zip` goes in your
+`resourcepacks` folder:
 
 ```bash
 # Windows

@@ -52,18 +52,22 @@ never lose the original by painting over it.
 
 ## Resolution
 
-Everything is authored at **16×16** — the resolution vanilla Minecraft uses,
-and what AI generation produces.
+You choose it when you add the texture: **16×16**, **32×32**, **64×64**, or a
+custom square up to 256. The editor then works at that native size, so a 64×64
+texture really is 64 pixels of paintable detail.
 
-You can render a texture at 32, 64 or 128 for a crisper look. That's a
-nearest-neighbour block-upscale of the 16×16 source, which is exactly how real
-"HD" packs handle a low-res original: hard pixel edges, no blur, no invented
-detail.
+- **16×16** is what vanilla Minecraft uses. Pick it when you want your work to
+  sit next to vanilla blocks without looking sharper than they do.
+- **32 and up** is the "HD pack" end. More room for detail, and more work —
+  four times the pixels at 32, sixteen times at 64.
 
-<Callout type="note">
-  Upscaling doesn't give you more detail to paint — it gives the same art
-  more screen pixels. If you want genuine 32×32 detail, that's a different
-  source texture, not a render setting.
+<Callout type="note" title="AI drafts are always 16×16 underneath">
+  Generation produces a 16×16 grid whatever resolution you asked for, then
+  block-upscales it with nearest-neighbour — hard pixel edges, no blur, no
+  invented detail, exactly how real HD packs handle a low-res original. So a
+  generated 64×64 texture starts as chunky 4×4 blocks of colour; the extra
+  detail is yours to paint. A texture you draw or upload at 64 has no such
+  history.
 </Callout>
 
 ## Getting a texture in

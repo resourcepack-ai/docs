@@ -22,8 +22,9 @@ inside it on a real server before anyone else sees it.
 ## How the pieces fit
 
 Most of your time is spent in the first row. The rest exists so that what you
-make can be looked at in Minecraft in seconds rather than after a zip, an
-upload and a reconnect.
+make lands in Minecraft while you're standing in it. There's no zip to build,
+nothing to upload anywhere, and on Java nothing to rejoin — you press Sync in
+studio and the pack changes around you.
 
 | Piece | Where it runs | What it does |
 | --- | --- | --- |
@@ -66,10 +67,13 @@ Two routes, for two different jobs:
   model item — directly to that player. Best for showing a build team, or
   testing against your real world.
 
-<Callout type="note">
-  Both routes serve the same pack. If something looks right in the studio
-  preview but wrong in game, it's nearly always the model or its texture
-  mapping rather than a difference between the two servers.
+Either way it's the same flow: `/link` once, then push as often as you like.
+
+<Callout type="note" title="Java and Bedrock are both supported">
+  Bedrock players join, link and get pushed packs like anyone else. The one
+  difference is on their side: Bedrock only accepts a resource pack while
+  joining, so applying one bounces them out and straight back in — a few
+  seconds, handled for them. Studio shows which edition a linked player is on.
 </Callout>
 
 ## Where to go next

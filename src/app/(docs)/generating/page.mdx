@@ -14,10 +14,12 @@ in seconds and has no ego about you painting over it.
 
 <Steps>
   <Step title="Textures">
-    Generated as a **16×16 grid of flat colours** — exactly the resolution
-    vanilla Minecraft uses. You can render a texture at 32, 64 or 128 for a
-    crisper "HD" look, which block-upscales the 16×16 source the same way
-    real HD packs do, keeping the pixel-art edges hard.
+    Always generated as a **16×16 grid of flat colours** — the resolution
+    vanilla Minecraft uses — regardless of the resolution you picked for the
+    asset. If you asked for 32 or 64, that 16×16 draft is block-upscaled with
+    nearest-neighbour, the same way real HD packs handle a low-res original.
+    You get the extra pixels; the AI didn't fill them in. See
+    [Texture editor](/editors/textures).
   </Step>
   <Step title="Models">
     Generated as cubes with **semantic texture keys** rather than a bespoke
