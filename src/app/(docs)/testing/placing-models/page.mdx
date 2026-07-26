@@ -66,11 +66,12 @@ notice:
 
 ## Limits
 
-- **Bedrock players can't see placed models.** The pack applies to them
-  normally; the placed rigs don't render. Java players on the same server see
-  them.
 - **The plugin has to be running.** A placed model on a server that later
   removes the plugin is just an entity nothing is animating.
+- **Bedrock viewers need Geyser and a pushed pack.** A Bedrock player sees a
+  placed model only if the server runs Geyser and that player has had this
+  pack applied — their client renders it from their own copy of the pack, so a
+  viewer without it correctly sees nothing.
 
 <CardGroup>
   <Card title="Model editor" href="/editors/models" icon="boxes">

@@ -12,11 +12,13 @@ two halves that meet in the middle: you keyframe a model in **Animate mode**,
 and our **plugin** plays those keyframes back on placed models, on your
 server.
 
-<Callout type="warning" title="Animations need the plugin">
-  An exported pack containing an animated model is still a perfectly valid
-  resource pack — the animation data is stored in fields vanilla ignores — but
-  the model will simply sit still anywhere our plugin isn't running. See
-  [Your own server](/testing/your-server).
+<Callout type="warning" title="On Java, animations need the plugin">
+  A Java pack with an animated model is still a perfectly valid resource pack —
+  the animation data lives in fields vanilla ignores — but the model sits
+  still anywhere our plugin isn't running. See
+  [Your own server](/testing/your-server). Bedrock is different: it has native
+  keyframe animation, so the converted pack carries the real thing. More on
+  that below.
 </Callout>
 
 ## Animating in the editor
@@ -93,29 +95,39 @@ Useful to know when something looks wrong in game:
 - A placed animated model isn't one entity. Each moving part of the rig gets
   its own display entity; the parts that never move are left as one static
   remainder and skipped by the animator entirely.
-- Playback ticks a few times per second rather than every tick. It's smooth
-  for the motion these models do, and deliberately cheap — a build full of
-  animated props shouldn't cost you the server.
+- On Java, playback is driven from the server every two ticks — ten updates a
+  second, not sixty. It's smooth for the motion these models do, and
+  deliberately cheap: a build full of animated props shouldn't cost you the
+  server.
 - The keyframe maths is the same code in the editor and the plugin, so what
   you preview is what plays.
 
-## Limits
+## On Bedrock
 
-<Callout type="warning" title="Bedrock players can't see placed models">
-  Bedrock clients get the pushed pack itself, but placed model rigs are
-  invisible to them today — the Bedrock rendering path for placed models is
-  designed and not yet built. Java players on the same server see them
-  normally.
+Bedrock has native keyframe animation, and the exported Bedrock pack carries
+your keyframes as real Bedrock animations. So on a Geyser server the split is
+the other way round from Java: the plugin still decides *when* an animation
+plays — same triggers, same rules as above — but the **client** plays the
+frames. That's smoother than the Java side, which is tweening from the server
+a few times a second.
+
+<Callout type="note">
+  A Bedrock player sees a placed model only once that pack has been applied to
+  them, since their client renders it out of their own copy. Someone who
+  hasn't been pushed the pack sees nothing there.
 </Callout>
 
-Other things to expect:
+## Limits
+
+Things to expect:
 
 - Animations are per-**model**. There's no way to trigger one model's
   animation from another.
 - Placement rotation is remembered per placement, so the same model animates
   correctly whichever way you faced when you put it down.
-- The animation only exists where the plugin is. A player who downloads your
-  exported pack sees the model in its rest pose.
+- Nothing triggers without the plugin. Someone who just downloads your Java
+  pack sees the model in its rest pose — the triggers are a server-side idea,
+  and that's true on Bedrock too.
 
 <CardGroup>
   <Card title="Placing models in-game" href="/testing/placing-models" icon="server">

@@ -24,8 +24,9 @@ inside one.
 </CardGroup>
 
 Each can be started three ways: **described** and drafted by AI, **uploaded**
-from a PNG you already have, or **blank** — straight into the editor with a
-stone cube or an empty grid.
+from a file you already have, or **blank** — straight into the editor with a
+stone cube or an empty grid. Textures and fonts also take a resolution at this
+point; see [Texture editor](/editors/textures).
 
 ## How a model reaches the game
 
@@ -53,17 +54,22 @@ plugin. See [Placing models in-game](/testing/placing-models).
 
 ## Exporting
 
+You don't need to export to test a pack — pushing to a linked player never
+produces a file you have to handle. Export is for taking the pack elsewhere.
 Two formats, both built on demand:
 
 - **Java** — a `.zip`, the ordinary resource pack you drop in
   `resourcepacks` or hand to a server.
-- **Bedrock** — an `.mcpack`, built from the same assets.
+- **Bedrock** — an `.mcpack`, converted from the same assets: geometry,
+  textures and animations as native Bedrock ones.
 
-<Callout type="warning" title="What doesn't survive the export">
-  Animations and bones are stored as extra fields on the model JSON. Vanilla
-  Minecraft ignores fields it doesn't recognise, so an exported pack is still
-  perfectly valid — the model just sits there, static. Playback needs our
-  plugin. See [Animations](/editors/animations).
+<Callout type="warning" title="Animations don't survive a Java export">
+  In the Java `.zip`, animations and bones are stored as extra fields on the
+  model JSON. Vanilla ignores fields it doesn't recognise, so the pack is
+  perfectly valid — the model just sits there, static, and playback needs our
+  plugin. The Bedrock `.mcpack` is the opposite: Bedrock has native keyframe
+  animation, so they convert into the real thing. See
+  [Animations](/editors/animations).
 </Callout>
 
 ## Where your work lives

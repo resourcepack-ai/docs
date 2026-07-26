@@ -12,12 +12,13 @@ UI symbols are done.
 
 ## Sizes
 
-Three, and the choice is about line height rather than quality:
+Three presets, plus a custom height up to 256. The choice is about line height
+rather than quality:
 
 | Size | Behaviour |
 | --- | --- |
 | **8px** | Sits flush inside one line of text. The only size guaranteed not to spill |
-| **16px** | Deliberately oversized — overlaps the lines above and below |
+| **16px** | Deliberately oversized — overlaps the lines above and below. The default |
 | **32px** | Much more so |
 
 Minecraft's line pitch is about 9 pixels and the renderer does **not** reflow
@@ -39,6 +40,12 @@ never collide with a real character someone might type.
 Practically: you copy the character out of studio and paste it wherever you
 need it. It looks like a blank box everywhere except in a client with your pack
 loaded, which is expected.
+
+<Callout type="tip">
+  On [our test server](/testing/test-server), `/sidebar`, `/title`,
+  `/actionbar` and `/bossbar` take arbitrary text — paste a glyph into one to
+  see how it sits against real UI text rather than only in chat.
+</Callout>
 
 ## Making one
 
