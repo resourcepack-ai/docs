@@ -107,25 +107,10 @@ export const nav: NavGroup[] = [
       },
     ],
   },
-  {
-    title: "Reference",
-    items: [
-      {
-        title: "Writing docs",
-        href: "/reference/writing-docs",
-        description: "Every component available inside an MDX page, with source.",
-        keywords: ["mdx", "components", "callout", "steps", "cards", "style guide"],
-      },
-    ],
-  },
 ];
 
 /** Every page in sidebar order — the order the pager walks. */
 export const flatNav: NavItem[] = nav.flatMap((group) => group.items);
-
-export function findNavItem(href: string): NavItem | undefined {
-  return flatNav.find((item) => item.href === href);
-}
 
 /** The previous/next page relative to `href`, for the footer pager. */
 export function navNeighbours(href: string): {
