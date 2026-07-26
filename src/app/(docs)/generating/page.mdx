@@ -1,0 +1,93 @@
+export const metadata = {
+  title: "Generating with AI",
+  description:
+    "How generation works, what to put in a prompt, and why the result is a starting point rather than an answer.",
+};
+
+# Generating with AI
+
+Generation exists to get you past the blank grid. It is not a vending
+machine: the useful mental model is a fast, tireless collaborator who sketches
+in seconds and has no ego about you painting over it.
+
+## What actually happens
+
+<Steps>
+  <Step title="Textures">
+    Generated as a **16×16 grid of flat colours** — exactly the resolution
+    vanilla Minecraft uses. You can render a texture at 32, 64 or 128 for a
+    crisper "HD" look, which block-upscales the 16×16 source the same way
+    real HD packs do, keeping the pixel-art edges hard.
+  </Step>
+  <Step title="Models">
+    Generated as cubes with **semantic texture keys** rather than a bespoke
+    atlas — `#case`, `#screen`, `#fur` — which are then mapped to vanilla
+    block textures like `minecraft:block/iron_block`. That's why a generated
+    model already looks like Minecraft instead of like a render: it's built
+    out of materials the game already ships.
+  </Step>
+  <Step title="Fonts">
+    Generated as a bitmap glyph at the size you pick, ready to assign to a
+    character. See [Custom fonts](/editors/fonts).
+  </Step>
+</Steps>
+
+## Writing a prompt
+
+Be specific about **material, colour and structure**. Be vague about pixels —
+the model can't count them for you, and asking it to will cost you the parts
+it's good at.
+
+<CardGroup>
+  <Card title="Works" icon="sparkles">
+    *weathered copper roof tiles, blue-green patina, strong diagonal grain*
+  </Card>
+  <Card title="Works less well" icon="wrench">
+    *a nice block, 4px border, dark at the bottom, make it pop*
+  </Card>
+</CardGroup>
+
+Some things worth naming explicitly:
+
+- **The material.** "Oxidised copper" gets you further than "green metal".
+- **The wear.** New, weathered, cracked, mossy — this is most of what makes a
+  texture look like it belongs in Minecraft.
+- **The structure.** Planks, tiles, bricks, panels, woven. Give the eye a
+  repeating unit.
+- **What it sits next to.** "reads next to deepslate" is a real constraint and
+  the model will use it.
+
+<Callout type="tip">
+  Prompt for the thing, not for the fix. If a texture is close but too busy,
+  say "same block, fewer distinct colours, calmer surface" rather than trying
+  to describe the finished pixels.
+</Callout>
+
+## Iterating
+
+You can send an existing asset back for another pass with a new instruction —
+that path sees the current pixel grid, so it edits rather than starts over.
+This is usually better than re-rolling the original prompt: you keep the
+palette and silhouette you already liked.
+
+<Callout type="warning">
+  Iterating still costs a generation, and it can drift. If you've painted an
+  asset by hand, duplicate it first — the AI edits the whole grid, not just
+  the part you mentioned.
+</Callout>
+
+## Knowing when to stop generating
+
+The honest rule: once the silhouette and palette are right, switch to the
+editor. Hand-fixing eight pixels takes fifteen seconds and gets you exactly
+what you meant; three more prompts take two minutes and get you something
+slightly different each time.
+
+<CardGroup>
+  <Card title="Texture editor" href="/editors/textures" icon="image">
+    Tools, layers and hotkeys for finishing a texture by hand.
+  </Card>
+  <Card title="Model editor" href="/editors/models" icon="boxes">
+    Reshape, re-texture and pose a generated model.
+  </Card>
+</CardGroup>

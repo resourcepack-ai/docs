@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "resourcepackai-docs",
+  // Like landing (and unlike studio) there's no Workflow or other custom
+  // export to wrap, so OpenNext's generated worker is the entrypoint
+  // directly — no custom-worker.ts.
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    { "binding": "WORKER_SELF_REFERENCE", "service": "resourcepackai-docs" }
+  ],
+  // No D1, no R2, no secrets: the docs are static content compiled at
+  // build time. If that ever changes, add the binding here AND run
+  // `npm run cf:typegen`.
+  //
+  // docs.resourcepack.ai is a fresh subdomain — no other Worker has ever
+  // claimed it, so there's no release-then-claim deploy ordering to worry
+  // about (unlike the landing/studio route handover).
+  "routes": [{ "pattern": "docs.resourcepack.ai", "custom_domain": true }],
+  "vars": {
+    "ENVIRONMENT": "production"
+  }
+  // No staging environment, same reasoning as landing: nothing here is
+  // auth-gated or data-touching, it ships straight to prod.
+}

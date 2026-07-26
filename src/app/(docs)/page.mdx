@@ -1,0 +1,90 @@
+export const metadata = {
+  title: "Introduction",
+  description:
+    "What ResourcePack AI is, how the studio, the test server and the plugin fit together, and where to start.",
+};
+
+# ResourcePack AI
+
+Build Minecraft resource packs in a browser — describe a block, a model or an
+icon in plain English, edit what comes back pixel by pixel, then walk around
+inside it on a real server before anyone else sees it.
+
+<CardGroup>
+  <Card title="Quickstart" href="/quickstart" icon="rocket">
+    Go from an empty pack to a block you can stand next to.
+  </Card>
+  <Card title="Your own server" href="/testing/your-server" icon="server">
+    Install the plugin and push packs straight to your players.
+  </Card>
+</CardGroup>
+
+## How the pieces fit
+
+Most of your time is spent in the first row. The rest exists so that what you
+make can be looked at in Minecraft in seconds rather than after a zip, an
+upload and a reconnect.
+
+| Piece | Where it runs | What it does |
+| --- | --- | --- |
+| **Studio** | [studio.resourcepack.ai](https://studio.resourcepack.ai) | Your packs, the editors, and AI generation |
+| **Test server** | `play.resourcepack.ai` | A lobby and a private world to try a pack in |
+| **Plugin** | Your own Minecraft server | Receives packs and model items pushed from studio |
+
+Nothing here replaces Minecraft's own pack format. What you export is an
+ordinary resource pack — same folders, same JSON, same PNGs — so it works
+anywhere a pack works, with or without us.
+
+## What a pack can hold
+
+<CardGroup cols={3}>
+  <Card title="Textures" href="/editors/textures" icon="image">
+    16×16 pixel art for blocks and items, generated or drawn by hand.
+  </Card>
+  <Card title="Models" href="/editors/models" icon="boxes">
+    Cubes, bones and painted faces in a Blockbench-style 3D editor.
+  </Card>
+  <Card title="Fonts" href="/editors/fonts" icon="brush">
+    Bitmap glyphs you can type into chat, signs and books.
+  </Card>
+</CardGroup>
+
+Models can also be **animated** — keyframed in the editor, and played back in
+game on triggers like right-click or a player walking near. That part needs
+our plugin, since vanilla Minecraft has no notion of an animated block model.
+See [Animations](/editors/animations).
+
+## Seeing it in Minecraft
+
+Two routes, for two different jobs:
+
+- **Our test server** (`play.resourcepack.ai`) gives you a lobby and a private
+  sandbox world that's kept between visits. Nothing to install. Best for
+  "does this texture actually read at three blocks away".
+- **Your own server** runs our plugin. A player runs `/link` with a code from
+  studio, and from then on you can push the pack — or hand them a specific
+  model item — directly to that player. Best for showing a build team, or
+  testing against your real world.
+
+<Callout type="note">
+  Both routes serve the same pack. If something looks right in the studio
+  preview but wrong in game, it's nearly always the model or its texture
+  mapping rather than a difference between the two servers.
+</Callout>
+
+## Where to go next
+
+<CardGroup>
+  <Card title="Quickstart" href="/quickstart" icon="rocket">
+    The five-minute version of all of the above.
+  </Card>
+  <Card title="Generating with AI" href="/generating" icon="sparkles">
+    How to write a prompt that gives you something worth editing.
+  </Card>
+  <Card title="Packs and assets" href="/packs" icon="boxes">
+    What a pack is made of, and how to export one.
+  </Card>
+  <Card title="Join the Discord" href="https://resourcepack.ai/discord" icon="plug">
+    Questions, bug reports, and what other people are building.
+  </Card>
+</CardGroup>

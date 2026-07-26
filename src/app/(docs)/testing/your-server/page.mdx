@@ -1,0 +1,119 @@
+export const metadata = {
+  title: "Your own server",
+  description:
+    "Install the ResourcePack AI plugin on your Paper or Spigot server so studio can push packs to your players.",
+};
+
+# Your own server
+
+Our test server is fine for a quick look, but eventually you want a pack on
+*your* server, in *your* world, in front of the people you build with. That's
+what the plugin is for: once a player has linked, studio can push a pack — or
+hand them a specific model item — straight to that player in seconds, without
+anyone touching `server.properties` or uploading a zip anywhere.
+
+<Callout type="note" title="Requirements">
+  A Paper or Spigot server on **1.21.4 or newer**, running **Java 21+**, and
+  permission to install plugins on it.
+</Callout>
+
+## Install the plugin
+
+<Steps>
+  <Step title="Download the jar">
+    ```
+    https://cdn.resourcepack.ai/resourcepackai.jar
+    ```
+  </Step>
+  <Step title="Drop it in /plugins">
+    Put the jar in your server's `plugins/` folder, alongside everything else.
+  </Step>
+  <Step title="Restart the server">
+    A `/reload` won't do it — plugin jars are only picked up on a real
+    restart. Check the console for the plugin's startup line.
+  </Step>
+</Steps>
+
+<Callout type="note" title="Why 1.21.4">
+  Placed models use display entities and string-valued custom model data,
+  which don't exist on older versions. There's no build that works on 1.8 —
+  the features it exists to deliver aren't there to use.
+</Callout>
+
+## Link a player
+
+<Steps>
+  <Step title="Get a pairing code from studio">
+    Open the live-test panel for the pack you want to push. It shows an
+    8-digit code as a ready-to-paste command.
+  </Step>
+  <Step title="Run /link in game">
+    ```
+    /link 48213097
+    ```
+
+    Whoever runs the command claims the code, so the pairing is to that
+    **player**, not to the server. Two people on the same server can be linked
+    to two different packs at the same time.
+  </Step>
+  <Step title="Push the pack">
+    Studio shows the player as connected. Push, and their client downloads and
+    applies the pack without leaving the world.
+  </Step>
+</Steps>
+
+<Callout type="warning" title="Codes are single-use and expire">
+  A code that's never claimed expires after about ten minutes. If `/link` says
+  it's invalid, generate a fresh one rather than retyping the old one.
+</Callout>
+
+## Commands and permissions
+
+| Command | Does |
+| --- | --- |
+| `/link <code>` | Claim a pairing code. Requires `resourcepackai.link` |
+| `/rpai status` | Show the connection and current pairings |
+| `/rpai reconnect` | Force a reconnect to the sync service |
+
+The plugin only holds a connection open while something is actually linked, so
+a server with no active pairings sits idle.
+
+<Callout type="note">
+  Grant `resourcepackai.link` deliberately. Anyone who can run `/link` can
+  have a resource pack pushed to their own client — harmless, but it's still
+  a permission worth pointing at your build team rather than at everyone.
+</Callout>
+
+## Bedrock players
+
+If your server runs [Geyser](https://geysermc.org/) alongside the plugin,
+linked Bedrock players are handled too. Bedrock clients only accept resource
+packs while joining, so applying a pack means the player is briefly
+transferred and reconnected — a few seconds — and served the pack on the way
+back in. Studio warns you before doing this.
+
+<Callout type="warning">
+  Placed model rigs are **not** visible to Bedrock players yet. The pack
+  itself — textures, block models, fonts — applies normally; it's specifically
+  the placed, plugin-spawned models that don't render. Java players on the
+  same server see everything.
+</Callout>
+
+## Troubleshooting
+
+| Symptom | Usually means |
+| --- | --- |
+| `/link` is an unknown command | The jar didn't load — check `plugins/` and restart properly |
+| "Unknown code" | It expired or was already claimed. Generate a new one |
+| Pack pushes but nothing changes | The client declined it — check the player's **Server Resource Packs** setting isn't "Disabled" |
+| Works for you, not for others | Each player links separately; one `/link` doesn't cover the server |
+| Linked, then went quiet | The pairing drops when the player quits. Re-link on rejoin |
+
+<CardGroup>
+  <Card title="Placing models in-game" href="/testing/placing-models" icon="boxes">
+    Once the pack is applied, how to actually put a model in the world.
+  </Card>
+  <Card title="Animations" href="/editors/animations" icon="sparkles">
+    What the plugin does with animated models.
+  </Card>
+</CardGroup>

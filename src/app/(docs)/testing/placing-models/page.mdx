@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "Placing models in-game",
+  description:
+    "How a model item becomes a placed object in the world, and how to pick it back up.",
+};
+
+# Placing models in-game
+
+An item-carrier model arrives as an item — a piece of paper wearing your model.
+It looks right in your hand, in the GUI and in an item frame with nothing but
+the resource pack. **Placing** it in the world is what needs the plugin.
+
+<Callout type="note">
+  If your model uses a legacy full-block or partial-block carrier, none of this
+  applies — it places like the vanilla block it replaces. See
+  [Packs and assets](/packs).
+</Callout>
+
+## Getting the item
+
+Studio gives you a `/give` command for any model, matched to your Minecraft
+version — the syntax for custom model data changed twice across 1.20 and 1.21,
+so copy the one studio generates rather than one from a tutorial.
+
+If you're linked, studio can also hand the item straight to the linked player,
+no command needed.
+
+## Placing it
+
+<Steps>
+  <Step title="Right-click a block">
+    The model appears centred on the block you clicked, facing the way you
+    were. The item is consumed.
+  </Step>
+  <Step title="Punch it to pick it up">
+    Left-clicking a placed model removes it and gives the item back — unless
+    the model has a left-click animation trigger, which makes it unbreakable
+    on purpose. See [Animations](/editors/animations).
+  </Step>
+</Steps>
+
+<Callout type="tip">
+  Placement remembers which way you were facing, so a row of the same model
+  can be laid down at different angles without any of them animating sideways.
+</Callout>
+
+## What a placed model actually is
+
+Not a block — a display entity, or several of them for an animated model
+(one per moving part). Worth knowing because it explains the behaviour you'll
+notice:
+
+- It doesn't occupy a block space. You can walk through the space around it,
+  and it won't stop water or support a torch.
+- It has an interaction hitbox rather than block collision, which is what
+  routes your right- and left-clicks to animation triggers.
+- It's an ordinary saved entity, so placements survive a restart, and animated
+  ones start animating again on their own.
+
+<Callout type="warning">
+  Because they're entities, placed models are not protected by your world's
+  block protection. A plugin that stops players breaking blocks won't
+  necessarily stop them punching your models — worth checking on a public
+  server.
+</Callout>
+
+## Limits
+
+- **Bedrock players can't see placed models.** The pack applies to them
+  normally; the placed rigs don't render. Java players on the same server see
+  them.
+- **The plugin has to be running.** A placed model on a server that later
+  removes the plugin is just an entity nothing is animating.
+
+<CardGroup>
+  <Card title="Model editor" href="/editors/models" icon="boxes">
+    Display slots decide how the item looks before it's ever placed.
+  </Card>
+  <Card title="Your own server" href="/testing/your-server" icon="server">
+    Installing the plugin and linking a player.
+  </Card>
+</CardGroup>

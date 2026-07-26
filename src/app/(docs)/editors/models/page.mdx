@@ -1,0 +1,119 @@
+export const metadata = {
+  title: "Model editor",
+  description:
+    "The 3D editor — its five modes, cubes and bones, painting faces, display slots, and hotkeys.",
+};
+
+# Model editor
+
+A Blockbench-style editor for Minecraft block models: cubes with textured
+faces, arranged inside (or overhanging) a single block. It's split into five
+modes because the jobs are genuinely different — shaping is not painting, and
+neither is deciding how the thing sits in your hand.
+
+## The five modes
+
+| Mode | For |
+| --- | --- |
+| **Edit** | Building the geometry — add, move, resize, rotate cubes; group them into bones |
+| **Paint** | Painting faces directly on the 3D model |
+| **Display** | How it looks in hand, in the GUI, on the ground, in an item frame, on a head |
+| **Render** | A dressed-up viewport for capturing a PNG of the model |
+| **Animate** | Keyframes and playback triggers — see [Animations](/editors/animations) |
+
+## Edit mode
+
+The model is a list of **cubes** (Minecraft calls them elements). Each cube is
+a box with six faces, and each face points at a texture.
+
+Cube coordinates run from `-16` to `32` on each axis, with the block itself
+occupying `0..16`. Overhang is legal and often correct — antlers, wings, roof
+edges. Keep the visual centre of mass near the middle of the block so it sits
+well when placed.
+
+### Hotkeys
+
+Defaults, all remappable in the editor's settings:
+
+| Action | Key |
+| --- | --- |
+| Move tool | `G` |
+| Resize tool | `S` |
+| Rotate tool | `R` |
+| Frame selection | `F` |
+| Hide / show cube | `H` |
+| Duplicate cube | `Ctrl+D` |
+| Select all | `Ctrl+A` |
+| Copy / paste | `Ctrl+C` / `Ctrl+V` |
+| Delete cube | `Delete` |
+| Deselect | `Esc` |
+| Undo / redo | `Ctrl+Z` / `Ctrl+Y` |
+
+### Bones
+
+Select several cubes and group them into a **bone** — a named group with its
+own pivot point. Bones are what you animate: rotating a bone rotates
+everything in it around one pivot, which is how a door swings or a wing beats.
+
+<Callout type="note">
+  Bones are stored as an extra `groups` field on the model, in the same shape
+  Blockbench uses. Vanilla Minecraft ignores it, so grouping never breaks an
+  exported pack.
+</Callout>
+
+### UVs
+
+Which part of a texture lands on which face is normally handled for you — you
+think in faces and materials, not texture coordinates. There is a UV panel in
+Edit mode for when you genuinely need it, but no ordinary workflow should
+depend on it.
+
+## Paint mode
+
+Paint straight onto the model in 3D. For anything fiddlier than a colour
+correction, open the full [pixel editor](/editors/textures) from here — same
+texture, proper tools, and it comes back when you're done.
+
+## Display mode
+
+Minecraft renders a model differently in each context, and each context gets
+its own rotation, translation and scale override:
+
+- **GUI** — the inventory icon
+- **First person** / **third person**, left and right hand
+- **Dropped item** — lying on the ground
+- **Item frame**
+- **Shelf**
+- **On a head**
+
+Unset slots inherit the vanilla block defaults, so you only touch the ones
+that look wrong. There's a player rig in the preview (Steve or Alex, or your
+own skin) so a held model can be judged against a body rather than against
+empty space.
+
+<Callout type="tip">
+  The GUI slot is worth caring about more than it seems — for an item-carrier
+  model, the inventory icon is how players find your thing at all.
+</Callout>
+
+## Render mode
+
+The same viewport dressed for showing off: pick a backdrop (transparent, solid,
+gradient, or a real Minecraft sky with a grass ground), frame or spin the
+model, and capture a PNG. Transparent backdrops produce genuinely transparent
+captures, which is what you want for a Discord post or a shop listing.
+
+## Getting it into the world
+
+An item-carrier model is given to you as an item and placed with a right-click
+on servers running our plugin. That's covered in
+[Placing models in-game](/testing/placing-models).
+
+<CardGroup>
+  <Card title="Animations" href="/editors/animations" icon="sparkles">
+    Keyframes, interpolation, and the triggers that play them in game.
+  </Card>
+  <Card title="Placing models" href="/testing/placing-models" icon="server">
+    Give commands, right-click placement, and picking a model back up.
+  </Card>
+</CardGroup>

@@ -1,0 +1,100 @@
+export const metadata = {
+  title: "Quickstart",
+  description: "From an empty pack to a block you can stand next to, in about five minutes.",
+};
+
+# Quickstart
+
+One full loop: make a pack, put something in it, look at it in Minecraft.
+Everything else in these docs is a variation on that loop.
+
+<Callout type="note" title="You'll need">
+  A ResourcePack AI account, and Minecraft Java Edition if you want to see the
+  result in game. Nothing to install for either.
+</Callout>
+
+## Make something
+
+<Steps>
+  <Step title="Create a pack">
+    Open [studio.resourcepack.ai](https://studio.resourcepack.ai) and create a
+    pack. A pack is the container for everything else — textures, models,
+    fonts — and it's the unit you export and test.
+  </Step>
+  <Step title="Add an asset">
+    Add a texture, a model or a font. You can describe what you want and let
+    the AI draft it, upload a PNG you already have, or start from blank and
+    draw it yourself.
+
+    A good first prompt is specific about material and mood, not about pixels:
+
+    > weathered copper roof tiles, blue-green patina, strong diagonal grain
+
+    Textures are drafted at 16×16 — the same resolution vanilla Minecraft
+    uses. See [Generating with AI](/generating).
+  </Step>
+  <Step title="Edit it">
+    Nothing generated is final, and that's the point: generation is a faster
+    starting position than an empty grid, not a finished product.
+
+    Textures open in the [pixel editor](/editors/textures); models open in the
+    [model editor](/editors/models), which has separate modes for shaping
+    geometry, painting it, positioning it in hand, and animating it.
+  </Step>
+</Steps>
+
+## See it in Minecraft
+
+The fastest route is our test server — no plugin, no setup.
+
+<Steps>
+  <Step title="Join play.resourcepack.ai">
+    ```
+    play.resourcepack.ai
+    ```
+
+    You'll land in the lobby. Take the portal for a private world of your own,
+    which is kept between visits, or use the shared plot up front for a quick
+    look.
+  </Step>
+  <Step title="Link and push">
+    In studio, open the live-test panel for your pack and copy the `/link`
+    command it shows you:
+
+    ```
+    /link 48213097
+    ```
+
+    Run it in game. Studio will show you connected, and pushing sends the pack
+    to your client — no zips, no reconnect.
+  </Step>
+  <Step title="Iterate">
+    Change something in studio, push again, look again. Most of the work is in
+    how many times you go round this loop, not in getting it right first time.
+  </Step>
+</Steps>
+
+<Callout type="tip" title="Own server instead?">
+  The same `/link` flow works on any Paper or Spigot server running our
+  plugin — see [Your own server](/testing/your-server).
+</Callout>
+
+## Export it
+
+A finished pack is an ordinary Minecraft resource pack. Download the `.zip`
+and drop it in your `resourcepacks` folder:
+
+```bash
+# Windows
+%APPDATA%\.minecraft\resourcepacks
+
+# macOS
+~/Library/Application Support/minecraft/resourcepacks
+
+# Linux
+~/.minecraft/resourcepacks
+```
+
+There's no runtime dependency on us in the exported file — it keeps working
+if you never open studio again. The exception is animated models, which need
+our plugin to play back; see [Animations](/editors/animations).

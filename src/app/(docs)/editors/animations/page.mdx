@@ -1,0 +1,127 @@
+export const metadata = {
+  title: "Animations",
+  description:
+    "Keyframe a model in the editor, then play it back on a real server with our plugin — triggers, interpolation and limits.",
+};
+
+# Animations
+
+Vanilla Minecraft has no concept of an animated block model. A resource pack
+can change what a block *looks* like, not make it move. So animations here are
+two halves that meet in the middle: you keyframe a model in **Animate mode**,
+and our **plugin** plays those keyframes back on placed models, on your
+server.
+
+<Callout type="warning" title="Animations need the plugin">
+  An exported pack containing an animated model is still a perfectly valid
+  resource pack — the animation data is stored in fields vanilla ignores — but
+  the model will simply sit still anywhere our plugin isn't running. See
+  [Your own server](/testing/your-server).
+</Callout>
+
+## Animating in the editor
+
+<Steps>
+  <Step title="Group what moves into bones">
+    Animate mode works on **cubes** and on **bones** (named groups of cubes
+    with a shared pivot, made in Edit mode). A hinge, a wheel, a wing — each
+    wants to be a bone, because rotating a bone rotates its cubes around one
+    pivot rather than each around its own.
+  </Step>
+  <Step title="Keyframe it">
+    Pick a target, scrub the timeline, change the rotation, position or scale,
+    and a keyframe is set at that time. An animation has a name and a length
+    in seconds; keyframes past the end are dropped when you shorten it.
+  </Step>
+  <Step title="Choose interpolation">
+    Per keyframe:
+
+    - **Linear** — straight line between values. The default.
+    - **Smooth** — a Catmull-Rom curve through the neighbouring keys. Use for
+      anything organic; a segment is smooth if *either* end is.
+    - **Step** — hold the value, then jump. Use for mechanical snaps and for
+      anything that should look like it has no in-between frames.
+
+    Values hold flat before the first key and after the last one.
+  </Step>
+  <Step title="Pick playback triggers">
+    An animation does nothing in game until it claims at least one trigger.
+    That's the next section.
+  </Step>
+</Steps>
+
+## Triggers
+
+Each animation can claim several triggers, and a model can have several
+animations. Triggers are what connect a timeline to something that actually
+happens in the world.
+
+| Trigger | Fires when |
+| --- | --- |
+| **On loop** | Continuously, while the model is placed |
+| **On placement** | Once, immediately after the model is placed |
+| **On right click** | A player uses the model |
+| **On left click** | A player hits the model |
+| **On range** | A player enters a radius around it (default 5 blocks, 0.5–64) |
+
+Rules worth knowing before you build something complicated:
+
+- **One animation wins per event.** If two animations both claim right-click,
+  the first one in model order plays and the other never does.
+- **One-shots don't stack.** While a triggered animation is playing, further
+  triggers of it are ignored rather than restarting or layering it.
+- **What happens after a one-shot:** the model returns to rest, or falls back
+  to the first looping animation if it has one.
+- **Range is entry-based.** Presence is re-checked periodically, so a group
+  arriving together starts it once, and it can fire again after someone leaves
+  and comes back — it doesn't re-trigger every tick while you stand there.
+
+<Callout type="note" title="Left click makes a model unbreakable">
+  A left-click trigger has a side effect by design: that placement can no
+  longer be punched to pick it up. Otherwise the first hit would break the rig
+  and drop the item instead of playing the animation. Give players another way
+  to remove it if that matters.
+</Callout>
+
+## How playback actually works
+
+Useful to know when something looks wrong in game:
+
+- When a pack is pushed to a linked player, an **animation rig manifest** is
+  sent alongside it. The plugin keeps those rigs keyed by model id and saves
+  them to disk, so placed models keep animating across a server restart.
+- A placed animated model isn't one entity. Each moving part of the rig gets
+  its own display entity; the parts that never move are left as one static
+  remainder and skipped by the animator entirely.
+- Playback ticks a few times per second rather than every tick. It's smooth
+  for the motion these models do, and deliberately cheap — a build full of
+  animated props shouldn't cost you the server.
+- The keyframe maths is the same code in the editor and the plugin, so what
+  you preview is what plays.
+
+## Limits
+
+<Callout type="warning" title="Bedrock players can't see placed models">
+  Bedrock clients get the pushed pack itself, but placed model rigs are
+  invisible to them today — the Bedrock rendering path for placed models is
+  designed and not yet built. Java players on the same server see them
+  normally.
+</Callout>
+
+Other things to expect:
+
+- Animations are per-**model**. There's no way to trigger one model's
+  animation from another.
+- Placement rotation is remembered per placement, so the same model animates
+  correctly whichever way you faced when you put it down.
+- The animation only exists where the plugin is. A player who downloads your
+  exported pack sees the model in its rest pose.
+
+<CardGroup>
+  <Card title="Placing models in-game" href="/testing/placing-models" icon="server">
+    How a model item becomes a placed object you can trigger.
+  </Card>
+  <Card title="Your own server" href="/testing/your-server" icon="plug">
+    Install the plugin so animations play at all.
+  </Card>
+</CardGroup>

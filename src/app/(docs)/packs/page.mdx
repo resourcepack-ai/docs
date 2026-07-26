@@ -1,0 +1,74 @@
+export const metadata = {
+  title: "Packs and assets",
+  description:
+    "What a pack holds, how the three asset kinds differ, and how a pack becomes a real Minecraft resource pack.",
+};
+
+# Packs and assets
+
+A **pack** is the unit you build, test and export. Everything else lives
+inside one.
+
+## The three asset kinds
+
+<CardGroup cols={3}>
+  <Card title="Texture" href="/editors/textures" icon="image">
+    A PNG. Replaces the look of a vanilla block or item.
+  </Card>
+  <Card title="Model" href="/editors/models" icon="boxes">
+    Geometry — cubes with textured faces. Can be animated.
+  </Card>
+  <Card title="Font" href="/editors/fonts" icon="brush">
+    Bitmap glyphs you type into chat, signs and books.
+  </Card>
+</CardGroup>
+
+Each can be started three ways: **described** and drafted by AI, **uploaded**
+from a PNG you already have, or **blank** — straight into the editor with a
+stone cube or an empty grid.
+
+## How a model reaches the game
+
+Minecraft doesn't have "custom blocks" for resource packs to add. A pack can
+only change how something that already exists looks, so every custom model
+has to ride on a vanilla item or block. That choice is the model's **carrier**,
+and it's the single most consequential setting on a model:
+
+| Carrier | How it works | Limit |
+| --- | --- | --- |
+| **Item** (default) | A paper item with a custom model. Looks right in hand, in the GUI and in item frames, and is placeable on servers running our plugin | Effectively unlimited |
+| **Full block** (legacy) | Replaces a vanilla full block's appearance, e.g. a crate | Limited slots |
+| **Partial block** (legacy) | Same, on a non-full vanilla block, e.g. a sink or a TV | Very limited slots |
+
+The two legacy carriers place like normal blocks without any plugin, but you
+run out of vanilla blocks to borrow. The item carrier has no such ceiling,
+which is why it's the default — the trade is that *placing* it needs the
+plugin. See [Placing models in-game](/testing/placing-models).
+
+<Callout type="note">
+  Legacy carriers aren't deprecated so much as narrow. If you're making a
+  handful of building blocks for a survival server with no plugins, they're
+  the right call.
+</Callout>
+
+## Exporting
+
+Two formats, both built on demand:
+
+- **Java** — a `.zip`, the ordinary resource pack you drop in
+  `resourcepacks` or hand to a server.
+- **Bedrock** — an `.mcpack`, built from the same assets.
+
+<Callout type="warning" title="What doesn't survive the export">
+  Animations and bones are stored as extra fields on the model JSON. Vanilla
+  Minecraft ignores fields it doesn't recognise, so an exported pack is still
+  perfectly valid — the model just sits there, static. Playback needs our
+  plugin. See [Animations](/editors/animations).
+</Callout>
+
+## Where your work lives
+
+Assets are saved as you go and versioned per pack, so testing a pack in game
+is always testing what's currently in the editor. There's no build step to
+remember and nothing to re-upload between edits — pushing to a linked player
+rebuilds and re-applies the pack for you.
