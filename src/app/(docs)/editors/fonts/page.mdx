@@ -12,13 +12,14 @@ UI symbols are done.
 
 ## Sizes
 
-Three presets, plus a custom height up to 256. The choice is about line height
+Four presets, plus a custom height up to 256. The choice is about line height
 rather than quality:
 
 | Size | Behaviour |
 | --- | --- |
 | **8px** | Sits flush inside one line of text. The only size guaranteed not to spill |
-| **16px** | Deliberately oversized — overlaps the lines above and below. The default |
+| **12px** | The default for chat: a readable icon with ascent 9 |
+| **16px** | Deliberately oversized — overlaps the lines above and below |
 | **32px** | Much more so |
 
 Minecraft's line pitch is about 9 pixels and the renderer does **not** reflow
@@ -26,9 +27,8 @@ line spacing for taller glyphs. So 16 and 32 aren't bugs to be worked around;
 they're the Discord-style "big emoji" effect, and they overlap on purpose.
 
 <Callout type="tip">
-  If a glyph is meant to read as part of a sentence — a currency symbol, a
-  status dot, a key icon — use 8px. Reach for the larger sizes when the glyph
-  *is* the message.
+  Start with the 12px default for chat. Use 8px when an icon must stay strictly
+  inside one line, and reach for 16px or 32px when the glyph *is* the message.
 </Callout>
 
 ## Characters
