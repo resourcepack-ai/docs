@@ -70,6 +70,27 @@ texture really is 64 pixels of paintable detail.
   history.
 </Callout>
 
+## Per-face textures
+
+A texture that replaces a full-cube vanilla block (stone, planks, wool,
+concrete, ores…) doesn't have to look the same on every side. On the block's
+page, the **Faces** card lets you give the **top** and **bottom** their own
+textures — generate each from a prompt, open it in this editor to finish by
+hand, or remove it to fall back to the base texture. The sides always show
+the base texture, which is exactly how vanilla builds its own multi-face
+blocks (grass, furnaces, crafting tables).
+
+You don't manage any files for this: when a block has face textures, the
+exported pack automatically includes the block-model override that maps each
+face, and the preview cube on the block's page shows the real result.
+
+<Callout type="note" title="Faces are a full-cube, Java-side thing">
+  Blocks that are already multi-textured in vanilla (logs, sandstone,
+  bookshelves) or aren't simple cubes don't offer the Faces card — retexture
+  their individual vanilla textures instead. And a Bedrock export currently
+  carries only the base texture; the per-face split is Java-only for now.
+</Callout>
+
 ## Getting a texture in
 
 Normally you describe it and generate it — that's the fast way to a draft
