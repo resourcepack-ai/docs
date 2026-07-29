@@ -77,8 +77,8 @@ export const nav: NavGroup[] = [
         keywords: ["animate", "keyframe", "trigger", "rig", "loop", "right click"],
       },
       {
-        title: "Custom fonts",
-        href: "/editors/fonts",
+        title: "Custom icons",
+        href: "/editors/icons",
         description: "Bitmap glyphs for chat, signs and books.",
         keywords: ["font", "glyph", "emoji", "icon", "unicode", "pua"],
       },
