@@ -73,6 +73,33 @@ OpenNext shells out to `npm run build`, so the Cloudflare deploy inherits
 this automatically. If someone "fixes" the inconsistency with the sibling apps
 by adding `--webpack`, every deploy breaks.
 
+## `@opennextjs/cloudflare` is patched for Windows builds
+
+`patches/@opennextjs+cloudflare+1.20.1.patch`, applied by `patch-package` on
+`postinstall`. Don't drop it, and if you bump the dependency, regenerate it
+(`npx patch-package @opennextjs/cloudflare`) — the filename carries the version
+and a stale patch fails loudly on install.
+
+OpenNext's Turbopack plugin finds server chunks with
+`.includes(".next/server/chunks/")` — forward slashes only. On Windows nothing
+matches, so it emits **empty** `requireChunk`/`loadWasmChunk` switches. The
+build passes, `wrangler deploy` reports success, and then every SSR route 500s
+with `ChunkLoadError: Failed to load chunk server/chunks/ssr/[root-of-the-server]__*.js`.
+The patch normalizes separators in the four places that match or emit those
+paths (they end up inside `require(...)` string literals, so they must be POSIX
+in the *output* too, not just for comparison).
+
+This only bites here because `docs` is the one app that must build with
+Turbopack — see below. Still unfixed in 1.20.2. To check a build before
+shipping it:
+
+```bash
+grep -c 'case "server/chunks' '.open-next/server-functions/default/.next/server/chunks/ssr/[turbopack]_runtime.js'
+```
+
+Zero means the patch didn't apply and the deploy would be dead on arrival.
+Building in WSL avoids the whole problem, if you'd rather do that.
+
 ## `@opennextjs/cloudflare` is pinned exactly
 
 `1.20.1`, not a caret range. `1.20.2` tightened its peer dependency to

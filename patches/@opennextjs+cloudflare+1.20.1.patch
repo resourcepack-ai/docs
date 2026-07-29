@@ -1,0 +1,63 @@
+diff --git a/node_modules/@opennextjs/cloudflare/dist/cli/build/patches/plugins/turbopack.js b/node_modules/@opennextjs/cloudflare/dist/cli/build/patches/plugins/turbopack.js
+index 4f0e134..4602f56 100644
+--- a/node_modules/@opennextjs/cloudflare/dist/cli/build/patches/plugins/turbopack.js
++++ b/node_modules/@opennextjs/cloudflare/dist/cli/build/patches/plugins/turbopack.js
+@@ -2,6 +2,10 @@ import fs from "node:fs";
+ import path from "node:path";
+ import { patchCode } from "@opennextjs/aws/build/patch/astCodePatcher.js";
+ import { getCrossPlatformPathRegex } from "@opennextjs/aws/utils/regex.js";
++// Windows: traced file paths use "\" separators, but every match below is written
++// against POSIX "/". Normalize once here so the chunk/wasm switches aren't silently
++// generated empty (which fails at runtime with ChunkLoadError).
++const toPosix = (p) => p.replace(/\\/g, "/");
+ const inlineChunksRule = `
+ rule:
+   kind: call_expression
+@@ -66,7 +70,7 @@ fix: |-
+ function discoverExternalModuleMappings(filePath) {
+     // filePath is like: .../.next/server/chunks/ssr/[turbopack]_runtime.js
+     // We need: .../.next/node_modules/
+-    const dotNextDir = filePath.replace(/\/server\/chunks\/.*$/, "");
++    const dotNextDir = toPosix(filePath).replace(/\/server\/chunks\/.*$/, "");
+     const nodeModulesDir = path.join(dotNextDir, "node_modules");
+     const mappings = new Map();
+     if (!fs.existsSync(nodeModulesDir)) {
+@@ -78,7 +82,7 @@ function discoverExternalModuleMappings(filePath) {
+                 const entryPath = path.join(nodeModulesDir, entry.name);
+                 const target = fs.readlinkSync(entryPath);
+                 // target is like "../../node_modules/shiki" — extract package name
+-                const match = target.match(/node_modules\/(.+)$/);
++                const match = toPosix(target).match(/node_modules\/(.+)$/);
+                 if (match?.[1]) {
+                     mappings.set(entry.name, match[1]);
+                 }
+@@ -166,7 +170,7 @@ function discoverBareExternalImports(tracedFiles, runtimeCode) {
+     const externalImportAlias = propMatch[1];
+     // Chunks call externalImport as e.g. `.y("shiki")` — build a regex using the discovered property name.
+     const externalImportRegexp = new RegExp(`\\.${externalImportAlias}\\("([^"]+)"\\)`, "g");
+-    const chunkFiles = tracedFiles.filter((f) => f.includes(".next/server/chunks/"));
++    const chunkFiles = tracedFiles.filter((f) => toPosix(f).includes(".next/server/chunks/"));
+     for (const filePath of chunkFiles) {
+         try {
+             const content = fs.readFileSync(filePath, "utf-8");
+@@ -244,8 +248,9 @@ ${inlineChunksFn(tracedFiles)}\n${loadWasmChunkFn(tracedFiles)}`;
+ };
+ function getInlinableChunks(tracedFiles) {
+     const chunks = new Set();
+-    for (const file of tracedFiles) {
+-        if (file === "[turbopack]_runtime.js") {
++    for (const rawFile of tracedFiles) {
++        const file = toPosix(rawFile);
++        if (file.endsWith("[turbopack]_runtime.js")) {
+             continue;
+         }
+         if (file.includes(".next/server/chunks/")) {
+@@ -280,7 +285,7 @@ ${chunks
+  * statically discover every wasm chunk and include them in the final build.
+  */
+ export function loadWasmChunkFn(tracedFiles) {
+-    const wasmFiles = tracedFiles.filter((f) => f.endsWith(".wasm"));
++    const wasmFiles = tracedFiles.map(toPosix).filter((f) => f.endsWith(".wasm"));
+     const cases = wasmFiles
+         .map((absPath) => ({ absPath, relPath: absPath.replace(/.*\/\.next\//, "") }))
+         .map(({ absPath, relPath }) => `      case "${relPath}": return (await import("${absPath}")).default;`)
