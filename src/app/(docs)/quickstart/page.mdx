@@ -63,19 +63,22 @@ The fastest route is our test server — no plugin, no setup.
     for a private world of your own, which is kept between visits, or use the
     shared plot up front for a quick look.
   </Step>
-  <Step title="Link and push">
-    In studio, open the live-test panel for your pack and copy the `/link`
-    command it shows you:
+  <Step title="Link your account, once ever">
+    On your account page, under **Minecraft account**, press **Get link
+    code**, then run it in game:
 
     ```
-    /link 48213097
+    /permalink 48213097
     ```
 
-    Run it in game. Studio shows you connected, and **Sync resource pack**
-    sends it straight to your client. Nothing is downloaded, zipped or
-    uploaded by you. On Java the pack swaps in where you're standing; on
-    Bedrock you're bounced out and back in for a few seconds, because Bedrock
-    only takes a pack while joining.
+    That's the last code you'll type. From here on, studio knows who you are
+    on the server.
+  </Step>
+  <Step title="Push">
+    Hit **Sync** on the pack and it goes straight to your client. Nothing is
+    downloaded, zipped or uploaded by you. On Java the pack swaps in where
+    you're standing; on Bedrock you're bounced out and back in for a few
+    seconds, because Bedrock only takes a pack while joining.
   </Step>
   <Step title="Iterate">
     Change something in studio, push again, look again. Most of the work is in
@@ -84,8 +87,9 @@ The fastest route is our test server — no plugin, no setup.
 </Steps>
 
 <Callout type="tip" title="Own server instead?">
-  The same `/link` flow works on any Paper or Spigot server running our
-  plugin — see [Your own server](/testing/your-server).
+  Any Paper or Spigot server can run our plugin and take pushes the same way.
+  There it's a per-pack `/link` code rather than a one-off permalink — see
+  [Your own server](/testing/your-server).
 </Callout>
 
 ## Export it (optional)

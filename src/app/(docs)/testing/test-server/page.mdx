@@ -86,32 +86,36 @@ and `supporter` badges, which stack above your plan rank instead of replacing
 it. Your resolved rank colour also takes precedence for your player name.
 Starter has no synced rank.
 
-## Loading your pack
+## Linking your account
 
-The test server also runs the linking plugin, so getting your pack onto your
-client is the same flow as on your own server:
+Do this once and you never think about it again. It's also what verifies your
+Minecraft account for the rank sync above.
 
 <Steps>
   <Step title="Get a code from studio">
-    Open the live-test panel for the pack. It shows a `/link` command with an
-    8-digit code.
+    On your [account page](https://studio.resourcepack.ai/account), under
+    **Minecraft account**, press **Get link code**. It's good for ten
+    minutes.
   </Step>
   <Step title="Run it in game">
     ```
-    /link 48213097
+    /permalink 48213097
     ```
-  </Step>
-  <Step title="Push">
-    Studio shows you as connected. Pushing sends the pack straight to your
-    client — nothing to download or upload. On Java it swaps in where you
-    stand; on Bedrock you're briefly bounced out and back in.
+    The page updates itself the moment it lands — you don't have to go back
+    and refresh anything.
   </Step>
 </Steps>
 
-Full detail on the linking flow, including how to run it on a server you own,
-is in [Your own server](/testing/your-server).
+## Loading your pack
+
+Once you're linked, there's no per-pack setup at all: hit **Sync** on any
+pack while you're on the server and it arrives. On Java it swaps in where you
+stand; on Bedrock you're briefly bounced out and back in.
+
+That's specific to this server. On a server you own, packs are still pushed
+per-pack with a `/link` code — see [Your own server](/testing/your-server).
 
 <Callout type="note">
   The pairing is to **you**, not to the server. Someone standing next to you
-  won't see your pack unless they link their own.
+  won't see your pack unless they've linked their own account.
 </Callout>
