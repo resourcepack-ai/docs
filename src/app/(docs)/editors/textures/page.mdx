@@ -79,11 +79,12 @@ texture — generate it from a prompt, open it in this editor to finish by
 hand, or remove it to fall back to the base texture. This is exactly how
 vanilla builds its own multi-face blocks (grass, furnaces, crafting tables).
 
-Inside this editor, a **Faces** panel on the right switches between the base
-texture and each face of the same block without leaving the editor. Unsaved
-strokes are saved before switching, and picking a face that doesn't have its
-own texture yet creates one on the spot as a copy of the base — so you start
-from what that face currently looks like, not a blank grid.
+Editing a block opens the **block editor**: a tab bar with the block in 3D
+("Block") plus one tab per face. Click a face on the 3D cube — or its tab —
+and that face opens in the pixel editor, autosaving as you paint. A face
+that doesn't have its own texture yet gets one on the spot, seeded from what
+it currently looks like in game, and **Apply to all faces** copies the open
+face's texture onto the whole block.
 
 You don't manage any files for this: when a block has face textures, the
 exported pack automatically includes the block-model override that maps each
