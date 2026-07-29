@@ -74,11 +74,10 @@ texture really is 64 pixels of paintable detail.
 
 A texture that replaces a full-cube vanilla block (stone, planks, wool,
 concrete, ores…) doesn't have to look the same on every side. On the block's
-page, the **Faces** card lets you give the **top** and **bottom** their own
-textures — generate each from a prompt, open it in this editor to finish by
-hand, or remove it to fall back to the base texture. The sides always show
-the base texture, which is exactly how vanilla builds its own multi-face
-blocks (grass, furnaces, crafting tables).
+page, the **Faces** card shows all six faces, and each one can have its own
+texture — generate it from a prompt, open it in this editor to finish by
+hand, or remove it to fall back to the base texture. This is exactly how
+vanilla builds its own multi-face blocks (grass, furnaces, crafting tables).
 
 You don't manage any files for this: when a block has face textures, the
 exported pack automatically includes the block-model override that maps each
@@ -89,6 +88,15 @@ face, and the preview cube on the block's page shows the real result.
   bookshelves) or aren't simple cubes don't offer the Faces card — retexture
   their individual vanilla textures instead. And a Bedrock export currently
   carries only the base texture; the per-face split is Java-only for now.
+</Callout>
+
+<Callout type="warning" title="Some blocks randomly rotate when placed">
+  A few natural blocks (stone, dirt, sand, netherrack and friends) get a
+  random rotation each time they're placed, to break up repetition. Their
+  top/bottom faces are safe, but a distinct north/south/east/west face will
+  point a different way on each placed block. Building blocks — planks,
+  wool, concrete, bricks — don't rotate and keep all six faces exactly where
+  you put them.
 </Callout>
 
 ## Getting a texture in
