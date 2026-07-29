@@ -69,6 +69,14 @@ anyone touching `server.properties` or uploading a zip anywhere.
   once the old pairing has been unlinked.
 </Callout>
 
+<Callout type="note" title="If a client turns the pack down">
+  Studio reports a push as sent, because that's all this end can see — the
+  client decides separately, and it can refuse without ever showing a prompt
+  if that server entry's **Server Resource Packs** setting is "Disabled". When
+  that happens the plugin walks the player through fixing it in chat, step by
+  step. Nobody else on the server sees those messages.
+</Callout>
+
 ## Commands and permissions
 
 | Command | Permission | Does |
@@ -117,7 +125,7 @@ playback.
 | --- | --- |
 | `/link` is an unknown command | The jar didn't load — check `plugins/` and restart properly |
 | "Unknown code" | It expired or was already claimed. Generate a new one |
-| Pack pushes but nothing changes | The client declined it — check the player's **Server Resource Packs** setting isn't "Disabled" |
+| Pack pushes but nothing changes | The client declined it. The plugin tells that player how to fix it in chat — it's the **Server Resource Packs** setting on the server entry |
 | Works for you, not for others | Each player links separately; one `/link` doesn't cover the server |
 | Linked, then went quiet | The pairing drops when the player quits. Re-link on rejoin |
 
