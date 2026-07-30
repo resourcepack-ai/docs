@@ -80,11 +80,13 @@ hand, or remove it to fall back to the base texture. This is exactly how
 vanilla builds its own multi-face blocks (grass, furnaces, crafting tables).
 
 Editing a block opens the **block editor**: a tab bar with the block in 3D
-("Block") plus one tab per face. Click a face on the 3D cube — or its tab —
-and that face opens in the pixel editor, autosaving as you paint. A face
-that doesn't have its own texture yet gets one on the spot, seeded from what
-it currently looks like in game, and **Apply to all faces** copies the open
-face's texture onto the whole block.
+("Block") plus one tab per face. On the Block tab you paint directly on the
+cube — left-drag strokes, drag empty space to orbit — with the same brush,
+fill, line and picker tools as the model editor's paint mode. Double-click a
+face (or click its tab) to open it in the 2D pixel editor. Everything
+autosaves. A face that doesn't have its own texture yet gets one on the
+spot, seeded from what it currently looks like in game, and **Apply to all
+faces** copies the open face's texture onto the whole block.
 
 You don't manage any files for this: when a block has face textures, the
 exported pack automatically includes the block-model override that maps each
