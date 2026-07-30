@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s · ResourcePack AI Docs",
   },
   description:
-    "Documentation for ResourcePack AI — build Minecraft resource packs in the browser, test them live, and push them to your players.",
+    "Documentation for ResourcePack AI — build Minecraft Resource Packs in the browser, test them live, and push them to your players.",
   icons: { icon: "/logo.svg" },
 };
 

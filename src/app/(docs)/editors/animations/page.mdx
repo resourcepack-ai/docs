@@ -6,14 +6,14 @@ export const metadata = {
 
 # Animations
 
-Vanilla Minecraft has no concept of an animated block model. A resource pack
+Vanilla Minecraft has no concept of an animated block model. A Resource Pack
 can change what a block *looks* like, not make it move. So animations here are
 two halves that meet in the middle: you keyframe a model in **Animate mode**,
 and our **plugin** plays those keyframes back on placed models, on your
 server.
 
 <Callout type="warning" title="On Java, animations need the plugin">
-  A Java pack with an animated model is still a perfectly valid resource pack —
+  A Java pack with an animated model is still a perfectly valid Resource Pack —
   the animation data lives in fields vanilla ignores — but the model sits
   still anywhere our plugin isn't running. See
   [Your own server](/testing/your-server). Bedrock is different: it has native
