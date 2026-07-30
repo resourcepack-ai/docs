@@ -49,6 +49,24 @@ run out of vanilla blocks to borrow. The item carrier has no such ceiling,
 which is why it's the default — the trade is that *placing* it needs the
 plugin. See [Placing models in-game](/testing/placing-models).
 
+### Choosing the block
+
+Pick **Block** as the carrier and studio lists every vanilla block a model can
+borrow, in two groups:
+
+- **Fixed** — end rod, lantern, soul lantern. Each of these carries several
+  models at once (one per facing or hanging state), and a placed model always
+  sits the way you built it.
+- **Directional** — anvils, ladder, stonecutter, grindstone, lectern,
+  campfires, fence gates. One model each, and Minecraft turns it to face the
+  way you place it, exactly as it turns the real block.
+
+Leave it on **Auto** and studio takes the first block that's free, fixed ones
+first. In the Add asset sheet, a block the pack has already spent is greyed
+out; ask for one anywhere else and you get told it's taken rather than quietly
+landing somewhere else. Free a block by deleting the model holding it, or by
+moving that model to another carrier from its **Get in-game** panel.
+
 <Callout type="note">
   Legacy carriers aren't deprecated so much as narrow. If you're making a
   handful of building blocks for a survival server with no plugins, they're
