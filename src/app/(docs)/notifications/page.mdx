@@ -27,7 +27,8 @@ none.
     already is if you signed up with a password.
   </Card>
   <Card title="Discord" icon="plug">
-    A direct message from our bot. Needs one command — see below.
+    A direct message from our bot. Needs Discord connected to your account,
+    and you in our server — see below.
   </Card>
   <Card title="In game" icon="server">
     A line of chat while you're on **play.resourcepack.ai**, with a clickable
@@ -37,34 +38,27 @@ none.
 
 ## Discord
 
+Two things have to be true, and they're both one-offs:
+
 <Steps>
-  <Step title="Join the Discord">
-    Our bot can only message people it shares a server with — that's a Discord
-    rule, not ours. [Join here](https://resourcepack.ai/discord) first, or the
-    DM has nowhere to land.
+  <Step title="Connect Discord to your account">
+    On your account page, under **Sign-in methods**, hit **Connect** next to
+    Discord. That's the same connection you'd use to sign in with — there's
+    no separate notification setup, and nothing to type.
   </Step>
-  <Step title="Get a code">
-    On your account page, hit **Get link code** in the Notifications card. It's
-    eight digits and lasts ten minutes.
-  </Step>
-  <Step title="Run /link">
-    Type `/link <code>` anywhere in the Discord. The reply is only visible to
-    you, and the card in studio updates on its own.
+  <Step title="Join our Discord">
+    A bot can only message people it shares a server with. That's Discord's
+    rule, not ours, and it means the connection above isn't enough on its own
+    — [join here](https://resourcepack.ai/discord) once and the DM has
+    somewhere to land.
   </Step>
 </Steps>
 
-The bot's full command list, usable anywhere it can see you:
-
-| Command | What it does |
-|---|---|
-| `/link <code>` | Binds this Discord account to your studio account and turns DMs on |
-| `/unlink` | Stops the DMs and forgets the link |
-| `/status` | Shows which account you're linked to, and whether pings are on |
-
-<Callout type="note">
-  If you signed in to studio *with* Discord, we'll try that account as a
-  fallback — but only `/link` guarantees the bot can actually reach you, so
-  it's worth doing even then.
+<Callout type="warning">
+  Skip the second step and the switch will sit there looking on while no
+  message ever arrives. If DMs aren't reaching you, that's the first thing to
+  check — followed by **Privacy Settings → Direct Messages** in the server,
+  which can also block them.
 </Callout>
 
 ## In game
@@ -86,5 +80,6 @@ automatically; see [Packs and assets](/packs).
 
 ## Turning them off
 
-Same card, same switches. Every email also carries a line at the bottom saying
-where to find them, and `/unlink` in Discord stops the DMs immediately.
+Same card, same switches. Every email also carries a line at the bottom
+saying where to find them. Disconnecting Discord under Sign-in methods stops
+the DMs too, though the switch is the gentler way to do it.
