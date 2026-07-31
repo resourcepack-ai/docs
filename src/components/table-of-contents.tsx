@@ -8,6 +8,20 @@ import { cn } from "@/lib/utils";
 type Heading = { id: string; text: string; level: number };
 
 /**
+ * The heading's own text, without the hover `#` permalink that
+ * `mdx-components.tsx` renders inside it. That anchor is a real child of the
+ * `h2`/`h3`, so plain `textContent` ends every entry in this rail with a
+ * stray "#".
+ */
+function headingText(element: HTMLElement): string {
+  return Array.from(element.childNodes)
+    .filter((node) => !(node instanceof HTMLElement && "headingAnchor" in node.dataset))
+    .map((node) => node.textContent ?? "")
+    .join("")
+    .trim();
+}
+
+/**
  * "On this page", read out of the rendered DOM rather than from a build-time
  * heading export.
  *
@@ -37,7 +51,7 @@ export function TableOfContents() {
       const found = Array.from(article.querySelectorAll<HTMLElement>("h2[id], h3[id]")).map(
         (element) => ({
           id: element.id,
-          text: element.textContent ?? "",
+          text: headingText(element),
           level: Number(element.tagName[1]),
         }),
       );
