@@ -36,10 +36,22 @@ export const metadata = {
 // TODO
 ```
 
+## Animated models
+
+{/* The asymmetry, and it's the headline of this section: a Java export
+    stores keyframes as extra fields nothing reads, so the model sits
+    static and playback needs a plugin. Bedrock converts them into real
+    animations. Link /editors/animations for authoring. */}
+
+<Callout type="warning">
+  {/* Your animation will not play from a Java export alone. */}
+</Callout>
+
 ## On Bedrock
 
 {/* Geometry converts natively; the carrier concept doesn't exist the same
-    way. What a model is on that side, and what Geyser does with it. */}
+    way. What a model is on that side, what Geyser does with it, and
+    client-side animation playback. */}
 
 <CardGroup>
   {/* Model editor, placing models, give commands reference */}
