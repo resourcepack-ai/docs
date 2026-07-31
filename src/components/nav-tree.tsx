@@ -36,7 +36,7 @@ export function NavTree({ onNavigate }: { onNavigate?: () => void }) {
                     className={cn(
                       "block border-l py-[0.34rem] pr-3 pl-[calc(0.75rem-1px)] text-[0.875rem] transition-colors",
                       active
-                        ? "border-primary text-primary-ink font-medium"
+                        ? "border-brand text-brand font-medium"
                         : "text-muted-foreground hover:text-foreground border-transparent hover:border-[#4a4a42]",
                     )}
                   >

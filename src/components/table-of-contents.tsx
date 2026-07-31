@@ -101,7 +101,7 @@ export function TableOfContents() {
                 "block border-l py-[0.28rem] leading-snug transition-colors",
                 heading.level === 3 ? "pl-6" : "pl-3",
                 heading.id === activeId
-                  ? "border-primary text-primary-ink"
+                  ? "border-brand text-brand"
                   : "text-muted-foreground hover:text-foreground border-transparent",
               )}
             >
