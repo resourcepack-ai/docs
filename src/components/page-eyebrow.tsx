@@ -15,7 +15,7 @@ export function PageEyebrow() {
   if (!group) return null;
 
   return (
-    <p className="text-primary-ink mb-2 text-[0.72rem] font-semibold tracking-[0.09em] uppercase">
+    <p className="text-brand mb-2 text-[0.72rem] font-semibold tracking-[0.09em] uppercase">
       {group}
     </p>
   );
