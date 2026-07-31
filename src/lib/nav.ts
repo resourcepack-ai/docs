@@ -107,6 +107,89 @@ export const nav: NavGroup[] = [
       },
     ],
   },
+  {
+    title: "Exporting",
+    items: [
+      {
+        title: "Exporting a pack",
+        href: "/exporting",
+        description: "The three exports, the version picker, and what's in the file.",
+        keywords: ["export", "download", "zip", "mcpack", "version"],
+      },
+      {
+        title: "Models",
+        href: "/exporting/models",
+        description: "Carriers, give commands, and placing an exported model.",
+        keywords: [
+          "carrier",
+          "give",
+          "custom model data",
+          "display",
+          "animation",
+          "keyframe",
+        ],
+      },
+      {
+        title: "Blocks",
+        href: "/exporting/blocks",
+        description: "What a block texture becomes in an exported pack.",
+        keywords: ["texture", "png", "override", "resolution", "render type"],
+      },
+      {
+        title: "Items",
+        href: "/exporting/items",
+        description: "How an item sprite reaches a player's hand and inventory.",
+        keywords: ["sprite", "icon", "hotbar", "inventory", "itemstack"],
+      },
+      {
+        title: "GUIs",
+        href: "/exporting/guis",
+        description: "What a GUI texture replaces, and what a pack can't change.",
+        keywords: ["gui", "screen", "inventory", "menu", "chest", "draw-only"],
+      },
+      {
+        title: "Icons",
+        href: "/exporting/icons",
+        description: "Typing an exported glyph into chat, signs and books.",
+        keywords: ["font", "glyph", "codepoint", "unicode", "pua", "tellraw"],
+      },
+      {
+        title: "Bedrock and Geyser",
+        href: "/exporting/bedrock",
+        description: "What converts into the .mcpack, and how Geyser players get it.",
+        keywords: ["mcpack", "bedrock", "geyser", "convert", "transfer"],
+      },
+    ],
+  },
+  {
+    title: "For developers",
+    items: [
+      {
+        title: "Pack layout reference",
+        href: "/developers/pack-layout",
+        description: "The file tree of an exported pack, directory by directory.",
+        keywords: ["files", "tree", "pack.mcmeta", "pack format", "assets"],
+      },
+      {
+        title: "Give commands and carriers",
+        href: "/developers/give-commands",
+        description: "Every carrier kind against every Minecraft command era.",
+        keywords: ["give", "nbt", "components", "block state", "custom model data"],
+      },
+      {
+        title: "Sample code",
+        href: "/developers/sample-code",
+        description: "Paper and Spigot snippets that don't depend on our plugin.",
+        keywords: ["java", "spigot", "paper", "api", "itemstack", "snippet", "code"],
+      },
+      {
+        title: "Example packs",
+        href: "/developers/example-packs",
+        description: "Downloadable packs that each demonstrate one thing.",
+        keywords: ["sample", "example", "demo", "download"],
+      },
+    ],
+  },
 ];
 
 /** Every page in sidebar order — the order the pager walks. */

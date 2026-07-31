@@ -39,6 +39,9 @@ function heading(level: 2 | 3 | 4) {
           <a
             href={`#${id}`}
             aria-label="Link to this section"
+            // Read by TableOfContents, which has to leave this out of the
+            // heading's text — see the comment there before renaming it.
+            data-heading-anchor=""
             className="text-faint hover:text-primary ml-2 opacity-0 transition-opacity group-hover:opacity-100"
           >
             #

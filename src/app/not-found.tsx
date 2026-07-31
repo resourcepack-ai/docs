@@ -7,7 +7,7 @@ export default function NotFound() {
     <>
       <SiteHeader />
       <main className="flex min-h-[70dvh] flex-col items-center justify-center px-6 pt-(--topbar-h) text-center">
-        <p className="text-primary-ink mb-3 text-[0.72rem] font-semibold tracking-[0.09em] uppercase">
+        <p className="text-brand mb-3 text-[0.72rem] font-semibold tracking-[0.09em] uppercase">
           404
         </p>
         <h1 className="mb-3 text-[1.75rem] font-semibold tracking-[-0.02em]">
