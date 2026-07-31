@@ -82,6 +82,12 @@ export const nav: NavGroup[] = [
         description: "Bitmap glyphs for chat, signs and books.",
         keywords: ["font", "glyph", "emoji", "icon", "unicode", "pua"],
       },
+      {
+        title: "Generation notifications",
+        href: "/notifications",
+        description: "Get told when a model finishes, without watching the tab.",
+        keywords: ["notify", "notification", "email", "discord", "dm", "bot", "ping", "alert"],
+      },
     ],
   },
   {
