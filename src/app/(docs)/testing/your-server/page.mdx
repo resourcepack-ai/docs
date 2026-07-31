@@ -128,6 +128,7 @@ playback.
 | Pack pushes but nothing changes | The client declined it. The plugin tells that player how to fix it in chat — it's the **Server Resource Packs** setting on the server entry |
 | Works for you, not for others | Each player links separately; one `/link` doesn't cover the server |
 | Linked, then went quiet | The pairing drops when the player quits. Re-link on rejoin |
+| "Lost the connection to that server", but the server is fine | The plugin's link to the sync service dropped. It reconnects and re-announces every pairing on its own within a few seconds — just push again |
 
 <CardGroup>
   <Card title="Placing models in-game" href="/testing/placing-models" icon="boxes">

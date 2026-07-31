@@ -9,6 +9,12 @@
    as the app, not a neighbouring one. If studio's palette moves, move
    these with it.
 
+   One deliberate divergence: docs paints its navigation chrome — the active
+   sidebar item, the "On this page" rail, the group eyebrow above a page
+   title — in --brand-ai-blue rather than the lighter --primary-ink that
+   studio uses for the equivalent. Prose links keep --primary-ink. Don't
+   "fix" this back into line with studio; it's the requested look.
+
    Dark-only, also like studio (its <html> is permanently `.dark`). There's
    no theme toggle here rather than a half-built one.
 --------------------------------------------------------------------------- */
