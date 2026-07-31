@@ -85,6 +85,29 @@ export const nav: NavGroup[] = [
     ],
   },
   {
+    title: "Testing in Minecraft",
+    items: [
+      {
+        title: "Our test server",
+        href: "/testing/test-server",
+        description: "play.resourcepack.ai — a lobby and a private world of your own.",
+        keywords: ["sandbox", "lobby", "portal", "play", "world"],
+      },
+      {
+        title: "Your own server",
+        href: "/testing/your-server",
+        description: "Install the plugin, run /link, push packs to your players.",
+        keywords: ["plugin", "spigot", "paper", "sync", "pairing code", "link"],
+      },
+      {
+        title: "Placing models in-game",
+        href: "/testing/placing-models",
+        description: "How a model item becomes a placed, animated object.",
+        keywords: ["give", "custom model data", "item display", "place", "punch"],
+      },
+    ],
+  },
+  {
     title: "Exporting",
     items: [
       {
@@ -122,29 +145,6 @@ export const nav: NavGroup[] = [
         href: "/exporting/bedrock",
         description: "What converts into the .mcpack, and how Geyser players get it.",
         keywords: ["mcpack", "bedrock", "geyser", "convert", "transfer"],
-      },
-    ],
-  },
-  {
-    title: "Testing in Minecraft",
-    items: [
-      {
-        title: "Our test server",
-        href: "/testing/test-server",
-        description: "play.resourcepack.ai — a lobby and a private world of your own.",
-        keywords: ["sandbox", "lobby", "portal", "play", "world"],
-      },
-      {
-        title: "Your own server",
-        href: "/testing/your-server",
-        description: "Install the plugin, run /link, push packs to your players.",
-        keywords: ["plugin", "spigot", "paper", "sync", "pairing code", "link"],
-      },
-      {
-        title: "Placing models in-game",
-        href: "/testing/placing-models",
-        description: "How a model item becomes a placed, animated object.",
-        keywords: ["give", "custom model data", "item display", "place", "punch"],
       },
     ],
   },
