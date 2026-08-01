@@ -69,7 +69,13 @@ happens in the world.
 Rules worth knowing before you build something complicated:
 
 - **One animation wins per event.** If two animations both claim right-click,
-  the first one in model order plays and the other never does.
+  only one plays — by default the first in model order. Which one is a choice
+  you make when you give the model out: with two or more triggered animations,
+  the give card grows a **Plays** dropdown, and the picked animation rides on
+  the item itself. Place it and that copy uses your pick for every trigger the
+  animation claims; anything it doesn't claim falls back to model order as
+  usual. Two copies of the same model can be placed playing different
+  animations.
 - **One-shots don't stack.** While a triggered animation is playing, further
   triggers of it are ignored rather than restarting or layering it.
 - **What happens after a one-shot:** the model returns to rest, or falls back
