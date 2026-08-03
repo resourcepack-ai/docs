@@ -2,11 +2,14 @@ import {
   Blocks,
   Boxes,
   Brush,
+  Download,
   Image as ImageIcon,
   Plug,
   Rocket,
   Server,
   Sparkles,
+  Users,
+  Wallet,
   Wrench,
 } from "lucide-react";
 
@@ -22,11 +25,14 @@ export const cardIcons = {
   blocks: Blocks,
   boxes: Boxes,
   brush: Brush,
+  download: Download,
   image: ImageIcon,
   plug: Plug,
   rocket: Rocket,
   server: Server,
   sparkles: Sparkles,
+  users: Users,
+  wallet: Wallet,
   wrench: Wrench,
 } as const;
 
