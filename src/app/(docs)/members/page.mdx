@@ -1,0 +1,151 @@
+export const metadata = {
+  title: "Pack members",
+  description:
+    "Invite other people to work on a pack, choose how much of it they can reach, and hear about what they do.",
+};
+
+# Pack members
+
+A pack starts as yours alone. **Members** are other accounts you let work on
+it — a builder doing your models, a friend drawing block textures, a client
+watching without touching anything.
+
+Members belong to **one pack**, not to your account. Adding somebody to your
+castle pack doesn't put them anywhere near your other packs, and there is
+nothing to set up before you start: open a pack, hit the **people icon** next
+to Edit, and the Members page is the whole feature.
+
+## Adding somebody
+
+<Steps>
+  <Step title="Open the pack's Members page">
+    The people icon in the pack header, beside **Edit** and **Export**. Only
+    the pack's owner sees it.
+  </Step>
+  <Step title="Add them by Minecraft name or by email">
+    **Minecraft name** finds an account that has verified that name by running
+    `/permlink` on play.resourcepack.ai — see
+    [Our test server](/testing/test-server). It's the quickest route, and it's
+    the name and skin the list shows them under afterwards.
+
+    **Email** works for everybody else, including people who don't have a
+    resourcepack.ai account yet — they can create one from the invitation.
+  </Step>
+  <Step title="Choose what they can reach">
+    **Editor** is the whole pack. **Viewer** can open it and change nothing.
+    **Custom** is the two lists below.
+  </Step>
+  <Step title="Send it">
+    They get an email, plus a Discord DM and a line of in-game chat if
+    they've turned those on. Invitations last **fourteen days** and can be
+    withdrawn from the same page at any time.
+  </Step>
+</Steps>
+
+<Callout type="note">
+  Inviting by email always says "invitation sent", whether or not that address
+  already has an account here. That's deliberate — otherwise the box would
+  tell anybody who typed an address whether its owner has a resourcepack.ai
+  account. Nobody's email address is ever shown to another member either;
+  members appear as a Minecraft name and a head.
+</Callout>
+
+## What a member can do
+
+Two independent choices.
+
+**Which parts of the pack** — the same five as the tabs on the pack page:
+Models, Blocks, Items, GUIs and Icons. A member granted Models alone sees a
+pack with one tab in it; the others aren't greyed out, they aren't there.
+
+**What they can do in them:**
+
+<CardGroup cols={2}>
+  <Card title="Edit" icon="brush">
+    Create, edit, rename and delete assets by hand.
+  </Card>
+  <Card title="Generate with AI" icon="sparkles">
+    Run generation and AI edits. Spends credits — see below.
+  </Card>
+  <Card title="Sync & test in game" icon="server">
+    Push the pack to a Minecraft client and run give commands.
+  </Card>
+  <Card title="Export" icon="download">
+    Download the pack as a `.zip`, or export single models.
+  </Card>
+</CardGroup>
+
+The two are independent on purpose. "Can add AI models but can't delete my
+work" is a real arrangement, and so is the reverse.
+
+### What stays yours
+
+Nothing a member is given touches the pack itself. Renaming it, deleting it,
+duplicating it, changing its banner, moving assets to another pack, choosing
+whose credits it spends, and managing members are all the **owner's**, and
+there's no way to grant them.
+
+## Whose credits get spent
+
+A pack has one setting for this, in **Edit pack**:
+
+<CardGroup cols={2}>
+  <Card title="Use my credits" icon="wallet">
+    The default. Anything a member generates comes out of your balance —
+    you're funding their work.
+  </Card>
+  <Card title="Everyone uses their own" icon="users">
+    Members spend their own AI Credits and run out on their own. Yours stay
+    untouched.
+  </Card>
+</CardGroup>
+
+Either way, your own generations are charged to you, and your billing history
+records **who ran** anything a member spent your credits on.
+
+<Callout type="note">
+  Members need their own access to resourcepack.ai while it's in early access.
+  Being invited gets you into somebody's pack; it isn't a way into the product.
+</Callout>
+
+## Testing as a member
+
+Sync works exactly as it does for the owner, and it sends the pack to **the
+person who pressed it** — your own permalinked account, or your own server.
+
+That last part matters if you run the plugin: a pairing code is claimed by one
+player, so **each member gets their own `/link` code for the pack**. Open the
+Sync menu and it hands you yours. Using the owner's would take their link off
+them. See [Your own server](/testing/your-server).
+
+Removing somebody ends this too — their code stops working the moment they
+lose access.
+
+## Hearing about what they do
+
+The **Notifications** button on the Members page decides what you're told
+about, and where. It reuses the three channels from
+[Generation notifications](/notifications) — email, a Discord DM, a line of
+chat in game — and you can set it per pack or override it for one person.
+
+Things worth hearing about: somebody adding, editing or deleting an asset,
+running AI generation, syncing, linking a server, exporting the pack, or
+accepting an invitation. Deletes, AI generation and people joining are on by
+default; the rest aren't, because a ping for every sync is a feature you'd
+switch off within a day.
+
+<Callout type="note">
+  You hear about something **as it starts**, and then it goes quiet for ten
+  minutes — anything that happens in between is counted and mentioned in the
+  next message. Somebody saving a model forty times is one notification, not
+  forty. Members are never told about each other, and never about themselves.
+</Callout>
+
+## Removing somebody
+
+The gear beside their name, then **Remove from pack**. They lose access
+immediately, their pairing code for the pack stops working, and anything they
+already made stays in the pack — it was always your pack.
+
+To change what somebody can reach rather than remove them, the same gear opens
+the same two lists you picked from when you invited them.
