@@ -180,6 +180,12 @@ export const nav: NavGroup[] = [
         keywords: ["font", "glyph", "codepoint", "unicode", "pua", "tellraw"],
       },
       {
+        title: "Sounds",
+        href: "/exporting/sounds",
+        description: "Replacing a vanilla noise, or adding a new event you play by command.",
+        keywords: ["sound", "audio", "ogg", "vorbis", "playsound", "sounds.json", "event", "category"],
+      },
+      {
         title: "Bedrock and Geyser",
         href: "/exporting/bedrock",
         description: "What converts into the .mcpack, and how Geyser players get it.",
