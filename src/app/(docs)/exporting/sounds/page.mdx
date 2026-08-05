@@ -33,15 +33,21 @@ Both land in the `minecraft` namespace, so a new event is played as
 ## Playing one by command
 
 ```
-playsound minecraft:custom.laser player @p
+/sound @p custom.laser player
 ```
 
-The third argument is the **source** — the volume slider that playback obeys.
-It's chosen here, per command, not stored in the pack; see below.
+`/sound` comes from the ResourcePack AI plugin, and any player may run it. The
+last argument is the **source** — the volume slider that playback obeys. It's
+chosen per command, not stored in the pack; see below.
+
+<Callout>
+  Vanilla's own `/playsound minecraft:custom.laser player @p` does the same
+  thing, but needs operator permissions — which is why the plugin has its own.
+</Callout>
 
 <Callout>
   A client can only play a sound it already has. Sync the pack to the player
-  first — a `playsound` for an event they haven't downloaded fails silently.
+  first — playing an event they haven't downloaded fails silently.
 </Callout>
 
 ## Categories are not a pack setting
@@ -55,7 +61,7 @@ That means:
 - **Replacing a vanilla event** keeps that event's original category. Your
   audio replaces the creeper fuse, and it's still a Hostile Creatures sound.
 - **A new event** has no category of its own at all. It gets one per playback,
-  from the `source` argument of whatever `playsound` fires it — so in practice
+  from the `source` argument of whatever command fires it — so in practice
   the category is chosen by whoever writes the command, not by the pack.
 
 The "Play as" setting in studio is the source it puts in the command it
