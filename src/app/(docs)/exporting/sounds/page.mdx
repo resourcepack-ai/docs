@@ -36,20 +36,36 @@ Both land in the `minecraft` namespace, so a new event is played as
 playsound minecraft:custom.laser player @p
 ```
 
-The third argument is the **category** — the volume slider the sound obeys.
-Use the one the sound was created with; playing it on a different category
-means it answers to a slider the pack never set.
+The third argument is the **source** — the volume slider that playback obeys.
+It's chosen here, per command, not stored in the pack; see below.
 
 <Callout>
   A client can only play a sound it already has. Sync the pack to the player
   first — a `playsound` for an event they haven't downloaded fails silently.
 </Callout>
 
-## Categories
+## Categories are not a pack setting
 
-The category isn't cosmetic. A block noise filed under Music ignores the
-Blocks slider and keeps playing for someone who turned effects off, and
-nothing in game explains why. Set it to whatever the sound actually is.
+A sound's category — which volume slider governs it — **cannot be set by a
+resource pack** on Java. `sounds.json` had a `category` field until 1.10-pre2
+and hasn't since; the game takes it from whatever code plays the event.
+
+That means:
+
+- **Replacing a vanilla event** keeps that event's original category. Your
+  audio replaces the creeper fuse, and it's still a Hostile Creatures sound.
+- **A new event** has no category of its own at all. It gets one per playback,
+  from the `source` argument of whatever `playsound` fires it — so in practice
+  the category is chosen by whoever writes the command, not by the pack.
+
+The "Play as" setting in studio is the source it puts in the command it
+generates for you. It's a convenience for that command, not something baked
+into the exported pack.
+
+<Callout>
+  Bedrock is the opposite — its sound definitions **do** take a category. If
+  you've read Bedrock docs, this is the difference that catches people.
+</Callout>
 
 ## What the pack contains
 
