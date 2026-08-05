@@ -1,0 +1,91 @@
+export const metadata = {
+  title: "Exporting sounds",
+  description:
+    "How a generated sound reaches the game — replacing a vanilla noise, or as a new event you play by command.",
+};
+
+# Exporting sounds
+
+A sound leaves the pack as one `.ogg` file plus an entry in `sounds.json`.
+The entry's key is the **sound event**, and that key is the whole of what the
+sound does.
+
+## The event name decides everything
+
+There is no setting for "replace" versus "add" — there is only the name.
+
+<Steps>
+  <Step title="Name it after a vanilla event">
+    `entity.creeper.primed`, `block.chest.open`, `entity.player.levelup`. The
+    pack's audio replaces the game's, everywhere the game would have played
+    it. Nothing has to run a command, and nothing has to know your pack
+    exists.
+  </Step>
+  <Step title="Name it something new">
+    `custom.laser`, `boss.phase_two`. Nothing triggers it on its own — it's a
+    sound waiting for something to play it, by command or from a plugin.
+  </Step>
+</Steps>
+
+Both land in the `minecraft` namespace, so a new event is played as
+`minecraft:custom.laser`.
+
+## Playing one by command
+
+```
+playsound minecraft:custom.laser player @p
+```
+
+The third argument is the **category** — the volume slider the sound obeys.
+Use the one the sound was created with; playing it on a different category
+means it answers to a slider the pack never set.
+
+<Callout>
+  A client can only play a sound it already has. Sync the pack to the player
+  first — a `playsound` for an event they haven't downloaded fails silently.
+</Callout>
+
+## Categories
+
+The category isn't cosmetic. A block noise filed under Music ignores the
+Blocks slider and keeps playing for someone who turned effects off, and
+nothing in game explains why. Set it to whatever the sound actually is.
+
+## What the pack contains
+
+```
+assets/minecraft/sounds.json
+assets/minecraft/sounds/<name>.ogg
+```
+
+Files are **Ogg Vorbis, mono**. Both parts matter:
+
+- Minecraft reads Ogg **Vorbis** only. Ogg **Opus** has the same extension and
+  plays in every desktop audio player, and the game refuses to load it.
+- Minecraft only attenuates and pans a sound positionally if it has one
+  channel. A stereo effect plays flat, at full volume, wherever the player is
+  standing.
+
+Sounds longer than ten seconds are marked `stream`, which is what vanilla does
+for music and records — decoded as they play rather than loaded whole.
+
+## Several sounds on one event
+
+Give two sounds the same event name and Minecraft picks between them at
+random each time it fires, the way vanilla gives a block several footstep
+noises. Nothing extra to switch on.
+
+## On Bedrock
+
+Sounds are **not** included in the Bedrock `.mcpack`. Bedrock uses a different
+sound format (`sound_definitions.json`), and the Java pack's audio is skipped
+rather than half-converted.
+
+<CardGroup>
+  <Card title="Generating with AI" href="/generating" icon="sparkles">
+    What each kind of asset comes out as.
+  </Card>
+  <Card title="Testing on your server" href="/testing/your-server" icon="server">
+    Getting the pack onto a player before you try a command.
+  </Card>
+</CardGroup>
