@@ -1,6 +1,6 @@
 # What this is
 
-The product documentation site, deployed at docs.resourcepack.ai. Next.js +
+The product documentation site, served at **resourcepack.ai/docs**. Next.js +
 MDX on Cloudflare Workers, same shape as `../landing`: no auth, no database,
 no secrets, no bindings at all — every page is prerendered static content.
 
@@ -179,6 +179,39 @@ No staging environment, same reasoning as `landing`: nothing here is
 auth-gated or data-touching, so there's nothing to stage. `wrangler.jsonc` has
 no `env.staging` block — don't add one without a real reason.
 
-`docs.resourcepack.ai` is a fresh subdomain that no other Worker has ever
-claimed, so there's no release-then-claim deploy ordering to worry about
-(unlike the landing/studio route handover).
+## This app lives under a basePath
+
+`next.config.ts` sets `basePath: "/docs"`, because the public address is
+resourcepack.ai/docs rather than a subdomain of its own — a subdirectory so
+the docs' search authority lands on the domain that sells something. It is
+still a wholly separate Worker with its own deploy; `landing` has no idea
+this exists.
+
+The mechanism is a Cloudflare **path route**, `resourcepack.ai/docs*`, and
+the thing that makes it safe is that Cloudflare runs a route *before* a
+Custom Domain on the same hostname. So `landing` keeps its custom domain on
+the apex, unchanged and unreleased — there is **no** release-then-claim
+ordering here, unlike the landing/studio handover. Deploy this app whenever;
+nothing else needs redeploying with it.
+
+What that costs you when working here:
+
+- **`zone_name` is mandatory** on the path route in `wrangler.jsonc`. A path
+  route can't infer its zone the way a custom domain does.
+- **`next/link` hrefs and `_next` assets get the prefix for free**, which is
+  why nothing in `nav.ts` or the `.mdx` Cards changed. Anything you write as
+  a raw string does **not** — that already bit the metadata favicon, which
+  emitted `/logo.svg` and silently resolved against landing's Worker (it
+  serves a byte-identical logo, so it looked correct while being wrong).
+  Absolute URLs you build yourself — `sitemap.ts`, `metadataBase` — must
+  carry `/docs` by hand.
+- **There is no `robots.ts` here, on purpose.** A robots.txt is only honoured
+  at the root of a host and this app no longer owns one; `landing`'s
+  `robots.ts` lists this app's sitemap. If the docs move again, that line
+  moves too.
+
+`docs.resourcepack.ai` still routes here, purely so the permanent redirect in
+`next.config.ts` has something to run on — it sends every path to the
+matching `/docs` URL, which is what moves the old URLs' search equity across
+rather than stranding it. Keep both the custom domain and the redirect;
+retiring them is a years-later decision, not a cleanup.

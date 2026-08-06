@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, Onest } from "next/font/google";
 
 import "./globals.css";
+import { SITE_URL } from "./sitemap";
 
 // Same pairing as studio and landing — the docs are the same product.
 const onest = Onest({
@@ -16,7 +17,11 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://docs.resourcepack.ai"),
+  // The basePath is part of the public address, so it belongs here — Next
+  // resolves relative metadata URLs against this and does NOT add basePath
+  // for you. Shares its value with sitemap.ts rather than repeating the
+  // string, since the two disagreeing is exactly the bug nobody notices.
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "ResourcePack AI Docs",
     // Page titles are just "Quickstart", "Introduction", … in their own
@@ -25,7 +30,13 @@ export const metadata: Metadata = {
   },
   description:
     "Documentation for ResourcePack AI — build Minecraft Resource Packs in the browser, test them live, and push them to your players.",
-  icons: { icon: "/logo.svg" },
+  // Written out with the basePath by hand. Next prefixes `next/link` hrefs
+  // and `_next` asset URLs, but NOT metadata icon paths — so a bare
+  // "/logo.svg" here emits a link to the apex, which lands on the *landing*
+  // Worker. That happens to serve a byte-identical logo today, so this would
+  // have looked fine while being wrong; the day landing's public/ changes,
+  // the docs favicon changes with it for no visible reason.
+  icons: { icon: "/docs/logo.svg" },
 };
 
 export default function RootLayout({

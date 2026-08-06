@@ -18,10 +18,23 @@
   // build time. If that ever changes, add the binding here AND run
   // `npm run cf:typegen`.
   //
-  // docs.resourcepack.ai is a fresh subdomain — no other Worker has ever
-  // claimed it, so there's no release-then-claim deploy ordering to worry
-  // about (unlike the landing/studio route handover).
-  "routes": [{ "pattern": "docs.resourcepack.ai", "custom_domain": true }],
+  // Two entries, and they do different jobs.
+  //
+  // The path route is where the docs actually live now (see next.config.ts's
+  // basePath). Cloudflare runs a route BEFORE a Custom Domain on the same
+  // hostname, so this intercepts /docs* while landing keeps its custom domain
+  // on the apex untouched — no release-then-claim handover on resourcepack.ai
+  // and no window where the marketing site is unrouted. The wildcard matches
+  // both /docs and /docs/anything. `zone_name` is required: a path route
+  // can't infer its zone the way a custom domain does.
+  //
+  // The custom domain is the OLD address, kept alive only so the permanent
+  // redirect in next.config.ts has something to run on. Don't remove it
+  // until the redirect has stopped being useful, which is years not months.
+  "routes": [
+    { "pattern": "resourcepack.ai/docs*", "zone_name": "resourcepack.ai" },
+    { "pattern": "docs.resourcepack.ai", "custom_domain": true }
+  ],
   "vars": {
     "ENVIRONMENT": "production"
   }
