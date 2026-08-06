@@ -28,7 +28,9 @@ server.
     Animate mode works on **cubes** and on **bones** (named groups of cubes
     with a shared pivot, made in Edit mode). A hinge, a wheel, a wing — each
     wants to be a bone, because rotating a bone rotates its cubes around one
-    pivot rather than each around its own.
+    pivot rather than each around its own. A generated model comes
+    pre-grouped — named bones, pivots at the joints — so there this step is
+    usually already done.
   </Step>
   <Step title="Keyframe it">
     Pick a target, scrub the timeline, change the rotation, position or scale,
@@ -51,6 +53,15 @@ server.
     That's the next section.
   </Step>
 </Steps>
+
+<Callout type="tip" title="Animate with AI">
+  You can hand the keyframing over: **Animate with AI** gives the model's
+  bones keyframed animations from an instruction, and generation itself can
+  include looping and interaction animations when the prompt asks for them.
+  Either way the result is ordinary keyframes on the timeline, editable like
+  your own. An AI animation run merges onto your latest save, so edits you
+  make while it's running survive.
+</Callout>
 
 ## Triggers
 

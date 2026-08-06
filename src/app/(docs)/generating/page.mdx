@@ -7,8 +7,8 @@ export const metadata = {
 # Generating with AI
 
 Generation exists to get you past the blank grid. It is not a vending
-machine: the useful mental model is a fast, tireless collaborator who sketches
-in seconds and has no ego about you painting over it.
+machine: the useful mental model is a fast, tireless collaborator with no ego
+about you painting over it.
 
 ## What actually happens
 
@@ -22,11 +22,15 @@ in seconds and has no ego about you painting over it.
     [Texture editor](/editors/textures).
   </Step>
   <Step title="Models">
-    Generated as cubes with **semantic texture keys** rather than a bespoke
-    atlas — `#case`, `#screen`, `#fur` — which are then mapped to vanilla
-    block textures like `minecraft:block/iron_block`. That's why a generated
-    model already looks like Minecraft instead of like a render: it's built
-    out of materials the game already ships.
+    Built rather than conjured: one engine, **the builder** — a reasoning AI
+    working through real building tools. It plans the model, places named
+    parts, groups them into bones with pivots at the joints, paints **16×16
+    material textures** for the faces (or points them at vanilla textures
+    like `minecraft:block/iron_block` directly), and checks its own bounding
+    box before calling it done. Ask for motion in the prompt and it can add
+    looping and interaction animations too; attach a reference image and it
+    builds from that. Minutes rather than seconds — see
+    [Model quality](#model-quality).
   </Step>
   <Step title="Icons">
     Generated as a bitmap glyph at the size you pick, ready to assign to a
@@ -40,6 +44,30 @@ in seconds and has no ego about you painting over it.
     [Exporting sounds](/exporting/sounds).
   </Step>
 </Steps>
+
+## Model quality
+
+A model generation has a quality setting — **Low**, **Medium** or **High** —
+which decides how hard the builder thinks at each step and how many build
+steps it gets. **High is the default**, and it alone does a refine pass:
+when it finishes early, it re-inspects its own model and spends what's left
+adding the detail that sells it.
+
+| Quality | Typical time |
+| --- | --- |
+| Low | ~1–4 minutes |
+| Medium | ~2–7 minutes |
+| High | ~3–10 minutes |
+
+Every generated model keeps its **Build log** — what the builder thought,
+every action it took, and its summary — as an expandable card under the
+Prompt card on the model's page. When a result surprises you, the log usually
+says why.
+
+<Callout type="note">
+  The credit estimate you see up front is approximate. The charge settles to
+  what the run actually used, and unused reservation is refunded.
+</Callout>
 
 ## Writing a prompt
 
@@ -74,15 +102,18 @@ Some things worth naming explicitly:
 
 ## Iterating
 
-You can send an existing asset back for another pass with a new instruction —
-that path sees the current pixel grid, so it edits rather than starts over.
-This is usually better than re-rolling the original prompt: you keep the
-palette and silhouette you already liked.
+You can send an existing asset back for another pass with a new instruction.
+For a texture, that pass sees the current pixel grid, so it edits rather than
+starts over — usually better than re-rolling the original prompt, because you
+keep the palette and silhouette you already liked. For a model, **Edit with
+AI** is more targeted still: the builder inspects the model's structure
+first and changes only what the instruction asks, instead of regenerating
+the whole thing.
 
 <Callout type="warning">
-  Iterating still costs a generation, and it can drift. If you've painted an
-  asset by hand, duplicate it first — the AI edits the whole grid, not just
-  the part you mentioned.
+  Iterating still costs a generation, and a texture pass can drift. If you've
+  painted a texture by hand, duplicate it first — that path edits the whole
+  grid, not just the part you mentioned.
 </Callout>
 
 ## Knowing when to stop generating
