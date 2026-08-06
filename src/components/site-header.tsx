@@ -47,16 +47,33 @@ export function SiteHeader() {
           {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
 
+        {/* Lifted wholesale from studio's sidebar mark (app-sidebar.tsx) —
+            same 22px logo, same 14.5px bold wordmark with the ".ai" in
+            --brand-ai-blue, same mono micro-label stacked underneath naming
+            the surface. Only the label word and the href differ. The two
+            apps sit one click apart, so the mark reading as one product
+            matters more than either header's own internal logic.
+
+            The label is what changed shape: it used to be an inline
+            "| docs" divider, which read as a breadcrumb — a second thing
+            after the brand rather than part of it. */}
         <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/logo.svg" alt="" width={22} height={22} className="rounded-[5px]" />
-          <span className="text-[0.95rem] font-semibold tracking-tight">
-            {/* Same wordmark treatment as studio's sidebar — the ".ai" is
-                --brand-ai-blue, not the lighter UI accent. */}
-            resourcepack<span className="text-brand">.ai</span>
-            <span className="border-border text-muted-foreground ml-2 border-l pl-2 text-[0.8rem] font-normal">
-              docs
-            </span>
-          </span>
+          <Image
+            src="/logo.svg"
+            alt=""
+            width={22}
+            height={22}
+            className="mt-0.5 shrink-0"
+            priority
+          />
+          <div className="leading-[1.2]">
+            <div className="text-[14.5px] font-bold tracking-[-0.2px]">
+              resourcepack<span className="text-brand">.ai</span>
+            </div>
+            {/* text-faint rather than studio's literal #7c7c70: same role in
+                each palette, and docs has a token for it. */}
+            <div className="text-faint font-mono text-[8.5px] tracking-[2px]">DOCS</div>
+          </div>
         </Link>
 
         <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
