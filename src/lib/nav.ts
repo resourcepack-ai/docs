@@ -56,7 +56,7 @@ export const nav: NavGroup[] = [
         title: "Generating with AI",
         href: "/generating",
         description: "Writing prompts that produce something worth editing.",
-        keywords: ["ai", "claude", "prompt", "iterate", "generate"],
+        keywords: ["ai", "builder", "prompt", "iterate", "generate"],
       },
       {
         title: "Texture editor",
