@@ -210,8 +210,14 @@ What that costs you when working here:
   `robots.ts` lists this app's sitemap. If the docs move again, that line
   moves too.
 
-`docs.resourcepack.ai` still routes here, purely so the permanent redirect in
-`next.config.ts` has something to run on — it sends every path to the
-matching `/docs` URL, which is what moves the old URLs' search equity across
-rather than stranding it. Keep both the custom domain and the redirect;
-retiring them is a years-later decision, not a cleanup.
+**`docs.resourcepack.ai` is gone**, and isn't coming back. It was this app's
+original home, kept for a few hours as a permanent redirect before being
+retired outright: the product was still pre-launch (`WAITLIST_MODE`), so
+nothing on the public internet linked to it, and the only references anywhere
+were `server-plugin`'s in-game menu — updated in the same change. A redirect
+preserving zero equity is ceremony. Had this happened after launch the answer
+would have been the opposite, and the redirect would still be here.
+
+The practical consequence: this app has exactly **one** route, and any link
+to the old subdomain is dead rather than redirected. If one turns up in an
+old Discord message, fix the message.
