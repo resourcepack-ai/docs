@@ -18,22 +18,23 @@
   // build time. If that ever changes, add the binding here AND run
   // `npm run cf:typegen`.
   //
-  // Two entries, and they do different jobs.
+  // One route, and it's a path route rather than a custom domain: the docs
+  // live at resourcepack.ai/docs (see next.config.ts's basePath). Cloudflare
+  // runs a route BEFORE a Custom Domain on the same hostname, so this
+  // intercepts /docs* while landing keeps its custom domain on the apex
+  // untouched — no release-then-claim handover on resourcepack.ai and no
+  // window where the marketing site is unrouted. The wildcard matches both
+  // /docs and /docs/anything. `zone_name` is required: a path route can't
+  // infer its zone the way a custom domain does.
   //
-  // The path route is where the docs actually live now (see next.config.ts's
-  // basePath). Cloudflare runs a route BEFORE a Custom Domain on the same
-  // hostname, so this intercepts /docs* while landing keeps its custom domain
-  // on the apex untouched — no release-then-claim handover on resourcepack.ai
-  // and no window where the marketing site is unrouted. The wildcard matches
-  // both /docs and /docs/anything. `zone_name` is required: a path route
-  // can't infer its zone the way a custom domain does.
-  //
-  // The custom domain is the OLD address, kept alive only so the permanent
-  // redirect in next.config.ts has something to run on. Don't remove it
-  // until the redirect has stopped being useful, which is years not months.
+  // There is deliberately no docs.resourcepack.ai entry. It was the old home
+  // and briefly stayed on to serve a redirect, but it was retired while the
+  // product was still pre-launch — nothing had linked to it yet except our
+  // own server-plugin menu, which now points at the new URL. Post-launch that
+  // redirect would have been worth keeping; at zero inbound links it was
+  // ceremony.
   "routes": [
-    { "pattern": "resourcepack.ai/docs*", "zone_name": "resourcepack.ai" },
-    { "pattern": "docs.resourcepack.ai", "custom_domain": true }
+    { "pattern": "resourcepack.ai/docs*", "zone_name": "resourcepack.ai" }
   ],
   "vars": {
     "ENVIRONMENT": "production"
