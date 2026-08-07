@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Generating with AI",
   description:
-    "How generation works, what to put in a prompt, and why the result is a starting point rather than an answer.",
+    "Where generation lives, what each asset kind comes back as, and how to write a prompt worth the credits.",
 };
 
 # Generating with AI
@@ -10,26 +10,47 @@ Generation exists to get you past the blank grid. It is not a vending
 machine: the useful mental model is a fast, tireless collaborator with no ego
 about you painting over it.
 
-## What actually happens
+## Where it lives
+
+Everything starts from **Add asset** on the pack page. First you choose how to
+start — **Generate**, **Draw** or **Upload** — then what you're making, and
+the fields underneath change with the type: which vanilla block or item you're
+replacing, a resolution for pixel art, a quality tier for a model, an event
+name for a sound.
+
+Not every type is behind every option:
+
+| | Generate | Draw | Upload |
+| --- | --- | --- | --- |
+| **Block** | ✓ | ✓ | ✓ |
+| **Model** | ✓ | ✓ | ✓ (`.bbmodel`) |
+| **Item** | ✓ | ✓ | — |
+| **GUI** | — | ✓ | — |
+| **Icon** | ✓ | ✓ | ✓ |
+| **Sound** | ✓ | — | — |
+
+The two gaps that surprise people: **GUIs are drawn, never generated** — a
+screen reskin is drawn over the real vanilla window, and the AI never draws
+one — and **sounds are only generated**, since there's nothing to draw and
+uploaded audio would need converting.
+
+## What each kind comes back as
 
 <Steps>
-  <Step title="Textures">
-    Always generated as a **16×16 grid of flat colours** — the resolution
-    vanilla Minecraft uses — regardless of the resolution you picked for the
-    asset. If you asked for 32 or 64, that 16×16 draft is block-upscaled with
-    nearest-neighbour, the same way real HD packs handle a low-res original.
-    You get the extra pixels; the AI didn't fill them in. See
-    [Blocks](/blocks).
+  <Step title="Blocks and items">
+    Drawn as **pixel-art-native images at the resolution you picked**, so a
+    32×32 texture is really drawn at 32 rather than scaled up from something
+    smaller. Seconds per image. See [Blocks](/blocks) and
+    [Items](/items).
   </Step>
   <Step title="Models">
     Built rather than conjured: one engine, **the builder** — a reasoning AI
     working through real building tools. It plans the model, places named
-    parts, groups them into bones with pivots at the joints, paints **16×16
-    material textures** for the faces (or points them at vanilla textures
-    like `minecraft:block/iron_block` directly), and checks its own bounding
-    box before calling it done. Ask for motion in the prompt and it can add
-    looping and interaction animations too; attach a reference image and it
-    builds from that. Minutes rather than seconds — see
+    parts, groups them into bones with pivots at the joints, paints the
+    material textures for the faces (or points them at vanilla textures like
+    `minecraft:block/iron_block` directly), and checks its own bounding box
+    before calling it done. Ask for motion in the prompt and it can add
+    looping and interaction animations too. Minutes rather than seconds — see
     [Model quality](#model-quality).
   </Step>
   <Step title="Icons">
@@ -37,13 +58,23 @@ about you painting over it.
     character. See [Icons](/icons).
   </Step>
   <Step title="Sounds">
-    Generated as audio, then converted to **Ogg Vorbis in mono** — the only
-    format Minecraft's audio engine will load, and the only channel count it
-    will position in 3D space. What the sound *does* is decided by the event
-    name you give it, not by the prompt. See
+    Generated as several **takes** from one prompt; you keep the best. The
+    audio is converted to the one format Minecraft loads, and what the sound
+    *does* is decided by the event name you give it, not by the prompt. See
     [Sounds](/sounds).
   </Step>
 </Steps>
+
+## Reference images
+
+Every image kind — blocks, items, models, icons — can take a **reference
+image** alongside the prompt: drop a picture on the Generate form and the AI
+works from it as well as your words. A model built from a reference picks up
+its shape and palette, which is often the shortest route to "like this, but
+Minecraft".
+
+A reference is consumed by the run it was attached to. Iterating afterwards
+works from the asset, not the old reference.
 
 ## Model quality
 
@@ -53,11 +84,11 @@ steps it gets. **High is the default**, and it alone does a refine pass:
 when it finishes early, it re-inspects its own model and spends what's left
 adding the detail that sells it.
 
-| Quality | Typical time |
-| --- | --- |
-| Low | ~1–4 minutes |
-| Medium | ~2–7 minutes |
-| High | ~3–10 minutes |
+| Quality | What you get | Typical time |
+| --- | --- | --- |
+| Low | One pass, no second look. Cheapest and quickest | ~1–4 minutes |
+| Medium | Generates, looks at the result, fixes what's wrong | ~2–7 minutes |
+| High | Thinks hardest and longest, largest build budget, plus the refine pass | ~3–10 minutes |
 
 Every generated model keeps its **Build log** — what the builder thought,
 every action it took, and its summary — as an expandable card under the
@@ -66,7 +97,9 @@ says why.
 
 <Callout type="note">
   The credit estimate you see up front is approximate. The charge settles to
-  what the run actually used, and unused reservation is refunded.
+  what the run actually used, and unused reservation is refunded. A model run
+  is long enough that you don't have to watch it: leave the tab, and
+  [notifications](/notifications) can tell you when it lands.
 </Callout>
 
 ## Writing a prompt
