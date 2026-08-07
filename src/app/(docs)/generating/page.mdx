@@ -34,37 +34,6 @@ screen, and we're working on it. **Sounds can't be drawn**, since there's
 nothing to draw; an uploaded sound has to be Ogg Vorbis, and the upload
 checks and tells you if it isn't.
 
-## What each kind comes back as
-
-<Steps>
-  <Step title="Blocks and items">
-    Drawn as **pixel-art-native images at the resolution you picked**, so a
-    32×32 texture is really drawn at 32 rather than scaled up from something
-    smaller. Seconds per image. See [Blocks](/blocks) and
-    [Items](/items).
-  </Step>
-  <Step title="Models">
-    Built rather than conjured, by one engine: **the builder**, a reasoning AI
-    working through real building tools. It plans the model, places named
-    parts, groups them into bones with pivots at the joints, paints the
-    material textures for the faces (or points them at vanilla textures like
-    `minecraft:block/iron_block` directly), and checks its own bounding box
-    before calling it done. Ask for motion in the prompt and it can add
-    looping and interaction animations too. Minutes rather than seconds; see
-    [Model quality](#model-quality).
-  </Step>
-  <Step title="Icons">
-    Generated as a bitmap glyph at the size you pick, ready to assign to a
-    character. See [Icons](/icons).
-  </Step>
-  <Step title="Sounds">
-    Generated as several **takes** from one prompt; you keep the best. The
-    audio is converted to the one format Minecraft loads, and what the sound
-    *does* is decided by the event name you give it, not by the prompt. See
-    [Sounds](/sounds).
-  </Step>
-</Steps>
-
 ## Reference images
 
 Every image kind (blocks, items, models, icons) can take a **reference
