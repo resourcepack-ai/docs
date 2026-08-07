@@ -6,11 +6,22 @@ export const metadata = {
 
 # Your own server
 
-Our test server is fine for a quick look, but eventually you want a pack on
-*your* server, in *your* world, in front of the people you build with. That's
-what the plugin is for: once a player has linked, the Studio can push a pack — or
-hand them a specific model item — straight to that player in seconds, without
-anyone touching `server.properties` or uploading a zip anywhere.
+The plugin gives you [our test server](/testing/test-server) on your own
+server. Not a cut-down version of it: pack pushes, placing and picking up
+models, the animation engine, sound playback and custom GUI screens all work
+exactly as they do on `play.resourcepack.ai`.
+
+What you get on top is that it's *your* map, *your* builds, and whoever you
+play with standing in it. Once a player has linked, the Studio pushes a pack
+straight to them in seconds, without anyone touching `server.properties` or
+uploading a zip anywhere.
+
+<Callout type="note" title="A building tool, not a distribution channel">
+  Linking is per player, so it's how you and the people building with you see
+  a pack while it's being made. A public server serves its pack the ordinary
+  way, from an exported `.zip` in `server.properties`, and that needs nothing
+  of ours installed. See [Exporting a pack](/exporting).
+</Callout>
 
 <Callout type="note" title="Requirements">
   A Paper or Spigot server on **1.21.4 or newer**, running **Java 21+**, and
