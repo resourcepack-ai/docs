@@ -74,12 +74,21 @@ Two routes, for two different jobs:
   checking how something reads from a few blocks away. You run `/permlink`
   once and never again: after that, Sync is the whole loop. Press it on any
   pack, as often as you want, and it arrives where you're standing.
-- **Your own server** runs our plugin. A player runs `/link` with a code from
-  the Studio, and from then on you can push that pack, or hand them a specific
-  model item, directly to that player. Best for showing a build team, or
-  testing against your real world.
+- **Your own server** runs our plugin, and that's the same thing again on your
+  own map. Everything the test server does, it does: pack pushes, placed
+  models, the animation engine, sounds and GUIs, all of it. A player runs
+  `/link` with a code from the Studio and then it's the same Sync button.
+  Best when you want your real world, your real builds, and your friends
+  standing in it with you.
 
 Either way: link once, then push as often as you like.
+
+<Callout type="note" title="This is for building, not for shipping">
+  Linking is how *you* and the people building with you see a pack while it's
+  being made. It isn't how a public server hands its packs to hundreds of
+  players — that's an exported `.zip` in `server.properties`, the ordinary way,
+  and it needs nothing of ours installed. See [Exporting a pack](/exporting).
+</Callout>
 
 <Callout type="note" title="Java and Bedrock are both supported">
   Bedrock players join, link and get pushed packs like anyone else. The one
