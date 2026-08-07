@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Packs and assets",
   description:
-    "What a pack holds, how the three asset kinds differ, and how a pack becomes a real Minecraft Resource Pack.",
+    "What a pack holds, how the six asset kinds differ, and how a pack becomes a real Minecraft Resource Pack.",
 };
 
 # Packs and assets
@@ -9,23 +9,32 @@ export const metadata = {
 A **pack** is the unit you build, test and export. Everything else lives
 inside one.
 
-## The three asset kinds
+## The six asset kinds
 
 <CardGroup cols={3}>
-  <Card title="Texture" href="/blocks" icon="image">
-    A PNG. Replaces the look of a vanilla block or item.
+  <Card title="Models" href="/models" icon="boxes">
+    Geometry: cubes with textured faces. Can be animated.
   </Card>
-  <Card title="Model" href="/models" icon="boxes">
-    Geometry — cubes with textured faces. Can be animated.
+  <Card title="Blocks" href="/blocks" icon="blocks">
+    A PNG that replaces the look of a vanilla block.
+  </Card>
+  <Card title="Items" href="/items" icon="item">
+    A sprite for a hand, a hotbar and an inventory.
+  </Card>
+  <Card title="GUIs" href="/guis" icon="gui">
+    An overlay that reskins a chest or furnace screen.
   </Card>
   <Card title="Icons" href="/icons" icon="brush">
     Bitmap glyphs you type into chat, signs and books.
   </Card>
+  <Card title="Sounds" href="/sounds" icon="sound">
+    An effect, replacing a vanilla noise or adding an event.
+  </Card>
 </CardGroup>
 
-All three start the same way: **describe it and generate it**. Textures and
-icons also take a resolution at that point; see
-[Texture editor](/blocks).
+Five of the six start the same way: **describe it and generate it**. Blocks,
+items and icons also take a resolution at that point. GUIs are the exception,
+drawn over the real vanilla screen rather than prompted.
 
 If you'd rather not generate, the same button takes an **upload** of art you
 already have, or drops you into the editor **blank** — a stone cube or an
