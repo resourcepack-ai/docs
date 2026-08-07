@@ -13,7 +13,7 @@ touches.
 ## Where it lives
 
 Everything starts from **Add asset** on the pack page. First you choose how to
-start — **Generate**, **Draw** or **Upload** — then what you're making, and
+start (**Generate**, **Draw** or **Upload**), then what you're making, and
 the fields underneath change with the type: which vanilla block or item you're
 replacing, a resolution for pixel art, a quality tier for a model, an event
 name for a sound.
@@ -24,15 +24,14 @@ Not every type is behind every option:
 | --- | --- | --- | --- |
 | **Block** | ✓ | ✓ | ✓ |
 | **Model** | ✓ | ✓ | ✓ (`.bbmodel`) |
-| **Item** | ✓ | ✓ | — |
-| **GUI** | — | ✓ | — |
+| **Item** | ✓ | ✓ | ✕ |
+| **GUI** | ✕ | ✓ | ✕ |
 | **Icon** | ✓ | ✓ | ✓ |
-| **Sound** | ✓ | — | — |
+| **Sound** | ✓ | ✕ | ✕ |
 
-The two gaps that surprise people: **GUIs are drawn, never generated** — a
-screen reskin is drawn over the real vanilla window, and the AI never draws
-one — and **sounds are only generated**, since there's nothing to draw and
-uploaded audio would need converting.
+**GUIs can't be generated yet**: the AI isn't capable of drawing a good
+screen, and we're working on it. And **sounds are only generated**, since
+there's nothing to draw.
 
 ## What each kind comes back as
 
@@ -44,13 +43,13 @@ uploaded audio would need converting.
     [Items](/items).
   </Step>
   <Step title="Models">
-    Built rather than conjured: one engine, **the builder** — a reasoning AI
+    Built rather than conjured, by one engine: **the builder**, a reasoning AI
     working through real building tools. It plans the model, places named
     parts, groups them into bones with pivots at the joints, paints the
     material textures for the faces (or points them at vanilla textures like
     `minecraft:block/iron_block` directly), and checks its own bounding box
     before calling it done. Ask for motion in the prompt and it can add
-    looping and interaction animations too. Minutes rather than seconds — see
+    looping and interaction animations too. Minutes rather than seconds; see
     [Model quality](#model-quality).
   </Step>
   <Step title="Icons">
@@ -67,7 +66,7 @@ uploaded audio would need converting.
 
 ## Reference images
 
-Every image kind — blocks, items, models, icons — can take a **reference
+Every image kind (blocks, items, models, icons) can take a **reference
 image** alongside the prompt: drop a picture on the Generate form and the AI
 works from it as well as your words. A model built from a reference picks up
 its shape and palette, which is often the shortest route to "like this, but
@@ -78,7 +77,7 @@ works from the asset, not the old reference.
 
 ## Model quality
 
-A model generation has a quality setting — **Low**, **Medium** or **High** —
+A model generation has a quality setting, **Low**, **Medium** or **High**,
 which decides how hard the builder thinks at each step and how many build
 steps it gets. **High is the default**, and it alone does a refine pass:
 when it finishes early, it re-inspects its own model and spends what's left
@@ -90,8 +89,8 @@ adding the detail that sells it.
 | Medium | Generates, looks at the result, fixes what's wrong | ~2–7 minutes |
 | High | Thinks hardest and longest, largest build budget, plus the refine pass | ~3–10 minutes |
 
-Every generated model keeps its **Build log** — what the builder thought,
-every action it took, and its summary — as an expandable card under the
+Every generated model keeps its **Build log**: what the builder thought,
+every action it took, and its summary, as an expandable card under the
 Prompt card on the model's page. When a result surprises you, the log usually
 says why.
 
@@ -104,7 +103,7 @@ says why.
 
 ## Writing a prompt
 
-Be specific about **material, colour and structure**. Be vague about pixels —
+Be specific about **material, colour and structure**. Be vague about pixels:
 the model can't count them for you, and asking it to will cost you the parts
 it's good at.
 
@@ -120,7 +119,7 @@ it's good at.
 Some things worth naming explicitly:
 
 - **The material.** "Oxidised copper" gets you further than "green metal".
-- **The wear.** New, weathered, cracked, mossy — this is most of what makes a
+- **The wear.** New, weathered, cracked, mossy. This is most of what makes a
   texture look like it belongs in Minecraft.
 - **The structure.** Planks, tiles, bricks, panels, woven. Give the eye a
   repeating unit.
@@ -137,7 +136,7 @@ Some things worth naming explicitly:
 
 You can send an existing asset back for another pass with a new instruction.
 For a texture, that pass sees the current pixel grid, so it edits rather than
-starts over — usually better than re-rolling the original prompt, because you
+starts over. That's usually better than re-rolling the original prompt: you
 keep the palette and silhouette you already liked. For a model, **Edit with
 AI** is more targeted still: the builder inspects the model's structure
 first and changes only what the instruction asks, instead of regenerating
@@ -145,7 +144,7 @@ the whole thing.
 
 <Callout type="warning">
   Iterating still costs a generation, and a texture pass can drift. If you've
-  painted a texture by hand, duplicate it first — that path edits the whole
+  painted a texture by hand, duplicate it first: that path edits the whole
   grid, not just the part you mentioned.
 </Callout>
 
