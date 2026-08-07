@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { DocsSearch } from "@/components/docs-search";
 import { NavTree } from "@/components/nav-tree";
 import { externalLinks } from "@/lib/nav";
+import { asset } from "@/lib/base-path";
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -58,8 +59,12 @@ export function SiteHeader() {
             "| docs" divider, which read as a breadcrumb — a second thing
             after the brand rather than part of it. */}
         <Link href="/" className="flex items-center gap-2.5">
+          {/* asset(), not "/logo.svg": next/image emits src verbatim without
+              the basePath, so the bare path asks the apex — landing's Worker,
+              which serves an identical logo and hides the mistake in prod
+              while 404ing on every local page load. See lib/base-path.ts. */}
           <Image
-            src="/logo.svg"
+            src={asset("/logo.svg")}
             alt=""
             width={22}
             height={22}
