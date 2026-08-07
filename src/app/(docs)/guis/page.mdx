@@ -1,0 +1,125 @@
+export const metadata = {
+  title: "GUIs",
+  description:
+    "Reskinning a chest, furnace or anvil screen: how the overlay is drawn, what a pack can't change, and how a plugin opens one.",
+};
+
+# GUIs
+
+A GUI asset reskins one of Minecraft's **screens**: the chest window, the
+furnace, the anvil, the enchanting table. You draw a 256×256 sheet with the
+screen's window sitting in the middle of it, and that sheet draws over the
+screen when it opens.
+
+<Callout type="warning" title="A GUI is draw-only">
+  A pack changes how a screen looks. It cannot move a slot, add one, resize the
+  window or change what any of it does. That's server code, and no Resource
+  Pack has ever been able to reach it. Design against the slot positions you're
+  given, not the ones you'd like.
+</Callout>
+
+## How it actually works
+
+This one is worth understanding, because it isn't a texture override and the
+difference shows up everywhere else.
+
+The sheet ships as a **font glyph**, and a plugin opens the screen with a title
+made of two invisible characters: a negative-space character that walks the
+cursor back to the window's top-left, then the glyph itself. Minecraft draws
+the title, the title happens to be your entire image, and it lands exactly over
+the window.
+
+Two consequences follow, and both are the point:
+
+- **Vanilla screens stay vanilla.** The files under `textures/gui/` are never
+  touched, so an ordinary chest a player opens looks like an ordinary chest.
+  Only a screen a plugin opens with your title gets the custom look.
+- **You can draw outside the window.** The sheet is bigger than the window, and
+  the margin renders too, so a banner, a border or a pair of hanging chains can
+  overflow the frame. The dashed rectangle in the editor is where vanilla's
+  window sits; everything outside it is yours.
+
+## Which screens
+
+The picker covers the screens whose title text actually renders, grouped by
+what they're for:
+
+| Group | Screens |
+| --- | --- |
+| **Storage** | Chest (1–6 rows), Shulker Box, Dispenser / Dropper, Hopper |
+| **Crafting & smelting** | Crafting Table, Furnace, Blast Furnace, Smoker, Smithing Table, Stonecutter, Grindstone, Loom, Cartography Table |
+| **Utility** | Enchanting Table, Anvil, Brewing Stand |
+
+A few are missing on purpose. The beacon draws no title and the survival
+inventory can't be retitled, and with no title there's nowhere to put the
+overlay.
+
+## Making one
+
+GUIs are drawn rather than generated: you start from the real vanilla window
+art for the screen you picked, already centred in the sheet, and edit from
+there. It's the one asset kind with no prompt box, because a screen reskin is
+mostly precise work against fixed slot positions rather than a picture.
+
+In the editor you get the vanilla backplate to draw over, the dashed window
+frame, and a guide box on every **slot** the screen has, so you can line a
+panel up with the grid instead of counting pixels. The player inventory and
+hotbar draw at a fixed offset below the window on most screens, and they're
+guided too.
+
+## Seeing it in game
+
+The GUI's page carries the exact command that opens it, plus an **Open
+in-game** button that runs it on your linked server:
+
+```
+/gui @p chest_54 \ue000\ue001
+```
+
+Those last two characters are this GUI's own: the negative-space one, then
+the glyph. They're allocated per pack, so copy the command off the page
+rather than typing it.
+
+That's our plugin's command, and it's runnable by any player rather than
+being op-only, so the person who just drew the sheet can look at it. The
+screen it opens is a real one, so you're judging the art against real slots
+and real item stacks.
+
+## Exporting
+
+The sheet leaves as a PNG under `assets/minecraft/textures/font/`, plus an
+entry in the pack's font provider that binds it to its character. There's no
+`gui/` file in the export, which is what keeps ordinary screens ordinary.
+
+The half that isn't in the pack is the **title**. Your own plugin has to open
+the inventory with that exact string, in white, or the overlay never appears:
+
+```java
+// The title is copied from the GUI's page in the Studio.
+Inventory inv = Bukkit.createInventory(null, 54, Component.text("\ue000\ue001").color(NamedTextColor.WHITE));
+player.openInventory(inv);
+```
+
+White matters, because the glyph is drawn in the title's colour and a coloured title
+tints your whole overlay.
+
+<Callout type="note" title="Moving a GUI to another pack renumbers it">
+  The characters are allocated per pack, so a GUI copied into a different pack
+  gets new ones and its title string changes. Re-copy it from the GUI's page
+  rather than reusing the old string.
+</Callout>
+
+## On Bedrock
+
+None of this crosses over. Bedrock's screens aren't drawn from a Java font
+provider, and there's no title trick to exploit, so a GUI is Java-only. The
+rest of your pack converts as normal. See [Bedrock and Geyser](/bedrock).
+
+<CardGroup>
+  <Card title="Icons" href="/icons" icon="brush">
+    The same glyph mechanism, aimed at chat instead of a screen.
+  </Card>
+  <Card title="Your own server" href="/testing/your-server" icon="server">
+    Installing the plugin that opens these screens for you.
+  </Card>
+</CardGroup>
