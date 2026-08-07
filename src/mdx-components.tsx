@@ -125,7 +125,13 @@ const components: MDXComponents = {
       {...props}
     />
   ),
-  td: (props) => <td className="border-line border-b px-4 py-2.5 align-top" {...props} />,
+  // Bold text in a cell is always a short label (a button name, a carrier
+  // kind) — keep it on one line so the wrapping happens in the prose column,
+  // not the middle of "Give in-game". The longest bold string in any table
+  // is ~21 chars, so this can't force a table wide enough to matter.
+  td: (props) => (
+    <td className="border-line border-b px-4 py-2.5 align-top [&_strong]:whitespace-nowrap" {...props} />
+  ),
 
   pre: CodeBlock,
 
