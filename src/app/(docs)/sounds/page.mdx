@@ -1,14 +1,52 @@
 export const metadata = {
-  title: "Exporting sounds",
+  title: "Sounds",
   description:
-    "How a generated sound reaches the game — replacing a vanilla noise, or as a new event you play by command.",
+    "Generating a sound effect, picking the best take, and how it reaches the game as a replacement or a new event.",
 };
 
-# Exporting sounds
+# Sounds
 
-A sound leaves the pack as one `.ogg` file plus an entry in `sounds.json`.
-The entry's key is the **sound event**, and that key is the whole of what the
-sound does.
+A sound is an effect you generate from a description and drop into the pack. It
+either replaces a noise the game already makes or becomes a new one your
+commands can play, and which of those it is comes down entirely to what you
+name it.
+
+## Making one
+
+Describe the sound the way you'd describe it to somebody who has to make it:
+
+> a heavy iron door dragging open, stone grinding, echoing hall
+
+Three settings shape the result:
+
+| Setting | What it does |
+| --- | --- |
+| **Length** | 0.5 to 30 seconds. Ask for roughly what you need; an effect padded with silence reads as sloppy in game |
+| **Takes** | How many candidates one prompt draws. Four by default, ten at most |
+| **Loop** | Makes the audio seamless end-to-end, for anything that plays continuously |
+
+**Takes are the setting that matters most.** One prompt drawing four candidates
+and you keeping the best is most of the difference between a prompt that works
+and one that doesn't. Each take is charged, so ten is ten sounds' worth.
+
+<Callout type="note">
+  Past six takes it costs wall-clock time as well: they go out in two waves
+  rather than one. Slower, not broken.
+</Callout>
+
+## Choosing and refining
+
+Every take sits on the sound's page as its own waveform you can play, and the
+list is the reason to be on that page. You pick which one the pack uses;
+the others stay there for comparison until you delete them.
+
+If none of them land, **Another take** re-runs the same prompt and adds to the
+list rather than replacing it, so a good take is never lost to a worse one.
+Editing the prompt draws against the new wording instead.
+
+The **event name and category are editable afterwards**, which means a sound
+generated as a new event can be renamed onto a vanilla one later without
+regenerating any audio.
 
 ## The event name decides everything
 
@@ -73,7 +111,7 @@ into the exported pack.
   you've read Bedrock docs, this is the difference that catches people.
 </Callout>
 
-## What the pack contains
+## Exporting
 
 ```
 assets/minecraft/sounds.json
