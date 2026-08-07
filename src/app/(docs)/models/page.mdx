@@ -1,17 +1,40 @@
 export const metadata = {
-  title: "Model editor",
+  title: "Models",
   description:
-    "The 3D editor — its five modes, cubes and bones, painting faces, display slots, and hotkeys.",
+    "3D models: generating one, the editor's five modes, cubes and bones, display slots, and how a model reaches the world.",
 };
 
-# Model editor
+# Models
 
-A Blockbench-style editor for Minecraft block models: cubes with textured
-faces, arranged inside (or overhanging) a single block. It's split into five
-modes because the jobs are genuinely different — shaping is not painting, and
-neither is deciding how the thing sits in your hand.
+A model is geometry: cubes with textured faces, arranged inside (or
+overhanging) a single block. It's the one asset kind that changes an object's
+shape rather than its surface.
 
-## The five modes
+## Making one
+
+Describe it and generate it, the same as anything else, but expect minutes
+rather than seconds. **The builder** plans the object and constructs it cube by
+cube, painting its materials as it goes, and you can watch it work.
+
+<Card title="Generating with AI" href="/generating" icon="sparkles">
+  What separates a prompt that builds the thing from one that builds a box.
+</Card>
+
+You can also upload a `.bbmodel` from Blockbench, or start from a stone cube
+and build by hand. **Edit with AI** and **Animate with AI** take a model you
+already have and a sentence about what to change.
+
+<Callout type="tip" title="Generation is a starting position">
+  A generated model is worth editing, not shipping. The loop that produces good
+  results is generate, look at it in game, fix the two things that are wrong,
+  look again.
+</Callout>
+
+## The editor
+
+A Blockbench-style editor, split into five modes because the jobs are genuinely
+different — shaping is not painting, and neither is deciding how the thing sits
+in your hand.
 
 | Mode | For |
 | --- | --- |
@@ -123,11 +146,49 @@ model box is scaled down to fit automatically.
   survive the trip — a model built out of meshes arrives without them.
 </Callout>
 
-## Getting it into the world
+## Seeing it in game
 
-An item-carrier model is given to you as an item and placed with a right-click
-on servers running our plugin. That's covered in
-[Placing models in-game](/testing/placing-models).
+Every custom model rides on a vanilla item or block, because Minecraft has no
+"add a model" for packs. Which one it rides on is the model's **carrier**, and
+it's the most consequential setting on a model — see
+[Packs and assets](/packs) for the three kinds and their limits.
+
+The default carrier is an item. Sync the pack, take the give command from the
+model's page (or press the button beside it, which hands you the item on your
+linked server), then right-click a block to place it. Picking it back up is a
+punch. That whole loop is [Placing models in-game](/testing/placing-models).
+
+The two block carriers place like ordinary blocks with no plugin at all, at the
+cost of there being a limited number of vanilla blocks to borrow.
+
+## Exporting
+
+A model leaves as JSON, in the vanilla block-model format, under
+`assets/minecraft/models/`. What wires it up depends on the carrier:
+
+- **Item carrier** — an item definition at `assets/minecraft/items/paper.json`
+  that dispatches on custom model data, so a piece of paper given with the
+  right tag renders as your model. The give command on the model's page is the
+  matching half.
+- **Block carriers** — a blockstate file plus the block model, so the vanilla
+  block you borrowed renders as your model wherever it's placed.
+
+Textures the model paints with are exported alongside it and pointed at by
+name, which is why moving a model between packs carries its textures too.
+
+<Callout type="warning" title="Animations don't survive a Java export">
+  Keyframes and bones are stored as extra fields on the model JSON. Vanilla
+  ignores fields it doesn't recognise, so the pack is perfectly valid and the
+  model just sits there, static. Playback needs our plugin. See
+  [Animations](/animations).
+</Callout>
+
+## On Bedrock
+
+Geometry converts: the `.mcpack` carries a real Bedrock entity with your model
+as its geometry, and animations come across as native Bedrock keyframes rather
+than being dropped. Carriers and give commands don't, since both are Java
+mechanisms. See [Bedrock and Geyser](/bedrock).
 
 <CardGroup>
   <Card title="Animations" href="/animations" icon="sparkles">
