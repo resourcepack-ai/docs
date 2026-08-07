@@ -15,8 +15,7 @@ touches.
 Everything starts from **Add asset** on the pack page. First you choose how to
 start (**Generate**, **Draw** or **Upload**), then what you're making, and
 the fields underneath change with the type: which vanilla block or item you're
-replacing, a resolution for pixel art, a quality tier for a model, an event
-name for a sound.
+replacing, a resolution for pixel art, an event name for a sound.
 
 Not every type is behind every option:
 
@@ -41,19 +40,12 @@ works from it as well as your words. A model built from a reference picks up
 its shape and palette, which is often the shortest route to "like this, but
 Minecraft".
 
-## Model quality
+## Model generations
 
-A model generation has a quality setting, **Low**, **Medium** or **High**,
-which decides how hard the builder thinks at each step and how many build
-steps it gets. **High is the default**, and it alone does a refine pass:
-when it finishes early, it re-inspects its own model and spends what's left
-adding the detail that sells it.
-
-| Quality | What you get | Typical time |
-| --- | --- | --- |
-| Low | One pass, no second look. Cheapest and quickest | ~1–4 minutes |
-| Medium | Generates, looks at the result, fixes what's wrong | ~2–7 minutes |
-| High | Thinks hardest and longest, largest build budget, plus the refine pass | ~3–10 minutes |
+A model takes minutes rather than seconds, typically three to ten: the
+builder plans it, constructs it cube by cube, and when it finishes early it
+re-inspects its own work and spends what's left adding detail. There's no
+quality setting; every run gets the full effort.
 
 Every generated model keeps its **Build log**: what the builder thought,
 every action it took, and its summary, as an expandable card under the
