@@ -1,15 +1,38 @@
 export const metadata = {
-  title: "Texture editor",
-  description: "The pixel editor — tools, layers, mirroring, and what resolution to work at.",
+  title: "Blocks",
+  description:
+    "Block textures: generating one, finishing it in the pixel editor, per-face blocks, and what lands in the exported pack.",
 };
 
-# Texture editor
+# Blocks
 
-A texture is a PNG, and the pixel editor is where you finish one by hand. It
-opens full-screen from a texture asset, and from the model editor when you
-want to paint a face properly rather than dab at it in 3D.
+A block texture is a PNG that **replaces a vanilla block you pick**. That's the
+whole mechanism, and it's why there's no such thing as adding a block: a
+Resource Pack can change how stone looks, but it cannot give the game a
+seventeenth kind of stone.
 
-## Tools
+## Making one
+
+Normally you describe it and generate it. That's the fast way to a draft worth
+editing, and most of this page is what you do to it afterwards.
+
+<Card title="Generating with AI" href="/generating" icon="sparkles">
+  How to write a prompt that gives you something worth finishing.
+</Card>
+
+The same **Add** flow also takes an upload of existing art, or gives you an
+empty transparent grid to draw on. All three land in the same editor, and all
+three ask which vanilla block you're replacing.
+
+Textures that only exist to skin a custom [model](/models) are made from inside
+the model editor instead, and replace nothing.
+
+## In the editor
+
+The pixel editor opens full-screen from a block, and from the model editor when
+you want to paint a face properly rather than dab at it in 3D.
+
+### Tools
 
 The rail on the left, with its hotkeys:
 
@@ -33,7 +56,7 @@ included.
   a solid white block in game, not a hole.
 </Callout>
 
-## Brush options
+### Brush options
 
 - **Brush size** — any tool that paints uses it, including line and
   rectangle, so you can draw a 2px outline in one pass.
@@ -41,7 +64,7 @@ included.
   Both at once gives you four-way symmetry, which is how most tileable
   textures and nearly all radially symmetric icons should be drawn.
 
-## Layers
+### Layers
 
 Textures are layered, topmost first, and flattened on save. Layers can be
 renamed (double-click), reordered, hidden and deleted.
@@ -88,10 +111,6 @@ autosaves. A face that doesn't have its own texture yet gets one on the
 spot, seeded from what it currently looks like in game, and **Apply to all
 faces** copies the open face's texture onto the whole block.
 
-You don't manage any files for this: when a block has face textures, the
-exported pack automatically includes the block-model override that maps each
-face, and the preview cube on the block's page shows the real result.
-
 <Callout type="note" title="Faces are a full-cube, Java-side thing">
   Blocks that are already multi-textured in vanilla (logs, sandstone,
   bookshelves) or aren't simple cubes don't offer the Faces card — retexture
@@ -108,19 +127,56 @@ face, and the preview cube on the block's page shows the real result.
   you put them.
 </Callout>
 
-## Getting a texture in
+## Seeing it in game
 
-Normally you describe it and generate it — that's the fast way to a draft
-worth editing, and everything on this page is what you do to it afterwards.
+Sync the pack to a linked player and every copy of that block in the world
+changes at once. There's no command and nothing to place: you replaced a block
+the game already has, so it's already everywhere it was.
 
-<Card title="Generating with AI" href="/generating" icon="sparkles">
-  How to write a prompt that gives you something worth finishing.
-</Card>
+That makes blocks the easiest thing to judge in game and the one most worth
+judging there. A texture that reads beautifully at 8× zoom in the editor can
+turn to noise in a wall of itself.
 
-The same **Add** flow also takes an upload of existing art, or gives you an
-empty transparent grid to draw on. All three land in this editor.
+<Callout type="tip">
+  On [our test server](/testing/test-server), `/floor <block>`, `/time` and
+  `/weather` change what your texture is sitting against. Judging it on white
+  concrete, then grass, then at night takes half a minute and tells you more
+  than any amount of staring at the editor.
+</Callout>
 
-Whichever way it comes in, every block texture **replaces a vanilla block
-you pick** — that's what makes it show up in the world. (Textures that only
-exist to skin a custom model are created from inside the model editor, not
-here.)
+## Exporting
+
+In the exported `.zip`, a block texture is an ordinary PNG at
+`assets/minecraft/textures/block/<name>.png`, named after the vanilla block it
+replaces. Nothing else is needed: the game already looks in that exact place,
+which is why a plain texture pack has no JSON in it at all.
+
+Two things ride along when they apply:
+
+- **Per-face blocks** also get a block model under
+  `assets/minecraft/models/block/`, which is what maps each face to its own
+  texture. You don't manage that file; it's written from what the Faces card
+  shows.
+- **See-through blocks** carry a render type, so glass stays glass rather than
+  rendering as an opaque block with a strange outline.
+
+The resolution you worked at is the resolution in the file, and a 64×64 pack
+installs exactly like a 16×16 one. Nothing in the pack records which you chose.
+
+## On Bedrock
+
+Block reskins convert. Java's `textures/block/<name>.png` becomes Bedrock's
+`textures/blocks/<name>.png` in the `.mcpack`, so a pack of reskins works on
+both editions from one export.
+
+Per-face blocks currently carry only their base texture across. See
+[Bedrock and Geyser](/bedrock).
+
+<CardGroup>
+  <Card title="Items" href="/items" icon="item">
+    The same pixel tools, aimed at what a player holds.
+  </Card>
+  <Card title="Models" href="/models" icon="boxes">
+    When the shape has to change and not just the surface.
+  </Card>
+</CardGroup>
