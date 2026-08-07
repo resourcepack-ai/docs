@@ -148,18 +148,49 @@ model box is scaled down to fit automatically.
 
 ## Seeing it in game
 
-Every custom model rides on a vanilla item or block, because Minecraft has no
-"add a model" for packs. Which one it rides on is the model's **carrier**, and
-it's the most consequential setting on a model — see
-[Packs and assets](/packs) for the three kinds and their limits.
+Minecraft has no "add a model" for Resource Packs. A pack can only change how
+something that already exists looks, so every custom model rides on a vanilla
+item or block. That choice is the model's **carrier**, and it's the single most
+consequential setting on a model:
 
-The default carrier is an item. Sync the pack, take the give command from the
-model's page (or press the button beside it, which hands you the item on your
-linked server), then right-click a block to place it. Picking it back up is a
-punch. That whole loop is [Placing models in-game](/testing/placing-models).
+| Carrier | How it works | Limit |
+| --- | --- | --- |
+| **Item** (default) | A paper item with a custom model. Looks right in hand, in the GUI and in item frames, and is placeable on servers running our plugin | Effectively unlimited |
+| **Full block** (legacy) | Replaces a vanilla full block's appearance, e.g. a crate | Limited slots |
+| **Partial block** (legacy) | Same, on a non-full vanilla block, e.g. a sink or a TV | Very limited slots |
 
-The two block carriers place like ordinary blocks with no plugin at all, at the
-cost of there being a limited number of vanilla blocks to borrow.
+The two legacy carriers place like normal blocks without any plugin, but you
+run out of vanilla blocks to borrow. The item carrier has no such ceiling,
+which is why it's the default; the trade is that *placing* it needs the plugin.
+
+With the item carrier: sync the pack, take the give command from the model's
+page (or press the button beside it, which hands you the item on your linked
+server), then right-click a block to place it. Picking it back up is a punch.
+That whole loop is [Placing models in-game](/testing/placing-models).
+
+### Choosing the block
+
+Pick **Block** as the carrier and the Studio lists every vanilla block a model
+can borrow, in two groups:
+
+- **Fixed** — end rod, lantern, soul lantern. Each of these carries several
+  models at once (one per facing or hanging state), and a placed model always
+  sits the way you built it.
+- **Directional** — anvils, ladder, stonecutter, grindstone, lectern,
+  campfires, fence gates. One model each, and Minecraft turns it to face the
+  way you place it, exactly as it turns the real block.
+
+Leave it on **Auto** and the Studio takes the first block that's free, fixed
+ones first. In the Add asset sheet, a block the pack has already spent is
+greyed out; ask for one anywhere else and you get told it's taken rather than
+quietly landing somewhere else. Free a block by deleting the model holding it,
+or by moving that model to another carrier from its **Get in-game** panel.
+
+<Callout type="note">
+  Legacy carriers aren't deprecated so much as narrow. If you're making a
+  handful of building blocks for a survival server with no plugins, they're
+  the right call.
+</Callout>
 
 ## Exporting
 
