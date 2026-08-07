@@ -23,15 +23,16 @@ Not every type is behind every option:
 | | Generate | Draw | Upload |
 | --- | --- | --- | --- |
 | **Block** | ✓ | ✓ | ✓ |
-| **Model** | ✓ | ✓ | ✓ (`.bbmodel`) |
-| **Item** | ✓ | ✓ | ✕ |
+| **Model** | ✓ | ✓ | ✓ (`.json` or `.bbmodel`) |
+| **Item** | ✓ | ✓ | ✓ |
 | **GUI** | ✕ | ✓ | ✕ |
 | **Icon** | ✓ | ✓ | ✓ |
-| **Sound** | ✓ | ✕ | ✕ |
+| **Sound** | ✓ | ✕ | ✓ (`.ogg`) |
 
 **GUIs can't be generated yet**: the AI isn't capable of drawing a good
-screen, and we're working on it. And **sounds are only generated**, since
-there's nothing to draw.
+screen, and we're working on it. **Sounds can't be drawn**, since there's
+nothing to draw; an uploaded sound has to be Ogg Vorbis, and the upload
+checks and tells you if it isn't.
 
 ## What each kind comes back as
 
