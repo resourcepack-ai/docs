@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
 import { flatNav } from "@/lib/nav";
+import { BASE_PATH } from "@/lib/base-path";
 
 /**
  * Where these pages live publicly. Includes the basePath, because a sitemap
  * publishes absolute URLs and Next does not prefix strings you build yourself.
  */
-export const SITE_URL = "https://resourcepack.ai/docs";
+export const SITE_URL = `https://resourcepack.ai${BASE_PATH}`;
 
 /**
  * Served at /docs/sitemap.xml, derived from `lib/nav.ts` — the same list the
