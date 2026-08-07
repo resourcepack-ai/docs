@@ -1,9 +1,10 @@
 export const metadata = {
-  title: "Custom icons",
-  description: "Bitmap glyphs you can type into chat, signs and books — sizes, and what each is for.",
+  title: "Icons",
+  description:
+    "Bitmap glyphs you can type into chat, signs and books: sizes, characters, and what ships in the exported pack.",
 };
 
-# Custom icons
+# Icons
 
 An icon is a **bitmap glyph** bound to a character. Type that character
 anywhere Minecraft renders text — chat, signs, books, item names, holograms —
@@ -60,11 +61,58 @@ fitted to the size you chose.
   rule as a 16×16 block texture.
 </Callout>
 
+## Seeing it in game
+
+Sync the pack, then paste the character somewhere the game draws text. Nothing
+has to be placed, given or triggered: a glyph is live the moment a player has
+the pack, in every message anyone sends.
+
+That also makes icons the one asset kind you can test without touching the
+world at all. On [our test server](/testing/test-server), `/sidebar`, `/title`,
+`/actionbar` and `/bossbar` take arbitrary text.
+
+A plugin sends one the same way it sends any other message:
+
+```java
+// The character is copied from the icon's page in the Studio.
+player.sendMessage(Component.text(" Quest complete"));
+```
+
+## Exporting
+
+An icon is two things in the `.zip`:
+
+```
+assets/minecraft/textures/font/<name>.png
+assets/minecraft/font/default.json
+```
+
+The PNG is the artwork; `default.json` is the **font provider**, which binds
+each image to its character and records the height and ascent that decide how
+the glyph sits on a line. Every icon in the pack shares that one file, which is
+why nothing here is per-icon.
+
+Because it extends the default font rather than replacing it, ordinary text
+keeps rendering normally. A player without the pack sees a blank box where the
+character is, which is Minecraft's ordinary behaviour for a codepoint it has no
+glyph for.
+
+<Callout type="note" title="Characters are allocated per pack">
+  An icon copied into another pack usually keeps its character, but takes a new
+  one if that pack has already spent it. Re-copy the character from the icon's
+  page after moving it rather than reusing the old one.
+</Callout>
+
+## On Bedrock
+
+Glyphs don't convert. Bedrock's font handling isn't Java's provider format, so
+an icon is a Java-only asset. See [Bedrock and Geyser](/bedrock).
+
 <CardGroup>
-  <Card title="Texture editor" href="/blocks" icon="image">
-    The same pixel tools are used for drawing a glyph by hand.
+  <Card title="Blocks" href="/blocks" icon="blocks">
+    The same pixel tools, used for drawing a glyph by hand.
   </Card>
-  <Card title="Packs and assets" href="/packs" icon="boxes">
-    How icons sit alongside textures and models in a pack.
+  <Card title="GUIs" href="/guis" icon="gui">
+    The same glyph mechanism, scaled up to cover a whole screen.
   </Card>
 </CardGroup>
