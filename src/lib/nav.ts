@@ -177,12 +177,6 @@ export const nav: NavGroup[] = [
         description: "Install the plugin, run /link, push packs to your players.",
         keywords: ["plugin", "spigot", "paper", "sync", "pairing code", "link"],
       },
-      {
-        title: "Placing models in-game",
-        href: "/testing/placing-models",
-        description: "How a model item becomes a placed, animated object.",
-        keywords: ["give", "custom model data", "item display", "place", "punch"],
-      },
     ],
   },
   {
