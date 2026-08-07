@@ -1,14 +1,14 @@
 export const metadata = {
   title: "Your own server",
   description:
-    "Install the ResourcePack AI plugin on your Paper or Spigot server so studio can push packs to your players.",
+    "Install the ResourcePack AI plugin on your Paper or Spigot server so the Studio can push packs to your players.",
 };
 
 # Your own server
 
 Our test server is fine for a quick look, but eventually you want a pack on
 *your* server, in *your* world, in front of the people you build with. That's
-what the plugin is for: once a player has linked, studio can push a pack — or
+what the plugin is for: once a player has linked, the Studio can push a pack — or
 hand them a specific model item — straight to that player in seconds, without
 anyone touching `server.properties` or uploading a zip anywhere.
 
@@ -43,7 +43,7 @@ anyone touching `server.properties` or uploading a zip anywhere.
 ## Link a player
 
 <Steps>
-  <Step title="Get a pairing code from studio">
+  <Step title="Get a pairing code from the Studio">
     Open the live-test panel for the pack you want to push. It shows an
     8-digit code as a ready-to-paste command. There's no "generate" button —
     a pack gets its code the first time you look.
@@ -99,7 +99,7 @@ a server with no active pairings sits idle.
 
 If your server runs [Geyser](https://geysermc.org/) alongside the plugin,
 linked Bedrock players are handled too — they link with `/link` like anyone
-else, and studio tags them as Bedrock in the panel.
+else, and the Studio tags them as Bedrock in the panel.
 
 The one visible difference is how a pack arrives. Bedrock clients only accept
 Resource Packs while joining, so applying one means the player is transferred

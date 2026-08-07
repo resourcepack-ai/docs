@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Introduction",
   description:
-    "What ResourcePack AI is, how the studio, the test server and the plugin fit together, and where to start.",
+    "What ResourcePack AI is, how the Studio, the test server and the plugin fit together, and where to start.",
 };
 
 # ResourcePack AI
@@ -13,25 +13,29 @@ a real Minecraft server before anyone else sees it.
 
 <CardGroup>
   <Card title="Quickstart" href="/quickstart" icon="rocket">
-    Go from an empty pack to a block you can stand next to.
+    Go from an empty pack to a block you can stand next to in game.
   </Card>
   <Card title="Your own server" href="/testing/your-server" icon="server">
-    Install the plugin and push packs straight to your players.
+    Install the plugin, then push packs straight to your own players.
   </Card>
 </CardGroup>
 
 ## How the pieces fit
 
-Most of your time is spent in the first row. The rest exists so that what you
-make lands in Minecraft while you're standing in it. There's no zip to build,
-nothing to upload anywhere, and on Java nothing to rejoin — you press Sync in
-studio and the pack changes around you.
+Most of your time is spent in the Studio. The rest exists so that what you make
+lands in Minecraft while you're standing in it: no zip to build, nothing to
+upload anywhere, and on Java nothing to rejoin. You press Sync and the pack
+changes around you.
+
+That's the short way round, not the only way. Every pack still exports as an
+ordinary `.zip` or `.mcpack` whenever you want the file itself, for a server
+host, a launcher or a friend. See [Exporting a pack](/exporting).
 
 | Piece | Where it runs | What it does |
 | --- | --- | --- |
 | **Studio** | [studio.resourcepack.ai](https://studio.resourcepack.ai) | Your packs, the editors, and AI generation |
 | **Test server** | `play.resourcepack.ai` | A lobby and a private world to try a pack in |
-| **Plugin** | Your own Minecraft server | Receives packs and model items pushed from studio |
+| **Plugin** | Your own Minecraft server | Receives packs and model items pushed from the Studio |
 
 Nothing here replaces Minecraft's own pack format. What you export is an
 ordinary Resource Pack — same folders, same JSON, same PNGs — so it works
@@ -65,7 +69,7 @@ Two routes, for two different jobs:
   "does this texture actually read at three blocks away". Run `/permlink`
   once, ever, and after that Sync on any pack just lands.
 - **Your own server** runs our plugin. A player runs `/link` with a code from
-  studio, and from then on you can push that pack — or hand them a specific
+  the Studio, and from then on you can push that pack — or hand them a specific
   model item — directly to that player. Best for showing a build team, or
   testing against your real world.
 
