@@ -33,16 +33,16 @@ already have and a sentence about what to change.
 ## The editor
 
 A Blockbench-style editor, split into five modes because the jobs are genuinely
-different — shaping is not painting, and neither is deciding how the thing sits
-in your hand.
+different: shaping is not painting, and neither is deciding how the thing
+sits in your hand.
 
 | Mode | For |
 | --- | --- |
-| **Edit** | Building the geometry — add, move, resize, rotate cubes; group them into bones |
+| **Edit** | Building the geometry: add, move, resize, rotate cubes; group them into bones |
 | **Paint** | Painting faces directly on the 3D model |
 | **Display** | How it looks in hand, in the GUI, on the ground, in an item frame, on a head |
 | **Render** | A dressed-up viewport for capturing a PNG of the model |
-| **Animate** | Keyframes and playback triggers — see [Animations](/animations) |
+| **Animate** | Keyframes and playback triggers; see [Animations](/animations) |
 
 ## Edit mode
 
@@ -50,8 +50,8 @@ The model is a list of **cubes** (Minecraft calls them elements). Each cube is
 a box with six faces, and each face points at a texture.
 
 Cube coordinates run from `-16` to `32` on each axis, with the block itself
-occupying `0..16`. Overhang is legal and often correct — antlers, wings, roof
-edges. Keep the visual centre of mass near the middle of the block so it sits
+occupying `0..16`. Overhang is legal and often correct (antlers, wings, roof
+edges). Keep the visual centre of mass near the middle of the block so it sits
 well when placed.
 
 ### Hotkeys
@@ -73,18 +73,18 @@ Defaults, all remappable in the editor's settings:
 | Undo / redo | `Ctrl+Z` / `Ctrl+Y` |
 
 The rail also has a **Select** tool (no gizmo, just picking) and a **Pivot**
-tool for moving a bone's pivot point without moving its cubes — the one you
+tool for moving a bone's pivot point without moving its cubes, the one you
 reach for when a hinge rotates around the wrong spot.
 
 ### Bones
 
-Select several cubes and group them into a **bone** — a named group with its
+Select several cubes and group them into a **bone**: a named group with its
 own pivot point. Bones are what you animate: rotating a bone rotates
 everything in it around one pivot, which is how a door swings or a wing beats.
 
-A generated model arrives with this already done — parts named, grouped into
+A generated model arrives with this already done, parts named, grouped into
 bones, pivots sitting at the joints (a `left_front_wheel` pivots on its
-axle) — so Animate mode has real handles without any regrouping.
+axle), so Animate mode has real handles without any regrouping.
 
 <Callout type="note">
   Bones are stored as an extra `groups` field on the model, in the same shape
@@ -94,7 +94,7 @@ axle) — so Animate mode has real handles without any regrouping.
 
 ### UVs
 
-Which part of a texture lands on which face is normally handled for you — you
+Which part of a texture lands on which face is normally handled for you: you
 think in faces and materials, not texture coordinates. There is a UV panel in
 Edit mode for when you genuinely need it, but no ordinary workflow should
 depend on it.
@@ -102,7 +102,7 @@ depend on it.
 ## Paint mode
 
 Paint straight onto the model in 3D. For anything fiddlier than a colour
-correction, open the full [pixel editor](/blocks) from here — same
+correction, open the full [pixel editor](/blocks) from here, same
 texture, proper tools, and it comes back when you're done.
 
 ## Display mode
@@ -110,9 +110,9 @@ texture, proper tools, and it comes back when you're done.
 Minecraft renders a model differently in each context, and each context gets
 its own rotation, translation and scale override:
 
-- **GUI** — the inventory icon
+- **GUI**: the inventory icon
 - **First person** / **third person**, left and right hand
-- **Dropped item** — lying on the ground
+- **Dropped item**: lying on the ground
 - **Item frame**
 - **Shelf**
 - **On a head**
@@ -123,7 +123,7 @@ own skin) so a held model can be judged against a body rather than against
 empty space.
 
 <Callout type="tip">
-  The GUI slot is worth caring about more than it seems — for an item-carrier
+  The GUI slot is worth caring about more than it seems: for an item-carrier
   model, the inventory icon is how players find your thing at all.
 </Callout>
 
@@ -136,14 +136,14 @@ captures, which is what you want for a Discord post or a shop listing.
 
 ## Importing from Blockbench
 
-A `.bbmodel` upload keeps its element names, its groups — which arrive as
-bones — and its animations, so a rigged Blockbench model comes in ready to
+A `.bbmodel` upload keeps its element names, its groups (which arrive as
+bones) and its animations, so a rigged Blockbench model comes in ready to
 animate rather than as bare geometry. A model too big for Minecraft's legal
 model box is scaled down to fit automatically.
 
 <Callout type="warning">
   Cubes only. The vanilla model format has no meshes, so mesh geometry can't
-  survive the trip — a model built out of meshes arrives without them.
+  survive the trip; a model built out of meshes arrives without them.
 </Callout>
 
 ## Seeing it in game
@@ -173,10 +173,10 @@ That whole loop is [Placing models in-game](/testing/placing-models).
 Pick **Block** as the carrier and the Studio lists every vanilla block a model
 can borrow, in two groups:
 
-- **Fixed** — end rod, lantern, soul lantern. Each of these carries several
+- **Fixed**: end rod, lantern, soul lantern. Each of these carries several
   models at once (one per facing or hanging state), and a placed model always
   sits the way you built it.
-- **Directional** — anvils, ladder, stonecutter, grindstone, lectern,
+- **Directional**: anvils, ladder, stonecutter, grindstone, lectern,
   campfires, fence gates. One model each, and Minecraft turns it to face the
   way you place it, exactly as it turns the real block.
 
@@ -197,11 +197,11 @@ or by moving that model to another carrier from its **Get in-game** panel.
 A model leaves as JSON, in the vanilla block-model format, under
 `assets/minecraft/models/`. What wires it up depends on the carrier:
 
-- **Item carrier** — an item definition at `assets/minecraft/items/paper.json`
+- **Item carrier**: an item definition at `assets/minecraft/items/paper.json`
   that dispatches on custom model data, so a piece of paper given with the
   right tag renders as your model. The give command on the model's page is the
   matching half.
-- **Block carriers** — a blockstate file plus the block model, so the vanilla
+- **Block carriers**: a blockstate file plus the block model, so the vanilla
   block you borrowed renders as your model wherever it's placed.
 
 Textures the model paints with are exported alongside it and pointed at by

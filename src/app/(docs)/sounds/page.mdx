@@ -50,7 +50,7 @@ regenerating any audio.
 
 ## The event name decides everything
 
-There is no setting for "replace" versus "add" — there is only the name.
+There is no setting for "replace" versus "add". There is only the name.
 
 <Steps>
   <Step title="Name it after a vanilla event">
@@ -60,7 +60,7 @@ There is no setting for "replace" versus "add" — there is only the name.
     exists.
   </Step>
   <Step title="Name it something new">
-    `custom.laser`, `boss.phase_two`. Nothing triggers it on its own — it's a
+    `custom.laser`, `boss.phase_two`. Nothing triggers it on its own; it's a
     sound waiting for something to play it, by command or from a plugin.
   </Step>
 </Steps>
@@ -75,22 +75,22 @@ Both land in the `minecraft` namespace, so a new event is played as
 ```
 
 `/sound` comes from the ResourcePack AI plugin, and any player may run it. The
-last argument is the **source** — the volume slider that playback obeys. It's
+last argument is the **source**, the volume slider that playback obeys. It's
 chosen per command, not stored in the pack; see below.
 
 <Callout>
   Vanilla's own `/playsound minecraft:custom.laser player @p` does the same
-  thing, but needs operator permissions — which is why the plugin has its own.
+  thing, but needs operator permissions, which is why the plugin has its own.
 </Callout>
 
 <Callout>
   A client can only play a sound it already has. Sync the pack to the player
-  first — playing an event they haven't downloaded fails silently.
+  first; playing an event they haven't downloaded fails silently.
 </Callout>
 
 ## Categories are not a pack setting
 
-A sound's category — which volume slider governs it — **cannot be set by a
+A sound's category (which volume slider governs it) **cannot be set by a
 resource pack** on Java. `sounds.json` had a `category` field until 1.10-pre2
 and hasn't since; the game takes it from whatever code plays the event.
 
@@ -99,7 +99,7 @@ That means:
 - **Replacing a vanilla event** keeps that event's original category. Your
   audio replaces the creeper fuse, and it's still a Hostile Creatures sound.
 - **A new event** has no category of its own at all. It gets one per playback,
-  from the `source` argument of whatever command fires it — so in practice
+  from the `source` argument of whatever command fires it, so in practice
   the category is chosen by whoever writes the command, not by the pack.
 
 The "Play as" setting in the Studio is the source it puts in the command it
@@ -107,7 +107,7 @@ generates for you. It's a convenience for that command, not something baked
 into the exported pack.
 
 <Callout>
-  Bedrock is the opposite — its sound definitions **do** take a category. If
+  Bedrock is the opposite: its sound definitions **do** take a category. If
   you've read Bedrock docs, this is the difference that catches people.
 </Callout>
 
@@ -127,7 +127,7 @@ Files are **Ogg Vorbis, mono**. Both parts matter:
   standing.
 
 Sounds longer than ten seconds are marked `stream`, which is what vanilla does
-for music and records — decoded as they play rather than loaded whole.
+for music and records: decoded as they play rather than loaded whole.
 
 ## Several sounds on one event
 

@@ -7,7 +7,7 @@ export const metadata = {
 # Icons
 
 An icon is a **bitmap glyph** bound to a character. Type that character
-anywhere Minecraft renders text — chat, signs, books, item names, holograms —
+anywhere Minecraft renders text (chat, signs, books, item names, holograms)
 and your image appears inline. It's how server icons, custom emotes and inline
 UI symbols are done.
 
@@ -20,7 +20,7 @@ rather than quality:
 | --- | --- |
 | **8px** | Sits flush inside one line of text. The only size guaranteed not to spill |
 | **12px** | The default for chat: a readable icon with ascent 9 |
-| **16px** | Deliberately oversized — overlaps the lines above and below |
+| **16px** | Deliberately oversized; overlaps the lines above and below |
 | **32px** | Much more so |
 
 Minecraft's line pitch is about 9 pixels and the renderer does **not** reflow
@@ -35,7 +35,7 @@ they're the Discord-style "big emoji" effect, and they overlap on purpose.
 ## Characters
 
 Glyphs are assigned to codepoints in Unicode's **Private Use Area**
-(`U+E000`–`U+F8FF`) — the block reserved for exactly this, so your glyph can
+(`U+E000`–`U+F8FF`), the block reserved for exactly this, so your glyph can
 never collide with a real character someone might type.
 
 Practically: you copy the character out of the Studio and paste it wherever you
@@ -44,20 +44,20 @@ loaded, which is expected.
 
 <Callout type="tip">
   On [our test server](/testing/test-server), `/sidebar`, `/title`,
-  `/actionbar` and `/bossbar` take arbitrary text — paste a glyph into one to
+  `/actionbar` and `/bossbar` take arbitrary text; paste a glyph into one to
   see how it sits against real UI text rather than only in chat.
 </Callout>
 
 ## Making one
 
-Describe the icon and generate it — "a coin", "a crossed sword and shield", "a
-lightning bolt" — then finish it in the pixel editor. Uploading a PNG or
+Describe the icon and generate it ("a coin", "a crossed sword and shield",
+"a lightning bolt"), then finish it in the pixel editor. Uploading a PNG or
 starting from blank works too. Source art is capped at 256×256 before it's
 fitted to the size you chose.
 
 <Callout type="note">
   Glyphs are pixel art at small sizes, and legibility falls off a cliff below
-  about 6 pixels of actual detail. Silhouette first, detail second — the same
+  about 6 pixels of actual detail. Silhouette first, detail second, the same
   rule as a 16×16 block texture.
 </Callout>
 

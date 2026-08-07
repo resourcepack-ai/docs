@@ -58,9 +58,9 @@ included.
 
 ### Brush options
 
-- **Brush size** — any tool that paints uses it, including line and
+- **Brush size**: any tool that paints uses it, including line and
   rectangle, so you can draw a 2px outline in one pass.
-- **Mirror X / Mirror Y** — paints the mirrored counterpart of every stroke.
+- **Mirror X / Mirror Y**: paints the mirrored counterpart of every stroke.
   Both at once gives you four-way symmetry, which is how most tileable
   textures and nearly all radially symmetric icons should be drawn.
 
@@ -81,12 +81,12 @@ texture really is 64 pixels of paintable detail.
 
 - **16×16** is what vanilla Minecraft uses. Pick it when you want your work to
   sit next to vanilla blocks without looking sharper than they do.
-- **32 and up** is the "HD pack" end. More room for detail, and more work —
+- **32 and up** is the "HD pack" end. More room for detail, and more work:
   four times the pixels at 32, sixteen times at 64.
 
 <Callout type="note" title="Generation draws at your resolution">
   A generated texture is drawn as pixel art at the size you picked, not
-  upscaled from something smaller — a 64×64 draft really uses its 64 pixels.
+  upscaled from something smaller, so a 64×64 draft really uses its 64 pixels.
   The higher you go, the more of it you'll want to finish by hand; pixel art
   at 16 forgives roughness that 64 shows plainly.
 </Callout>
@@ -96,13 +96,13 @@ texture really is 64 pixels of paintable detail.
 A texture that replaces a full-cube vanilla block (stone, planks, wool,
 concrete, ores…) doesn't have to look the same on every side. On the block's
 page, the **Faces** card shows all six faces, and each one can have its own
-texture — generate it from a prompt, open it in this editor to finish by
+texture: generate it from a prompt, open it in this editor to finish by
 hand, or remove it to fall back to the base texture. This is exactly how
 vanilla builds its own multi-face blocks (grass, furnaces, crafting tables).
 
 Editing a block opens the **block editor**: a tab bar with the block in 3D
 ("Block") plus one tab per face. On the Block tab you paint directly on the
-cube — left-drag strokes, drag empty space to orbit — with the same brush,
+cube (left-drag strokes, drag empty space to orbit) with the same brush,
 fill, line and picker tools as the model editor's paint mode. Double-click a
 face (or click its tab) to open it in the 2D pixel editor. Everything
 autosaves. A face that doesn't have its own texture yet gets one on the
@@ -111,7 +111,7 @@ faces** copies the open face's texture onto the whole block.
 
 <Callout type="note" title="Faces are a full-cube, Java-side thing">
   Blocks that are already multi-textured in vanilla (logs, sandstone,
-  bookshelves) or aren't simple cubes don't offer the Faces card — retexture
+  bookshelves) or aren't simple cubes don't offer the Faces card; retexture
   their individual vanilla textures instead. And a Bedrock export currently
   carries only the base texture; the per-face split is Java-only for now.
 </Callout>
@@ -120,8 +120,8 @@ faces** copies the open face's texture onto the whole block.
   A few natural blocks (stone, dirt, sand, netherrack and friends) get a
   random rotation each time they're placed, to break up repetition. Their
   top/bottom faces are safe, but a distinct north/south/east/west face will
-  point a different way on each placed block. Building blocks — planks,
-  wool, concrete, bricks — don't rotate and keep all six faces exactly where
+  point a different way on each placed block. Building blocks (planks,
+  wool, concrete, bricks) don't rotate and keep all six faces exactly where
   you put them.
 </Callout>
 
