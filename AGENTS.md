@@ -199,12 +199,16 @@ What that costs you when working here:
 - **`zone_name` is mandatory** on the path route in `wrangler.jsonc`. A path
   route can't infer its zone the way a custom domain does.
 - **`next/link` hrefs and `_next` assets get the prefix for free**, which is
-  why nothing in `nav.ts` or the `.mdx` Cards changed. Anything you write as
-  a raw string does **not** — that already bit the metadata favicon, which
-  emitted `/logo.svg` and silently resolved against landing's Worker (it
-  serves a byte-identical logo, so it looked correct while being wrong).
-  Absolute URLs you build yourself — `sitemap.ts`, `metadataBase` — must
-  carry `/docs` by hand.
+  why nothing in `nav.ts` or the `.mdx` Cards changed. Nothing else does —
+  **including `next/image`'s `src`**, which is emitted verbatim. This bit
+  twice, in the metadata favicon and the header mark, both of which asked
+  for `/logo.svg` and so resolved against *landing's* Worker. Landing serves
+  a byte-identical logo, so both looked correct in production while pointing
+  at the wrong app; the only symptom was a 404 per page load in local dev,
+  where nothing serves the apex.
+  Use `asset()` from `src/lib/base-path.ts` for any literal path, and build
+  absolute URLs (`sitemap.ts`, `metadataBase`) from its `BASE_PATH` rather
+  than typing `/docs` again.
 - **There is no `robots.ts` here, on purpose.** A robots.txt is only honoured
   at the root of a host and this app no longer owns one; `landing`'s
   `robots.ts` lists this app's sitemap. If the docs move again, that line
