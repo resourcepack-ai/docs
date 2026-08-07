@@ -42,16 +42,19 @@ export const nav: NavGroup[] = [
         keywords: ["start", "first pack", "tutorial"],
       },
       {
-        title: "Packs and assets",
-        href: "/packs",
-        description: "What a pack holds, and how it becomes a real Minecraft pack.",
-        keywords: ["export", "zip", "mcpack", "bedrock", "assets", "download"],
-      },
-      {
         title: "Exporting a pack",
         href: "/exporting",
-        description: "The three exports, the version picker, and what's in the file.",
-        keywords: ["export", "download", "zip", "mcpack", "version"],
+        description: "The three exports, what's in the file, and moving assets between packs.",
+        keywords: [
+          "export",
+          "download",
+          "zip",
+          "mcpack",
+          "version",
+          "move",
+          "copy",
+          "another pack",
+        ],
       },
       {
         title: "Bedrock and Geyser",

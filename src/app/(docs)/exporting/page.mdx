@@ -1,34 +1,103 @@
 export const metadata = {
   title: "Exporting a pack",
   description:
-    "The three things you can export, what lands in the file, and which Minecraft versions it targets.",
+    "The three things you can export, what lands in the file, and how assets move between packs.",
 };
 
 # Exporting a pack
 
-{/* What export is for, and that you don't need it to test. Point at the
-    three exports below rather than explaining them here. */}
+You never have to export to test a pack. Pushing to a linked player never
+produces a file you have to handle, so export is for taking the pack
+*elsewhere*: a launcher, a server host, a friend, a marketplace listing.
 
 ## What you can export
 
-{/* Whole pack -> Java .zip. Whole pack -> Bedrock .mcpack. One model -> .zip.
-    A short table is probably right: what it contains, when you'd pick it. */}
+| Export | File | When you'd pick it |
+| --- | --- | --- |
+| **Java pack** | `.zip` | The ordinary Resource Pack. Goes in `resourcepacks`, or to a server host |
+| **Bedrock pack** | `.mcpack` | The same assets converted for Bedrock. Double-click to install |
+| **One model** | `.zip` | A single model and the textures it uses, for handing to somebody else |
 
-## Choosing a Minecraft version
+All three are built on demand from what's currently in the editor. There's no
+build step to remember and nothing to re-upload between edits.
 
-{/* Only the single-model export asks. The version picker, the minVersion
-    floor and why a model can be refused for a version below it. */}
+<Callout type="warning" title="Animations don't survive a Java export">
+  In the Java `.zip`, animations and bones are stored as extra fields on the
+  model JSON. Vanilla ignores fields it doesn't recognise, so the pack is
+  perfectly valid and the model just sits there, static; playback needs our
+  plugin. The Bedrock `.mcpack` is the opposite, since Bedrock has native
+  keyframe animation and they convert into the real thing. See
+  [Animations](/animations).
+</Callout>
+
+## Installing it
+
+The Java `.zip` goes in your `resourcepacks` folder:
+
+```bash
+# Windows
+%APPDATA%\.minecraft\resourcepacks
+
+# macOS
+~/Library/Application Support/minecraft/resourcepacks
+
+# Linux
+~/.minecraft/resourcepacks
+```
+
+A server serves it the ordinary way, from `server.properties`, and that needs
+nothing of ours installed. The `.mcpack` installs itself when opened.
+
+There's no runtime dependency on us in any exported file. It keeps working if
+you never open the Studio again, animated models excepted.
+
+## Moving assets between packs
+
+Not an export, but the other way work leaves a pack: anything you've made can
+go to another pack, one asset or a whole selection, without generating it a
+second time.
+
+- **One asset** — the **Move to pack** button on its page, or right-click it
+  in the pack grid.
+- **Several** — tick them in the grid (the checkbox appears on hover, top-left
+  of each card) and use **Move to pack** in the bar that comes up. **Select
+  all** takes everything on the tab you're looking at.
+
+Either way you pick an existing pack or name a **new** one, which is created on
+the spot. **Copy** leaves the originals where they are; **Move** doesn't.
+
+A few things are rebuilt rather than carried over, because they're allocated
+per pack and can't be in two at once:
+
+| What | What happens |
+| --- | --- |
+| A model's **carrier** | Reassigned in the new pack. Same kind of carrier where one's free, otherwise the item carrier |
+| A GUI overlay's **characters** | New ones. The title string that opens it changes — re-copy it from the GUI's page |
+| An icon's **character** | Kept, unless another icon in the target pack already uses it |
+| The textures a model **renders with** | Copied along with it, or the model would arrive as a checkerboard |
+
+<Callout type="note" title="Reskins can't sit side by side">
+  A block or item reskin is named after the vanilla thing it replaces, so a
+  pack can only hold one of each. If the target already has that block
+  reskinned, yours is left behind and you're told so. Tick **Overwrite** in the
+  sheet if you meant to replace it.
+</Callout>
 
 ## What's inside the file
 
 {/* The file tree of a real export, one level deep. Full reference lives in
     /developers/pack-layout — link, don't repeat. */}
 
-## Installing it
+## Choosing a Minecraft version
 
-{/* Singleplayer resourcepacks folder; handing it to a server. The plugin
-    path is a link out, not a section. */}
+{/* Only the single-model export asks. The version picker, the minVersion
+    floor and why a model can be refused for a version below it. */}
 
 <CardGroup>
-  {/* Cards to the per-type pages. */}
+  <Card title="Bedrock and Geyser" href="/bedrock" icon="boxes">
+    What converts into the `.mcpack`, and what doesn't.
+  </Card>
+  <Card title="Pack layout reference" href="/developers/pack-layout" icon="wrench">
+    The exported file tree, directory by directory.
+  </Card>
 </CardGroup>
