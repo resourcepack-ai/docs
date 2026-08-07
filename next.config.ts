@@ -35,7 +35,11 @@ const withMDX = createMDX({
       // Build-time syntax highlighting (Shiki). Zero client JS; we
       // override the theme's background in globals.css so code blocks sit
       // on our own surface colour instead of the theme's near-black.
-      ["rehype-pretty-code", { theme: "github-dark-default", keepBackground: false }],
+      // defaultLang catches bare ``` fences (the join address, /permlink,
+      // /link, /sound): without it rehype-pretty-code skips them, they render
+      // as a bare <pre> with none of the figure styling, and the difference
+      // reads as a broken block rather than a choice.
+      ["rehype-pretty-code", { theme: "github-dark-default", keepBackground: false, defaultLang: "text" }],
     ],
   },
 });
