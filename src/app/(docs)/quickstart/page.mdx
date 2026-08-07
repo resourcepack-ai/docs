@@ -23,24 +23,39 @@ Minecraft.
     test. The Studio starts you with a name and banner; use the dice to
     randomize both, or upload your own image.
   </Step>
+  <Step title="Press Add asset">
+    Two choices, in this order. First **how you want to start**:
+
+    | Door | What it is |
+    | --- | --- |
+    | **Generate** | Describe it and the AI makes it |
+    | **Draw** | A blank grid, or a stone cube, and you do the work |
+    | **Upload** | Art you already have |
+
+    Then **what you're making**: Block, Model, Item, GUI, Icon or Sound. Not
+    every type is behind every door, and the reasons are worth knowing:
+
+    - **Sounds are Generate only.** There's nothing to draw, and uploaded
+      audio would need transcoding first.
+    - **GUIs are Draw only.** A screen reskin is drawn over the real vanilla
+      window; the AI never draws one.
+    - **Upload takes blocks, models and icons.**
+
+    The fields under it change with the type: which vanilla block or item
+    you're replacing, a resolution for anything pixel art, a quality tier for
+    a model, an event name for a sound.
+  </Step>
   <Step title="Describe what you want">
-    Say it in a sentence and generate it. Be specific about material and wear,
-    not about pixels:
+    On the Generate door, say it in a sentence. Be specific about material and
+    wear, not about pixels:
 
     > weathered copper roof tiles, blue-green patina, strong diagonal grain
 
-    Seconds later you have a block. The same box makes items, icons and
-    sounds just as quickly. A model is the one that takes minutes rather than
-    seconds: **the builder** plans it and constructs it cube by cube, painting
-    its materials as it goes. Anything pixel art asks for a resolution on the
-    way in: 16, 32, 64 or a custom size.
+    A block, item, icon or sound comes back in seconds. A model takes minutes
+    instead: **the builder** plans it and constructs it cube by cube, painting
+    its materials as it goes, and you can leave the tab while it works.
 
     See [Generating with AI](/generating) for what makes a prompt land.
-
-    <Callout type="note">
-      You can also upload art you already have, or start from a blank grid, if
-      you'd rather draw the whole thing yourself.
-    </Callout>
   </Step>
   <Step title="Edit it">
     Nothing generated is final, and that's the point: generation is a faster
