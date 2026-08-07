@@ -5,6 +5,7 @@ import type { ComponentProps } from "react";
 import { Callout } from "@/components/mdx/callout";
 import { Card, CardGroup } from "@/components/mdx/card";
 import { CodeBlock } from "@/components/mdx/code-block";
+import { Copyable, ServerAddress } from "@/components/mdx/copyable";
 import { Step, Steps } from "@/components/mdx/steps";
 
 /**
@@ -132,6 +133,8 @@ const components: MDXComponents = {
   Callout,
   Card,
   CardGroup,
+  Copyable,
+  ServerAddress,
   Steps,
   Step,
 };
