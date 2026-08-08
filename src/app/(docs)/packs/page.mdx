@@ -1,0 +1,58 @@
+export const metadata = {
+  title: "Packs",
+  description:
+    "The pack is the unit of everything: creating one, managing it, and which Minecraft versions it works on.",
+};
+
+# Packs
+
+A pack is the container for everything you make (models, blocks, items, GUIs,
+icons and sounds), and the unit you test, share and export. Everything in the
+Studio happens inside one.
+
+## Creating one
+
+**New pack** on the dashboard. The Studio starts you with a name and a banner;
+use the dice to randomize both, or upload your own image. Nothing you pick is
+permanent: name and banner change any time.
+
+If what you want already exists as a `.zip`, use
+[Import](/importing) beside it instead: import always creates a new pack from
+the file.
+
+## Managing one
+
+Right-click a pack card (or open its menu) for the full set: **Open**,
+**Rename**, **Duplicate**, **Export**, **Change banner** and **Delete**.
+Duplicate copies the whole pack, assets and all, which is the way to
+experiment on a copy without risking the original.
+
+**Edit pack** also holds one setting that matters once other people are
+involved: whose credits the pack spends, yours or each prompter's own. See
+[Collaborators](/collaborators).
+
+## Where your work lives
+
+Assets are saved as you go, so testing a pack in game is always testing what's
+currently in the editor. There's no build step to remember and nothing to
+re-upload between edits: pushing to a linked player rebuilds and re-applies
+the pack for you, and [exporting](/exporting) zips whatever is current.
+
+## Minecraft versions
+
+Every pack works on a range of Minecraft versions, and the range is derived
+from what's in it rather than set anywhere. The baseline is **1.19.4**. Some
+assets raise that floor:
+
+- A reskin of a block or item that **vanilla added later** needs the version
+  that added it. Pale oak planks can't exist on a version without pale oak.
+- **Item variants** dispatch through item model definitions, which are 1.21.4+.
+- A model using **light emission** needs 1.21.2+.
+
+Each asset shows its own floor as a chip on its page, with the reason spelled
+out; for a model, it names the cubes responsible, so "remove every reference"
+is something you can act on rather than hunt for. The pack's floor is simply
+the highest of its assets', and the pack card shows it as "1.21.4+".
+
+The floor only ever reflects content. Delete or retarget the asset that
+raised it and the pack's range widens again.

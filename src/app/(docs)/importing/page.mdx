@@ -1,0 +1,81 @@
+export const metadata = {
+  title: "Importing a pack",
+  description:
+    "Bring an existing Resource Pack .zip into the Studio: what comes in, what can't, and how the review step works.",
+};
+
+# Importing a pack
+
+**Import**, next to New pack, takes an ordinary Java Resource Pack `.zip` and
+turns it into a pack here, with every texture, model, font, GUI sheet and
+sound it can represent opened up for editing.
+
+Import always **creates a new pack**. It never merges into an existing one,
+because most of what two packs hold would collide; use
+[Moving assets between packs](/moving-assets) afterwards if you want pieces of
+it somewhere else.
+
+## How it runs
+
+<Steps>
+  <Step title="Pick the zip">
+    The archive is opened **in your browser**, and nothing is uploaded at
+    this stage. Real packs run to hundreds of megabytes, and most of that
+    (the parts we can't use, the duplicates) never needs to cross the wire
+    at all.
+  </Step>
+  <Step title="Review what was found">
+    The review screen lists what will come in, and just as deliberately what
+    won't, file by file, with the reason. A pack where 340 of 900 files come
+    in and nothing says where the rest went reads as broken; the report is
+    the answer to that.
+  </Step>
+  <Step title="Approve it">
+    Only now does anything upload. The pack is created and fills in; if you
+    cancel partway, the Studio asks whether to keep or delete what already
+    landed rather than deciding for you.
+  </Step>
+</Steps>
+
+## What comes in
+
+- **Block and item textures**, including everything outside the curated
+  pickers: if the game has a texture by that name, the reskin is accepted.
+- **Block models**, with their textures. Models whose faces point at vanilla
+  textures come in correctly, referencing the real thing.
+- **Icons**, when the pack's font files describe them: the `font/*.json`
+  grid is what lets a glyph sheet be split into individual icons. Capped at
+  256 per import.
+- **GUI sheets** for the screens in our catalog, cut using the known window
+  regions.
+- **Sounds**, when `sounds.json` names them: a sound *is* its event, and the
+  file name alone never says whether an `.ogg` replaces the creeper fuse or
+  adds `custom.laser`. Audio no event names is reported as unreachable
+  rather than imported under a guess. Capped at 64 per import.
+
+**Multi-version packs are handled.** A pack that ships `overlays` for several
+Minecraft versions has the overlay matching its own declared version applied
+over the base; the base files it replaces are reported as superseded, and the
+other versions' trees are set aside rather than mixed in.
+
+## What can't come in
+
+Reported, never silently dropped:
+
+- **Entity, painting and particle sheets.** Their layouts live in the game's
+  own code, not in the pack, so there's no honest way to cut them up.
+- **Core shaders.**
+- **Blockstate and item definition files.** The Studio owns those: carriers
+  and variants are reallocated on export rather than copied through.
+- **Audio that isn't Ogg Vorbis.** Ogg *Opus* has the same extension, plays
+  fine on a desktop, and silently fails in game, so it's caught here with a
+  message instead.
+- **OptiFine extensions.**
+
+## Round-tripping our own export
+
+Importing a pack this Studio exported mostly restores it: geometry, textures,
+per-face art and sounds survive. What doesn't, yet: a model's animations,
+bones and display settings come back as plain geometry, and per-face block
+textures return as ordinary model textures. Keep the original pack around
+rather than treating export-import as a backup loop.
