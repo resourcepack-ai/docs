@@ -206,35 +206,6 @@ export const nav: NavGroup[] = [
       },
     ],
   },
-  {
-    title: "For developers",
-    items: [
-      {
-        title: "Pack layout reference",
-        href: "/developers/pack-layout",
-        description: "The file tree of an exported pack, directory by directory.",
-        keywords: ["files", "tree", "pack.mcmeta", "pack format", "assets"],
-      },
-      {
-        title: "Give commands and carriers",
-        href: "/developers/give-commands",
-        description: "Every carrier kind against every Minecraft command era.",
-        keywords: ["give", "nbt", "components", "block state", "custom model data"],
-      },
-      {
-        title: "Sample code",
-        href: "/developers/sample-code",
-        description: "Paper and Spigot snippets that don't depend on our plugin.",
-        keywords: ["java", "spigot", "paper", "api", "itemstack", "snippet", "code"],
-      },
-      {
-        title: "Example packs",
-        href: "/developers/example-packs",
-        description: "Downloadable packs that each demonstrate one thing.",
-        keywords: ["sample", "example", "demo", "download"],
-      },
-    ],
-  },
 ];
 
 /** Every page in sidebar order — the order the pager walks. */
