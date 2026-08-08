@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Exporting a pack",
   description:
-    "The three things you can export, what lands in the file, and how assets move between packs.",
+    "The two exports, what lands in the file, and how assets move between packs.",
 };
 
 # Exporting a pack
@@ -16,9 +16,8 @@ produces a file you have to handle, so export is for taking the pack
 | --- | --- | --- |
 | **Java pack** | `.zip` | The ordinary Resource Pack. Goes in `resourcepacks`, or to a server host |
 | **Bedrock pack** | `.mcpack` | The same assets converted for Bedrock. Double-click to install |
-| **One model** | `.zip` | A single model and the textures it uses, for handing to somebody else |
 
-All three are built on demand from what's currently in the editor. There's no
+Both are built on demand from what's currently in the editor. There's no
 build step to remember and nothing to re-upload between edits.
 
 <Callout type="warning" title="Animations don't survive a Java export">

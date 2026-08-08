@@ -195,7 +195,7 @@ export const nav: NavGroup[] = [
       {
         title: "Exporting a pack",
         href: "/exporting",
-        description: "The three exports, what's in the file, and moving assets between packs.",
+        description: "The two exports, what's in the file, and moving assets between packs.",
         keywords: [
           "export",
           "download",
