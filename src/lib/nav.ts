@@ -171,12 +171,17 @@ export const nav: NavGroup[] = [
         description: "play.resourcepack.ai — a lobby and a private world of your own.",
         keywords: ["sandbox", "lobby", "portal", "play", "world"],
       },
-      {
-        title: "Your own server",
-        href: "/testing/your-server",
-        description: "Install the plugin, run /link, push packs to your players.",
-        keywords: ["plugin", "spigot", "paper", "sync", "pairing code", "link"],
-      },
+      // "Your own server" is held back from launch (owner call, 2026-08-08).
+      // The page itself is parked at app/(docs)/testing/_your-server — the
+      // underscore keeps Next from routing it. To bring it back: rename the
+      // folder, restore this entry, and re-add the links the removal commit
+      // lists.
+      // {
+      //   title: "Your own server",
+      //   href: "/testing/your-server",
+      //   description: "Install the plugin, run /link, push packs to your players.",
+      //   keywords: ["plugin", "spigot", "paper", "sync", "pairing code", "link"],
+      // },
     ],
   },
   {

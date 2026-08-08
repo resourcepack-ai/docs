@@ -15,8 +15,8 @@ a real Minecraft server before anyone else sees it.
   <Card title="Quickstart" href="/quickstart" icon="rocket">
     Go from an empty pack to a block you can stand next to in game.
   </Card>
-  <Card title="Your own server" href="/testing/your-server" icon="server">
-    Install the plugin, then push packs straight to your own players.
+  <Card title="Our test server" href="/testing/test-server" icon="server">
+    Join play.resourcepack.ai and stand next to what you made.
   </Card>
 </CardGroup>
 
@@ -31,7 +31,6 @@ changes around you.
 | --- | --- | --- |
 | **Studio** | [studio.resourcepack.ai](https://studio.resourcepack.ai) | Your packs, the editors, and AI generation |
 | **Test server** | <ServerAddress /> | A lobby and a private world to try a pack in |
-| **Plugin** | Your own Minecraft server | Receives packs and model items pushed from the Studio |
 
 Nothing here replaces Minecraft's own pack format. What you
 [export](/exporting) is an ordinary Resource Pack, same folders, same JSON,
@@ -67,21 +66,20 @@ See [Animations](/animations).
 
 ## Testing live in Minecraft
 
-Two routes, for two different jobs:
+**Our test server** (<ServerAddress />) gives you a lobby and a private
+sandbox world that's kept between visits. Nothing to install. Best for
+checking how something reads from a few blocks away. You run `/permlink`
+once and never again: after that, Sync is the whole loop. Press it on any
+pack, as often as you want, and it arrives where you're standing.
 
-- **Our test server** (<ServerAddress />) gives you a lobby and a private
-  sandbox world that's kept between visits. Nothing to install. Best for
-  checking how something reads from a few blocks away. You run `/permlink`
-  once and never again: after that, Sync is the whole loop. Press it on any
-  pack, as often as you want, and it arrives where you're standing.
+{/* Held back with the your-server page (2026-08-08) — restore together.
 - **Your own server** runs our plugin, and that's the same thing again on your
   own map. Everything the test server does, it does: pack pushes, placed
   models, the animation engine, sounds and GUIs, all of it. A player runs
   `/link` with a code from the Studio and then it's the same Sync button.
   Best when you want your real world, your real builds, and your friends
   standing in it with you.
-
-Either way: link once, then push as often as you like.
+*/}
 
 <Callout type="note" title="This is for building, not for shipping">
   Linking is how *you* and the people building with you see a pack while it's
