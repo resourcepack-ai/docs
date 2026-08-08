@@ -45,7 +45,9 @@ The Java `.zip` goes in your `resourcepacks` folder:
 ```
 
 A server serves it the ordinary way, from `server.properties`, and that needs
-nothing of ours installed. The `.mcpack` installs itself when opened.
+nothing of ours installed. A Bukkit, Spigot or Paper plugin can do the same
+through the resource pack API, if you'd rather send it per player or swap it
+at runtime. The `.mcpack` installs itself when opened.
 
 There's no runtime dependency on us in any exported file. It keeps working if
 you never open the Studio again, animated models excepted.
