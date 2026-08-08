@@ -14,7 +14,9 @@ export default function NotFound() {
           That page isn&apos;t in the docs
         </h1>
         <p className="text-muted-foreground max-w-md text-[0.95rem] leading-relaxed">
-          It may have been renamed or never existed. Try the sidebar, or hit{" "}
+          It may have been renamed or never existed.
+          <br />
+          Try the sidebar, or hit{" "}
           <kbd className="border-border text-foreground rounded border px-1.5 py-px text-[0.8rem]">
             ⌘K
           </kbd>{" "}
