@@ -50,7 +50,18 @@ export const nav: NavGroup[] = [
         title: "Generating with AI",
         href: "/generating",
         description: "Writing prompts that produce something worth editing.",
-        keywords: ["ai", "builder", "prompt", "iterate", "generate"],
+        keywords: [
+          "ai",
+          "builder",
+          "prompt",
+          "iterate",
+          "generate",
+          "notify",
+          "notification",
+          "email",
+          "discord",
+          "dm",
+        ],
       },
       {
         title: "Models",
@@ -133,12 +144,6 @@ export const nav: NavGroup[] = [
           "event",
           "category",
         ],
-      },
-      {
-        title: "Generation notifications",
-        href: "/notifications",
-        description: "Get told when a model finishes, without watching the tab.",
-        keywords: ["notify", "notification", "email", "discord", "dm", "bot", "ping", "alert"],
       },
       {
         title: "Pack members",
