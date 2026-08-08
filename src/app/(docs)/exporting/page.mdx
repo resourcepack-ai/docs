@@ -1,10 +1,10 @@
 export const metadata = {
-  title: "Exporting a pack",
+  title: "Exporting",
   description:
-    "The two exports, what lands in the file, and how assets move between packs.",
+    "The two exports, what lands in the file, and how to install it.",
 };
 
-# Exporting a pack
+# Exporting
 
 You never have to export to test a pack. Pushing to a linked player never
 produces a file you have to handle, so export is for taking the pack
@@ -52,44 +52,7 @@ at runtime. The `.mcpack` installs itself when opened.
 There's no runtime dependency on us in any exported file. It keeps working if
 you never open the Studio again, animated models excepted.
 
-## Moving assets between packs
-
-Not an export, but the other way work leaves a pack: anything you've made can
-go to another pack, one asset or a whole selection, without generating it a
-second time.
-
-- **One asset**: the **Move to pack** button on its page, or right-click it
-  in the pack grid.
-- **Several**: tick them in the grid (the checkbox appears on hover, top-left
-  of each card) and use **Move to pack** in the bar that comes up. **Select
-  all** takes everything on the tab you're looking at.
-
-Either way you pick an existing pack or name a **new** one, which is created on
-the spot. **Copy** leaves the originals where they are; **Move** doesn't.
-
-A few things are rebuilt rather than carried over, because they're allocated
-per pack and can't be in two at once:
-
-| What | What happens |
-| --- | --- |
-| A model's **carrier** | Reassigned in the new pack. Same kind of carrier where one's free, otherwise the item carrier |
-| A GUI overlay's **characters** | New ones. The title string that opens it changes; re-copy it from the GUI's page |
-| An icon's **character** | Kept, unless another icon in the target pack already uses it |
-| The textures a model **renders with** | Copied along with it, or the model would arrive as a checkerboard |
-
-<Callout type="note" title="Reskins can't sit side by side">
-  A block or item reskin is named after the vanilla thing it replaces, so a
-  pack can only hold one of each. If the target already has that block
-  reskinned, yours is left behind and you're told so. Tick **Overwrite** in the
-  sheet if you meant to replace it.
-</Callout>
-
 ## What's inside the file
 
 {/* The file tree of a real export, one level deep. Full reference lives in
     /developers/pack-layout — link, don't repeat. */}
-
-## Choosing a Minecraft version
-
-{/* Only the single-model export asks. The version picker, the minVersion
-    floor and why a model can be refused for a version below it. */}
