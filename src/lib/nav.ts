@@ -179,7 +179,7 @@ export const nav: NavGroup[] = [
         keywords: ["pack", "create", "rename", "duplicate", "delete", "banner", "version", "1.19", "1.21"],
       },
       {
-        title: "Importing a pack",
+        title: "Importing",
         href: "/importing",
         description: "Bring an existing Resource Pack .zip in, with a review of what converts.",
         keywords: ["import", "zip", "upload pack", "existing pack", "convert", "overlay"],
