@@ -138,12 +138,18 @@ gradient, or a real Minecraft sky with a grass ground), frame or spin the
 model, and capture a PNG. Transparent backdrops produce genuinely transparent
 captures, which is what you want for a Discord post or a shop listing.
 
-## Importing from Blockbench
+## Importing a model
 
-A `.bbmodel` upload keeps its element names, its groups (which arrive as
-bones) and its animations, so a rigged Blockbench model comes in ready to
-animate rather than as bare geometry. A model too big for Minecraft's legal
-model box is scaled down to fit automatically.
+Two formats upload:
+
+- **`.bbmodel`** (Blockbench) keeps its element names, its groups (which
+  arrive as bones), its animations and its embedded textures, so a rigged
+  Blockbench model comes in ready to animate rather than as bare geometry.
+- **`.json`** (a vanilla block model) is the format an exported pack already
+  uses, so it goes straight in as geometry.
+
+A model too big for Minecraft's legal model box is scaled down to fit
+automatically.
 
 <Callout type="warning">
   Cubes only. The vanilla model format has no meshes, so mesh geometry can't
