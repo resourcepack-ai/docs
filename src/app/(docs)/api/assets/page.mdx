@@ -58,6 +58,23 @@ Three statuses, and only two of them are terminal:
   to gain either.
 </Callout>
 
+### Polling always terminates
+
+Nothing stays `generating` forever, so a loop that waits for the status to
+change is safe to write.
+
+| | |
+| --- | --- |
+| **Image generation** | Each call to the image model is given 150 seconds |
+| **The whole run** | 10 minutes, after which it's stopped |
+| **Models** | Much longer — up to an hour, since the builder works cube by cube |
+| **Backstop** | A run that dies without recording anything reads as `error` after 15 minutes, or 45 for a model |
+
+That last row is the one to know about. If the machinery running a generation
+disappears mid-flight, there's nobody left to write down that it failed — so a
+job that has sat untouched past the cutoff is reported as `error` rather than
+left pending. The credit for it is released, and retrying is a new job.
+
 There's no jobs table behind this, which is worth knowing because it explains
 the handle's shape: the asset row *is* the job record. It's written the moment
 you're accepted, carries the status and the error, and outlives the run — so a
