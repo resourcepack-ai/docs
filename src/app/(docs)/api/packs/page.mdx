@@ -1,0 +1,139 @@
+export const metadata = {
+  title: "Packs (API)",
+  description: "Create a pack from your own code, and list the ones a key can reach.",
+};
+
+# Packs
+
+A pack is the container for everything else, so it's the first call you make.
+Every generation endpoint writes into one.
+
+## List packs
+
+```
+GET /api/v1/packs
+```
+
+Everything this key can reach — packs you own and packs somebody added you to,
+in one list with a `role` on each.
+
+```bash
+curl https://api.resourcepack.ai/api/v1/packs \
+  -H "Authorization: Bearer $RPAI_KEY"
+```
+
+```json
+{
+  "packs": [
+    {
+      "slug": "medieval-keep",
+      "name": "Medieval Keep",
+      "minecraftVersion": "1.20.1",
+      "role": "owner",
+      "createdAt": "2026-08-01T09:12:44.000Z",
+      "updatedAt": "2026-08-10T16:02:11.000Z",
+      "assetCounts": { "textures": 42, "models": 7, "icons": 3, "sounds": 1 }
+    }
+  ]
+}
+```
+
+**The `slug` is the pack's id**, and it's what every other path wants. `role`
+is `owner` or `collaborator`; a collaborator's grant may not cover everything,
+in which case the call that needs it answers 403. See
+[Collaborators](/collaborators).
+
+## Get one pack
+
+```
+GET /api/v1/packs/{pack}
+```
+
+The same object plus `minVersion` — the oldest Minecraft version this pack's
+contents will actually load on, worked out from what's in it rather than from
+what the pack is nominally set to.
+
+```json
+{
+  "pack": {
+    "slug": "medieval-keep",
+    "name": "Medieval Keep",
+    "minecraftVersion": "1.20.1",
+    "minVersion": "1.21.4",
+    "role": "owner",
+    "assetCounts": { "textures": 42, "models": 7, "icons": 3, "sounds": 1 }
+  }
+}
+```
+
+## Create a pack
+
+```
+POST /api/v1/packs
+```
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| **name** | string | Required. Up to 100 characters. |
+
+```bash
+curl -X POST https://api.resourcepack.ai/api/v1/packs \
+  -H "Authorization: Bearer $RPAI_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Medieval Keep"}'
+```
+
+Answers **201** with the same pack object. The slug is derived from the name
+and made unique — read it from the response rather than guessing it, because
+a second "Medieval Keep" doesn't get the slug you'd predict.
+
+<Callout type="note" title="No banner here">
+  The Studio's own create dialog also takes a banner image, which is why it's a
+  multipart form there and plain JSON here. Set a banner from the app if you
+  want one; it's cosmetic and nothing in the API reads it.
+</Callout>
+
+Starter accounts can't reach the API at all, but paid plans still have a pack
+limit — hitting it answers 403 `pack_limit_reached`.
+
+## List what's in a pack
+
+```
+GET /api/v1/packs/{pack}/assets
+```
+
+| Query | Notes |
+| --- | --- |
+| **kind** | Optional. One of `texture`, `model`, `font`, `sound`. |
+| **limit** | 1–200, default 50. |
+| **cursor** | From the previous response's `nextCursor`. |
+
+```json
+{
+  "assets": [
+    {
+      "id": "medieval-keep:texture:mossy_bricks",
+      "kind": "texture",
+      "name": "mossy_bricks",
+      "status": "ready",
+      "displayName": "Mossy Bricks",
+      "prompt": "damp mossy stone bricks, deep green in the mortar",
+      "error": null,
+      "sizeBytes": 1284,
+      "updatedAt": "2026-08-10T16:02:11.000Z"
+    }
+  ],
+  "nextCursor": null
+}
+```
+
+Page until `nextCursor` is `null`. An asset's `id` is also its
+[job handle](/api/assets), so this listing is how you find the handle for
+something generated in an earlier run.
+
+<Callout type="warning" title="Kinds don't map one-to-one onto the app's words">
+  There are four kinds in the data, and six things you can generate. Item
+  sprites and GUI sheets are both stored as `texture`, under a prefixed name
+  (`item:sword`, `gui:hud`), and icons are stored as `font`. A 3D item is a
+  `model`. [Generating](/api/generating) says which each endpoint produces.
+</Callout>

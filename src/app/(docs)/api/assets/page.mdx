@@ -1,0 +1,145 @@
+export const metadata = {
+  title: "Jobs and assets (API)",
+  description: "Poll a generation to completion, fetch the file it produced, and export the pack.",
+};
+
+# Jobs and assets
+
+Generation hands you a job handle. This is what you do with it.
+
+## Poll a job
+
+```
+GET /api/v1/jobs/{job}
+```
+
+A handle looks like `medieval-keep:texture:mossy_bricks` — pack, kind, name.
+It comes back from every generation endpoint as `job`, and it's also an
+asset's `id` in the [asset listing](/api/packs#list-whats-in-a-pack), so you
+can pick up something generated in an earlier run.
+
+```bash
+curl "https://api.resourcepack.ai/api/v1/jobs/medieval-keep:texture:mossy_bricks" \
+  -H "Authorization: Bearer $RPAI_KEY"
+```
+
+```json
+{
+  "job": "medieval-keep:texture:mossy_bricks",
+  "pack": "medieval-keep",
+  "status": "ready",
+  "error": null,
+  "asset": {
+    "id": "medieval-keep:texture:mossy_bricks",
+    "kind": "texture",
+    "name": "mossy_bricks",
+    "status": "ready",
+    "displayName": "Mossy Bricks",
+    "prompt": "damp mossy stone bricks, deep green in the mortar",
+    "error": null,
+    "sizeBytes": 1284,
+    "updatedAt": "2026-08-10T16:02:11.000Z"
+  }
+}
+```
+
+Three statuses, and only two of them are terminal:
+
+| `status` | Meaning |
+| --- | --- |
+| **generating** | Still running. Keep polling. |
+| **ready** | Done. Fetch the file. |
+| **error** | Failed. `error` says why, and the credit has been refunded. |
+
+<Callout type="tip" title="How often to poll">
+  Every couple of seconds is plenty. Blocks, items, icons and sounds come back
+  in seconds; a model takes minutes and occasionally tens of minutes, so back
+  off rather than hammering — there's no rate limit to hit, but there's nothing
+  to gain either.
+</Callout>
+
+There's no jobs table behind this, which is worth knowing because it explains
+the handle's shape: the asset row *is* the job record. It's written the moment
+you're accepted, carries the status and the error, and outlives the run — so a
+handle stays resolvable long after the generation finished.
+
+## Fetch the file
+
+```
+GET /api/v1/packs/{pack}/assets/{kind}/{name}
+```
+
+Answers the asset's own bytes with the right content type: PNG for textures and
+icons, JSON for models, Ogg Vorbis for sounds.
+
+```bash
+curl "https://api.resourcepack.ai/api/v1/packs/medieval-keep/assets/texture/mossy_bricks" \
+  -H "Authorization: Bearer $RPAI_KEY" \
+  -o mossy_bricks.png
+```
+
+Remember the prefixed names for items and GUIs:
+
+```
+/assets/texture/item:rusted_key
+/assets/texture/gui:hud
+/assets/font/heart_icon
+/assets/sound/custom.gate_open
+/assets/model/lantern
+```
+
+Asking before it's ready answers **409 `still_generating`** rather than handing
+back the placeholder that's sitting there while it generates — a blank PNG that
+looked like a result would be the one genuinely misleading answer available.
+A failed asset answers **409 `generation_failed`**.
+
+## Export the pack
+
+```
+GET /api/v1/packs/{pack}/export
+```
+
+The finished Java `.zip`, exactly what the Studio's Export button produces.
+
+```bash
+curl "https://api.resourcepack.ai/api/v1/packs/medieval-keep/export" \
+  -H "Authorization: Bearer $RPAI_KEY" \
+  -o medieval-keep.zip
+```
+
+Zipping happens on request rather than being kept warm, so this call is slower
+than the others on a large pack. There's no runtime dependency on us in the
+file — see [Exporting](/exporting), including the one exception, animated
+models, which need our plugin to play back.
+
+Bedrock `.mcpack` export isn't in the API yet.
+
+## A full loop
+
+Create, generate, wait, download:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+API=https://api.resourcepack.ai/api/v1
+AUTH="Authorization: Bearer $RPAI_KEY"
+
+pack=$(curl -s -X POST "$API/packs" -H "$AUTH" -H 'Content-Type: application/json' \
+  -d '{"name":"Script Test"}' | jq -r .pack.slug)
+
+job=$(curl -s -X POST "$API/packs/$pack/textures" -H "$AUTH" -H 'Content-Type: application/json' \
+  -d '{"prompt":"cracked obsidian with faint purple veins","mode":"vanilla","vanillaTarget":"stone","size":16}' \
+  | jq -r .job)
+
+until [ "$(curl -s "$API/jobs/$job" -H "$AUTH" | jq -r .status)" != "generating" ]; do
+  sleep 2
+done
+
+curl -s "$API/packs/$pack/export" -H "$AUTH" -o "$pack.zip"
+```
+
+<Callout type="warning" title="Check the status you stopped on">
+  That loop exits on `ready` **or** `error`. In real code, read the status
+  rather than assuming success — a failed generation refunds the credit and
+  leaves the asset in the pack with an error on it.
+</Callout>

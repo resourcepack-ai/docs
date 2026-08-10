@@ -1,0 +1,193 @@
+export const metadata = {
+  title: "Generating (API)",
+  description: "The six generation endpoints, their fields, and what each one produces.",
+};
+
+# Generating
+
+Six endpoints, one shape. Each takes a prompt and whatever that kind of asset
+needs, and each answers **202** with a job handle.
+
+```json
+{
+  "id": "mossy_bricks",
+  "status": "generating",
+  "pack": "medieval-keep",
+  "kind": "texture",
+  "job": "medieval-keep:texture:mossy_bricks"
+}
+```
+
+Poll `job` until it's `ready` — see [Jobs and assets](/api/assets). The credit
+is taken when the job is accepted and refunded automatically if it fails.
+
+Prompt advice is the same as in the app, and it's the part that decides whether
+any of this is worth running: [Generating with AI](/generating).
+
+## Shared fields
+
+Every generation endpoint except sounds accepts these:
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| **prompt** | string | Required. What you want. |
+| **referenceId** | string | A reference image previously uploaded in the Studio. |
+| **referenceStrength** | number | 0.05–1, clamped. How closely to follow the reference. |
+
+<Callout type="note" title="Reference images are upload-first">
+  There's no API endpoint for uploading one yet, so `referenceId` is only
+  useful for a reference that already exists. Ask in
+  [Discord](https://resourcepack.ai/discord) if you need this.
+</Callout>
+
+## Blocks
+
+```
+POST /api/v1/packs/{pack}/textures
+```
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| **size** | integer | Required. 16–128. |
+| **mode** | string | Required. `vanilla` to replace a block, `custom` for a new one. |
+| **vanillaTarget** | string | Required when `mode` is `vanilla` — e.g. `stone`. |
+| **name** | string | Your label for it. |
+| **description** | string | Required when `mode` is `custom`. |
+| **faceSlot** | string | One face only: `top`, `bottom` or `side`. Needs a `vanillaTarget`. |
+
+```bash
+curl -X POST https://api.resourcepack.ai/api/v1/packs/medieval-keep/textures \
+  -H "Authorization: Bearer $RPAI_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "prompt": "damp mossy stone bricks, deep green in the mortar",
+        "mode": "vanilla",
+        "vanillaTarget": "stone_bricks",
+        "size": 32
+      }'
+```
+
+Produces a `texture`. See [Blocks](/blocks) for what a block texture becomes in
+a pack, and why 16 is usually the right size.
+
+## Models
+
+```
+POST /api/v1/packs/{pack}/models
+```
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| **name** | string | Your label. Falls back to the prompt. |
+| **carrierKind** | string | `item` (default), `full` or `partial` — how it's placed in game. |
+| **directional** | boolean | Whether it faces the way you placed it. |
+| **carrierBlockId** | string | A specific vanilla block to carry it. Decides `directional` on its own. |
+
+```bash
+curl -X POST https://api.resourcepack.ai/api/v1/packs/medieval-keep/models \
+  -H "Authorization: Bearer $RPAI_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"a wrought iron street lantern with a candle inside","name":"lantern"}'
+```
+
+Produces a `model`. **This is the slow one** — the builder plans the model and
+constructs it cube by cube, which takes minutes rather than seconds. Poll
+accordingly. See [Models](/models).
+
+## Items
+
+```
+POST /api/v1/packs/{pack}/items
+```
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| **target** | string \| null | A vanilla item to reskin, or `null`/omitted for a new item. |
+| **shape** | string | `2d` (default) for a sprite, `3d` for real geometry. |
+| **size** | integer | 16–128, 2D only. |
+| **name** | string | Required in spirit for custom items — falls back to the prompt. |
+| **variant** | boolean | A custom-model-data variant of `target`. Needs Minecraft 1.21.4+. |
+
+```bash
+curl -X POST https://api.resourcepack.ai/api/v1/packs/medieval-keep/items \
+  -H "Authorization: Bearer $RPAI_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"a rusted iron key with a heart-shaped bow","target":null}'
+```
+
+Produces a `texture` named `item:<name>` for a 2D sprite, or a `model` for a 3D
+one — the response's `kind` and `job` tell you which. Reskinning a vanilla item
+that this pack already reskins answers **409**; change it in the Studio instead
+of overwriting it blind. See [Items](/items).
+
+## GUIs
+
+```
+POST /api/v1/packs/{pack}/guis
+```
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| **target** | string | Required. The vanilla screen to reskin, e.g. `chest`. |
+| **name** | string | Your label. |
+| **elements** | array | Up to 6 generated buttons/icons drawn over the panel. |
+| **texts** | array | Up to 12 lines of text, drawn from the vanilla font. |
+| **drawSlots** | boolean | Draw the item slot boxes. Default false. |
+| **includePlayerInventory** | boolean | Extend the restyle to the inventory. Default false. |
+
+Each element is `{ slot, wSlots, hSlots, prompt, kind }` — `slot` is an index
+into that screen's slots, sizes are 1–4 slots per side, and `kind` is `artwork`
+or `icon`. Each text is
+`{ text, x, y, color, scale, shadow, align }`, positioned in sheet pixels
+inside 256×256.
+
+**Elements are the field that decides what a request costs** — each is its own
+image call, which is why they're capped at six. Text is free.
+
+Produces a `texture` named `gui:<name>`. See [GUIs](/guis).
+
+## Icons
+
+```
+POST /api/v1/packs/{pack}/icons
+```
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| **height** | integer | Required. 1–256. |
+| **width** | integer | Optional. Square if omitted. |
+| **name** | string | Your label. |
+| **char** | string | Pin it to a specific character instead of an assigned codepoint. |
+
+Produces a `font`. See [Icons](/icons) for how a glyph reaches chat and signs.
+
+## Sounds
+
+```
+POST /api/v1/packs/{pack}/sounds
+```
+
+Sounds take no reference image.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| **event** | string | Required. The event name — this is the feature; see below. |
+| **name** | string | Your label. |
+| **category** | string | `master`, `music`, `record`, `weather`, `block`, `hostile`, `neutral`, `player`, `ambient`, `voice`. |
+| **subtitle** | string | The subtitle shown with the sound. |
+| **durationSeconds** | number | 0.5–30. Omit to let the model choose. |
+| **promptInfluence** | number | 0–1. |
+| **loop** | boolean | Whether it's meant to loop seamlessly. |
+| **takeCount** | integer | 1–10, default 4. Each take is a separate call and costs accordingly. |
+
+```bash
+curl -X POST https://api.resourcepack.ai/api/v1/packs/medieval-keep/sounds \
+  -H "Authorization: Bearer $RPAI_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"a heavy iron door dragging open","event":"custom.gate_open","takeCount":2}'
+```
+
+**The event name is the whole feature.** `entity.creeper.primed` replaces the
+creeper fuse; `custom.gate_open` is a new event you fire by command. A
+malformed one is refused rather than silently corrected, because the name is
+what decides what the sound does. Produces a `sound`. See [Sounds](/sounds).
