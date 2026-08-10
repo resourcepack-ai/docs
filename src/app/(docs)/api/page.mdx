@@ -66,6 +66,30 @@ logs, browser history and `Referer` headers, so it isn't accepted.
   the same card the moment you think it's out.
 </Callout>
 
+## History
+
+Every key keeps a record of what it did. Press **History** on a key in the
+account page to see it: each generation, pack creation and export, with what it
+cost.
+
+| Recorded | Not recorded |
+| --- | --- |
+| Generating anything | Polling a job |
+| Creating a pack | Listing packs or assets |
+| Exporting a pack | Downloading an asset file |
+
+The split is on purpose. You're told to poll every couple of seconds and a
+model takes minutes, so logging every request would bury the four lines that
+matter under a hundred saying "still generating".
+
+Credits are the amount **actually settled**, not what was reserved up front —
+so a generation that failed and refunded shows no cost at all, and a long model
+run shows its real price once it lands.
+
+Revoking a key keeps its history. That's the point: the question after a leak
+is what the key did, and deleting the answer with the key would be the wrong
+way round.
+
 ## Generation is asynchronous
 
 Nothing generates inside a request. A block takes seconds and a model can take
