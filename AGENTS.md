@@ -112,14 +112,27 @@ A page is `src/app/(docs)/<path>/page.mdx`, routed by folder like any other
 Next page. There's no CMS and no runtime markdown compilation — MDX is
 compiled at build time by `@next/mdx`.
 
-**Adding a page is two steps, and the second one is not optional:**
+**Adding a page is three steps, and none of them is optional:**
 
 1. create `src/app/(docs)/<path>/page.mdx` with a `metadata` export and an `h1`
 2. add an entry to `src/lib/nav.ts`
+3. add the same page to `../landing/src/app/llms.txt/route.ts`
 
 `nav.ts` is the single source of truth for the sidebar, the ⌘K search index,
 the prev/next pager and the group label above each page title. A page that
 exists but isn't listed is reachable by URL and invisible everywhere else.
+
+Step 3 is in **another app**, which is why it's written down here rather than
+being obvious: `landing` serves `/llms.txt`, the llmstxt.org file that tells an
+assistant which of our URLs are worth reading, and its link list is a hand-kept
+mirror of `nav.ts`. It has to live there because the convention is only
+recognised at the root of a host and this app is a path route under landing's
+apex — the same reason there's no `robots.ts` here. **Any change to what routes
+exist belongs in that file**: a new page, a renamed segment, a deleted one. The
+whole point of the file is being trustworthy about which links resolve, and a
+crawler that finds a 404 there has no way to tell us. Prose descriptions in it
+don't have to match `nav.ts` word for word — it's written for a model reading
+the file cold, not for our sidebar — but the URLs and the set of pages do.
 
 The components a page can use without importing anything — `Callout`, `Card`,
 `CardGroup`, `Steps`, `Step` — are registered in `src/mdx-components.tsx`;
@@ -212,7 +225,9 @@ What that costs you when working here:
 - **There is no `robots.ts` here, on purpose.** A robots.txt is only honoured
   at the root of a host and this app no longer owns one; `landing`'s
   `robots.ts` lists this app's sitemap. If the docs move again, that line
-  moves too.
+  moves too. **`/llms.txt` is over there for the same reason** and links to
+  every page here by hand — see step 3 of adding a page, above; if the docs
+  move, its URLs all move with them.
 
 **`docs.resourcepack.ai` is gone**, and isn't coming back. It was this app's
 original home, kept for a few hours as a permanent redirect before being
