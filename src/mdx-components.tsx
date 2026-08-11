@@ -6,6 +6,7 @@ import { Callout } from "@/components/mdx/callout";
 import { Card, CardGroup } from "@/components/mdx/card";
 import { CodeBlock } from "@/components/mdx/code-block";
 import { Copyable, ServerAddress } from "@/components/mdx/copyable";
+import { ApiBaseUrl, Endpoint } from "@/components/mdx/endpoint";
 import { Step, Steps } from "@/components/mdx/steps";
 
 /**
@@ -143,6 +144,11 @@ const components: MDXComponents = {
   ServerAddress,
   Steps,
   Step,
+  // The API reference: rendered from src/openapi.json, which studio generates
+  // from the routes themselves. Pages supply the prose; these supply every
+  // type, bound and enum.
+  Endpoint,
+  ApiBaseUrl,
 };
 
 export function useMDXComponents(): MDXComponents {
