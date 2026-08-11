@@ -30,18 +30,12 @@ Branch on `code`, never on `message` — the wording can change, the code won't.
 | **403** | `forbidden` | Valid key, but not this action in this pack |
 | **403** | `pack_limit_reached` | Your plan's pack limit |
 | **403** | `asset_limit_reached` | This pack's asset limit |
-| **404** | `not_found` | No such pack, asset or job — **or one that isn't yours** |
+| **404** | `not_found` | No such pack, asset or job |
 | **409** | `still_generating` | You asked for an asset's bytes before it was ready |
 | **409** | `generation_failed` | That asset's generation failed |
 | **503** | `unavailable` | The feature behind this endpoint is switched off |
 
 Each endpoint lists the codes it can actually answer, under **Error codes**.
-
-<Callout type="note" title="404 is deliberate for other people's packs">
-  A pack you have no relationship with answers 404, not 403 — the same as one
-  that doesn't exist. Telling the difference would leak which pack names are
-  taken.
-</Callout>
 
 ## Credits and failures
 
