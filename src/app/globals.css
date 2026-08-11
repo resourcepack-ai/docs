@@ -138,6 +138,23 @@
     }
 }
 
+/* The one animation copied over from studio, and copied rather than shared for
+   the same reason the tokens above are: there's no package between the two
+   apps. Every modal in studio opens with `[animation:rpin_.22s_ease]`, so the
+   "Try it" dialog here uses the identical name, curve and duration — a docs
+   modal that opened differently would read as a different product. If studio's
+   modal entrance changes, change this too; nothing will warn you. */
+@keyframes rpin {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* ---------------------------------------------------------------------------
    Code.
 
