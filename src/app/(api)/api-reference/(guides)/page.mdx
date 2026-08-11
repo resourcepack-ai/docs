@@ -1,0 +1,94 @@
+export const metadata = {
+  title: "API overview",
+  description: "Authenticate with a key, generate from your own code, and poll for the result.",
+};
+
+# API overview
+
+Everything the Studio does to a pack, your own code can do too: create a pack,
+generate blocks, models, items, GUIs, icons and sounds into it, and download the
+finished `.zip`.
+
+<Callout type="note" title="On a paid plan">
+  API keys are available on any paid plan. Calls spend the same AI Credits the
+  app does — there's no separate API pricing and no per-request charge.
+</Callout>
+
+## Base URL
+
+<ApiBaseUrl />
+
+That host serves the API and nothing else. Every path in this reference is
+relative to it.
+
+## Get a key
+
+<Steps>
+  <Step title="Open your account page">
+    [studio.resourcepack.ai/account](https://studio.resourcepack.ai/account),
+    then find the **API keys** card. It sits just under Bring Your Own Key —
+    which is a different thing entirely, and worth not confusing: BYOK is a key
+    *you* bring so model generations bill to your OpenAI account. This is a key
+    *we* give you so your code can call us.
+  </Step>
+  <Step title="Name it and create it">
+    The name is only for telling keys apart later, so use the thing it's for —
+    `ci`, `my bot`, `laptop`.
+  </Step>
+  <Step title="Copy it immediately">
+    **The key is shown once and never again.** We store a hash of it, not the
+    key, so there is no way for us to show it to you a second time — if you lose
+    it, revoke it and make another.
+  </Step>
+</Steps>
+
+Keys look like `rpai_` followed by 43 random characters. The prefix is there so
+a key that leaks into a commit or a log is easy to search for.
+
+## Authenticate
+
+Send the key as a bearer token:
+
+```bash
+curl https://api.resourcepack.ai/api/v1/packs \
+  -H "Authorization: Bearer rpai_YOUR_KEY"
+```
+
+There's no other way to send it. A key in a query string ends up in access logs,
+browser history and `Referer` headers, so it isn't accepted.
+
+<Callout type="warning" title="A key is your whole account">
+  It can read, generate into and export every pack you own or collaborate on,
+  and it spends your credits. Keep it server-side — never in a Minecraft plugin,
+  a browser bundle, or anything you hand to a player. Revoke it from the same
+  card the moment you think it's out.
+</Callout>
+
+## Rate limits
+
+There aren't any. Credits are the throttle: a generation you can't afford is
+refused with a 402, and everything else is cheap enough not to meter. Be
+sensible when polling — see [Jobs and polling](/api-reference/jobs).
+
+## What's not here
+
+The API covers creating packs, generating into them, and getting assets back
+out. It deliberately doesn't cover editing pixels or geometry, iterating on an
+existing asset, deleting things, pack settings, collaborators or syncing to a
+server — those live in the Studio. If you need one of them programmatically,
+say so in [Discord](https://resourcepack.ai/discord).
+
+<CardGroup cols={2}>
+  <Card title="Errors" href="/api-reference/errors" icon="wrench">
+    The envelope, and every code worth branching on.
+  </Card>
+  <Card title="Jobs and polling" href="/api-reference/jobs" icon="rocket">
+    Why generation is asynchronous, and how to wait properly.
+  </Card>
+  <Card title="Create a pack" href="/api-reference/create-pack" icon="wallet">
+    The first call you'll make.
+  </Card>
+  <Card title="Generating with AI" href="/generating" icon="brush">
+    What makes a prompt land. Applies equally here.
+  </Card>
+</CardGroup>

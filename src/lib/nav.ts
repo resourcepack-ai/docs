@@ -218,71 +218,6 @@ export const nav: NavGroup[] = [
       },
     ],
   },
-  {
-    title: "API",
-    items: [
-      {
-        title: "API overview",
-        href: "/api",
-        description: "Authenticate with a key, generate from your own code, poll for the result.",
-        keywords: [
-          "api",
-          "rest",
-          "http",
-          "key",
-          "api key",
-          "token",
-          "bearer",
-          "auth",
-          "curl",
-          "programmatic",
-          "automate",
-          "script",
-          "integration",
-          "error",
-          "rate limit",
-        ],
-      },
-      {
-        title: "Packs (API)",
-        href: "/api/packs",
-        description: "Create a pack from code, and list the ones a key can reach.",
-        keywords: ["api packs", "create pack api", "list packs", "slug", "assets", "pagination"],
-      },
-      {
-        title: "Generating (API)",
-        href: "/api/generating",
-        description: "The six generation endpoints, their fields, and what each produces.",
-        keywords: [
-          "api generate",
-          "generate endpoint",
-          "textures api",
-          "models api",
-          "items api",
-          "gui api",
-          "icons api",
-          "sounds api",
-          "post",
-        ],
-      },
-      {
-        title: "Jobs and assets (API)",
-        href: "/api/assets",
-        description: "Poll a generation to completion, fetch the file, export the pack.",
-        keywords: [
-          "job",
-          "polling",
-          "poll",
-          "status",
-          "async",
-          "download asset",
-          "export api",
-          "zip api",
-          "webhook",
-        ],
-      },
-    ],
-  },
 ];
 
 /** Every page in sidebar order — the order the pager walks. */
@@ -305,6 +240,10 @@ export function navNeighbours(href: string): {
 export function navGroupOf(href: string): string | undefined {
   return nav.find((group) => group.items.some((item) => item.href === href))?.title;
 }
+
+// The API Reference is NOT here. It is a separate top-level section with its
+// own tree (lib/api-nav.ts), derived from the spec rather than hand-listed —
+// see SectionTabs for why the two are split rather than grouped.
 
 /** Off-site links in the top bar. */
 export const externalLinks = [
