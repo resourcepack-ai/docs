@@ -34,6 +34,8 @@ export interface ParameterRow {
 
 export interface Operation {
   id: string;
+  /** False when a feature flag has this endpoint switched off (x-available). */
+  available: boolean;
   method: string;
   path: string;
   summary: string;
@@ -52,6 +54,7 @@ interface RawParameter {
 }
 
 interface RawOperation {
+  "x-available"?: boolean;
   operationId: string;
   summary: string;
   description: string;
@@ -88,6 +91,8 @@ function toOperation(method: string, path: string, raw: RawOperation): Operation
   const parameters = raw.parameters ?? [];
   return {
     id: raw.operationId,
+    // Absent means available — only a switched-off endpoint carries the flag.
+    available: raw["x-available"] !== false,
     method: method.toUpperCase(),
     path,
     summary: raw.summary,
