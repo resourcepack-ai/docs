@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 import { DocsSearch } from "@/components/docs-search";
 import { NavTree } from "@/components/nav-tree";
+import { SectionTabs } from "@/components/section-tabs";
 import { externalLinks } from "@/lib/nav";
 import { asset } from "@/lib/base-path";
 
@@ -37,7 +38,7 @@ export function SiteHeader() {
 
   return (
     <header className="border-border bg-background/85 fixed inset-x-0 top-0 z-40 h-(--topbar-h) border-b backdrop-blur-md">
-      <div className="mx-auto flex h-full max-w-[100rem] items-center gap-3 px-4 sm:px-6">
+      <div className="mx-auto flex h-(--topbar-row-h) max-w-[100rem] items-center gap-3 px-4 sm:px-6">
         <button
           type="button"
           onClick={() => setMenuOpen((open) => !open)}
@@ -97,6 +98,16 @@ export function SiteHeader() {
               </a>
             ))}
           </nav>
+        </div>
+      </div>
+
+      {/* The section switcher, on its own row and aligned with the sidebar
+          below it — the same place mclicense and Mintlify put it, for the same
+          reason: it reads as "which of two manuals am I in", not as another
+          link in the toolbar. */}
+      <div className="border-border/60 border-t">
+        <div className="mx-auto max-w-[100rem] px-4 sm:px-6">
+          <SectionTabs />
         </div>
       </div>
 

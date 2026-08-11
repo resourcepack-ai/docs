@@ -5,7 +5,15 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { flatNav, type NavItem } from "@/lib/nav";
+import { flatApiNav } from "@/lib/api-nav";
+
 import { cn } from "@/lib/utils";
+
+// Both trees, because ⌘K is the one place a reader shouldn't have to know which
+// of the two sections a page lives in — that's the cost of splitting them, and
+// this is what pays it. Module scope: both lists are static, so this is built
+// once rather than per mount.
+const searchable: NavItem[] = [...flatNav, ...flatApiNav];
 
 /**
  * ⌘K palette over the nav manifest.
@@ -27,8 +35,8 @@ export function DocsSearch() {
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return flatNav;
-    return flatNav.filter((item) =>
+    if (!q) return searchable;
+    return searchable.filter((item) =>
       [item.title, item.description ?? "", ...(item.keywords ?? [])]
         .join(" ")
         .toLowerCase()
@@ -179,7 +187,7 @@ export function DocsSearch() {
               <span>↑↓ to navigate</span>
               <span>↵ to open</span>
               <span className="ml-auto">
-                {results.length} of {flatNav.length} pages
+                {results.length} of {searchable.length} pages
               </span>
             </div>
           </div>

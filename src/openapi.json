@@ -80,6 +80,89 @@
             "description": "The packs this key can reach.",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "packs": {
+                      "type": "array",
+                      "description": "Owned and shared packs together, told apart by `role`.",
+                      "items": {
+                        "type": "object",
+                        "description": "One pack.",
+                        "properties": {
+                          "slug": {
+                            "type": "string",
+                            "description": "The pack's id. Every other path takes this."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Its display name."
+                          },
+                          "minecraftVersion": {
+                            "type": "string",
+                            "description": "The version the pack is authored against."
+                          },
+                          "role": {
+                            "type": "string",
+                            "description": "Whether this key's owner owns the pack or was added to it.",
+                            "enum": [
+                              "owner",
+                              "collaborator"
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          },
+                          "assetCounts": {
+                            "type": "object",
+                            "description": "How much the pack holds, by kind.",
+                            "properties": {
+                              "textures": {
+                                "type": "integer",
+                                "description": "Block textures, item sprites and GUI sheets."
+                              },
+                              "models": {
+                                "type": "integer",
+                                "description": "3D models."
+                              },
+                              "icons": {
+                                "type": "integer",
+                                "description": "Font glyphs."
+                              },
+                              "sounds": {
+                                "type": "integer",
+                                "description": "Sound events."
+                              }
+                            },
+                            "required": [
+                              "textures",
+                              "models",
+                              "icons",
+                              "sounds"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "slug",
+                          "name",
+                          "minecraftVersion",
+                          "role",
+                          "createdAt",
+                          "updatedAt",
+                          "assetCounts"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "packs"
+                  ]
+                },
                 "example": {
                   "packs": [
                     {
@@ -148,6 +231,85 @@
             "description": "Created.",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "object",
+                      "description": "The new pack.",
+                      "properties": {
+                        "slug": {
+                          "type": "string",
+                          "description": "The pack's id. Every other path takes this."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its display name."
+                        },
+                        "minecraftVersion": {
+                          "type": "string",
+                          "description": "The version the pack is authored against."
+                        },
+                        "role": {
+                          "type": "string",
+                          "description": "Whether this key's owner owns the pack or was added to it.",
+                          "enum": [
+                            "owner",
+                            "collaborator"
+                          ]
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "assetCounts": {
+                          "type": "object",
+                          "description": "How much the pack holds, by kind.",
+                          "properties": {
+                            "textures": {
+                              "type": "integer",
+                              "description": "Block textures, item sprites and GUI sheets."
+                            },
+                            "models": {
+                              "type": "integer",
+                              "description": "3D models."
+                            },
+                            "icons": {
+                              "type": "integer",
+                              "description": "Font glyphs."
+                            },
+                            "sounds": {
+                              "type": "integer",
+                              "description": "Sound events."
+                            }
+                          },
+                          "required": [
+                            "textures",
+                            "models",
+                            "icons",
+                            "sounds"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "slug",
+                        "name",
+                        "minecraftVersion",
+                        "role",
+                        "createdAt",
+                        "updatedAt",
+                        "assetCounts"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack"
+                  ]
+                },
                 "example": {
                   "pack": {
                     "slug": "medieval-keep",
@@ -228,6 +390,90 @@
             "description": "The pack.",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "object",
+                      "description": "The pack, plus the version floor its contents imply.",
+                      "properties": {
+                        "slug": {
+                          "type": "string",
+                          "description": "The pack's id. Every other path takes this."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its display name."
+                        },
+                        "minecraftVersion": {
+                          "type": "string",
+                          "description": "The version the pack is authored against."
+                        },
+                        "role": {
+                          "type": "string",
+                          "description": "Whether this key's owner owns the pack or was added to it.",
+                          "enum": [
+                            "owner",
+                            "collaborator"
+                          ]
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "assetCounts": {
+                          "type": "object",
+                          "description": "How much the pack holds, by kind.",
+                          "properties": {
+                            "textures": {
+                              "type": "integer",
+                              "description": "Block textures, item sprites and GUI sheets."
+                            },
+                            "models": {
+                              "type": "integer",
+                              "description": "3D models."
+                            },
+                            "icons": {
+                              "type": "integer",
+                              "description": "Font glyphs."
+                            },
+                            "sounds": {
+                              "type": "integer",
+                              "description": "Sound events."
+                            }
+                          },
+                          "required": [
+                            "textures",
+                            "models",
+                            "icons",
+                            "sounds"
+                          ]
+                        },
+                        "minVersion": {
+                          "type": "string",
+                          "description": "Oldest Minecraft version this pack's contents will load on."
+                        }
+                      },
+                      "required": [
+                        "slug",
+                        "name",
+                        "minecraftVersion",
+                        "role",
+                        "createdAt",
+                        "updatedAt",
+                        "assetCounts",
+                        "minVersion"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack"
+                  ]
+                },
                 "example": {
                   "pack": {
                     "slug": "medieval-keep",
@@ -299,6 +545,82 @@
             "description": "One page of assets.",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "assets": {
+                      "type": "array",
+                      "description": "This page of assets.",
+                      "items": {
+                        "type": "object",
+                        "description": "One asset.",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Stable id, and the job handle this asset was created under."
+                          },
+                          "kind": {
+                            "type": "string",
+                            "description": "Which store it lives in.",
+                            "enum": [
+                              "texture",
+                              "model",
+                              "font",
+                              "sound"
+                            ]
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Its name within the pack. Prefixed for item sprites and GUI sheets."
+                          },
+                          "status": {
+                            "type": "string",
+                            "description": "Where the generation got to.",
+                            "enum": [
+                              "generating",
+                              "ready",
+                              "error"
+                            ]
+                          },
+                          "displayName": {
+                            "type": "string",
+                            "description": "The label you gave it, if any."
+                          },
+                          "prompt": {
+                            "type": "string",
+                            "description": "What it was generated from."
+                          },
+                          "error": {
+                            "type": "string",
+                            "description": "Why it failed. Null unless status is error."
+                          },
+                          "sizeBytes": {
+                            "type": "integer",
+                            "description": "Size of the stored file."
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "kind",
+                          "name",
+                          "status",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "nextCursor": {
+                      "type": "string",
+                      "description": "Pass as `cursor` for the next page. Null on the last page."
+                    }
+                  },
+                  "required": [
+                    "assets"
+                  ]
+                },
                 "example": {
                   "assets": [
                     {
@@ -569,6 +891,98 @@
             "description": "The job's current state. `status` is `generating`, `ready` or `error`.",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "job": {
+                      "type": "string",
+                      "description": "The handle you asked about."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it belongs to."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Hoisted from the asset so a poll loop needn't reach into it.",
+                      "enum": [
+                        "generating",
+                        "ready",
+                        "error"
+                      ]
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "Why it failed. Null unless status is error."
+                    },
+                    "asset": {
+                      "type": "object",
+                      "description": "The asset itself.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Stable id, and the job handle this asset was created under."
+                        },
+                        "kind": {
+                          "type": "string",
+                          "description": "Which store it lives in.",
+                          "enum": [
+                            "texture",
+                            "model",
+                            "font",
+                            "sound"
+                          ]
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name within the pack. Prefixed for item sprites and GUI sheets."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Where the generation got to.",
+                          "enum": [
+                            "generating",
+                            "ready",
+                            "error"
+                          ]
+                        },
+                        "displayName": {
+                          "type": "string",
+                          "description": "The label you gave it, if any."
+                        },
+                        "prompt": {
+                          "type": "string",
+                          "description": "What it was generated from."
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "Why it failed. Null unless status is error."
+                        },
+                        "sizeBytes": {
+                          "type": "integer",
+                          "description": "Size of the stored file."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "kind",
+                        "name",
+                        "status",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "job",
+                    "pack",
+                    "status",
+                    "asset"
+                  ]
+                },
                 "example": {
                   "job": "medieval-keep:texture:mossy_bricks",
                   "pack": "medieval-keep",
@@ -646,6 +1060,44 @@
             "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's name within the pack."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Which store the generated asset lands in.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
                 "example": {
                   "id": "mossy_bricks",
                   "kind": "texture",
@@ -787,6 +1239,44 @@
             "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's name within the pack."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Which store the generated asset lands in.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
                 "example": {
                   "id": "lantern",
                   "kind": "model",
@@ -905,6 +1395,44 @@
             "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's name within the pack."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Which store the generated asset lands in.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
                 "example": {
                   "id": "rusted_key",
                   "kind": "texture",
@@ -1035,6 +1563,44 @@
             "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's name within the pack."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Which store the generated asset lands in.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
                 "example": {
                   "id": "keep_chest",
                   "kind": "texture",
@@ -1266,6 +1832,44 @@
             "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's name within the pack."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Which store the generated asset lands in.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
                 "example": {
                   "id": "heart",
                   "kind": "font",
@@ -1389,6 +1993,44 @@
             "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's name within the pack."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Which store the generated asset lands in.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
                 "example": {
                   "id": "gate_open",
                   "kind": "sound",

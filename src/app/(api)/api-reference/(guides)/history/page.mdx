@@ -1,0 +1,35 @@
+export const metadata = {
+  title: "Key history (API)",
+  description: "What each API key records, and what it deliberately doesn't.",
+};
+
+# Key history
+
+Every key keeps a record of what it did. Press **History** on a key at
+[studio.resourcepack.ai/account](https://studio.resourcepack.ai/account) to see
+it: each generation, pack creation and export, with what it cost.
+
+| Recorded | Not recorded |
+| --- | --- |
+| Generating anything | Polling a job |
+| Creating a pack | Listing packs or assets |
+| Exporting a pack | Downloading an asset file |
+
+The split is on purpose. You're told to poll every couple of seconds and a model
+takes minutes, so logging every request would bury the four lines that matter
+under a hundred saying "still generating".
+
+Credits are the amount **actually settled**, not what was reserved up front — so
+a generation that failed and refunded shows no cost at all, and a long model run
+shows its real price once it lands.
+
+Revoking a key keeps its history. That's the point: the question after a leak is
+what the key did, and deleting the answer with the key would be the wrong way
+round.
+
+<Callout type="warning" title="If a key leaks">
+  Revoke it immediately from the account page — a revoked key stops
+  authenticating on the next request. Then read its history to see what it did
+  while it was out. Creating a replacement is a separate action; keys can't mint
+  other keys, so a leaked key can't extend its own life.
+</Callout>

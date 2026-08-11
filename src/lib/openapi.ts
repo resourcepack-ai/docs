@@ -34,6 +34,8 @@ export interface ParameterRow {
 
 export interface Operation {
   id: string;
+  /** The OpenAPI tag — "Packs", "Generating", "Jobs". Drives the sidebar. */
+  group: string;
   /** False when a feature flag has this endpoint switched off (x-available). */
   available: boolean;
   method: string;
@@ -43,7 +45,7 @@ export interface Operation {
   pathParams: ParameterRow[];
   queryParams: ParameterRow[];
   bodyParams: ParameterRow[];
-  responses: { status: string; description: string; example?: unknown }[];
+  responses: { status: string; description: string; example?: unknown; fields: ParameterRow[] }[];
 }
 
 interface RawParameter {
@@ -56,14 +58,19 @@ interface RawParameter {
 interface RawOperation {
   "x-available"?: boolean;
   operationId: string;
+  tags?: string[];
   summary: string;
   description: string;
   parameters?: RawParameter[];
   requestBody?: { content: { "application/json": { schema: SchemaNode } } };
-  responses: Record<string, { description: string; content?: { "application/json"?: { example?: unknown } } }>;
+  responses: Record<
+    string,
+    { description: string; content?: { "application/json"?: { example?: unknown; schema?: SchemaNode } } }
+  >;
 }
 
 export const BASE_URL: string = spec.servers[0].url;
+export const API_TITLE: string = spec.info.title;
 
 /**
  * Turns a JSON Schema object into rows, descending one level into arrays of
@@ -91,6 +98,7 @@ function toOperation(method: string, path: string, raw: RawOperation): Operation
   const parameters = raw.parameters ?? [];
   return {
     id: raw.operationId,
+    group: raw.tags?.[0] ?? "Other",
     // Absent means available — only a switched-off endpoint carries the flag.
     available: raw["x-available"] !== false,
     method: method.toUpperCase(),
@@ -111,11 +119,12 @@ function toOperation(method: string, path: string, raw: RawOperation): Operation
         status,
         description: response.description,
         example: response.content?.["application/json"]?.example,
+        fields: rowsFrom(response.content?.["application/json"]?.schema),
       })),
   };
 }
 
-const operations: Operation[] = Object.entries(spec.paths).flatMap(([path, methods]) =>
+export const operations: Operation[] = Object.entries(spec.paths).flatMap(([path, methods]) =>
   Object.entries(methods as Record<string, RawOperation>).map(([method, raw]) =>
     toOperation(method, path, raw)
   )

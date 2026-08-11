@@ -73,7 +73,11 @@
 
     /* Chrome measurements, kept in one place so the sticky offsets in the
        sidebar, the TOC and scroll-margin on headings can never drift. */
-    --topbar-h: 3.5rem;
+    /* Brand row plus the Documentation / API Reference tab row beneath it.
+       Every sticky offset in the app is derived from this, so the two rows are
+       one number rather than two things to keep in step. */
+    --topbar-h: 6.1rem;
+    --topbar-row-h: 3.5rem;
     --sidebar-w: 16.5rem;
     --toc-w: 15rem;
 }
