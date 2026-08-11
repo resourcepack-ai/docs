@@ -4,6 +4,7 @@ import { NavTree } from "@/components/nav-tree";
 import { PageEyebrow } from "@/components/page-eyebrow";
 import { Pager } from "@/components/pager";
 import { SiteHeader } from "@/components/site-header";
+import { StructuredData } from "@/components/structured-data";
 import { TableOfContents } from "@/components/table-of-contents";
 
 /**
@@ -17,6 +18,7 @@ import { TableOfContents } from "@/components/table-of-contents";
 export default function DocsLayout({ children }: { children: ReactNode }) {
   return (
     <>
+      <StructuredData />
       <SiteHeader />
       <div className="pt-(--topbar-h)">
         <div className="mx-auto flex max-w-[100rem] px-4 sm:px-6">

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { ApiNavTree } from "@/components/api-nav-tree";
 import { SiteHeader } from "@/components/site-header";
+import { StructuredData } from "@/components/structured-data";
 
 /**
  * The API Reference chrome.
@@ -14,6 +15,7 @@ import { SiteHeader } from "@/components/site-header";
 export default function ApiLayout({ children }: { children: ReactNode }) {
   return (
     <>
+      <StructuredData />
       <SiteHeader />
       <div className="pt-(--topbar-h)">
         <div className="mx-auto flex max-w-[100rem] px-4 sm:px-6">
