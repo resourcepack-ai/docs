@@ -49,16 +49,16 @@ const GUIDES: ApiNavItem[] = [
     keywords: ["api", "rest", "http", "bearer", "auth", "base url", "curl"],
   },
   {
-    title: "Errors",
-    href: `${API_ROOT}/errors`,
-    description: "The error envelope, and every code you can branch on.",
-    keywords: ["error", "code", "401", "402", "403", "404", "409", "envelope"],
-  },
-  {
     title: "Jobs and polling",
     href: `${API_ROOT}/jobs`,
     description: "Why generation is asynchronous, and how to wait for a result.",
     keywords: ["job", "poll", "async", "status", "generating", "ready", "timeout"],
+  },
+  {
+    title: "Errors",
+    href: `${API_ROOT}/errors`,
+    description: "The error envelope, and every code you can branch on.",
+    keywords: ["error", "code", "401", "402", "403", "404", "409", "envelope"],
   },
   {
     title: "Key history",

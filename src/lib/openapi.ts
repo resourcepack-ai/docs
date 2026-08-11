@@ -72,6 +72,30 @@ interface RawOperation {
 export const BASE_URL: string = spec.servers[0].url;
 export const API_TITLE: string = spec.info.title;
 
+export interface ErrorCode {
+  code: string;
+  status: number;
+  description: string;
+}
+
+/**
+ * Every error code, with its status and meaning — from the spec, so the table
+ * on the Errors page and the list under each endpoint read the same source.
+ */
+export const errorCodes: Record<string, ErrorCode> = Object.fromEntries(
+  Object.entries(spec["x-error-codes"] as Record<string, { status: number; description: string }>).map(
+    ([code, value]) => [code, { code, ...value }],
+  ),
+);
+
+/** The codes one endpoint can answer, in status order so 4xx reads before 5xx. */
+export function errorsFor(id: string): ErrorCode[] {
+  return errorCodesFor(id)
+    .map((code) => errorCodes[code])
+    .filter(Boolean)
+    .sort((a, b) => a.status - b.status || a.code.localeCompare(b.code));
+}
+
 /**
  * Turns a JSON Schema object into rows, descending one level into arrays of
  * objects and nested objects.

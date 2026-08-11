@@ -64,7 +64,7 @@ Create, generate, wait, download:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-API=https://api.resourcepack.ai/api/v1
+API=https://api.resourcepack.ai/v1
 AUTH="Authorization: Bearer $RPAI_KEY"
 
 pack=$(curl -s -X POST "$API/packs" -H "$AUTH" -H 'Content-Type: application/json' \
