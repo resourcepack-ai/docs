@@ -1,0 +1,1525 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ResourcePack AI API",
+    "version": "1.0.0",
+    "description": "Create packs, generate blocks, models, items, GUIs, icons and sounds into them, and download the result.\n\nEvery generation is asynchronous: the endpoint answers 202 with a job handle and you poll it. Calls spend the same AI Credits the app does."
+  },
+  "servers": [
+    {
+      "url": "https://api.resourcepack.ai/api/v1"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Your API key, from the account page. Send it as `Authorization: Bearer rpai_…`."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "description": "Every failure from this API has this shape.",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Stable and machine-readable. Branch on this, never on `message`."
+              },
+              "message": {
+                "type": "string",
+                "description": "Human-readable. The wording may change; the code may not."
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Packs",
+      "description": "Create packs and read what's in them."
+    },
+    {
+      "name": "Generating",
+      "description": "The six generation endpoints."
+    },
+    {
+      "name": "Jobs",
+      "description": "Follow a generation to completion."
+    }
+  ],
+  "paths": {
+    "/packs": {
+      "get": {
+        "operationId": "listPacks",
+        "summary": "List packs",
+        "description": "Every pack this key can reach — packs you own and packs somebody added you to, in one list with a `role` on each.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The packs this key can reach.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "packs": [
+                    {
+                      "slug": "medieval-keep",
+                      "name": "Medieval Keep",
+                      "minecraftVersion": "1.20.1",
+                      "role": "owner",
+                      "createdAt": "2026-08-01T09:12:44.000Z",
+                      "updatedAt": "2026-08-10T16:02:11.000Z",
+                      "assetCounts": {
+                        "textures": 42,
+                        "models": 7,
+                        "icons": 3,
+                        "sounds": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createPack",
+        "summary": "Create a pack",
+        "description": "The slug is derived from the name and made unique — read it from the response rather than predicting it, because a second pack of the same name doesn't get the slug you'd guess.\n\nJSON only. The Studio's own create dialog is multipart because it also accepts a banner image, which has no business being the shape of the API's simplest call.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "pack": {
+                    "slug": "medieval-keep",
+                    "name": "Medieval Keep",
+                    "role": "owner"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `pack_limit_reached`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The pack's display name.",
+                    "maxLength": 100,
+                    "example": "Medieval Keep"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}": {
+      "get": {
+        "operationId": "getPack",
+        "summary": "Get a pack",
+        "description": "The same object as the listing, plus `minVersion` — the oldest Minecraft version this pack's contents will actually load on, derived from what's in it rather than from what the pack is nominally set to.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The pack.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "pack": {
+                    "slug": "medieval-keep",
+                    "minVersion": "1.21.4"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/assets": {
+      "get": {
+        "operationId": "listAssets",
+        "summary": "List a pack's assets",
+        "description": "Page until `nextCursor` is null. An asset's `id` is also its job handle, so this is how you find the handle for something generated in an earlier run.\n\nNote the four storage kinds don't map one-to-one onto the six things you can generate: item sprites and GUI sheets are both stored as `texture` under a prefixed name (`item:sword`, `gui:hud`), icons are stored as `font`, and a 3D item is a `model`.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of assets.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "assets": [
+                    {
+                      "id": "medieval-keep:texture:mossy_bricks",
+                      "kind": "texture",
+                      "name": "mossy_bricks",
+                      "status": "ready",
+                      "displayName": "Mossy Bricks",
+                      "prompt": "damp mossy stone bricks",
+                      "error": null,
+                      "sizeBytes": 1284,
+                      "updatedAt": "2026-08-10T16:02:11.000Z"
+                    }
+                  ],
+                  "nextCursor": null
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "description": "Only assets of this storage kind.",
+            "schema": {
+              "type": "string",
+              "description": "Only assets of this storage kind.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many to return.",
+            "schema": {
+              "type": "integer",
+              "description": "How many to return.",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "From the previous response's `nextCursor`.",
+            "schema": {
+              "type": "integer",
+              "description": "From the previous response's `nextCursor`.",
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/assets/{kind}/{name}": {
+      "get": {
+        "operationId": "getAssetFile",
+        "summary": "Download an asset file",
+        "description": "The asset's own bytes, with the matching content type: PNG for textures and icons, JSON for models, Ogg Vorbis for sounds.\n\nRemember the prefixed names: `texture/item:rusted_key`, `texture/gui:hud`.\n\nAsking before it's ready answers 409 rather than handing back the placeholder that sits there while it generates — a blank PNG that looked like a result is the one genuinely misleading answer available here.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The file."
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `still_generating`, `generation_failed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The storage kind.",
+            "schema": {
+              "type": "string",
+              "description": "The storage kind.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's name.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's name.",
+              "example": "mossy_bricks"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/export": {
+      "get": {
+        "operationId": "exportPack",
+        "summary": "Export the pack as a zip",
+        "description": "The finished Java `.zip`, exactly what the Studio's Export button produces. Zipping happens on request rather than being kept warm, so this is slower than the other calls on a large pack. Bedrock `.mcpack` isn't in the API yet.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "A `application/zip` body."
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `forbidden`, `export_failed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      }
+    },
+    "/jobs/{job}": {
+      "get": {
+        "operationId": "getJob",
+        "summary": "Check a generation",
+        "description": "A handle looks like `<pack>:<kind>:<name>` and comes back from every generation endpoint.\n\nThere's no jobs table behind this: generation is two-phase, so the asset row is written up front with status `generating` and the runner fills it in. The asset *is* the job record, which is why a handle stays resolvable long after the run finished.\n\nPolling always terminates. A run that dies without recording anything reads as `error` once it passes the stale cutoff.",
+        "tags": [
+          "Jobs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The job's current state. `status` is `generating`, `ready` or `error`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "job": "medieval-keep:texture:mossy_bricks",
+                  "pack": "medieval-keep",
+                  "status": "ready",
+                  "error": null,
+                  "asset": {
+                    "id": "medieval-keep:texture:mossy_bricks",
+                    "kind": "texture",
+                    "name": "mossy_bricks",
+                    "status": "ready"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_job_handle`, `job_not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "job",
+            "in": "path",
+            "required": true,
+            "description": "The job handle.",
+            "schema": {
+              "type": "string",
+              "description": "The job handle.",
+              "example": "medieval-keep:texture:mossy_bricks"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/textures": {
+      "post": {
+        "operationId": "generateTexture",
+        "summary": "Generate a block texture",
+        "description": "Produces a `texture`.\n\n`vanillaTarget` is required when `mode` is `vanilla`; `description` is required when `mode` is `custom`. Setting `faceSlot` generates a single face of a block reskin and needs a `vanillaTarget` that supports per-face textures.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "mossy_bricks",
+                  "kind": "texture",
+                  "job": "medieval-keep:texture:mossy_bricks",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What to draw. Describe material and wear, not pixels.",
+                    "example": "damp mossy stone bricks, deep green in the mortar"
+                  },
+                  "size": {
+                    "type": "integer",
+                    "description": "Output edge length in pixels.",
+                    "minimum": 16,
+                    "maximum": 128,
+                    "example": 16
+                  },
+                  "mode": {
+                    "type": "string",
+                    "description": "Replace a vanilla block, or add a texture of your own.",
+                    "enum": [
+                      "vanilla",
+                      "custom"
+                    ]
+                  },
+                  "vanillaTarget": {
+                    "type": "string",
+                    "description": "The vanilla texture to replace.",
+                    "example": "stone_bricks"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "What this texture is. Required for `custom`."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label for it."
+                  },
+                  "faceSlot": {
+                    "type": "string",
+                    "description": "Generate one face only.",
+                    "enum": [
+                      "top",
+                      "bottom",
+                      "side"
+                    ]
+                  },
+                  "referenceId": {
+                    "type": "string",
+                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                  },
+                  "referenceStrength": {
+                    "type": "number",
+                    "description": "How closely to follow the reference. Clamped to this range rather than rejected.",
+                    "minimum": 0.05,
+                    "maximum": 0.95
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "size",
+                  "mode"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/models": {
+      "post": {
+        "operationId": "generateModel",
+        "summary": "Generate a 3D model",
+        "description": "Produces a `model`. **This is the slow one** — the builder plans the model and constructs it cube by cube, which takes minutes rather than seconds.\n\n`carrierBlockId` decides `directional` on its own when given.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "lantern",
+                  "kind": "model",
+                  "job": "medieval-keep:model:lantern",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What to build.",
+                    "example": "a wrought iron street lantern with a candle inside"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label. Falls back to the prompt."
+                  },
+                  "carrierKind": {
+                    "type": "string",
+                    "description": "How it's placed in game.",
+                    "enum": [
+                      "item",
+                      "full",
+                      "partial"
+                    ],
+                    "default": "item"
+                  },
+                  "directional": {
+                    "type": "boolean",
+                    "description": "Whether it faces the way you placed it."
+                  },
+                  "carrierBlockId": {
+                    "type": "string",
+                    "description": "A specific vanilla block to carry it."
+                  },
+                  "referenceId": {
+                    "type": "string",
+                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/items": {
+      "post": {
+        "operationId": "generateItem",
+        "summary": "Generate an item",
+        "description": "Produces a `texture` named `item:<name>` for a 2D sprite, or a `model` for a 3D one — the response's `kind` and `job` say which.\n\nOmit `target` (or send null) for an item of your own; give a vanilla item id to reskin it. Reskinning one this pack already reskins answers 409: change it in the Studio rather than overwriting it blind. `variant` needs a `target` and Minecraft 1.21.4 or newer.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "rusted_key",
+                  "kind": "texture",
+                  "shape": "sprite",
+                  "job": "medieval-keep:texture:item:rusted_key",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `conflict`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What to draw or build.",
+                    "example": "a rusted iron key with a heart-shaped bow"
+                  },
+                  "target": {
+                    "type": "string",
+                    "description": "A vanilla item to reskin. Null or absent means a new item."
+                  },
+                  "shape": {
+                    "type": "string",
+                    "description": "A flat sprite, or real geometry.",
+                    "enum": [
+                      "2d",
+                      "3d"
+                    ],
+                    "default": "2d"
+                  },
+                  "size": {
+                    "type": "integer",
+                    "description": "Sprite edge length. 2D only.",
+                    "minimum": 16,
+                    "maximum": 128
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label. Falls back to the prompt."
+                  },
+                  "variant": {
+                    "type": "boolean",
+                    "description": "A custom-model-data variant of `target` rather than a full reskin."
+                  },
+                  "referenceId": {
+                    "type": "string",
+                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                  },
+                  "referenceStrength": {
+                    "type": "number",
+                    "description": "How closely to follow the reference. Clamped to this range rather than rejected.",
+                    "minimum": 0.05,
+                    "maximum": 0.95
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/guis": {
+      "post": {
+        "operationId": "generateGui",
+        "summary": "Generate a GUI sheet",
+        "description": "Produces a `texture` named `gui:<name>`.\n\n**`elements` is the field that decides what a request costs** — each is its own image call, which is why it's capped. `texts` are drawn from the vanilla font and cost nothing, so their caps are about a sheet staying legible.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "keep_chest",
+                  "kind": "texture",
+                  "job": "medieval-keep:texture:gui:keep_chest",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "How the panel should look.",
+                    "example": "dark oak panel with brass fittings"
+                  },
+                  "target": {
+                    "type": "string",
+                    "description": "The vanilla screen to reskin.",
+                    "example": "chest"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label."
+                  },
+                  "elements": {
+                    "type": "array",
+                    "description": "Buttons and icons drawn over the panel. Each is a separate image call.",
+                    "maxItems": 6,
+                    "items": {
+                      "type": "object",
+                      "description": "One generated element.",
+                      "properties": {
+                        "slot": {
+                          "type": "integer",
+                          "description": "Index of the slot to place it on.",
+                          "minimum": 0
+                        },
+                        "prompt": {
+                          "type": "string",
+                          "description": "What to draw."
+                        },
+                        "wSlots": {
+                          "type": "integer",
+                          "description": "Width in slots.",
+                          "minimum": 1,
+                          "maximum": 7,
+                          "default": 1
+                        },
+                        "hSlots": {
+                          "type": "integer",
+                          "description": "Height in slots.",
+                          "minimum": 1,
+                          "maximum": 7,
+                          "default": 1
+                        },
+                        "kind": {
+                          "type": "string",
+                          "description": "Artwork fills its box; an icon sits on transparency.",
+                          "enum": [
+                            "artwork",
+                            "icon"
+                          ],
+                          "default": "artwork"
+                        }
+                      },
+                      "required": [
+                        "slot",
+                        "prompt"
+                      ]
+                    }
+                  },
+                  "texts": {
+                    "type": "array",
+                    "description": "Lines of text drawn from the vanilla font. Free — no image call.",
+                    "maxItems": 12,
+                    "items": {
+                      "type": "object",
+                      "description": "One line of text.",
+                      "properties": {
+                        "text": {
+                          "type": "string",
+                          "description": "What it says.",
+                          "maxLength": 64
+                        },
+                        "x": {
+                          "type": "integer",
+                          "description": "Sheet pixels from the left.",
+                          "minimum": 0,
+                          "maximum": 255
+                        },
+                        "y": {
+                          "type": "integer",
+                          "description": "Sheet pixels from the top.",
+                          "minimum": 0,
+                          "maximum": 255
+                        },
+                        "color": {
+                          "type": "string",
+                          "description": "Hex colour, `#rrggbb`.",
+                          "example": "#3f3f3f"
+                        },
+                        "scale": {
+                          "type": "integer",
+                          "description": "Whole numbers only — bitmap text at 1.5x is mush.",
+                          "minimum": 1,
+                          "maximum": 4,
+                          "default": 1
+                        },
+                        "shadow": {
+                          "type": "boolean",
+                          "description": "Drop shadow behind the glyphs.",
+                          "default": true
+                        },
+                        "align": {
+                          "type": "string",
+                          "description": "Which edge `x` refers to.",
+                          "enum": [
+                            "left",
+                            "center",
+                            "right"
+                          ],
+                          "default": "left"
+                        }
+                      },
+                      "required": [
+                        "text",
+                        "x",
+                        "y",
+                        "color"
+                      ]
+                    }
+                  },
+                  "drawSlots": {
+                    "type": "boolean",
+                    "description": "Draw the item slot boxes.",
+                    "default": false
+                  },
+                  "includePlayerInventory": {
+                    "type": "boolean",
+                    "description": "Extend the restyle over the player's inventory.",
+                    "default": false
+                  },
+                  "referenceId": {
+                    "type": "string",
+                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                  },
+                  "referenceStrength": {
+                    "type": "number",
+                    "description": "How closely to follow the reference. Clamped to this range rather than rejected.",
+                    "minimum": 0.05,
+                    "maximum": 0.95
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "target"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/icons": {
+      "post": {
+        "operationId": "generateIcon",
+        "summary": "Generate a font icon",
+        "description": "Produces a `font` — a bitmap glyph you can type into chat, signs and books. Omit `width` for a square glyph.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "heart",
+                  "kind": "font",
+                  "job": "medieval-keep:font:heart",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What the glyph shows.",
+                    "example": "a small red heart"
+                  },
+                  "height": {
+                    "type": "integer",
+                    "description": "Glyph height in pixels.",
+                    "minimum": 1,
+                    "maximum": 256
+                  },
+                  "width": {
+                    "type": "integer",
+                    "description": "Glyph width. Square if omitted.",
+                    "minimum": 1,
+                    "maximum": 256
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label."
+                  },
+                  "char": {
+                    "type": "string",
+                    "description": "Pin it to a specific character instead of an assigned codepoint."
+                  },
+                  "referenceId": {
+                    "type": "string",
+                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                  },
+                  "referenceStrength": {
+                    "type": "number",
+                    "description": "How closely to follow the reference. Clamped to this range rather than rejected.",
+                    "minimum": 0.05,
+                    "maximum": 0.95
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "height"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/sounds": {
+      "post": {
+        "operationId": "generateSound",
+        "summary": "Generate a sound",
+        "description": "Produces a `sound`.\n\n**The event name is the feature.** `entity.creeper.primed` replaces the creeper fuse; `custom.gate_open` is a new event you fire by command. A malformed one is refused rather than quietly corrected, because the name decides what the sound does.\n\nSounds take no reference image. Each take is a separate provider call and is charged accordingly.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "gate_open",
+                  "kind": "sound",
+                  "job": "medieval-keep:sound:gate_open",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What it should sound like.",
+                    "example": "a heavy iron door dragging open"
+                  },
+                  "event": {
+                    "type": "string",
+                    "description": "The Minecraft event name this sound answers to.",
+                    "example": "custom.gate_open"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label."
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "Which volume slider controls it.",
+                    "enum": [
+                      "master",
+                      "music",
+                      "record",
+                      "weather",
+                      "block",
+                      "hostile",
+                      "neutral",
+                      "player",
+                      "ambient",
+                      "voice"
+                    ]
+                  },
+                  "subtitle": {
+                    "type": "string",
+                    "description": "The subtitle shown when it plays."
+                  },
+                  "durationSeconds": {
+                    "type": "number",
+                    "description": "Omit to let the model choose a length.",
+                    "minimum": 0.5,
+                    "maximum": 30
+                  },
+                  "promptInfluence": {
+                    "type": "number",
+                    "description": "How literally to follow the prompt.",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "loop": {
+                    "type": "boolean",
+                    "description": "Whether it should loop seamlessly.",
+                    "default": false
+                  },
+                  "takeCount": {
+                    "type": "integer",
+                    "description": "How many alternatives to generate.",
+                    "minimum": 1,
+                    "maximum": 10,
+                    "default": 4
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "event"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
