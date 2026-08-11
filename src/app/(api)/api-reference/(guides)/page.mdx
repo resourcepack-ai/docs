@@ -6,8 +6,15 @@ export const metadata = {
 # API overview
 
 Everything the Studio does to a pack, your own code can do too: create a pack,
-generate blocks, models, items, GUIs, icons and sounds into it, and download the
-finished `.zip`.
+generate blocks, models, items and icons into it, and download the finished
+`.zip`.
+
+<Callout type="warning" title="GUI and sound generation are switched off">
+  Both endpoints still exist and are documented, and both answer
+  `503 unavailable` today. They're off in the app as well — this isn't an API
+  restriction. Everything about GUIs and sounds a pack already contains still
+  works: they list, export and play in game as before.
+</Callout>
 
 <Callout type="note" title="On a paid plan">
   API keys are available on any paid plan. Calls spend the same AI Credits the
