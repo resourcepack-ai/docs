@@ -9,9 +9,7 @@ Generation hands you a job handle. This is what you do with it.
 
 ## Poll a job
 
-```
-GET /api/v1/jobs/{job}
-```
+<Endpoint id="getJob" />
 
 A handle looks like `medieval-keep:texture:mossy_bricks` — pack, kind, name.
 It comes back from every generation endpoint as `job`, and it's also an
@@ -21,26 +19,6 @@ can pick up something generated in an earlier run.
 ```bash
 curl "https://api.resourcepack.ai/api/v1/jobs/medieval-keep:texture:mossy_bricks" \
   -H "Authorization: Bearer $RPAI_KEY"
-```
-
-```json
-{
-  "job": "medieval-keep:texture:mossy_bricks",
-  "pack": "medieval-keep",
-  "status": "ready",
-  "error": null,
-  "asset": {
-    "id": "medieval-keep:texture:mossy_bricks",
-    "kind": "texture",
-    "name": "mossy_bricks",
-    "status": "ready",
-    "displayName": "Mossy Bricks",
-    "prompt": "damp mossy stone bricks, deep green in the mortar",
-    "error": null,
-    "sizeBytes": 1284,
-    "updatedAt": "2026-08-10T16:02:11.000Z"
-  }
-}
 ```
 
 Three statuses, and only two of them are terminal:
@@ -65,10 +43,10 @@ change is safe to write.
 
 | | |
 | --- | --- |
-| **Image generation** | Each call to the image model is given 150 seconds |
-| **The whole run** | 10 minutes, after which it's stopped |
+| **Image generation** | Each call to the image model is given 5 minutes |
+| **The whole run** | 20 minutes, after which it's stopped |
 | **Models** | Much longer — up to an hour, since the builder works cube by cube |
-| **Backstop** | A run that dies without recording anything reads as `error` after 15 minutes, or 45 for a model |
+| **Backstop** | A run that dies without recording anything reads as `error` after 25 minutes, or 45 for a model |
 
 That last row is the one to know about. If the machinery running a generation
 disappears mid-flight, there's nobody left to write down that it failed — so a
@@ -82,9 +60,7 @@ handle stays resolvable long after the generation finished.
 
 ## Fetch the file
 
-```
-GET /api/v1/packs/{pack}/assets/{kind}/{name}
-```
+<Endpoint id="getAssetFile" />
 
 Answers the asset's own bytes with the right content type: PNG for textures and
 icons, JSON for models, Ogg Vorbis for sounds.
@@ -112,9 +88,7 @@ A failed asset answers **409 `generation_failed`**.
 
 ## Export the pack
 
-```
-GET /api/v1/packs/{pack}/export
-```
+<Endpoint id="exportPack" />
 
 The finished Java `.zip`, exactly what the Studio's Export button produces.
 
