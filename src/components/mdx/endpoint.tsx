@@ -116,6 +116,17 @@ export function Endpoint({ id }: { id: string }) {
         </code>
       </div>
 
+      {!operation.available && (
+        // Kept in the reference rather than hidden: the route still exists and
+        // still answers, so somebody who gets a 503 should find it documented
+        // instead of wondering whether they got the path wrong.
+        <div className="border-b border-[#4a3a20] bg-[#241d11] px-4 py-2.5 text-[0.85rem] text-amber">
+          <span className="font-semibold">Currently unavailable.</span> This endpoint answers{" "}
+          <code className="font-mono text-[0.8rem]">503 unavailable</code> while the feature is
+          switched off. Everything below still describes it for when it&apos;s back.
+        </div>
+      )}
+
       <div className="px-4 py-3.5">
         {operation.pathParams.length > 0 && (
           <Section title="Path parameters">

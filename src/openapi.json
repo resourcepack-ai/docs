@@ -1046,7 +1046,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `unavailable`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1079,6 +1079,7 @@
             }
           }
         },
+        "x-available": false,
         "parameters": [
           {
             "name": "pack",
