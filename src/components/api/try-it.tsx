@@ -228,16 +228,18 @@ export function TryIt({ operation }: { operation: Operation }) {
       </button>
 
       {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 py-[6vh] backdrop-blur-[2px]"
-          onMouseDown={() => setOpen(false)}
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
+          {/* Scrim and entrance both lifted from studio's modals (bg-black/55,
+              blur 4, rpin) — see the keyframe note in globals.css. The scrim is
+              its own absolutely-positioned layer rather than a background on
+              the flex container, which is what lets the panel sit above it with
+              its own shadow instead of inside a blurred box. */}
+          <div onMouseDown={() => setOpen(false)} className="absolute inset-0 bg-black/55 backdrop-blur-[4px]" />
           <div
             role="dialog"
             aria-modal="true"
             aria-label={`Try ${operation.summary}`}
-            onMouseDown={(event) => event.stopPropagation()}
-            className="border-border bg-card flex max-h-full w-full max-w-2xl flex-col overflow-hidden rounded-xl border shadow-2xl shadow-black/50"
+            className="border-border bg-card relative flex max-h-full w-full max-w-2xl flex-col overflow-hidden rounded-xl border shadow-2xl shadow-black/50 [animation:rpin_.22s_ease]"
           >
             <div className="border-border flex items-center gap-3 border-b px-4 py-3">
               <span className="text-foreground font-mono text-[0.74rem] font-semibold">{operation.method}</span>
@@ -254,20 +256,30 @@ export function TryIt({ operation }: { operation: Operation }) {
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+            {/* gap, not a margin on each child. Every block in here used to
+                carry its own mb-4, so the last one added its margin to the
+                container's own bottom padding and the body sat visibly lower
+                than it started — worst with no response, where the fields were
+                the last block. A gap can't do that: the padding is the padding
+                whatever is or isn't rendered. */}
+            <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-4">
               {!operation.available && (
-                <p className="border-amber/40 bg-amber/10 text-amber mb-4 rounded-md border px-3 py-2 text-[0.8rem]">
+                <p className="border-amber/40 bg-amber/10 text-amber rounded-md border px-3 py-2 text-[0.8rem]">
                   This endpoint is switched off and will answer 503. You can still send it.
                 </p>
               )}
 
-              <p className="border-line bg-muted/40 text-muted-foreground mb-4 rounded-md border px-3 py-2 text-[0.8rem] leading-relaxed">
-                <span className="text-foreground font-semibold">This sends a real request.</span> There&apos;s
-                no sandbox — a generation here writes into a real pack and spends real AI Credits, exactly as
-                it would from your own code.
+              {/* One line, plainly — not a bordered callout with a bold lead.
+                  The warning is true and has to be here, but boxing it made the
+                  first thing in the dialog a block of chrome competing with the
+                  fields underneath, and the bold half read as a heading for a
+                  paragraph it was actually the start of. */}
+              <p className="text-muted-foreground text-[0.78rem] leading-relaxed">
+                This sends a real request. There&apos;s no sandbox — a generation here writes into a real pack
+                and spends real AI Credits, exactly as it would from your own code.
               </p>
 
-              <label className="mb-4 block">
+              <label className="block">
                 <span className="text-foreground mb-1 block text-[0.8rem] font-medium">API key</span>
                 <input
                   type="password"
@@ -293,7 +305,7 @@ export function TryIt({ operation }: { operation: Operation }) {
               </label>
 
               {fields.length > 0 && (
-                <div className="mb-4 flex flex-col gap-3">
+                <div className="flex flex-col gap-3">
                   {fields.map((field) => (
                     <Row key={field.name} field={field} onChange={(value) => set(field.name, value)} />
                   ))}
@@ -301,7 +313,7 @@ export function TryIt({ operation }: { operation: Operation }) {
               )}
 
               {failure && (
-                <p className="border-destructive/40 bg-destructive/10 text-destructive mb-3 rounded-md border px-3 py-2 text-[0.8rem]">
+                <p className="border-destructive/40 bg-destructive/10 text-destructive rounded-md border px-3 py-2 text-[0.8rem]">
                   {failure}
                 </p>
               )}
@@ -327,13 +339,28 @@ export function TryIt({ operation }: { operation: Operation }) {
             </div>
 
             <div className="border-border flex items-center gap-3 border-t px-4 py-3">
-              <span className="text-muted-foreground min-w-0 flex-1 truncate text-[0.75rem]">
-                {missing.length > 0
-                  ? `Needs ${missing.join(", ")}`
-                  : !apiKey.trim()
-                    ? "Needs your API key"
-                    : buildUrl()}
-              </span>
+              {/* "Needs your API key" was a dead end: it named the one thing
+                  standing between somebody and a working request, on a site
+                  that can't mint one, and left them to go and find the page
+                  themselves. It's a link now — the account page is where keys
+                  are created, and it opens in a new tab so a half-filled form
+                  here survives the trip. The other two states stay plain text:
+                  a missing field is fixed in this dialog, and the URL isn't
+                  somewhere to go. */}
+              {missing.length === 0 && !apiKey.trim() ? (
+                <a
+                  href="https://studio.resourcepack.ai/account"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-brand hover:text-brand/80 min-w-0 flex-1 truncate text-[0.75rem] font-medium underline decoration-dotted underline-offset-2 transition-colors"
+                >
+                  Needs your API key — create one
+                </a>
+              ) : (
+                <span className="text-muted-foreground min-w-0 flex-1 truncate text-[0.75rem]">
+                  {missing.length > 0 ? `Needs ${missing.join(", ")}` : buildUrl()}
+                </span>
+              )}
               <button
                 type="button"
                 onClick={send}
