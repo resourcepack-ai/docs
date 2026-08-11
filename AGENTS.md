@@ -117,6 +117,17 @@ compiled at build time by `@next/mdx`.
 1. create `src/app/(docs)/<path>/page.mdx` with a `metadata` export and an `h1`
 2. add an entry to `src/lib/nav.ts`
 3. add the same page to `../landing/src/app/llms.txt/route.ts`
+4. run `npm run gen:llms-full`, which rebuilds
+   `../landing/public/llms-full.txt` from the MDX and the API spec
+
+**The API Reference is a different tree.** `/api-reference` and everything
+under it is a separate top-level section with its own sidebar
+(`src/lib/api-nav.ts`), generated from `src/openapi.json` — which studio writes
+(`npm run gen:openapi` there) and which `npm run check:openapi` keeps honest.
+Endpoint pages have no MDX and adding an endpoint needs nothing here; the
+prose pages beside them (`(api)/api-reference/(guides)/`) follow steps 1, 3 and
+4 above, but list themselves in `api-nav.ts` rather than `nav.ts`. The spec is
+also published at `/docs/openapi.json`.
 
 `nav.ts` is the single source of truth for the sidebar, the ⌘K search index,
 the prev/next pager and the group label above each page title. A page that
