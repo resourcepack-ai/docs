@@ -274,10 +274,13 @@ export function TryIt({ operation }: { operation: Operation }) {
                   warning has to be here — but it was a bordered callout with a
                   bold lead and three lines of prose, which made the first thing
                   in the dialog a block of chrome. Everything it explained is
-                  implied by "real": a real pack, real credits. Keep any rewrite
-                  under ~60 characters or it wraps again. */}
+                  implied by "real": a real pack, real credits. The line has
+                  ~640px at 0.78rem, which is about 100 characters — this is 97,
+                  so it fills the width and doesn't wrap. Rewrite past that and
+                  it's two lines again. */}
               <p className="text-muted-foreground text-[0.78rem] leading-relaxed">
-                This sends a real request — real pack, real AI Credits.
+                This sends a real request — no sandbox, so it writes into a real pack and spends real AI
+                Credits.
               </p>
 
               <label className="block">
