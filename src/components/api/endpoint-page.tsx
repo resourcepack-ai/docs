@@ -1,8 +1,9 @@
 import { curlFor, sampleResponseFor } from "@/lib/curl";
-import { constraintsFor, errorCodesFor, typeLabel, type Operation, type ParameterRow } from "@/lib/openapi";
+import { constraintsFor, errorsFor, typeLabel, type Operation, type ParameterRow } from "@/lib/openapi";
 import { cn } from "@/lib/utils";
 import { CopyButton } from "@/components/api/copy-button";
 import { InlineMarkdown } from "@/components/api/inline-markdown";
+import { TryIt } from "@/components/api/try-it";
 
 /**
  * One endpoint, as its own page.
@@ -79,7 +80,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export function EndpointPage({ operation }: { operation: Operation }) {
   const curl = curlFor(operation);
   const sample = sampleResponseFor(operation);
-  const errors = errorCodesFor(operation.id);
+  const errors = errorsFor(operation.id);
 
   return (
     <div className="flex flex-col gap-10 xl:flex-row xl:items-start xl:gap-12">
@@ -127,6 +128,7 @@ export function EndpointPage({ operation }: { operation: Operation }) {
           <code className="text-foreground min-w-0 overflow-x-auto font-mono text-[0.875rem] whitespace-nowrap">
             {operation.path}
           </code>
+          <TryIt operation={operation} />
         </div>
 
         {!operation.available && (
@@ -182,17 +184,20 @@ export function EndpointPage({ operation }: { operation: Operation }) {
 
         {errors.length > 0 && (
           <Section title="Error codes">
-            <p className="text-muted-foreground mb-2 text-[0.875rem] leading-relaxed">
+            <p className="text-muted-foreground mb-1 text-[0.875rem] leading-relaxed">
               Branch on <code className="font-mono text-[0.82rem]">error.code</code>, never on the message.
             </p>
-            <div className="flex flex-wrap gap-1.5">
-              {errors.map((code) => (
-                <code
-                  key={code}
-                  className="bg-muted/60 text-muted-foreground rounded px-2 py-1 font-mono text-[0.76rem]"
-                >
-                  {code}
-                </code>
+            <div>
+              {errors.map((error) => (
+                <div key={error.code} className="border-line border-t py-3 first:border-t-0">
+                  <div className="flex flex-wrap items-baseline gap-x-2">
+                    <code className="text-foreground font-mono text-[0.82rem]">{error.code}</code>
+                    <span className="text-muted-foreground font-mono text-[0.72rem]">{error.status}</span>
+                  </div>
+                  <p className="text-muted-foreground mt-1.5 text-[0.875rem] leading-relaxed">
+                    <InlineMarkdown text={error.description} />
+                  </p>
+                </div>
               ))}
             </div>
           </Section>

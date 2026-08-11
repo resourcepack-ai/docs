@@ -27,7 +27,7 @@ export type NavGroup = {
 
 export const nav: NavGroup[] = [
   {
-    title: "Getting started",
+    title: "Get started",
     items: [
       {
         title: "Introduction",

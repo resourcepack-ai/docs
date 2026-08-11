@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://api.resourcepack.ai/api/v1"
+      "url": "https://api.resourcepack.ai/v1"
     }
   ],
   "security": [
@@ -50,6 +50,80 @@
           "error"
         ]
       }
+    }
+  },
+  "x-error-codes": {
+    "invalid_request": {
+      "status": 400,
+      "description": "Something in the body or query is wrong. `message` says what."
+    },
+    "invalid_json": {
+      "status": 400,
+      "description": "The request body wasn't a JSON object."
+    },
+    "invalid_job_handle": {
+      "status": 400,
+      "description": "A job handle that isn't `<pack>:<kind>:<name>`."
+    },
+    "missing_api_key": {
+      "status": 401,
+      "description": "No `Authorization: Bearer` header was sent."
+    },
+    "invalid_api_key": {
+      "status": 401,
+      "description": "The key isn't one of ours, or it has been revoked."
+    },
+    "insufficient_credits": {
+      "status": 402,
+      "description": "Not enough AI Credits to run this. Nothing was started or charged."
+    },
+    "plan_required": {
+      "status": 403,
+      "description": "The key is valid, but its account is on Starter. The API needs a paid plan."
+    },
+    "forbidden": {
+      "status": 403,
+      "description": "Valid key, but not permitted to do this in this pack."
+    },
+    "pack_limit_reached": {
+      "status": 403,
+      "description": "The account is at its plan's pack limit."
+    },
+    "asset_limit_reached": {
+      "status": 403,
+      "description": "The pack is at its asset limit."
+    },
+    "not_found": {
+      "status": 404,
+      "description": "No such pack, asset or job."
+    },
+    "job_not_found": {
+      "status": 404,
+      "description": "No job by that handle."
+    },
+    "conflict": {
+      "status": 409,
+      "description": "That vanilla target is already reskinned in this pack. Change it in the Studio rather than overwriting it."
+    },
+    "still_generating": {
+      "status": 409,
+      "description": "The asset exists but isn't finished. Poll its job until it's ready."
+    },
+    "generation_failed": {
+      "status": 409,
+      "description": "That asset's generation failed. Its job carries the reason."
+    },
+    "unavailable": {
+      "status": 503,
+      "description": "The feature behind this endpoint is switched off."
+    },
+    "export_failed": {
+      "status": 500,
+      "description": "The zip couldn't be built."
+    },
+    "request_failed": {
+      "status": 500,
+      "description": "Something went wrong that doesn't have a more specific code."
     }
   },
   "tags": [
