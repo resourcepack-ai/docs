@@ -187,6 +187,26 @@ survive a restart, and your world's block protection doesn't cover it: a
 plugin that stops players breaking blocks won't necessarily stop them
 punching your models, worth checking on a public server.
 
+### How big it stands
+
+The give card has a **Size** dropdown, from an eighth up to eight times. It
+resizes the model at *placement*, not in the pack — so one model gives you a
+desk ornament and a landmark without editing anything, and two copies of the
+same model can stand side by side at different sizes.
+
+The size rides on the item, like the animation choice does. It grows from the
+base, so a bigger model stands on the block you placed it against instead of
+sinking into it, and the punchable area grows with it. Break it and the item
+that drops remembers its size.
+
+<Callout type="note">
+  Size only applies to the item carrier — the legacy block carriers are real
+  blocks, and a block is one block. The dropdown isn't shown for them.
+
+  To change the size of the model *itself*, so every copy is that big and the
+  pack ships it that way, use **Model scale** in the editor instead.
+</Callout>
+
 ### Choosing the block
 
 Pick **Block** as the carrier and the Studio lists every vanilla block a model
