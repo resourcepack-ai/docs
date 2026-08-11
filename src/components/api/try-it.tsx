@@ -269,14 +269,15 @@ export function TryIt({ operation }: { operation: Operation }) {
                 </p>
               )}
 
-              {/* One line, plainly — not a bordered callout with a bold lead.
-                  The warning is true and has to be here, but boxing it made the
-                  first thing in the dialog a block of chrome competing with the
-                  fields underneath, and the bold half read as a heading for a
-                  paragraph it was actually the start of. */}
+              {/* ONE line, and short enough to still be one at the dialog's
+                  narrowest. There's no sandbox behind this button, so the
+                  warning has to be here — but it was a bordered callout with a
+                  bold lead and three lines of prose, which made the first thing
+                  in the dialog a block of chrome. Everything it explained is
+                  implied by "real": a real pack, real credits. Keep any rewrite
+                  under ~60 characters or it wraps again. */}
               <p className="text-muted-foreground text-[0.78rem] leading-relaxed">
-                This sends a real request. There&apos;s no sandbox — a generation here writes into a real pack
-                and spends real AI Credits, exactly as it would from your own code.
+                This sends a real request — real pack, real AI Credits.
               </p>
 
               <label className="block">
