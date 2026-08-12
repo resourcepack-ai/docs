@@ -1628,7 +1628,7 @@
       "post": {
         "operationId": "generateGui",
         "summary": "Generate a GUI sheet",
-        "description": "Produces a `texture` named `gui:<name>`.\n\n**`elements` is the field that decides what a request costs** — each is its own image call, which is why it's capped. `texts` are drawn from the vanilla font and cost nothing, so their caps are about a sheet staying legible.",
+        "description": "Produces a `texture` named `gui:<name>`.\n\n**The easy path is `auto: true`**: a reasoning model plans the whole screen from the prompt — rows, title, materials, buttons, layout — and `target` may be omitted. Without `auto`, you direct everything yourself.\n\n**Image spend**: `elements`, `decorations` and button `icon`s are each their own image call, which is why they share a cap. `texts`, button faces, the title plaque and the frame are composed rather than generated and cost nothing extra.",
         "tags": [
           "Generating"
         ],
@@ -1742,17 +1742,86 @@
                 "properties": {
                   "prompt": {
                     "type": "string",
-                    "description": "How the panel should look.",
-                    "example": "dark oak panel with brass fittings"
+                    "description": "With `auto`, the whole screen you want; without it, how the panel surface should look.",
+                    "example": "an underwater pirate shop"
+                  },
+                  "auto": {
+                    "type": "boolean",
+                    "description": "Let the director plan the screen from the prompt alone.",
+                    "default": false
                   },
                   "target": {
                     "type": "string",
-                    "description": "The vanilla screen to reskin.",
+                    "description": "The vanilla screen to reskin. Required unless `auto` is set (the director picks the chest size).",
                     "example": "chest"
                   },
                   "name": {
                     "type": "string",
                     "description": "Your label."
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Painted on a plaque hung over the window's top edge. Composed from the vanilla font — free."
+                  },
+                  "titleScale": {
+                    "type": "integer",
+                    "description": "1 fits long names, 2 is display size.",
+                    "enum": [
+                      1,
+                      2
+                    ],
+                    "default": 1
+                  },
+                  "frame": {
+                    "type": "string",
+                    "description": "What the frame band is made of — a second material image wrapped round the window.",
+                    "example": "worn oak planks with iron nails"
+                  },
+                  "buttons": {
+                    "type": "array",
+                    "description": "Real controls: the face and label are composed (always legible); only an `icon` costs an image call.",
+                    "maxItems": 6,
+                    "items": {
+                      "type": "object",
+                      "description": "One button.",
+                      "properties": {
+                        "slot": {
+                          "type": "integer",
+                          "description": "Index of the slot its top-left sits on.",
+                          "minimum": 0
+                        },
+                        "label": {
+                          "type": "string",
+                          "description": "The words on the button. May be empty when `icon` is set.",
+                          "maxLength": 24
+                        },
+                        "icon": {
+                          "type": "string",
+                          "description": "One small object drawn at 16px beside the label."
+                        },
+                        "fill": {
+                          "type": "string",
+                          "description": "Accent for the face, `#rrggbb`. Absent uses the panel's palette."
+                        },
+                        "wSlots": {
+                          "type": "integer",
+                          "description": "Width in slots.",
+                          "minimum": 1,
+                          "maximum": 7,
+                          "default": 1
+                        },
+                        "hSlots": {
+                          "type": "integer",
+                          "description": "Height in slots.",
+                          "minimum": 1,
+                          "maximum": 7,
+                          "default": 1
+                        }
+                      },
+                      "required": [
+                        "slot"
+                      ]
+                    }
                   },
                   "elements": {
                     "type": "array",
@@ -1884,8 +1953,7 @@
                   }
                 },
                 "required": [
-                  "prompt",
-                  "target"
+                  "prompt"
                 ]
               }
             }
