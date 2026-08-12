@@ -187,12 +187,13 @@ touch after checking:
 
 ```java
 if (Bukkit.getPluginManager().getPlugin("ResourcePackAI") != null
-        && plugin.getDescription().getVersion().compareTo("1.1.0") >= 0) {
+        && plugin.getDescription().getVersion().compareTo("1.1.1") >= 0) {
     this.rigs = new MyRigHook(this);   // the only class naming our types
 }
 ```
 
-The API arrived in plugin version **1.1.0**. The jar also ships a
+The API arrived in plugin version 1.1.0 and `isModel` in **1.1.1**, which is
+what everything on this page needs. The jar also ships a
 `-sources.jar` beside it, so put that in `libs/` too and your IDE shows the
 documentation for every call above instead of decompiled bytecode.
 
