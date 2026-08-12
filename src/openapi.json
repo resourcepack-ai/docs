@@ -1719,7 +1719,6 @@
             }
           }
         },
-        "x-available": false,
         "parameters": [
           {
             "name": "pack",
@@ -1776,6 +1775,11 @@
                     "type": "string",
                     "description": "What the frame band is made of — a second material image wrapped round the window.",
                     "example": "worn oak planks with iron nails"
+                  },
+                  "scene": {
+                    "type": "boolean",
+                    "description": "Draw the panel as one full-bleed picture instead of a flat material — for screens whose cells hold no items.",
+                    "default": false
                   },
                   "buttons": {
                     "type": "array",
