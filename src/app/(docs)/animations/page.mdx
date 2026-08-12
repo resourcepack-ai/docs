@@ -48,8 +48,9 @@ server.
     Values hold flat before the first key and after the last one.
   </Step>
   <Step title="Pick playback triggers">
-    An animation does nothing in game until it claims at least one trigger.
-    That's the next section.
+    An animation with no triggers never plays by itself in game — though a
+    plugin can still play it [from code](#playing-from-code). That's the next
+    section.
   </Step>
 </Steps>
 
@@ -101,6 +102,57 @@ Rules worth knowing before you build something complicated:
   to remove it if that matters.
 </Callout>
 
+## Playing from code
+
+Triggers cover "when a player does something to this model". For anything
+else — a quest completing, a boss dying, a timer — a plugin on your server can
+play an animation by name.
+
+**Naming it is all it takes.** Unlike a trigger, this doesn't care what the
+animation claims, so an animation with no triggers at all is playable this way
+and nothing else can reach it. That's a reasonable way to build: give the
+animations you drive from code no triggers, and they'll never fire by accident
+when somebody clicks.
+
+Add `softdepend: [ResourcePackAI]` to your `plugin.yml`, and build against the
+same jar your server runs (there's no maven repo for it — drop
+[the jar](https://cdn.resourcepack.ai/resourcepackai.jar) in `libs/` and use
+`compileOnly files("libs/resourcepackai.jar")`).
+
+```java
+ModelAnimations models = Bukkit.getServicesManager().load(ModelAnimations.class);
+if (models == null) return; // plugin isn't installed
+
+for (ModelPlacement statue : models.placementsNear(altar, 8)) {
+    statue.play("Wave");
+}
+```
+
+You get a `ModelPlacement` from a location (`placementsNear`) or straight from
+an entity (`placementOf`) — pass it the entity out of a
+`PlayerInteractAtEntityEvent` and it resolves the rig that was clicked. From
+there:
+
+| Call | What it does |
+| --- | --- |
+| `animations()` | Every animation name this model has, in editor order |
+| `play(name)` | Plays it. `false` if the name is unknown, the model has no moving parts, or that animation is already mid-play |
+| `play(name, true)` | Same, but restarts it if it's already running |
+| `stop()` | Back to the idle loop if there is one, otherwise the rest pose |
+| `playing()` | What's on screen now, including an idle loop it fell back to itself |
+
+Two things worth knowing before you wire it up. **Call it on the main thread**
+— it moves entities, so an async call throws rather than quietly corrupting
+something. And **a rig in an unloaded chunk isn't there**: `placementsNear`
+only finds what's loaded, which is also the only thing anyone could be looking
+at.
+
+<Callout type="note" title="Bedrock players see it too">
+  A code-driven animation is the same animation as a triggered one in every
+  way that matters — including the packet that tells a Bedrock viewer's client
+  to play the frames natively. Nothing extra to do.
+</Callout>
+
 ## How playback actually works
 
 Useful to know when something looks wrong in game:
@@ -137,8 +189,9 @@ a few times a second.
 
 Things to expect:
 
-- Animations are per-**model**. There's no way to trigger one model's
-  animation from another.
+- Animations are per-**model**. One model's trigger can't start another
+  model's animation — though a plugin holding both can, by playing each
+  [from code](#playing-from-code).
 - Placement rotation is remembered per placement, so the same model animates
   correctly whichever way you faced when you put it down.
 - Nothing triggers without the plugin. Someone who just downloads your Java
