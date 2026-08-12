@@ -147,6 +147,55 @@ something. And **a rig in an unloaded chunk isn't there**: `placementsNear`
 only finds what's loaded, which is also the only thing anyone could be looking
 at.
 
+### Reacting to a player clicking a model
+
+`isModel` answers "is this entity part of a placed model" without building a
+handle you're about to discard:
+
+```java
+@EventHandler(priority = EventPriority.LOWEST)
+public void onUse(PlayerInteractAtEntityEvent event) {
+    if (event.getHand() != EquipmentSlot.HAND) return;
+    if (!models.isModel(event.getRightClicked())) return;
+
+    ModelPlacement rig = models.placementOf(event.getRightClicked()).orElseThrow();
+    rig.play("Open");
+}
+```
+
+<Callout type="warning" title="Listen at LOWEST, or your handler works intermittently">
+  Our plugin handles that same event at NORMAL and **cancels** it when the
+  model has a right-click trigger. At NORMAL or later you'd see a cancelled
+  event for models that have one and a live event for models that don't —
+  which reads as your code working on some models and not others. Running
+  first means always seeing the click as the player sent it.
+
+  Left click is `EntityDamageByEntityEvent`, and that one is cancelled for
+  **every** rig, so punching can't break it. Same rule, no exceptions.
+
+  The hand check matters too: an interaction fires once per hand, so without
+  it everything in your handler happens twice.
+</Callout>
+
+### Surviving an older plugin version
+
+A `null` check isn't enough on its own. If the server runs a jar from before
+this API existed, merely *resolving* `ModelAnimations` throws
+`NoClassDefFoundError` — before your null check runs, and it takes your whole
+`onEnable` with it. Keep every reference to our types in one class you only
+touch after checking:
+
+```java
+if (Bukkit.getPluginManager().getPlugin("ResourcePackAI") != null
+        && plugin.getDescription().getVersion().compareTo("1.1.0") >= 0) {
+    this.rigs = new MyRigHook(this);   // the only class naming our types
+}
+```
+
+The API arrived in plugin version **1.1.0**. The jar also ships a
+`-sources.jar` beside it, so put that in `libs/` too and your IDE shows the
+documentation for every call above instead of decompiled bytecode.
+
 <Callout type="note" title="Bedrock players see it too">
   A code-driven animation is the same animation as a triggered one in every
   way that matters — including the packet that tells a Bedrock viewer's client
