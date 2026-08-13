@@ -1760,7 +1760,7 @@
                   },
                   "title": {
                     "type": "string",
-                    "description": "Painted on a plaque hung over the window's top edge. Composed from the vanilla font — free."
+                    "description": "The screen's name, worn per `titleStyle`. Composed from the vanilla font — free."
                   },
                   "titleScale": {
                     "type": "integer",
@@ -1770,6 +1770,21 @@
                       2
                     ],
                     "default": 1
+                  },
+                  "titleStyle": {
+                    "type": "string",
+                    "description": "How the name is worn: a composed plaque, painted straight onto the panel, or on a drawn signboard.",
+                    "enum": [
+                      "plaque",
+                      "painted",
+                      "sign"
+                    ],
+                    "default": "plaque"
+                  },
+                  "signPrompt": {
+                    "type": "string",
+                    "description": "`titleStyle: sign` only — the board to draw (one image call).",
+                    "example": "a rough horizontal oak log signboard"
                   },
                   "frame": {
                     "type": "string",
