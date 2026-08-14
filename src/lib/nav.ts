@@ -218,6 +218,27 @@ export const nav: NavGroup[] = [
       },
     ],
   },
+  {
+    title: "Your account",
+    items: [
+      {
+        title: "Affiliate programme",
+        href: "/affiliate",
+        description: "Share a link, earn a share of what everyone who joins through it spends.",
+        keywords: [
+          "affiliate",
+          "referral",
+          "refer",
+          "ref link",
+          "commission",
+          "earn",
+          "revenue share",
+          "partner",
+          "creator",
+        ],
+      },
+    ],
+  },
 ];
 
 /** Every page in sidebar order — the order the pager walks. */
