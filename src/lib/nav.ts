@@ -219,7 +219,7 @@ export const nav: NavGroup[] = [
     ],
   },
   {
-    title: "Your account",
+    title: "Platform",
     items: [
       {
         title: "Affiliate programme",
