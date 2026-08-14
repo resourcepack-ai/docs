@@ -1628,7 +1628,7 @@
       "post": {
         "operationId": "generateGui",
         "summary": "Generate a GUI sheet",
-        "description": "Produces a `texture` named `gui:<name>`.\n\n**The easy path is `auto: true`**: a reasoning model plans the whole screen from the prompt — rows, title, materials, buttons, layout — and `target` may be omitted. Without `auto`, you direct everything yourself.\n\n**Image spend**: `elements`, `decorations` and button `icon`s are each their own image call, which is why they share a cap. `texts`, button faces, the title plaque and the frame are composed rather than generated and cost nothing extra.",
+        "description": "Produces a `texture` named `gui:<name>`.\n\n**The easy path is `auto: true`**: a reasoning model plans the whole screen from the prompt — rows, title, materials, buttons, layout — and `target` may be omitted. Without `auto`, you direct everything yourself.\n\n**Image spend**: `elements`, `decorations` and button `icon`s are each their own image call, which is why they share a cap. `texts`, button faces, the title plaque and the frame are composed rather than generated and cost nothing extra.\n\n**Game screens work differently.** `target: \"inventory\"` is the player's own inventory, which a pack reskins by replacing the vanilla file rather than by overlaying a plugin-opened screen. Vanilla owns its layout, so everything about a menu is ignored there — no title, buttons, cards, elements or decorations — and `auto` only chooses the panel and frame materials. A pack may hold one asset per replaced file; a second is refused with `conflict`.",
         "tags": [
           "Generating"
         ],
