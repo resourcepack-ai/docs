@@ -31,6 +31,25 @@ export const metadata: Metadata = {
   },
   description:
     "Documentation for ResourcePack AI — build Minecraft Resource Packs in the browser, test them live, and push them to your players.",
+  // Link previews, and the reason they're declared once here rather than per
+  // page: Next fills og:title and og:description from each page's own resolved
+  // `title`/`description` (template included), so a page that sets those two —
+  // which every page here does, it's step 1 of adding one — gets a preview
+  // about itself for free. Setting them literally in this block would instead
+  // stamp the same title on all 21.
+  //
+  // No image, matching landing: there is no OG card artwork anywhere in the
+  // repo yet, and a URL pointing at one that doesn't exist is worse than the
+  // text-only preview every platform falls back to. `summary_large_image`
+  // degrades to a plain summary card until one exists, which is also landing's
+  // current state — add the artwork in both apps at once.
+  openGraph: {
+    siteName: "ResourcePack AI Docs",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
   // Metadata icon paths are not basePath-prefixed by Next — see
   // lib/base-path.ts for the full trap and the other place it bit.
   icons: { icon: asset("/logo.svg") },
