@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Onest } from "next/font/google";
 
 import "./globals.css";
@@ -16,6 +16,14 @@ const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
+
+/**
+ * The stripe down the left of a Discord embed, and the mobile address bar.
+ * Copied from landing's layout, which has the full note — same `#3670f8` as
+ * the `.ai` in the wordmark, and one of three copies (here, landing, studio's
+ * gallery layout) because these are separate Workers with no shared package.
+ */
+export const viewport: Viewport = { themeColor: "#3670f8" };
 
 export const metadata: Metadata = {
   // The basePath is part of the public address, so it belongs here — Next
