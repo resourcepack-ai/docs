@@ -72,8 +72,14 @@ argument rather than a marquee you have to line up by hand:
 
 - **Slot brush** stamps a styled cell: carved (the generator's own look),
   vanilla grey, flat, or outline-only.
-- **Eraser** clears a whole slot, not a smear of pixels.
-- Both take a **scope**, which is what turns a fiddly job into one click:
+- **Paint** covers a whole slot in one flat colour, and defaults to vanilla's
+  panel grey — so a painted slot doesn't look painted, it looks *gone*, because
+  what's left matches the panel either side of it. That's how you get a 5-slot
+  row on a 9-slot chest.
+- **Eraser** clears a whole slot, not a smear of pixels. (It cuts a hole:
+  what shows through is the world behind the screen, which is usually not what
+  you want on a panel — reach for Paint instead.)
+- All three take a **scope**, which is what turns a fiddly job into one click:
   the slot under the cursor, its row, its column, the whole screen /
   inventory / hotbar block, or every slot at once. There's a `Pixels` scope
   too, for free-hand touch-ups.
