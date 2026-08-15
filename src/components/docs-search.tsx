@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { flatNav, type NavItem } from "@/lib/nav";
 import { flatApiNav } from "@/lib/api-nav";
@@ -111,88 +112,97 @@ export function DocsSearch() {
         </kbd>
       </button>
 
-      {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 pt-[12vh] backdrop-blur-[2px]"
-          onMouseDown={close}
-        >
+      {/* Portalled to <body>, and that is not a tidiness preference: the site
+          header this lives in is `backdrop-blur-md`, and a backdrop-filter makes
+          its element the containing block for `fixed` descendants. Rendered in
+          place, the scrim's `inset-0` resolved to the header's own box — a strip
+          of dimming across the top of the page rather than a modal over it. */}
+      {open &&
+        createPortal(
           <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Search pages"
-            className="border-border bg-card w-full max-w-xl overflow-hidden rounded-xl border shadow-2xl shadow-black/50"
-            onMouseDown={(event) => event.stopPropagation()}
-            onKeyDown={onListKeyDown}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+            onMouseDown={close}
           >
-            <div className="border-border flex items-center gap-2.5 border-b px-4">
-              <Search className="text-faint size-4 shrink-0" strokeWidth={2} />
-              <input
-                ref={inputRef}
-                value={query}
-                onChange={(event) => {
-                  setQuery(event.target.value);
-                  setActiveIndex(0);
-                }}
-                placeholder="Search pages"
-                aria-label="Search pages"
-                className="placeholder:text-faint h-12 w-full bg-transparent text-[0.9rem] outline-none"
-              />
-              <kbd className="border-border text-faint rounded border px-1.5 py-px text-[0.7rem]">
-                esc
-              </kbd>
-            </div>
+            {/* studio's modal scrim, to the value: bg-black/55 + a 4px blur. */}
+            <div className="absolute inset-0 bg-black/55 backdrop-blur-[4px]" />
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Search pages"
+              className="border-border bg-card relative w-full max-w-xl overflow-hidden rounded-xl border shadow-[0_4px_12px_rgba(0,0,0,0.4),0_16px_40px_rgba(0,0,0,0.32)] [animation:rpin_.22s_ease]"
+              onMouseDown={(event) => event.stopPropagation()}
+              onKeyDown={onListKeyDown}
+            >
+              <div className="border-border flex items-center gap-2.5 border-b px-4">
+                <Search className="text-faint size-4 shrink-0" strokeWidth={2} />
+                <input
+                  ref={inputRef}
+                  value={query}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                    setActiveIndex(0);
+                  }}
+                  placeholder="Search pages"
+                  aria-label="Search pages"
+                  className="placeholder:text-faint h-12 w-full bg-transparent text-[0.9rem] outline-none"
+                />
+                <kbd className="border-border text-faint rounded border px-1.5 py-px text-[0.7rem]">
+                  esc
+                </kbd>
+              </div>
 
-            {results.length === 0 ? (
-              <p className="text-muted-foreground px-4 py-8 text-center text-[0.85rem]">
-                Nothing matches{" "}
-                <span className="text-foreground">&ldquo;{query.trim()}&rdquo;</span>.
-                <br />
-                <span className="text-faint text-[0.8rem]">
-                  This searches page titles, not page contents.
-                </span>
-              </p>
-            ) : (
-              <ul ref={listRef} className="max-h-[min(24rem,50vh)] overflow-y-auto p-2">
-                {results.map((item, index) => (
-                  <li key={item.href}>
-                    <button
-                      type="button"
-                      onClick={() => go(item)}
-                      onMouseMove={() => setActiveIndex(index)}
-                      className={cn(
-                        "w-full rounded-lg px-3 py-2 text-left transition-colors",
-                        index === activeIndex ? "bg-primary-tint" : "bg-transparent",
-                      )}
-                    >
-                      <span
+              {results.length === 0 ? (
+                <p className="text-muted-foreground px-4 py-8 text-center text-[0.85rem]">
+                  Nothing matches{" "}
+                  <span className="text-foreground">&ldquo;{query.trim()}&rdquo;</span>.
+                  <br />
+                  <span className="text-faint text-[0.8rem]">
+                    This searches page titles, not page contents.
+                  </span>
+                </p>
+              ) : (
+                <ul ref={listRef} className="max-h-[min(24rem,50vh)] overflow-y-auto p-2">
+                  {results.map((item, index) => (
+                    <li key={item.href}>
+                      <button
+                        type="button"
+                        onClick={() => go(item)}
+                        onMouseMove={() => setActiveIndex(index)}
                         className={cn(
-                          "block text-[0.875rem]",
-                          index === activeIndex ? "text-primary-ink" : "text-foreground",
+                          "w-full rounded-lg px-3 py-2 text-left transition-colors",
+                          index === activeIndex ? "bg-primary-tint" : "bg-transparent",
                         )}
                       >
-                        {item.title}
-                      </span>
-                      {item.description && (
-                        <span className="text-muted-foreground mt-0.5 block truncate text-[0.78rem]">
-                          {item.description}
+                        <span
+                          className={cn(
+                            "block text-[0.875rem]",
+                            index === activeIndex ? "text-primary-ink" : "text-foreground",
+                          )}
+                        >
+                          {item.title}
                         </span>
-                      )}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
+                        {item.description && (
+                          <span className="text-muted-foreground mt-0.5 block truncate text-[0.78rem]">
+                            {item.description}
+                          </span>
+                        )}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-            <div className="border-border text-faint flex items-center gap-3 border-t px-4 py-2 text-[0.72rem]">
-              <span>↑↓ to navigate</span>
-              <span>↵ to open</span>
-              <span className="ml-auto">
-                {results.length} of {searchable.length} pages
-              </span>
+              <div className="border-border text-faint flex items-center gap-3 border-t px-4 py-2 text-[0.72rem]">
+                <span>↑↓ to navigate</span>
+                <span>↵ to open</span>
+                <span className="ml-auto">
+                  {results.length} of {searchable.length} pages
+                </span>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
