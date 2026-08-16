@@ -156,23 +156,6 @@ export const nav: NavGroup[] = [
         description: "play.resourcepack.ai — a lobby and a private world of your own.",
         keywords: ["sandbox", "lobby", "portal", "play", "world"],
       },
-      {
-        title: "Distribution",
-        href: "/distribution",
-        description: "Serve your pack to your own server's players, on whatever version they run.",
-        keywords: [
-          "distribute",
-          "server",
-          "publish",
-          "release",
-          "server.properties",
-          "resource-pack",
-          "viaversion",
-          "players",
-          "analytics",
-          "host",
-        ],
-      },
       // "Your own server" is held back from launch (owner call, 2026-08-08).
       // The page itself is parked at app/(docs)/testing/_your-server — the
       // underscore keeps Next from routing it. To bring it back: rename the
@@ -238,6 +221,26 @@ export const nav: NavGroup[] = [
   {
     title: "Platform",
     items: [
+      // Moved here from "Testing in Minecraft" (owner call, 2026-08-17):
+      // distribution is an account-level surface with its own sidebar page in
+      // studio, not a way of testing a pack.
+      {
+        title: "Distribution",
+        href: "/distribution",
+        description: "Serve your pack to your own server's players, on whatever version they run.",
+        keywords: [
+          "distribute",
+          "server",
+          "publish",
+          "release",
+          "server.properties",
+          "resource-pack",
+          "viaversion",
+          "players",
+          "analytics",
+          "host",
+        ],
+      },
       {
         title: "Affiliate programme",
         href: "/affiliate",
