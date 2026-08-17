@@ -61,41 +61,11 @@ art for the screen you picked, already centred in the sheet, and edit from
 there. There's no prompt box yet: the AI isn't capable of drawing a good screen,
 and we're working on it.
 
-You start from the vanilla backplate, already centred in the sheet.
-
-## The editor works in slots, not pixels
-
-The GUI editor is not the pixel editor the other asset kinds use, and the
-difference is the point. A screen has a fixed mechanical layout — 18×18 slot
-cells at coordinates the game decides — so the tools take a **slot** as their
-argument rather than a marquee you have to line up by hand:
-
-- **Slot brush** stamps a styled cell: carved (the generator's own look),
-  vanilla grey, flat, or outline-only.
-- **Paint** covers a whole slot in one flat colour, and defaults to vanilla's
-  panel grey — so a painted slot doesn't look painted, it looks *gone*, because
-  what's left matches the panel either side of it. That's how you get a 5-slot
-  row on a 9-slot chest.
-- **Eraser** clears a whole slot, not a smear of pixels. (It cuts a hole:
-  what shows through is the world behind the screen, which is usually not what
-  you want on a panel — reach for Paint instead.)
-- All three take a **scope**, which is what turns a fiddly job into one click:
-  the slot under the cursor, its row, its column, the whole screen /
-  inventory / hotbar block, or every slot at once. There's a `Pixels` scope
-  too, for free-hand touch-ups.
-- **Card** and **Button** are dragged across the slots they should cover and
-  snap to them, so furniture lines up with the items the game will draw.
-- **Title band**, **frame** and **label** place themselves from the screen's
-  own geometry.
-
-Hovering a slot lights it the way Minecraft does — a white wash over the
-16×16 item area — and the row or group a click would touch is highlighted
-before you commit to it. The player inventory and hotbar draw at a fixed
-offset below the window on most screens, and they're part of the lattice too.
-
-Cards, buttons, frames and carved cells are all derived from one **theme**
-colour, seeded from the art already on the sheet. Changing it restyles what
-you draw next; it doesn't repaint what's already there.
+In the editor you get the vanilla backplate to draw over, the dashed window
+frame, and a guide box on every **slot** the screen has, so you can line a
+panel up with the grid instead of counting pixels. The player inventory and
+hotbar draw at a fixed offset below the window on most screens, and they're
+guided too.
 
 ## Seeing it in game
 
