@@ -4,11 +4,6 @@ export const metadata = {
     "Serve your pack to your own server's players, on whatever Minecraft version each of them is running.",
 };
 
-{/* Deliberately a stub (owner call, 2026-08-17): distribution is being
-    reworked and a full guide written against today's flow would be wrong in
-    weeks. The previous full page is in git history — restore and update it
-    when the feature settles, rather than writing it fresh. */}
-
 # Distribution
 
 Point your Minecraft server at a pack once. From then on everyone who joins
@@ -18,35 +13,82 @@ actually took it.
 This is different from [testing](/testing/test-server), which pushes a pack to
 one player so you can look at it. Distribution is the pack your server runs.
 
-<Callout type="info" title="This feature is settling">
-  Distribution is new and still changing shape, so this page is a short
-  outline rather than a full guide for now. The Distribution page in the
-  studio explains each step where you take it.
-</Callout>
-
-## The short version
+## Setting it up
 
 <Steps>
   <Step title="Serve a pack">
-    Open **Distribution** in the studio sidebar and press **Serve a pack** —
-    pick which of your packs your server should hand its players.
-  </Step>
-  <Step title="Pick versions and publish">
-    Tick the Minecraft versions to publish for, then press **Publish**. Every
-    ticked version is built up front, so a joining player never waits for a
-    download.
+    Open **Distribution** in the sidebar and press **Serve a pack**, then pick
+    which of your packs the server should hand its players.
   </Step>
   <Step title="Bind your server">
-    Press **Bind a server** and run the command it gives you in game, as an
-    operator, with [the plugin](https://cdn.resourcepack.ai/resourcepackai.jar)
-    installed. Your server remembers, and picks up every later publish on its
-    own.
+    The modal gives you an eight-digit code. On your server, as an operator,
+    with [the plugin](https://cdn.resourcepack.ai/resourcepackai.jar)
+    installed, run:
+
+    ```
+    /rpai bind 12345678
+    ```
+
+    Your server remembers this. It picks up everything you publish afterwards
+    on its own, with no restart and nothing to re-upload.
+  </Step>
+  <Step title="Publish">
+    Press **Publish** at the top right, tick the Minecraft versions you want to
+    support, and confirm. Every ticked version is built up front, so a joining
+    player never waits for a zip.
   </Step>
 </Steps>
 
-No plugin? The Distribution page also gives you a stable `resource-pack=`
-line for `server.properties` — the thirty-second version, without per-player
-versions or live updates.
+Players get the pack the next time they join.
+
+## Versions
+
+You choose which versions to support; we never guess. Each one is built as its
+own download with its own hash, because a Minecraft server hands the client a
+URL *and* a hash, so one file cannot quietly serve everybody.
+
+Which build each player gets is decided on your server, as they join:
+
+- On an ordinary server, every player is on the server's own version, so
+  there is one answer.
+- **With [ViaVersion](https://viaversion.com) installed**, players can be on
+  many different versions at once, and each one is matched individually.
+- Bedrock players connecting through Geyser get the Bedrock build, if your
+  pack has models in it.
+
+Someone joining on a version you haven't ticked is **served nothing, and
+recorded** — they show up in the version breakdown so you can tick that version
+and publish, rather than never hearing about it.
+
+<Callout type="info" title="Very new versions">
+  A Minecraft version we haven't added yet is reported as unrecognised rather
+  than guessed at, because a pack built for the wrong version loads in game and
+  renders nothing with no error to explain it. Those players start working when
+  we add the version — you don't need to do anything.
+</Callout>
+
+## Publishing again
+
+There is **one live release**. Publishing again builds your ticked versions
+fresh and replaces it, and the previous build is removed.
+
+Your pack in the editor is deliberately *not* what your players get. Publishing
+is an explicit act, so saving a half-finished edit can never push a broken pack
+onto a live server.
+
+## What you can see
+
+The Distribution page shows serves per day over the last 30, which versions
+your players are on, every recent join, and each bound server with the last
+time it served somebody.
+
+**Declined is worth watching.** A player's client can refuse a server pack
+without ever showing them a prompt — it's a per-server setting called *Server
+Resource Packs*, and most people have never heard of it. A high decline rate is
+usually that, not people saying no.
+
+Player names and UUIDs come from your own server. If it runs in offline mode
+those UUIDs can be forged, so unique-player counts there are an estimate.
 
 ## Limits
 
