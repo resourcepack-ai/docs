@@ -1,0 +1,55 @@
+export const metadata = {
+  title: "Distribution",
+  description:
+    "Serve your pack to your own server's players, on whatever Minecraft version each of them is running.",
+};
+
+{/* Deliberately a stub (owner call, 2026-08-17): distribution is being
+    reworked and a full guide written against today's flow would be wrong in
+    weeks. The previous full page is in git history — restore and update it
+    when the feature settles, rather than writing it fresh. */}
+
+# Distribution
+
+Point your Minecraft server at a pack once. From then on everyone who joins
+gets it — built for the version *they* are running — and you can see who
+actually took it.
+
+This is different from [testing](/testing/test-server), which pushes a pack to
+one player so you can look at it. Distribution is the pack your server runs.
+
+<Callout type="info" title="This feature is settling">
+  Distribution is new and still changing shape, so this page is a short
+  outline rather than a full guide for now. The Distribution page in the
+  studio explains each step where you take it.
+</Callout>
+
+## The short version
+
+<Steps>
+  <Step title="Serve a pack">
+    Open **Distribution** in the studio sidebar and press **Serve a pack** —
+    pick which of your packs your server should hand its players.
+  </Step>
+  <Step title="Pick versions and publish">
+    Tick the Minecraft versions to publish for, then press **Publish**. Every
+    ticked version is built up front, so a joining player never waits for a
+    download.
+  </Step>
+  <Step title="Bind your server">
+    Press **Bind a server** and run the command it gives you in game, as an
+    operator, with [the plugin](https://cdn.resourcepack.ai/resourcepackai.jar)
+    installed. Your server remembers, and picks up every later publish on its
+    own.
+  </Step>
+</Steps>
+
+No plugin? The Distribution page also gives you a stable `resource-pack=`
+line for `server.properties` — the thirty-second version, without per-player
+versions or live updates.
+
+## Limits
+
+Every plan can distribute. The free plan serves up to 50 unique players a
+month, counted across the packs you own; every paid plan serves unlimited
+players. Your current usage is on the Distribution page.
