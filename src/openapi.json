@@ -1980,6 +1980,184 @@
         }
       }
     },
+    "/packs/{pack}/hud": {
+      "post": {
+        "operationId": "generateHud",
+        "summary": "Generate the in-game HUD",
+        "description": "Produces a `texture` named `gui:<name>`, like a GUI — but where a GUI is one screen a plugin opens, this is the overlay drawn over the world while nothing is open at all: hearts, hunger, armour, air, the hotbar, the crosshair and the experience bar.\n\n**One asset, many files.** A HUD set replaces up to 68 real vanilla sprites and is edited afterwards as a single sheet. A pack may hold ONE; a second is refused with `conflict`.\n\n**Image spend is per GROUP, not per file.** Each group costs one image call, and everything in it is derived from that one drawing — one heart becomes all forty-four of vanilla's moods, fills and damage flashes, and one strip becomes the experience bar. Pass `groups` to narrow what you pay for.\n\n**The crosshair is picked, not described.** Vanilla's stays readable by inverting whatever is behind it, which a resource pack cannot do, so this one is drawn light with a dark outline from a fixed set of shapes. `crosshair` chooses which; a prompt would not survive contact with a snowfield.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's name within the pack."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Which store the generated asset lands in.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
+                "example": {
+                  "id": "outbreak_hud",
+                  "kind": "texture",
+                  "job": "medieval-keep:texture:gui:outbreak_hud",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `unavailable`, `conflict`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What the HUD is made of, and what its pips are. Applied to every group.",
+                    "example": "rusted field-hospital tin, blood-drop hearts, ration-tin hunger"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label."
+                  },
+                  "groups": {
+                    "type": "array",
+                    "description": "Which parts of the overlay to make — one image call each. Omit for everything available. An unknown or unavailable id is refused rather than skipped.",
+                    "example": [
+                      "health",
+                      "hunger",
+                      "hotbar"
+                    ],
+                    "items": {
+                      "type": "string",
+                      "description": "A group id.",
+                      "enum": [
+                        "hotbar",
+                        "health",
+                        "hunger",
+                        "armor",
+                        "air",
+                        "experience",
+                        "crosshair"
+                      ]
+                    }
+                  },
+                  "crosshair": {
+                    "type": "string",
+                    "description": "Which reticle shape to draw. Composed, so it costs no image call.",
+                    "enum": [
+                      "cross",
+                      "dot",
+                      "bracket",
+                      "circle",
+                      "chevron"
+                    ],
+                    "default": "cross"
+                  },
+                  "referenceId": {
+                    "type": "string",
+                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                  },
+                  "referenceStrength": {
+                    "type": "number",
+                    "description": "How closely to follow the reference. Clamped to this range rather than rejected.",
+                    "minimum": 0.05,
+                    "maximum": 0.95
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/packs/{pack}/icons": {
       "post": {
         "operationId": "generateIcon",
