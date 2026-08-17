@@ -120,6 +120,36 @@ daylight is worse than a plain one. So you pick a shape instead:
 
 Each is drawn in your HUD's own palette, with the dark outline added for you.
 
+## Screen overlays are a second set
+
+The layers drawn over the **whole** screen are their own asset, picked with the
+same door: the **vignette** at the edge of your vision and the **Nausea**
+swirl. A pack may hold one HUD and one set of overlays, independently.
+
+They are separate for a practical reason as much as a tidy one — they are
+256×256 where the biggest HUD sprite is 182×22, and somebody who wants a blood
+vignette does not want to regenerate their hearts to get it.
+
+The vignette is the single biggest lever a horror or survival pack has, and it
+is worth knowing how the game draws it: the image is not a picture laid over
+the world, it is a per-pixel instruction about how much light to **take away**.
+So the Studio composes the shape for you — clear through the middle, rising
+toward the corners — and what your prompt supplies is the colour and texture of
+the darkness. Ask for soot, rust, dried blood, frost.
+
+<Callout type="warning" title="The scope and the pumpkin blur are not offered">
+  Vanilla draws the spyglass scope, the pumpkin blur and the underwater tint as
+  **soft** masks — most of each image is partially transparent. The Studio's
+  pixel grids are either a solid colour or fully clear, with nothing in
+  between, so a generated version of one would not tint the world, it would
+  hide it. They are left vanilla rather than shipped broken.
+
+  This is the one that stings, because a scope or a gas-mask visor is exactly
+  what a tactical or horror server asks for. Vanilla's darkened surround is
+  three quarters of what that overlay *is*, and without it you get a ring with
+  a clear middle — a different feature wearing the same file name.
+</Callout>
+
 ## Editing one
 
 A generated HUD opens in the pixel editor as one sheet with every sprite laid

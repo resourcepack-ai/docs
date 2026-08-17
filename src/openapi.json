@@ -1984,7 +1984,7 @@
       "post": {
         "operationId": "generateHud",
         "summary": "Generate the in-game HUD",
-        "description": "Produces a `texture` named `gui:<name>`, like a GUI — but where a GUI is one screen a plugin opens, this is the overlay drawn over the world while nothing is open at all: hearts, hunger, armour, air, the hotbar, the crosshair and the experience bar.\n\n**One asset, many files.** A HUD set replaces up to 68 real vanilla sprites and is edited afterwards as a single sheet. A pack may hold ONE; a second is refused with `conflict`.\n\n**Image spend is per GROUP, not per file.** Each group costs one image call, and everything in it is derived from that one drawing — one heart becomes all forty-four of vanilla's moods, fills and damage flashes, and one strip becomes the experience bar. Pass `groups` to narrow what you pay for.\n\n**The crosshair is picked, not described.** Vanilla's stays readable by inverting whatever is behind it, which a resource pack cannot do, so this one is drawn light with a dark outline from a fixed set of shapes. `crosshair` chooses which; a prompt would not survive contact with a snowfield.",
+        "description": "Produces a `texture` named `gui:<name>`, like a GUI — but where a GUI is one screen a plugin opens, this is the overlay drawn over the world while nothing is open at all: hearts, hunger, armour, air, the hotbar, the crosshair, the experience bar and the boss bar.\n\n**There are two sets**, chosen with `hud`. `hud` is what you read while you play; `overlays` is the full-screen layers — the vignette at the edge of your vision, the Nausea swirl. A pack may hold one of each.\n\n**One asset, many files.** A HUD set replaces up to 82 real vanilla sprites and is edited afterwards as a single sheet. A pack may hold ONE of each set; a second is refused with `conflict`.\n\n**Image spend is per GROUP, not per file.** Each group costs one image call, and everything in it is derived from that one drawing — one heart becomes all forty-four of vanilla's moods, fills and damage flashes, and one strip becomes the experience bar and every boss bar colour. Pass `groups` to narrow what you pay for.\n\n**The crosshair is picked, not described.** Vanilla’s stays readable by inverting whatever is behind it, which a resource pack cannot do, so this one is drawn light with a dark outline from a fixed set of shapes. `crosshair` chooses which; a prompt would not survive contact with a snowfield.",
         "tags": [
           "Generating"
         ],
@@ -2104,9 +2104,18 @@
                     "type": "string",
                     "description": "Your label."
                   },
+                  "hud": {
+                    "type": "string",
+                    "description": "Which set to make. `hud` is the overlay along the bottom and middle of the screen; `overlays` is the full-screen layers (the vignette, the Nausea swirl). They are separate assets and a pack may hold one of each.",
+                    "enum": [
+                      "hud",
+                      "overlays"
+                    ],
+                    "default": "hud"
+                  },
                   "groups": {
                     "type": "array",
-                    "description": "Which parts of the overlay to make — one image call each. Omit for everything available. An unknown or unavailable id is refused rather than skipped.",
+                    "description": "Which parts to make — one image call each. Omit for everything available in the chosen set. The enum below is the union across both sets; a group belonging to the other one is refused, as is an unknown or held id. Nothing is ever silently skipped.",
                     "example": [
                       "health",
                       "hunger",
@@ -2123,7 +2132,10 @@
                         "air",
                         "experience",
                         "crosshair",
-                        "boss_bar"
+                        "boss_bar",
+                        "vignette",
+                        "warp",
+                        "frost"
                       ]
                     }
                   },
