@@ -88,14 +88,53 @@ pack — is identical.
 
 GUIs are drawn rather than generated: you start from the real vanilla window
 art for the screen you picked, already centred in the sheet, and edit from
-there. There's no prompt box yet: the AI isn't capable of drawing a good screen,
-and we're working on it.
+there. There's no prompt box for a whole screen yet — the AI isn't capable of
+drawing one, and we're working on it. You can have it draw a single image into
+a box you pick, which is a different job and one it's good at; see below.
 
-In the editor you get the vanilla backplate to draw over, the dashed window
-frame, and a guide box on every **slot** the screen has, so you can line a
-panel up with the grid instead of counting pixels. The player inventory and
-hotbar draw at a fixed offset below the window on most screens, and they're
-guided too.
+You start from the vanilla backplate, already centred in the sheet.
+
+## The editor works in slots, not pixels
+
+The GUI editor is not the pixel editor the other asset kinds use, and the
+difference is the point. A screen has a fixed mechanical layout — 18×18 slot
+cells at coordinates the game decides — so the tools take a **slot** as their
+argument rather than a marquee you have to line up by hand:
+
+- **Slot brush** stamps a styled cell: carved (the generator's own look),
+  vanilla grey, flat, or outline-only.
+- **Paint** covers a whole slot in one flat colour, and defaults to vanilla's
+  panel grey — so a painted slot doesn't look painted, it looks *gone*, because
+  what's left matches the panel either side of it. That's how you get a 5-slot
+  row on a 9-slot chest.
+- **Eraser** clears a whole slot, not a smear of pixels. (It cuts a hole:
+  what shows through is the world behind the screen, which is usually not what
+  you want on a panel — reach for Paint instead.)
+- All three take a **scope**, which is what turns a fiddly job into one click:
+  the slot under the cursor, its row, its column, the whole screen /
+  inventory / hotbar block, or every slot at once. There's a `Pixels` scope
+  too, for free-hand touch-ups.
+- **Card** and **Button** are dragged across the slots they should cover and
+  snap to them, so furniture lines up with the items the game will draw.
+- **Title band**, **frame** and **label** place themselves from the screen's
+  own geometry.
+
+The layers panel's **+** asks what you're adding. One of the answers is a
+**drawn image**: you drag a box anywhere on the sheet — free pixels, not slots,
+so it can sit over the frame or out in the margin — say what goes in it, and
+it's drawn at exactly that size and lands as its own layer. Pick *Object* for
+one thing on nothing (it comes back cut out) or *Scene* for something that
+fills its box. It costs credits like any other image, and it's the only AI in
+this editor: everything else here is drawn or composed, and free.
+
+Hovering a slot lights it the way Minecraft does — a white wash over the
+16×16 item area — and the row or group a click would touch is highlighted
+before you commit to it. The player inventory and hotbar draw at a fixed
+offset below the window on most screens, and they're part of the lattice too.
+
+Cards, buttons, frames and carved cells are all derived from one **theme**
+colour, seeded from the art already on the sheet. Changing it restyles what
+you draw next; it doesn't repaint what's already there.
 
 ## Seeing it in game
 
