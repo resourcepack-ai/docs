@@ -2122,7 +2122,8 @@
                         "armor",
                         "air",
                         "experience",
-                        "crosshair"
+                        "crosshair",
+                        "boss_bar"
                       ]
                     }
                   },

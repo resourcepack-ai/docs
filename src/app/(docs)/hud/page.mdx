@@ -49,10 +49,12 @@ that part comes out of one drawing:
 | **Air** | All 3 |
 | **Hotbar** | The tray, its selection box, the offhand slot and the attack indicator |
 | **Experience bar** | Both halves, the groove and the fill |
+| **Boss bar** | All 7 colours, groove and fill — see below |
 | **Crosshair** | Composed, not generated — costs nothing |
 
-So a full HUD is about six images, which is what a chest menu with six buttons
-already costs. Untick the parts you want left vanilla and you pay for fewer.
+So a full HUD is about seven images, which is roughly what a chest menu with
+six buttons already costs. Untick the parts you want left vanilla and you pay
+for fewer.
 
 The reason it works this way isn't only price. Forty-four separately generated
 hearts would come back as forty-four different objects, and a poisoned heart
@@ -76,6 +78,26 @@ whether or not you asked:
   spiked rim — rather than a recolour of the normal one. Matching that from a
   themed icon would need a second image for a variant only hardcore worlds ever
   render, so what ships is the same heart with more bite in its outline.
+</Callout>
+
+## The boss bar is seven bars, not one
+
+Worth calling out separately, because it is the piece a server gets the most
+out of and it costs a single image.
+
+Vanilla ships the boss bar in **seven colours**, and a plugin picks which one
+a given bar uses at runtime. They are not seven near-identical files you have
+to theme seven times — they are one strip, re-hued for you. Theme the HUD once
+and a server has a themed objective bar, a themed horde meter and a themed
+capture bar that don't look alike, with no further work.
+
+<Callout type="note" title="The segmented bars stay vanilla">
+  Vanilla's notched bars — the ones split into 6, 10, 12 or 20 segments — are
+  not bars at all. They are a semi-transparent overlay the game lays **over**
+  the coloured bar, and the Studio's pixel grids have no partial transparency,
+  so a generated one would hide the colour underneath instead of segmenting it.
+  They are left vanilla, which means a notched bar still gets your colours with
+  vanilla's notches drawn over them.
 </Callout>
 
 ## The crosshair is picked, not described
@@ -140,9 +162,7 @@ action bar or a boss bar's title by a plugin. It is the same trick a
 Two vanilla pieces are also worth repurposing before reaching for that, because
 they cost nothing and a server already controls them:
 
-- **The boss bar** is eleven bar styles a plugin picks between at runtime —
-  seven colours and four segment counts. Theme it once and you have a themed
-  objective bar, horde meter and capture bar that don't look alike.
+- **The boss bar**, above — seven runtime styles off one image.
 - **The air row** and **the experience bar** are driven by values a plugin can
   set, so they are the two meters a server can already repurpose without any of
   this.
