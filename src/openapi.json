@@ -2171,6 +2171,174 @@
         }
       }
     },
+    "/packs/{pack}/hud-overlays": {
+      "post": {
+        "operationId": "generateHudOverlay",
+        "summary": "Generate a custom HUD meter",
+        "description": "Produces a `texture` named `gui:<name>` — a meter Minecraft does not have.\n\n**This is the other half of the HUD, and the one with no ceiling.** `POST /packs/{pack}/hud` reskins the 82 sprites vanilla already ships, and no prompt makes an 83rd — there is no vanilla sprite for thirst, stamina, infection or ammo. This endpoint makes one anyway, by drawing the meter as FONT GLYPHS: the pack gains a character per fill step, and a plugin that sends one of those characters to the action bar has drawn a HUD element the game has never heard of.\n\n**What you get back is characters, not a file.** Poll the job, then read the asset: `overlayEscapes` is one `\\uXXXX` pair per step, index 0 empty through index `steps` full. Your plugin picks by value and sends it. Nothing vanilla is replaced, so a pack may hold as many overlays as it likes.\n\n**Cost is one image, plus one more if you ask for an icon.** Every step is composed from the same material — a meter at 40% is not a separate commission from the same meter at 50% — so `steps` does not change the price.\n\n**Two things about drawing it are worth knowing before you design around it.** The client draws text with a drop shadow that the Spigot API cannot switch off, so the art carries its own dark outline and you should expect a 1px shadow under it. And the meter is centred on whatever line you send it to, with a total measured width of zero — so several overlays sent in one string stack on top of each other rather than pushing each other sideways, which is what you want when a server is showing three meters at different heights.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's name within the pack."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Which store the generated asset lands in.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
+                "example": {
+                  "id": "thirst",
+                  "kind": "texture",
+                  "job": "medieval-keep:texture:gui:thirst",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `unavailable`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What the meter is made of. Applied to the bar's surface.",
+                    "example": "cracked green glass tubing with a sickly glow"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label."
+                  },
+                  "shape": {
+                    "type": "string",
+                    "description": "How the meter reads: one continuous fill, a row of separate pips, or a bar cut into notches.",
+                    "enum": [
+                      "bar",
+                      "pips",
+                      "segments"
+                    ],
+                    "default": "bar"
+                  },
+                  "steps": {
+                    "type": "integer",
+                    "description": "How many positions between empty and full. You get this many characters plus one. Refused rather than clamped if out of range — silently giving you fewer would leave your plugin indexing steps that don't exist.",
+                    "minimum": 4,
+                    "maximum": 20,
+                    "default": 10
+                  },
+                  "lift": {
+                    "type": "integer",
+                    "description": "How many pixels above its text line the meter renders. Bought with transparent padding under the art, so a large value makes a taller glyph rather than an illegal one.",
+                    "minimum": 0,
+                    "maximum": 64,
+                    "default": 12
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "One small picture at the left of the meter — what makes it read as a thing rather than a coloured line. One extra image call.",
+                    "example": "a water droplet"
+                  },
+                  "fill": {
+                    "type": "string",
+                    "description": "Accent for the fill, `#rrggbb`. Absent takes the material's own palette.",
+                    "example": "#4da6ff"
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/packs/{pack}/icons": {
       "post": {
         "operationId": "generateIcon",

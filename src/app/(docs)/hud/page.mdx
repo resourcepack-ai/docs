@@ -184,20 +184,103 @@ invent an eighty-third, which means **none of these are possible this way**:
 - a quest tracker or an objective panel
 - a minimap frame, a currency readout, class icons, cooldown pips
 
-That is a limit of the file list, not of the Studio.
+That is a limit of the file list, not of the Studio — and it is what the next
+section is for.
 
-What servers actually do for those is different and worth knowing: they draw
-them as **font glyphs** positioned by negative-space characters, sent into the
-action bar or a boss bar's title by a plugin. It is the same trick a
-[GUI](/guis) overlay uses, aimed at a different piece of text.
-
-Two vanilla pieces are also worth repurposing before reaching for that, because
+Before reaching for that, two vanilla pieces are worth repurposing, because
 they cost nothing and a server already controls them:
 
 - **The boss bar**, above — seven runtime styles off one image.
 - **The air row** and **the experience bar** are driven by values a plugin can
-  set, so they are the two meters a server can already repurpose without any of
-  this.
+  set, so they are the two meters a server can repurpose with no extra work.
+
+## Custom meters
+
+Pick **Custom meter** in the same door and you get the thing the list above
+says is impossible: a thirst bar, a stamina bar, an infection meter, an ammo
+counter. Minecraft ships no sprite for any of them, so this does not reskin
+anything — it **adds** to the pack instead.
+
+The trick is the font. A pack may add characters to Minecraft's default font,
+and a character renders anywhere text renders — the action bar, a boss bar's
+title, the scoreboard, the tab list. So a thirst bar is a picture of a thirst
+bar wearing an invisible character, and a plugin that sends that character to
+the action bar has drawn a HUD element the game has never heard of. It is the
+same trick a [GUI](/guis) overlay plays on a container's title, aimed at a
+different piece of text.
+
+Because it adds rather than replaces, **a pack can hold as many meters as you
+like** — thirst *and* stamina *and* ammo.
+
+### One character per step
+
+You choose how many positions the meter has between empty and full (ten by
+default). The Studio draws one picture per position and gives each one its own
+character; your plugin picks the one matching the value it wants to show.
+
+The whole meter is still **one image call** — every step is composed from the
+same material, so a meter at 40% is not a separate commission from the same
+meter at 50%. Asking for twenty steps costs exactly what ten does.
+
+Three shapes:
+
+| Shape | What it is |
+| --- | --- |
+| **Bar** | One continuous fill, like the experience bar |
+| **Pips** | A row of separate dots that light up, like hearts |
+| **Segments** | One bar cut into notches — reads as a count |
+
+An **icon** beside the meter is optional and costs one more image. It is worth
+it: a droplet, a syringe or a magazine is what makes a bar read as a *thing*
+rather than as a coloured line.
+
+### Drawing one in game
+
+The meter's page lists a character pair per step. `/hud` draws one so you can
+look at it:
+
+```
+/hud @p actionbar \ue010\ue011
+```
+
+That is our plugin's command, runnable by any player rather than op-only, so
+the person who just made the meter can see it. `bossbar` puts it higher up the
+screen and leaves it there for a few seconds instead of fading — the bar itself
+is made invisible, so what you see is your art and not a pink progress bar.
+
+Your own plugin sends the same characters, in white:
+
+```java
+// The pair is copied from the meter's page in the Studio; index by value.
+String[] steps = { "\ue010\ue011", "\ue012\ue013", /* ... */ };
+int step = Math.round(thirst * (steps.length - 1));
+player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
+        TextComponent.fromLegacyText(ChatColor.WHITE + steps[step]));
+```
+
+White matters for the same reason it does on a GUI title: the glyph is drawn in
+the text's colour, so a coloured message tints your whole meter.
+
+<Callout type="note" title="Two things to design around">
+  **There will be a drop shadow.** Minecraft draws text with one, and the
+  Spigot API has no way to switch it off, so expect a dark copy of the meter
+  offset a pixel down and right. The art carries its own dark outline partly
+  for this reason — an already-outlined shape survives it; a flat one looks
+  doubled.
+
+  **Meters stack rather than push.** Each one measures zero width, so sending
+  two in the same string draws them on top of each other rather than side by
+  side. That is what you want when you are showing three meters at different
+  heights — give each a different lift — and it means you cannot lay them out
+  in a row by concatenating.
+</Callout>
+
+### What this does not do yet
+
+There are no **digit** glyphs, so a meter shows a level rather than a number:
+you get a bar that is four fifths full, not the text "24/30". Numbers need
+0–9 at a fixed width so a plugin can spell out a value, and that is a separate
+piece of work.
 
 ## On Bedrock
 
