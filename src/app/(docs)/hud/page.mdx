@@ -22,12 +22,12 @@ because all three reach the game a different way.
   files — see [What a pack can't add](#what-a-pack-cant-add) at the bottom.
 </Callout>
 
-## One asset, sixty-eight files
+## One asset, eighty-two files
 
 Vanilla ships the HUD as a great many small sprites — forty-four hearts alone,
 once you count poisoned, withered, frozen, absorbing, hardcore and the flash
 each of them makes when you take a hit. A HUD asset is **one** thing that
-replaces up to sixty-eight of them, edited afterwards as a single sheet.
+replaces up to eighty-two of them, edited afterwards as a single sheet.
 
 A pack holds **one** HUD, for the same reason it holds one player inventory:
 each of these replaces a real vanilla file, and two assets writing the same
@@ -134,8 +134,10 @@ nothing in the game.
 ## Exporting, and seeing it in game
 
 A HUD leaves as the vanilla files it replaces, under
-`assets/minecraft/textures/gui/sprites/hud/`, plus the `.png.mcmeta` sidecars
-for the handful of sprites that need one. No font entry, no title, no plugin.
+`assets/minecraft/textures/gui/sprites/hud/` and
+`assets/minecraft/textures/gui/sprites/boss_bar/`, plus the `.png.mcmeta`
+sidecars for the handful of sprites that need one. No font entry, no title, no
+plugin.
 
 There is no `/hud` command and there doesn't need to be one: Sync the pack and
 look at the bottom of your screen. Take a hit to see the flash, go underwater
@@ -145,7 +147,7 @@ for the air row.
 {/* Anchored from the callout at the top. */}
 
 Every sprite above already exists in Minecraft. A pack replaces them. It cannot
-invent a sixty-ninth, which means **none of these are possible this way**:
+invent an eighty-third, which means **none of these are possible this way**:
 
 - a thirst, stamina, sanity, infection or radiation meter
 - an ammo counter or a reload indicator
