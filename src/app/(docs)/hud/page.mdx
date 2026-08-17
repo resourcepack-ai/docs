@@ -1,0 +1,153 @@
+export const metadata = {
+  title: "HUD",
+  description:
+    "Reskinning the overlay drawn over the world — hearts, hunger, armour, air, the hotbar, the crosshair and the experience bar — as one asset from one prompt.",
+};
+
+# HUD
+
+A HUD asset reskins the **overlay drawn over the world**: the hearts, the
+hunger row, armour, air bubbles, the hotbar, the crosshair and the experience
+bar. It is the thing a player is looking at when no screen is open at all.
+
+That makes it a different animal from a [GUI](/guis), which is a screen a
+plugin opens, and from the Escape menu, which is a screen a player opens. All
+three live under their own tab on a pack — **GUIs**, **Screens** and **HUD** —
+because all three reach the game a different way.
+
+<Callout type="warning" title="The HUD is a fixed vocabulary">
+  A pack can change what every one of these looks like. It cannot add a new
+  one. There is no vanilla sprite for a thirst meter, a stamina bar, an ammo
+  counter or a quest tracker, so no resource pack can make one out of these
+  files — see [What a pack can't add](#what-a-pack-cant-add) at the bottom.
+</Callout>
+
+## One asset, sixty-eight files
+
+Vanilla ships the HUD as a great many small sprites — forty-four hearts alone,
+once you count poisoned, withered, frozen, absorbing, hardcore and the flash
+each of them makes when you take a hit. A HUD asset is **one** thing that
+replaces up to sixty-eight of them, edited afterwards as a single sheet.
+
+A pack holds **one** HUD, for the same reason it holds one player inventory:
+each of these replaces a real vanilla file, and two assets writing the same
+file would fight over it.
+
+## What one image call buys
+
+This is the part worth understanding, because it decides both what a HUD costs
+and why it looks consistent.
+
+You are not charged per file. You are charged **per part**, and everything in
+that part comes out of one drawing:
+
+| Part | One image becomes |
+| --- | --- |
+| **Hearts** | All 44 — full, half and empty, in five moods, with and without the damage flash |
+| **Hunger** | All 6, including the twins drawn while Hunger is on you |
+| **Armour** | All 3 |
+| **Air** | All 3 |
+| **Hotbar** | The tray, its selection box, the offhand slot and the attack indicator |
+| **Experience bar** | Both halves, the groove and the fill |
+| **Crosshair** | Composed, not generated — costs nothing |
+
+So a full HUD is about six images, which is what a chest menu with six buttons
+already costs. Untick the parts you want left vanilla and you pay for fewer.
+
+The reason it works this way isn't only price. Forty-four separately generated
+hearts would come back as forty-four different objects, and a poisoned heart
+that shares no line with the full one reads as a bug rather than as a status.
+Deriving them from one drawing is what makes a row of hearts look like a row of
+the same heart.
+
+## Moods, and what they are
+
+The five heart moods are vanilla's own, and a themed HUD gets all of them
+whether or not you asked:
+
+- **Poisoned** — that yellow-green, for when something has been eaten
+- **Withered** — near-black
+- **Frozen** — ice blue, in powder snow
+- **Absorbing** — gold, the extra hearts a Golden Apple gives
+- **Hardcore** — a harder edge, on a hardcore world
+
+<Callout type="note" title="Hardcore is an approximation">
+  Vanilla's hardcore heart is a genuinely different drawing — jagged, with a
+  spiked rim — rather than a recolour of the normal one. Matching that from a
+  themed icon would need a second image for a variant only hardcore worlds ever
+  render, so what ships is the same heart with more bite in its outline.
+</Callout>
+
+## The crosshair is picked, not described
+
+Vanilla's crosshair stays visible over a snowfield and inside a cave because it
+is drawn with an **inverting** blend — it flips whatever is behind it. A
+resource pack cannot do that. A replacement is drawn normally, so the only
+thing keeping it readable everywhere is a light shape with a dark outline.
+
+No image model reliably draws that at 15×15, and a crosshair that disappears in
+daylight is worse than a plain one. So you pick a shape instead:
+
+| Style | What it is |
+| --- | --- |
+| **Cross** | Vanilla's — four arms and a gap in the middle |
+| **Dot** | A single centred pip. The least in the way |
+| **Brackets** | Four corner marks, like a scope's frame |
+| **Circle** | A thin ring with a centre pip |
+| **Chevron** | A downward V, for a shooter's look |
+
+Each is drawn in your HUD's own palette, with the dark outline added for you.
+
+## Editing one
+
+A generated HUD opens in the pixel editor as one sheet with every sprite laid
+out at its real size, one gutter apart, in the order they appear on screen. A
+guide box marks each one.
+
+Those guides matter more here than anywhere else in the Studio. The pieces are
+small — a heart is nine pixels across — and the gutters between them are **not**
+part of any file. A stroke that wanders off a heart and into the gap reaches
+nothing in the game.
+
+## Exporting, and seeing it in game
+
+A HUD leaves as the vanilla files it replaces, under
+`assets/minecraft/textures/gui/sprites/hud/`, plus the `.png.mcmeta` sidecars
+for the handful of sprites that need one. No font entry, no title, no plugin.
+
+There is no `/hud` command and there doesn't need to be one: Sync the pack and
+look at the bottom of your screen. Take a hit to see the flash, go underwater
+for the air row.
+
+## What a pack can't add
+{/* Anchored from the callout at the top. */}
+
+Every sprite above already exists in Minecraft. A pack replaces them. It cannot
+invent a sixty-ninth, which means **none of these are possible this way**:
+
+- a thirst, stamina, sanity, infection or radiation meter
+- an ammo counter or a reload indicator
+- a quest tracker or an objective panel
+- a minimap frame, a currency readout, class icons, cooldown pips
+
+That is a limit of the file list, not of the Studio.
+
+What servers actually do for those is different and worth knowing: they draw
+them as **font glyphs** positioned by negative-space characters, sent into the
+action bar or a boss bar's title by a plugin. It is the same trick a
+[GUI](/guis) overlay uses, aimed at a different piece of text.
+
+Two vanilla pieces are also worth repurposing before reaching for that, because
+they cost nothing and a server already controls them:
+
+- **The boss bar** is eleven bar styles a plugin picks between at runtime —
+  seven colours and four segment counts. Theme it once and you have a themed
+  objective bar, horde meter and capture bar that don't look alike.
+- **The air row** and **the experience bar** are driven by values a plugin can
+  set, so they are the two meters a server can already repurpose without any of
+  this.
+
+## On Bedrock
+
+None of this crosses over. Bedrock draws its HUD from its own assets, so a HUD
+is Java-only. The rest of your pack converts as normal.
