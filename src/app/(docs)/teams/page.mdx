@@ -1,0 +1,138 @@
+export const metadata = {
+  title: "Teams",
+  description:
+    "A team shares every pack it owns and one pool of AI Credits, on one invoice, with roles and an audit log.",
+};
+
+# Teams
+
+A **team** is a shared workspace: every pack it owns belongs to everybody on it,
+everybody spends from one pool of AI Credits, and it all arrives on one invoice.
+
+It's the other half of [Collaborators](/collaborators), not a bigger version of
+it. A collaborator is somebody you let into **one pack**, with a chosen slice of
+it. A team is the arrangement where that stops making sense — five people who
+work on everything together, where granting each of them access to eleven packs
+one at a time is the friction rather than the safety.
+
+<Callout type="note">
+  Both still exist and they don't overlap. Somebody **on** the team gets every
+  team pack automatically. Somebody **outside** it can still be invited to a
+  single team pack as an ordinary collaborator, with the same sections and
+  capabilities as anywhere else — and they don't use up a seat.
+</Callout>
+
+## What it costs
+
+**$30 per seat, per month.** Minimum two seats, because everything a team adds
+is about there being somebody else.
+
+Each seat adds **1,000 AI Credits a month** to the shared pool. A five-seat team
+gets 5,000 a month between them, spent by whoever needs them — there is no
+per-person allowance to run out of while somebody else's goes unused.
+
+Top-ups are **40% off** on a team, the best rate in the product. Only the owner
+can buy them.
+
+<Callout type="note">
+  A seat replaces a personal plan rather than adding to one. You can't hold both
+  at once — cancel your own plan first, then accept the invitation. Your own
+  packs stay yours and keep working; they just sit on Starter's limits while
+  you're on a team, because the team is what's being paid for.
+</Callout>
+
+## Switching between your packs and the team's
+
+Bottom-left of the sidebar, where your name and credit balance are. Click it and
+you get a list: **Personal**, then every team you're on.
+
+Whatever you pick is the context everything else follows. The pack list, the
+**New pack** button, the credit balance in the corner, the limits — all of them
+mean "yours" or "the team's" depending on which one is selected.
+
+**A pack is created in whichever context is active and stays there.** Make a pack
+while you're in the team and it's the team's from the moment it exists, listed
+for everybody. Make one in your personal context and it's yours alone. There is
+no moving a pack between the two yet.
+
+## Roles
+
+<CardGroup cols={3}>
+  <Card title="Owner" icon="wallet">
+    Everything an admin can do, plus billing: seats, top-ups, cancelling. One
+    per team, and it can't be transferred.
+  </Card>
+  <Card title="Admin" icon="users">
+    Invite and remove people, change roles, publish packs, delete packs.
+  </Card>
+  <Card title="Member" icon="brush">
+    Full edit on every team pack, and spends from the pool.
+  </Card>
+</CardGroup>
+
+Membership **is** the grant — there is nothing to configure per person, which is
+most of the point. A member sees every section of every team pack and can edit,
+generate, sync and export in all of them. The two things reserved for admins are
+the ones that are hard to undo: **publishing** a pack to somebody's players, and
+**deleting** one.
+
+## Seats
+
+You buy seats, then fill them. Removing somebody frees their seat immediately and
+that seat can be refilled at no extra cost.
+
+<Callout type="note">
+  **An empty seat is still a paid seat.** Removing a person doesn't reduce your
+  bill — the seat is yours for the rest of the month you've paid for. Reducing
+  the number of seats is a separate thing you do on the team's page.
+</Callout>
+
+Changing the seat count is deliberately not symmetrical:
+
+- **Adding a seat** takes effect straight away. You're charged the prorated part
+  of the month, and the extra 1,000 credits land in the pool.
+- **Removing a seat** takes effect straight away too, and refunds nothing —
+  which is exactly why no credits come back out of the pool either. You paid for
+  the month; you keep the month.
+
+## Inviting somebody
+
+Open the team's page and invite them by email. Invitations last **fourteen days**
+and can be withdrawn at any time.
+
+An invitation holds a seat while it's outstanding, so you can't invite four
+people to a two-seat team and let them race for it.
+
+<Callout type="note">
+  Inviting by email always says "invitation sent", whether or not that address
+  already has an account here — the same rule as a pack invitation, and for the
+  same reason. Otherwise the box would tell anybody who typed an address whether
+  its owner has a resourcepack.ai account.
+</Callout>
+
+## Activity and spend
+
+Every team has an **Activity** page with two tabs, and everybody on the team can
+read both.
+
+**Audit log** — who invited whom, who changed a role, who published or deleted a
+pack, when the seat count moved. Written as things happen, so it's a record
+rather than a reconstruction.
+
+**Spend** — how many credits each person has used this billing period, and how
+many actions that was. This is the answer to "where did the pool go", which is
+the question a shared balance creates.
+
+## Leaving, and what happens to the packs
+
+Anybody except the owner can leave a team from its page, and an admin can remove
+anybody except the owner.
+
+**The packs stay with the team.** They were never one person's — a pack made in a
+team context belongs to the team from the moment it's created, so somebody
+leaving takes nothing with them and there's nothing to hand over.
+
+If the team's plan lapses, nothing is deleted. The packs stay, everybody keeps
+their access, and whatever credits the pool had accumulated stay in it — what
+stops is making new things, exactly as it would for a personal account that
+lapsed to Starter.
