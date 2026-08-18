@@ -56,11 +56,48 @@ So a full HUD is about seven images, which is roughly what a chest menu with
 six buttons already costs. Untick the parts you want left vanilla and you pay
 for fewer.
 
+**Hunger, armour and the hotbar are ticked when you open the door**; the rest
+are one click away under **More parts**. Naming one in your description opens
+that list and ticks it, so you never have to know it was there.
+
 The reason it works this way isn't only price. Forty-four separately generated
 hearts would come back as forty-four different objects, and a poisoned heart
 that shares no line with the full one reads as a bug rather than as a status.
 Deriving them from one drawing is what makes a row of hearts look like a row of
 the same heart.
+
+## Your icons keep vanilla's shape
+
+A heart is nine pixels across. That is enough room to say "heart" only if it is
+the shape people already read as one — and the same goes for the drumstick with
+a bone sticking out of it that means food, and the plate with two shoulder
+notches that means armour.
+
+So these are not drawn from scratch. Each one is **redrawn from vanilla's own
+sprite**: the theme, the palette and the material are yours, and the silhouette
+is the one the game already taught every player to recognise. It costs nothing
+extra and it is most of the difference between a themed HUD and a row of
+smudges.
+
+It also means you do not have to describe the object. "Rusted iron and dried
+blood" is a better prompt here than "a drumstick made of rusted iron" — the
+shape is already handled, so spend your words on the look.
+
+## The hotbar is solid, where vanilla's is see-through
+
+Vanilla's hotbar tray is a dark bar you can faintly see the world through.
+Ours can't be: a generated pack stores flat pixels with no partial
+transparency, so a themed tray is **opaque**.
+
+In practice that reads as a heavier hotbar rather than a broken one — it is a
+look plenty of hand-made packs choose deliberately — and it is kept dark on
+purpose so it never becomes a bright bar across the bottom of the screen. But
+it is a real difference from vanilla and it is worth knowing before you
+generate one.
+
+This is the same limit that keeps the spyglass scope and the notched boss bar
+overlays out entirely: where see-through *is* the effect, there is nothing left
+without it. A tray still holds items.
 
 ## Moods, and what they are
 
