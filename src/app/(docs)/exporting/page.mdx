@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Exporting",
   description:
-    "The two exports, what lands in the file, and how to install it.",
+    "The three exports, what lands in the file, and how to install it.",
 };
 
 # Exporting
@@ -16,8 +16,9 @@ produces a file you have to handle, so export is for taking the pack
 | --- | --- | --- |
 | **Java pack** | `.zip` | The ordinary Resource Pack. Goes in `resourcepacks`, or to a server host |
 | **Bedrock pack** | `.mcpack` | The same assets converted for Bedrock. Double-click to install |
+| **ItemsAdder** | `.zip` | A `contents` folder for a server already running [ItemsAdder](https://itemsadder.devs.beer/) |
 
-Both are built on demand from what's currently in the editor. There's no
+All three are built on demand from what's currently in the editor. There's no
 build step to remember and nothing to re-upload between edits.
 
 <Callout type="warning" title="Animations don't survive a Java export">
@@ -28,6 +29,47 @@ build step to remember and nothing to re-upload between edits.
   keyframe animation and they convert into the real thing. See
   [Animations](/animations).
 </Callout>
+
+## ItemsAdder
+
+If your server already runs ItemsAdder, it builds and serves the resource pack
+itself — so what you want from us is the *content*, not a second pack. This
+export is every model in your pack as a ready-made ItemsAdder item, with the
+config files written for you.
+
+```
+contents/<your-pack>/
+  configs/models.yml     one entry per model
+  models/item/           the models
+  textures/item/         only the textures those models use
+```
+
+Unzip it into `plugins/ItemsAdder/contents/`, then on the server:
+
+```
+/iareload
+/iazip
+/iaget <item>
+```
+
+<Callout title="Why this doesn't collide with your existing content">
+  ItemsAdder assigns every item's `CustomModelData` itself, and this export
+  deliberately sets none — so nothing in it can land on a value you're already
+  using. It also writes no `paper.json` and no blockstate files, which is what
+  a plain Java pack would have to do and what would otherwise override
+  ItemsAdder's own.
+</Callout>
+
+Items ride on `PAPER` because it has no vanilla behaviour to inherit. Change
+`material` per item in `models.yml` if you'd rather one behaved like the item
+it looks like. Models that use a *vanilla* texture keep pointing at
+`minecraft:` on purpose — that texture is already in every client, so it isn't
+copied.
+
+Animated models come through as static: ItemsAdder doesn't play keyframes.
+The export lists which ones in its `README.txt` so nothing goes missing
+quietly. Models that hadn't finished generating are left out and listed the
+same way — export again once they're done.
 
 ## Installing it
 
