@@ -55,9 +55,9 @@ Everything goes wherever ItemsAdder expects that kind of thing:
 | Icon / glyph | a `font_image` — ItemsAdder gives it a new character |
 | Block or item reskin | a vanilla file replacement |
 | GUI screen that replaces a vanilla file | a vanilla file replacement |
+| GUI overlay | a `font_image` plus the title string that positions it |
 
-Sounds aren't included, and neither are the GUI screens drawn over a
-plugin-opened menu — see below.
+Sounds aren't included.
 
 The zip already contains `contents/`, so merge it into `plugins/ItemsAdder/`
 — dropping it *inside* the existing `contents/` gives you
@@ -100,15 +100,22 @@ is a different decision from adding an item. They're all under
 `resourcepack/assets/minecraft/`; delete any you don't want and run `/iazip`
 again.
 
-**Only some GUI screens come through.** A screen that *replaces* a vanilla
-file — the player's inventory, the Escape menu, the HUD — is included and needs
-nothing: open the screen and it's there. A screen drawn over a plugin-opened
-menu is not, and can't be. Those work by putting two characters in the menu's
-title, a negative-space one that positions the art and then the glyph itself.
-The negative space is defined in the font file ItemsAdder writes for itself, so
-this export can't ship one, and the `/gui` command that puts either character in
-a title comes from our own plugin. Install that alongside ItemsAdder if you want
-them; the export names the ones it left out in its `README.txt`.
+**Both kinds of GUI come through, differently.** A screen that *replaces* a
+vanilla file — the player's inventory, the Escape menu, the HUD — needs nothing:
+open the screen and it's there.
+
+A screen drawn *over* a plugin-opened menu is positioned by negative space in
+front of the image. ItemsAdder spells that `:offset_N:`, so the export writes
+each overlay as a `font_image` and puts its ready-made title string in the
+`README.txt`:
+
+```
+:offset_-176::gui_bank_vault:
+```
+
+Give that to whatever opens the menu — ChestCommands, DeluxeMenus, your own
+plugin, or our `/gui`. The offset is measured from the sheet's own pixels, so
+re-export after editing a GUI rather than reusing an old title.
 
 Animated models come through as static: ItemsAdder doesn't play keyframes.
 The export lists which ones in its `README.txt` so nothing goes missing
