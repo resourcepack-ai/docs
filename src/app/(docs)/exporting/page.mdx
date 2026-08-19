@@ -136,6 +136,9 @@ blueprints/
 README.txt
 ```
 
+One blueprint per model — the per-part sub-models our own animation playback
+uses are internal and aren't exported.
+
 Copy the `.bbmodel` files into `plugins/ModelEngine/blueprints/`, then:
 
 ```
@@ -162,9 +165,11 @@ bone. Rigs animate correctly but can't do arm-inside-shoulder chains until the
 editor's model format gains nesting. A model you never grouped still works —
 everything goes into one `root` bone, since ModelEngine needs at least one.
 
-**No `hitbox`, `mount` or `p_*` bones are written.** ModelEngine has sensible
-defaults for all three, and a hitbox invented from geometry would be worse than
-the one it sizes itself. Add them in Blockbench if you need them.
+**A `hitbox` bone is written, sized to the model's own bounds.** ModelEngine
+warns `Missing hitbox` without one and its hitbox renderer needs it. Redraw the
+cube in Blockbench if you want a different collision box. **`mount` and `p_*`
+seat bones are not written** — those are decisions about how an entity is
+ridden, which geometry can't imply.
 
 A model that uses a *vanilla* texture is the one case that needs your
 attention: ModelEngine can't read Minecraft's own files, so those faces render
