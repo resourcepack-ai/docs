@@ -159,7 +159,8 @@ Two limits worth knowing before you build on it:
 
 **Bones are flat.** Our bones don't nest, so no blueprint has a bone inside a
 bone. Rigs animate correctly but can't do arm-inside-shoulder chains until the
-editor's model format gains nesting.
+editor's model format gains nesting. A model you never grouped still works —
+everything goes into one `root` bone, since ModelEngine needs at least one.
 
 **No `hitbox`, `mount` or `p_*` bones are written.** ModelEngine has sensible
 defaults for all three, and a hitbox invented from geometry would be worse than
