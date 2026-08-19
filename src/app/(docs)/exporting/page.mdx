@@ -44,13 +44,20 @@ contents/<your-pack>/
   textures/item/         only the textures those models use
 ```
 
-Unzip it into `plugins/ItemsAdder/contents/`, then on the server:
+The zip already contains `contents/`, so merge it into `plugins/ItemsAdder/`
+— dropping it *inside* the existing `contents/` gives you
+`contents/contents/` and ItemsAdder finds nothing. Then on the server:
 
 ```
-/iareload
-/iazip
-/iaget <item>
+/iazip                                  rebuilds the pack (this reloads too)
+/iaget <namespace>:<item>               gives you one
+/iagive <player> <namespace>:<item>     gives somebody else one
 ```
+
+The namespace and item ids are in `configs/models.yml` — `info.namespace`,
+and each key under `items:`. Both are lowercased with non-letters turned into
+underscores, so a model called "Floating Sword" in a pack called "My Pack"
+becomes `/iaget my_pack:floating_sword`.
 
 <Callout title="Why this doesn't collide with your existing content">
   ItemsAdder assigns every item's `CustomModelData` itself, and this export
