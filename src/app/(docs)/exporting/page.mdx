@@ -155,8 +155,13 @@ Copy the `.bbmodel` files into `plugins/ModelEngine/blueprints/`, then:
 
 ```
 /meg reload                    loads them; it reports how many it found
-/meg spawn <model>             spawns one to look at
+/meg summon <model>            summons one to look at
 ```
+
+<Callout type="note" title="Check the subcommand against your version">
+  ModelEngine's command names have moved between releases — `/meg spawn` does
+  not exist on R4. Run `/meg` on its own for the list your server actually has.
+</Callout>
 
 <Callout type="warning" title="ModelEngine's textures need serving, and it won't do it for you">
   `/meg reload` writes a resource pack to `plugins/ModelEngine/resource pack/`
@@ -203,10 +208,30 @@ cube in Blockbench if you want a different collision box. **`mount` and `p_*`
 seat bones are not written** — those are decisions about how an entity is
 ridden, which geometry can't imply.
 
-A model that uses a *vanilla* texture is the one case that needs your
-attention: ModelEngine can't read Minecraft's own files, so those faces render
-untextured. The `README.txt` names any model this affects — paint or upload the
-texture into the pack and export again.
+**Vanilla textures are embedded for you.** ModelEngine's pack contains only
+what the blueprints carried, so a model referencing `minecraft:block/stone`
+would otherwise have nothing to render — those images are fetched and packed
+into the `.bbmodel` alongside your own. If a texture genuinely can't be found,
+the face is left out of the blueprint rather than written untextured, because
+an untextured face stops its whole bone from rendering. The `README.txt` names
+any model that happened to.
+
+### Animations don't play on their own
+
+ModelEngine won't start an animation just because the blueprint has one.
+Nothing in a `.bbmodel` says *play this*, so a summoned model stands still and
+that is not a broken export.
+
+**The triggers you picked in Animate mode don't come across** — on loop, on
+right click, on range are our plugin's concept and mean nothing to ModelEngine.
+Playback there is driven by MythicMobs, by ModelEngine's API, or by a command
+plugin such as [MEGAnim](https://hangar.papermc.io/Nogard/MEGAnim).
+
+Names are snake_cased on the way out, so "Idle Wave" in the editor is
+`idle_wave` in the blueprint — that's the string MythicMobs or `/meganim play`
+wants, and the `README.txt` lists it per model. `/meganim list` shows what
+ModelEngine actually registered, which is the quickest way to tell a conversion
+problem from a playback one.
 
 ## Installing it
 
