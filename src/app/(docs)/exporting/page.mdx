@@ -52,7 +52,7 @@ Everything goes wherever ItemsAdder expects that kind of thing:
 | --- | --- |
 | 3D model | an item with a custom model |
 | 2D custom item | an item — ItemsAdder builds the model from the sprite |
-| Icon / glyph | a `font_image`, keeping the character it has here |
+| Icon / glyph | a `font_image` — ItemsAdder gives it a new character |
 | Block or item reskin | a vanilla file replacement |
 | GUI screen that replaces a vanilla file | a vanilla file replacement |
 
@@ -88,9 +88,11 @@ it looks like. Models that use a *vanilla* texture keep pointing at
 `minecraft:` on purpose — that texture is already in every client, so it isn't
 copied.
 
-**Icons keep the exact character they have here.** ItemsAdder would happily
-pick its own, but the character *is* the icon — it's what you paste into a sign
-or a command — so anything you've already written down keeps working.
+**Icons get a new character, chosen by ItemsAdder** — not the one shown here.
+Both it and we assign characters from Unicode's private-use range, and both
+start at the same place, so keeping ours would land on top of an emoji you
+already have and you'd see that instead. Reference the icons by their
+ItemsAdder placeholder.
 
 **The vanilla replacements apply to everyone.** Reskinned blocks, item sprites
 and GUI screens change how the game looks for every player on the server, which
