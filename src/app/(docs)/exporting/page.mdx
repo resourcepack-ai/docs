@@ -218,20 +218,31 @@ any model that happened to.
 
 ### Animations don't play on their own
 
-ModelEngine won't start an animation just because the blueprint has one.
-Nothing in a `.bbmodel` says *play this*, so a summoned model stands still and
-that is not a broken export.
+ModelEngine won't start an animation just because the blueprint has one, and
+**it has no command to play one either** — `/meg` is `reload`, `summon`,
+`disguise`, `undisguise`, `trait` and `debug`, and that's the whole list. A
+summoned model standing still is correct behaviour, not a broken export.
 
-**The triggers you picked in Animate mode don't come across** — on loop, on
-right click, on range are our plugin's concept and mean nothing to ModelEngine.
-Playback there is driven by MythicMobs, by ModelEngine's API, or by a command
-plugin such as [MEGAnim](https://hangar.papermc.io/Nogard/MEGAnim).
+What it *does* do is auto-play a handful of names as entity states. Its
+[wiki](https://github.com/Ticxo/Model-Engine-Wiki/wiki/Everything-about-animating)
+lists `idle`, `walk`, `jump`, `death` and `spawn`.
 
-Names are snake_cased on the way out, so "Idle Wave" in the editor is
-`idle_wave` in the blueprint — that's the string MythicMobs or `/meganim play`
-wants, and the `README.txt` lists it per model. `/meganim list` shows what
-ModelEngine actually registered, which is the quickest way to tell a conversion
-problem from a playback one.
+<Callout type="tip" title="The quickest way to see a loop in game: call it idle">
+  Name the animation **Idle** in Animate mode and ModelEngine plays it on any
+  summoned model with nothing else installed. Names are snake_cased on export,
+  so "Idle" becomes `idle` — but "Idle Wave" becomes `idle_wave`, which is not
+  a state name and won't auto-play.
+</Callout>
+
+Any other name needs something to drive it: MythicMobs mechanics, ModelEngine's
+API, or a separate command plugin such as
+[MEGAnim](https://hangar.papermc.io/Nogard/MEGAnim) — which is not part of
+ModelEngine and has to be installed first.
+
+**The triggers you picked in Animate mode don't come across.** On loop, on right
+click, on range are our plugin's concept and mean nothing to ModelEngine. The
+`README.txt` lists each model's animation names as exported, which is what
+MythicMobs wants typed.
 
 ## Installing it
 
