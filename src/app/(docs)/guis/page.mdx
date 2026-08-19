@@ -1,7 +1,7 @@
 export const metadata = {
   title: "GUIs",
   description:
-    "Reskinning a chest, furnace or anvil screen, and the player's own inventory: how the overlay is drawn, what a pack can't change, and how a plugin opens one.",
+    "Reskinning a chest, furnace or anvil screen, the player's own inventory and the Escape menu: how the overlay is drawn, what a pack can't change, and how a plugin opens one.",
 };
 
 # GUIs
@@ -51,6 +51,7 @@ what they're for:
 | **Crafting & smelting** | Crafting Table, Furnace, Blast Furnace, Smoker, Smithing Table, Stonecutter, Grindstone, Loom, Cartography Table |
 | **Utility** | Enchanting Table, Anvil, Brewing Stand |
 | **Player** | Player Inventory |
+| **Menus** | Escape Menu |
 
 The beacon is missing on purpose: it draws no title, and with no title there's
 nowhere to put an overlay.
@@ -86,6 +87,29 @@ What replacing costs you, all three worth knowing before you draw one:
 
 Everything else — the editor, the slot guides, export, moving it to another
 pack — is identical.
+
+## The Escape menu is a third kind again
+
+The **Escape Menu** in that table is not a window at all. There is no frame to
+draw, no slots, and no title we can set — the pause screen is the client
+drawing a handful of shared **sprites**, each its own small file: the button
+face, its hover and disabled states, and the tiled background behind the menu.
+
+So it is generated rather than drawn. Describe the material once and every one
+of those files is cut from it, with your heading over the top. Three things are
+worth knowing before you make one:
+
+- **It themes every menu, not just the pause screen.** Vanilla draws that same
+  button on the title screen, the options screens and the world list. There is
+  no per-screen widget to override, so theming one themes all of them.
+- **The words on the buttons are the client's.** Minecraft draws "Back to Game"
+  over your sprite in white with a shadow, at a position no pack controls — so
+  a button face has to survive white text on top of it.
+- **A pack holds one**, like the player's inventory and for the same reason.
+
+It also opens in the **pixel editor** rather than the GUI editor, as one packed
+sheet of all its sprites with a guide box around each — there is no slot grid
+to show, and a stroke a pixel outside a sprite's box reaches no file at all.
 
 ## Making one
 
