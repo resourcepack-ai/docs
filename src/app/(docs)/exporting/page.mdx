@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Exporting",
   description:
-    "The three exports, what lands in the file, and how to install it.",
+    "The four exports, what lands in the file, and how to install it.",
 };
 
 # Exporting
@@ -16,9 +16,10 @@ produces a file you have to handle, so export is for taking the pack
 | --- | --- | --- |
 | **Java pack** | `.zip` | The ordinary Resource Pack. Goes in `resourcepacks`, or to a server host |
 | **Bedrock pack** | `.mcpack` | The same assets converted for Bedrock. Double-click to install |
-| **ItemsAdder** | `.zip` | A `contents` folder for a server already running [ItemsAdder](https://itemsadder.devs.beer/) |
+| **ItemsAdder** | `.zip` | A `contents` folder for a server already running [ItemsAdder](https://wiki.itemsadder.com/) |
+| **ModelEngine** | `.zip` | `.bbmodel` blueprints for a server running [ModelEngine](https://git.mythiccraft.io/mythiccraft/model-engine-4) |
 
-All three are built on demand from what's currently in the editor. There's no
+All four are built on demand from what's currently in the editor. There's no
 build step to remember and nothing to re-upload between edits.
 
 <Callout type="warning" title="Animations don't survive a Java export">
@@ -121,6 +122,53 @@ Animated models come through as static: ItemsAdder doesn't play keyframes.
 The export lists which ones in its `README.txt` so nothing goes missing
 quietly. Models that hadn't finished generating are left out and listed the
 same way — export again once they're done.
+
+## ModelEngine
+
+ModelEngine rigs animated models onto entities — hitboxes, mounts, mob
+behaviour — which is a great deal more than our own plugin's playback does.
+This export gives it your models as Blockbench blueprints.
+
+```
+blueprints/
+  your_model.bbmodel
+  another_model.bbmodel
+README.txt
+```
+
+Copy the `.bbmodel` files into `plugins/ModelEngine/blueprints/`, then:
+
+```
+/meg reload                    loads them; it reports how many it found
+/meg spawn <model>             spawns one to look at
+```
+
+**Models only.** ModelEngine has nothing to do with block textures, item
+sprites, GUI screens or icons — those belong in the Java zip or the ItemsAdder
+export. Textures are *embedded* in each blueprint rather than shipped beside
+it, because ModelEngine builds its own resource pack from the blueprints it
+loads, so an image outside the file is one it never sees.
+
+<Callout title="These are ordinary Blockbench projects">
+  If a rig looks wrong in game, open the `.bbmodel` in Blockbench. What you see
+  there is what ModelEngine will render, which makes it the fastest way to tell
+  a conversion problem from a ModelEngine configuration problem.
+</Callout>
+
+Two limits worth knowing before you build on it:
+
+**Bones are flat.** Our bones don't nest, so no blueprint has a bone inside a
+bone. Rigs animate correctly but can't do arm-inside-shoulder chains until the
+editor's model format gains nesting.
+
+**No `hitbox`, `mount` or `p_*` bones are written.** ModelEngine has sensible
+defaults for all three, and a hitbox invented from geometry would be worse than
+the one it sizes itself. Add them in Blockbench if you need them.
+
+A model that uses a *vanilla* texture is the one case that needs your
+attention: ModelEngine can't read Minecraft's own files, so those faces render
+untextured. The `README.txt` names any model this affects — paint or upload the
+texture into the pack and export again.
 
 ## Installing it
 
