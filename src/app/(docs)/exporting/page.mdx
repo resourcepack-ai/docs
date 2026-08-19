@@ -12,12 +12,24 @@ produces a file you have to handle, so export is for taking the pack
 
 ## What you can export
 
+The Export dialog splits these two ways, because only half of them are
+resource packs.
+
+**Default Pack** — a pack you install or serve yourself, no plugins involved:
+
 | Export | File | When you'd pick it |
 | --- | --- | --- |
 | **Java pack** | `.zip` | The ordinary Resource Pack. Goes in `resourcepacks`, or to a server host |
 | **Bedrock pack** | `.mcpack` | The same assets converted for Bedrock. Double-click to install |
-| **ItemsAdder** | `.zip` | A `contents` folder for a server already running [ItemsAdder](https://wiki.itemsadder.com/) |
+
+**Plugin Support** — not resource packs. On a server running one of these, the
+plugin builds the pack, and what you're downloading is the content it builds
+from:
+
+| Export | File | When you'd pick it |
+| --- | --- | --- |
 | **ModelEngine** | `.zip` | `.bbmodel` blueprints for a server running [ModelEngine](https://git.mythiccraft.io/mythiccraft/model-engine-4) |
+| **ItemsAdder** | `.zip` | A `contents` folder for a server already running [ItemsAdder](https://wiki.itemsadder.com/) |
 
 All four are built on demand from what's currently in the editor. There's no
 build step to remember and nothing to re-upload between edits.
