@@ -34,15 +34,29 @@ build step to remember and nothing to re-upload between edits.
 
 If your server already runs ItemsAdder, it builds and serves the resource pack
 itself — so what you want from us is the *content*, not a second pack. This
-export is every model in your pack as a ready-made ItemsAdder item, with the
-config files written for you.
+export is your whole pack as ready-made ItemsAdder content, with the config
+files written for you.
 
 ```
 contents/<your-pack>/
-  configs/models.yml     one entry per model
-  models/item/           the models
-  textures/item/         only the textures those models use
+  configs/items.yml            models and 2D items
+  configs/font_images.yml      icons
+  resourcepack/assets/
+    <your-pack>/               your items' models, textures and icons
+    minecraft/                 the vanilla files your pack replaces
 ```
+
+Everything goes wherever ItemsAdder expects that kind of thing:
+
+| In your pack | Becomes |
+| --- | --- |
+| 3D model | an item with a custom model |
+| 2D custom item | an item — ItemsAdder builds the model from the sprite |
+| Icon / glyph | a `font_image`, keeping the character it has here |
+| Block or item reskin | a vanilla file replacement |
+| GUI screen | a vanilla file replacement |
+
+Sounds aren't included.
 
 The zip already contains `contents/`, so merge it into `plugins/ItemsAdder/`
 — dropping it *inside* the existing `contents/` gives you
@@ -54,24 +68,34 @@ The zip already contains `contents/`, so merge it into `plugins/ItemsAdder/`
 /iagive <player> <namespace>:<item>     gives somebody else one
 ```
 
-The namespace and item ids are in `configs/models.yml` — `info.namespace`,
+The namespace and item ids are in `configs/items.yml` — `info.namespace`,
 and each key under `items:`. Both are lowercased with non-letters turned into
 underscores, so a model called "Floating Sword" in a pack called "My Pack"
 becomes `/iaget my_pack:floating_sword`.
 
 <Callout title="Why this doesn't collide with your existing content">
-  ItemsAdder assigns every item's `CustomModelData` itself, and this export
-  deliberately sets none — so nothing in it can land on a value you're already
-  using. It also writes no `paper.json` and no blockstate files, which is what
-  a plain Java pack would have to do and what would otherwise override
-  ItemsAdder's own.
+  A resource pack overrides per *file*, not per entry — so a normal pack
+  dropped onto an ItemsAdder server replaces its `paper.json`, its blockstates
+  and its font, taking every ItemsAdder item and emoji with them. This export
+  writes none of those. It sets no `CustomModelData` either; ItemsAdder assigns
+  them, so nothing here can land on a value you're already using.
 </Callout>
 
 Items ride on `PAPER` because it has no vanilla behaviour to inherit. Change
-`material` per item in `models.yml` if you'd rather one behaved like the item
+`material` per item in `items.yml` if you'd rather one behaved like the item
 it looks like. Models that use a *vanilla* texture keep pointing at
 `minecraft:` on purpose — that texture is already in every client, so it isn't
 copied.
+
+**Icons keep the exact character they have here.** ItemsAdder would happily
+pick its own, but the character *is* the icon — it's what you paste into a sign
+or a command — so anything you've already written down keeps working.
+
+**The vanilla replacements apply to everyone.** Reskinned blocks, item sprites
+and GUI screens change how the game looks for every player on the server, which
+is a different decision from adding an item. They're all under
+`resourcepack/assets/minecraft/`; delete any you don't want and run `/iazip`
+again.
 
 Animated models come through as static: ItemsAdder doesn't play keyframes.
 The export lists which ones in its `README.txt` so nothing goes missing
