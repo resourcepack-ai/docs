@@ -54,9 +54,10 @@ Everything goes wherever ItemsAdder expects that kind of thing:
 | 2D custom item | an item — ItemsAdder builds the model from the sprite |
 | Icon / glyph | a `font_image`, keeping the character it has here |
 | Block or item reskin | a vanilla file replacement |
-| GUI screen | a vanilla file replacement |
+| GUI screen that replaces a vanilla file | a vanilla file replacement |
 
-Sounds aren't included.
+Sounds aren't included, and neither are the GUI screens drawn over a
+plugin-opened menu — see below.
 
 The zip already contains `contents/`, so merge it into `plugins/ItemsAdder/`
 — dropping it *inside* the existing `contents/` gives you
@@ -96,6 +97,16 @@ and GUI screens change how the game looks for every player on the server, which
 is a different decision from adding an item. They're all under
 `resourcepack/assets/minecraft/`; delete any you don't want and run `/iazip`
 again.
+
+**Only some GUI screens come through.** A screen that *replaces* a vanilla
+file — the player's inventory, the Escape menu, the HUD — is included and needs
+nothing: open the screen and it's there. A screen drawn over a plugin-opened
+menu is not, and can't be. Those work by putting two characters in the menu's
+title, a negative-space one that positions the art and then the glyph itself.
+The negative space is defined in the font file ItemsAdder writes for itself, so
+this export can't ship one, and the `/gui` command that puts either character in
+a title comes from our own plugin. Install that alongside ItemsAdder if you want
+them; the export names the ones it left out in its `README.txt`.
 
 Animated models come through as static: ItemsAdder doesn't play keyframes.
 The export lists which ones in its `README.txt` so nothing goes missing
