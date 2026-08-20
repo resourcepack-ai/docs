@@ -206,8 +206,19 @@ export const nav: NavGroup[] = [
       {
         title: "Exporting",
         href: "/exporting",
-        description: "The two exports, what lands in the file, and how to install it.",
-        keywords: ["export", "download", "zip", "mcpack", "version"],
+        description: "The four exports, what lands in the file, and how to install it.",
+        keywords: [
+          "export",
+          "download",
+          "zip",
+          "mcpack",
+          "version",
+          "itemsadder",
+          "modelengine",
+          "bbmodel",
+          "blueprint",
+          "plugin",
+        ],
       },
       {
         title: "Moving assets between packs",
