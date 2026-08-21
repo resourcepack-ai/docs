@@ -83,21 +83,14 @@ It also means you do not have to describe the object. "Rusted iron and dried
 blood" is a better prompt here than "a drumstick made of rusted iron" — the
 shape is already handled, so spend your words on the look.
 
-## The hotbar is solid, where vanilla's is see-through
+## The hotbar is see-through, like vanilla's
 
-Vanilla's hotbar tray is a dark bar you can faintly see the world through.
-Ours can't be: a generated pack stores flat pixels with no partial
-transparency, so a themed tray is **opaque**.
-
-In practice that reads as a heavier hotbar rather than a broken one — it is a
-look plenty of hand-made packs choose deliberately — and it is kept dark on
-purpose so it never becomes a bright bar across the bottom of the screen. But
-it is a real difference from vanilla and it is worth knowing before you
-generate one.
-
-This is the same limit that keeps the spyglass scope and the notched boss bar
-overlays out entirely: where see-through *is* the effect, there is nothing left
-without it. A tray still holds items.
+Vanilla's hotbar tray is not a solid bar — it is a dark scrim you can faintly
+see the world through. A themed tray ships as one too: drawn in your
+material, then laid over the world at a little over vanilla's own opacity,
+with the outer outline kept solid so the tray keeps a crisp edge. It reads
+slightly heavier than vanilla's on purpose — a tray that goes too thin stops
+reading as a tray at all.
 
 ## Moods, and what they are
 
@@ -128,13 +121,12 @@ to theme seven times — they are one strip, re-hued for you. Theme the HUD once
 and a server has a themed objective bar, a themed horde meter and a themed
 capture bar that don't look alike, with no further work.
 
-<Callout type="note" title="The segmented bars stay vanilla">
+<Callout type="note" title="Segmented bars keep their notches">
   Vanilla's notched bars — the ones split into 6, 10, 12 or 20 segments — are
-  not bars at all. They are a semi-transparent overlay the game lays **over**
-  the coloured bar, and the Studio's pixel grids have no partial transparency,
-  so a generated one would hide the colour underneath instead of segmenting it.
-  They are left vanilla, which means a notched bar still gets your colours with
-  vanilla's notches drawn over them.
+  not bars at all. They are a semi-transparent divider overlay the game lays
+  **over** the coloured bar. A themed HUD ships those too, drawn at the same
+  partial opacity, so a segmented bar gets your colours with dividers that
+  darken them rather than paint over them.
 </Callout>
 
 ## The crosshair is picked, not described
@@ -176,8 +168,10 @@ hearts, and it deliberately never ticks a part that isn't available to ship.
 ## Screen overlays are a second set
 
 The layers drawn over the **whole** screen are their own asset, picked with the
-same door: the **vignette** at the edge of your vision and the **Nausea**
-swirl. A pack may hold one HUD and one set of overlays, independently.
+same door: the **vignette** at the edge of your vision, the **Nausea** swirl,
+the **frost rim** from powder snow, the **spyglass scope**, the **pumpkin
+blur** and the **underwater tint**. A pack may hold one HUD and one set of
+overlays, independently.
 
 They are separate for a practical reason as much as a tidy one — they are
 256×256 where the biggest HUD sprite is 182×22, and somebody who wants a blood
@@ -190,29 +184,39 @@ So the Studio composes the shape for you — clear through the middle, rising
 toward the corners — and what your prompt supplies is the colour and texture of
 the darkness. Ask for soot, rust, dried blood, frost.
 
-<Callout type="warning" title="The scope and the pumpkin blur are not offered">
-  Vanilla draws the spyglass scope, the pumpkin blur and the underwater tint as
-  **soft** masks — most of each image is partially transparent. The Studio's
-  pixel grids are either a solid colour or fully clear, with nothing in
-  between, so a generated version of one would not tint the world, it would
-  hide it. They are left vanilla rather than shipped broken.
-
-  This is the one that stings, because a scope or a gas-mask visor is exactly
-  what a tactical or horror server asks for. Vanilla's darkened surround is
-  three quarters of what that overlay *is*, and without it you get a ring with
-  a clear middle — a different feature wearing the same file name.
+<Callout type="note" title="The soft overlays keep their softness">
+  The scope's darkened surround, the pumpkin's soft-edged dark and the
+  underwater wash are mostly **partial transparency** — each is more alpha
+  than pixels. Themed versions are composed the same way, so a scope still
+  darkens the world around its circle instead of hiding it. That is what
+  makes the scope worth theming at all: a tactical or horror server's
+  gas-mask visor is three quarters surround.
 </Callout>
+
+## Or draw one from scratch
+
+The Draw door makes a HUD too: the whole base set seeded from vanilla's own
+art, as a ready asset, free — no prompt and no credits. It opens straight in
+the HUD editor, so "vanilla but my hearts are golden" is ten minutes of
+pixels rather than a generation.
 
 ## Editing one
 
-A generated HUD opens in the pixel editor as one sheet with every sprite laid
-out at its real size, one gutter apart, in the order they appear on screen. A
-guide box marks each one.
+A HUD opens in an editor of its own — the pixel editor's tools over the whole
+sheet, with every sprite laid out at its real size, one gutter apart, plus
+the two things a ninety-sprite sheet needs: a **Parts** rail that jumps the
+view to a group's region ("where are the hearts" is the first question every
+visit asks), and the name of the sprite under your cursor, always on screen.
+A guide box marks each sprite.
 
 Those guides matter more here than anywhere else in the Studio. The pieces are
 small — a heart is nine pixels across — and the gutters between them are **not**
 part of any file. A stroke that wanders off a heart and into the gap reaches
 nothing in the game.
+
+The **Preview** tab shows the composed thing: your sheet arranged into a live
+HUD — boss bar, hearts, hunger, hotbar, the rest — over a day, cave or Nether
+backdrop, following every stroke as you paint.
 
 ## Exporting, and seeing it in game
 
