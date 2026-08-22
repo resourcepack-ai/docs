@@ -60,7 +60,7 @@ no moving a pack between the two yet.
 <CardGroup cols={3}>
   <Card title="Owner" icon="wallet">
     Everything an admin can do, plus billing: seats, top-ups, cancelling. One
-    per team, and it can't be transferred.
+    per team, and only the owner can hand it to somebody else.
   </Card>
   <Card title="Admin" icon="users">
     Invite and remove people, change roles, publish packs, delete packs.
@@ -110,23 +110,60 @@ people to a two-seat team and let them race for it.
   its owner has a resourcepack.ai account.
 </Callout>
 
+## Spend limits
+
+An admin can cap what any one person takes out of the pool in a billing period.
+Set it from the members list on the team's page; leave it blank for no limit,
+which is the default.
+
+Everybody can see their own limit and how much of it they've used, so nobody
+finds out about a cap by being refused halfway through a generation.
+
+<Callout type="note">
+  **The owner can't be limited.** They hold the card, so a cap on them is one
+  they could lift in a click — a limit that only pretends to bind is worse than
+  none at all.
+</Callout>
+
+## Your own API key, and your own OpenAI key
+
+Both work per context, the same way packs and credits do.
+
+**API keys** — create one while you're in the team and it belongs to the team:
+it spends the pool and reaches the team's packs, rather than dying with whoever
+made it. Admins only, to create and to revoke. If somebody leaves the team,
+every team key they were holding stops working immediately.
+
+**Your own OpenAI key** — a team can store one, and then anything that can run
+on it costs the pool nothing. Admins can set it. A team pack always uses the
+team's key, never a member's personal one.
+
 ## Activity and spend
 
 Every team has an **Activity** page with two tabs, and everybody on the team can
 read both.
 
 **Audit log** — who invited whom, who changed a role, who published or deleted a
-pack, when the seat count moved. Written as things happen, so it's a record
-rather than a reconstruction.
+pack, when the seat count moved, who set a spend limit, who changed the team's
+API keys, who renamed it. Written as things happen, so it's a record rather
+than a reconstruction.
 
 **Spend** — how many credits each person has used this billing period, and how
 many actions that was. This is the answer to "where did the pool go", which is
 the question a shared balance creates.
 
+Both tabs have an **Export CSV** button, which gives you the entire history
+rather than what's on screen — the version to hand whoever reconciles the
+invoice.
+
 ## Leaving, and what happens to the packs
 
 Anybody except the owner can leave a team from its page, and an admin can remove
 anybody except the owner.
+
+If you're the owner and you want to leave, hand the team over first: open the
+members list and press **Make owner** on somebody. Seats, top-ups and
+cancelling all move to them, and you become an admin.
 
 **The packs stay with the team.** They were never one person's — a pack made in a
 team context belongs to the team from the moment it's created, so somebody
