@@ -1,7 +1,7 @@
 export const metadata = {
   title: "GUIs",
   description:
-    "Reskinning a chest, furnace or anvil screen: how the overlay is drawn, what a pack can't change, and how a plugin opens one.",
+    "Reskinning a chest, furnace or anvil screen, the player's own inventory and the Escape menu: how the overlay is drawn, what a pack can't change, and how a plugin opens one.",
 };
 
 # GUIs
@@ -20,8 +20,9 @@ screen when it opens.
 
 ## How it actually works
 
-This one is worth understanding, because it isn't a texture override and the
-difference shows up everywhere else.
+This one is worth understanding, because most GUIs here are **not** a texture
+override and the difference shows up everywhere else. (The exception is the
+player's inventory, which is one — see below.)
 
 The sheet ships as a **font glyph**, and a plugin opens the screen with a title
 made of two invisible characters: a negative-space character that walks the
@@ -49,10 +50,66 @@ what they're for:
 | **Storage** | Chest (1–6 rows), Shulker Box, Dispenser / Dropper, Hopper |
 | **Crafting & smelting** | Crafting Table, Furnace, Blast Furnace, Smoker, Smithing Table, Stonecutter, Grindstone, Loom, Cartography Table |
 | **Utility** | Enchanting Table, Anvil, Brewing Stand |
+| **Player** | Player Inventory |
+| **Menus** | Escape Menu |
 
-A few are missing on purpose. The beacon draws no title and the survival
-inventory can't be retitled, and with no title there's nowhere to put the
-overlay.
+The beacon is missing on purpose: it draws no title, and with no title there's
+nowhere to put an overlay.
+
+## The player's inventory is the other kind
+
+The **Player Inventory** in that table works differently from everything above
+it, and the difference matters more than it sounds.
+
+Nobody opens a player's own inventory for them. There is no plugin call, no
+title to set, and therefore no glyph trick to play — so that screen is reskinned
+the only other way a pack can reskin anything: by **replacing the vanilla
+file**, `textures/gui/container/inventory.png`. Pick it like any other screen —
+in the Draw door it starts from the real vanilla art in the pixel editor with
+the same slot guides, and under Generate it sits in the same **Screen to
+reskin** list, where choosing it swaps the layout builder for the two choices
+it does have (whether to draw the slot cells, and whether to colour them from
+your panel). There is nothing else to place: vanilla owns the layout.
+
+What replacing costs you, all three worth knowing before you draw one:
+
+- **It applies everywhere, always.** Every inventory every player opens, on
+  every server running the pack, whether or not a plugin asked for it. That is
+  the opposite of the overlay's opt-in behaviour.
+- **A pack holds one.** Two assets replacing the same file would both export to
+  the same path, so the second one is refused with a message saying which asset
+  already has it.
+- **There is no margin.** The game draws the window from the file's top-left
+  corner and ignores everything outside it, so unlike an overlay there is no
+  overflow room — art past the window's 176×166 edge simply never appears. The
+  editor's dashed rectangle sits at the sheet's corner rather than in the
+  middle, which is how you can tell the two apart at a glance.
+
+Everything else — the editor, the slot guides, export, moving it to another
+pack — is identical.
+
+## The Escape menu is a third kind again
+
+The **Escape Menu** in that table is not a window at all. There is no frame to
+draw, no slots, and no title we can set — the pause screen is the client
+drawing a handful of shared **sprites**, each its own small file: the button
+face, its hover and disabled states, and the tiled background behind the menu.
+
+So it is generated rather than drawn. Describe the material once and every one
+of those files is cut from it, with your heading over the top. Three things are
+worth knowing before you make one:
+
+- **It themes every menu, not just the pause screen.** Vanilla draws that same
+  button on the title screen, the options screens and the world list. There is
+  no per-screen widget to override, so theming one themes all of them.
+- **The words on the buttons are the client's.** Minecraft draws "Back to Game"
+  over your sprite in white with a shadow, at a position no pack controls — so
+  a button face has to survive white text on top of it.
+- **A pack holds one**, like the player's inventory and for the same reason.
+
+It also opens in the **pixel editor** rather than the GUI editor, as one packed
+sheet of all its sprites with a guide box around each — there is no slot grid
+to show, and a stroke a pixel outside a sprite's box reaches no file at all.
 
 ## Making one
 
@@ -69,7 +126,7 @@ guided too.
 
 ## Seeing it in game
 
-The GUI's page carries the exact command that opens it, plus an **Open
+An overlay's page carries the exact command that opens it, plus an **Open
 in-game** button that runs it for you in game:
 
 ```
@@ -85,11 +142,18 @@ being op-only, so the person who just drew the sheet can look at it. The
 screen it opens is a real one, so you're judging the art against real slots
 and real item stacks.
 
+A replaced screen has no such command and doesn't need one — Sync the pack and
+press <kbd>E</kbd>.
+
 ## Exporting
 
-The sheet leaves as a PNG under `assets/minecraft/textures/font/`, plus an
+An overlay leaves as a PNG under `assets/minecraft/textures/font/`, plus an
 entry in the pack's font provider that binds it to its character. There's no
 `gui/` file in the export, which is what keeps ordinary screens ordinary.
+
+A replaced screen (the player's inventory) leaves as the vanilla file it
+replaces — `assets/minecraft/textures/gui/container/inventory.png` — and needs
+no font entry, no title and no plugin. It works the moment the pack is applied.
 
 The half that isn't in the pack is the **title**. Your own plugin has to open
 the inventory with that exact string, in white, or the overlay never appears:
@@ -104,9 +168,10 @@ White matters, because the glyph is drawn in the title's colour and a coloured t
 tints your whole overlay.
 
 <Callout type="note" title="Moving a GUI to another pack renumbers it">
-  The characters are allocated per pack, so a GUI copied into a different pack
-  gets new ones and its title string changes. Re-copy it from the GUI's page
-  rather than reusing the old string.
+  The characters are allocated per pack, so an overlay copied into a different
+  pack gets new ones and its title string changes. Re-copy it from the GUI's
+  page rather than reusing the old string. (A replaced screen has no characters
+  to renumber — but it won't copy into a pack that already has one of its own.)
 </Callout>
 
 ## On Bedrock
