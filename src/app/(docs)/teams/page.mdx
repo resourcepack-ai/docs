@@ -68,6 +68,10 @@ no moving a pack between the two yet.
   <Card title="Member" icon="brush">
     Full edit on every team pack, and spends from the pool.
   </Card>
+  <Card title="Viewer" icon="eye">
+    Opens every team pack and changes nothing — no editing, no generating, no
+    exporting. For clients and contractors.
+  </Card>
 </CardGroup>
 
 Membership **is** the grant — there is nothing to configure per person, which is
@@ -91,9 +95,12 @@ Changing the seat count is deliberately not symmetrical:
 
 - **Adding a seat** takes effect straight away. You're charged the prorated part
   of the month, and the extra 1,000 credits land in the pool.
-- **Removing a seat** takes effect straight away too, and refunds nothing —
-  which is exactly why no credits come back out of the pool either. You paid for
-  the month; you keep the month.
+- **Removing a seat** can happen either way. **Now** takes effect immediately
+  and refunds nothing — which is exactly why no credits come back out of the
+  pool either; you paid for the month, you keep the month. **At renewal** keeps
+  the seats you've already paid for until the period ends, then drops to the
+  new number. Unless you specifically want the smaller number reflected today,
+  at renewal is the one you want.
 
 ## Inviting somebody
 
@@ -108,6 +115,19 @@ people to a two-seat team and let them race for it.
   already has an account here — the same rule as a pack invitation, and for the
   same reason. Otherwise the box would tell anybody who typed an address whether
   its owner has a resourcepack.ai account.
+</Callout>
+
+## Limiting somebody to certain packs
+
+An admin can restrict a member or viewer to a chosen set of packs, from the
+members list. By default nobody is restricted, and that's the normal way to run
+a team — being on it is the access.
+
+<Callout type="note">
+  It's an allowlist, so a pack made **after** you set the restriction isn't one
+  they can see. That's deliberate: a contractor shouldn't silently gain access
+  to next month's project. Admins and owners can't be restricted, because
+  managing every pack is what being an admin means.
 </Callout>
 
 ## Spend limits
@@ -152,9 +172,32 @@ than a reconstruction.
 many actions that was. This is the answer to "where did the pool go", which is
 the question a shared balance creates.
 
+Viewers don't get this page — it's the team's billing history and everybody's
+addresses, and a viewer can't spend the pool in the first place.
+
 Both tabs have an **Export CSV** button, which gives you the entire history
 rather than what's on screen — the version to hand whoever reconciles the
 invoice.
+
+## Automatic top-ups
+
+The pool running out stops everybody at once, and only the owner can fix it. So
+the owner can set a floor and an amount: when the shared balance drops below the
+floor, we buy that many credits on the team's card and carry on.
+
+Capped at three automatic purchases per billing period, so a mistake can't run
+away with your card, and every one of them emails the owner and lands in the
+audit log. A team whose plan has lapsed is never charged.
+
+## Webhooks
+
+Admins can point the team's activity at a URL — everything the audit log
+records gets POSTed there as JSON, which is how you get it into Slack, Discord
+or your own tooling. Each delivery is signed so you can tell ours from anybody
+else's, and the signing secret is shown once when you save the URL.
+
+Delivery is best effort and there's no retry: if you need a guaranteed complete
+record, the CSV export is it.
 
 ## Leaving, and what happens to the packs
 
