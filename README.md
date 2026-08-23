@@ -65,3 +65,7 @@ across, `npm run gen:llms-full`, writes into `../landing` and is ours to run.
 Pull requests are merged into the monorepo and flow back out here, so a merged
 change may land as a commit with a different hash. It's still your commit and
 your authorship.
+
+## Licence
+
+MIT — see [LICENSE](LICENSE).
