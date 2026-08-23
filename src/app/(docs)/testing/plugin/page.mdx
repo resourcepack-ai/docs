@@ -84,13 +84,36 @@ for the Minecraft version they're actually on. That's the
 
 ## Commands
 
-| Command | Who can run it |
-| --- | --- |
-| `/link <code>` | Anyone — it only affects the player who ran it |
-| `/party invite\|accept\|leave\|kick\|list` | Anyone |
-| `/emote [name] [player…]` | Anyone. Naming other players needs `resourcepackai.emote.multi` (op by default) |
-| `/gui`, `/hud`, `/sound` | Anyone — each only draws or plays to one client |
-| `/rpai bind\|unbind\|refresh\|status\|reconnect` | Operators |
+| Command | Permission | Default |
+| --- | --- | --- |
+| `/link <code>` | `resourcepackai.link` | Everyone |
+| `/party invite\|accept\|deny\|leave\|kick\|list\|disband` | `resourcepackai.party` | Everyone |
+| `/emote [name]` | `resourcepackai.emote` | Everyone |
+| `/emote <name> <player…>` | `resourcepackai.emote.multi` | Operators |
+| `/gui <player> <screen> <escapes>` | `resourcepackai.gui` | Everyone |
+| `/hud <player> <bar> <escapes> [secs]` | `resourcepackai.hud` | Everyone |
+| `/sound <player> <event> […]` | `resourcepackai.sound` | Everyone |
+| `/rpai bind\|unbind\|refresh\|status\|reconnect` | `resourcepackai.admin` | Operators |
+
+`resourcepackai.*` grants all of the above in one node, including
+`resourcepackai.emote.multi`.
+
+### Why most of these are open by default
+
+The Studio shows you the command to copy next to the thing you just
+generated — a sound, a screen, an emote. If that command were operators-only,
+the player it was meant for would see **"Unknown command"**, which reads as the
+pack being broken rather than as a permission they're missing.
+
+So the default for each is the honest one: every command above affects a single
+client, and naming somebody else still means typing their name. Tighten any of
+them in your permissions plugin if your server wants that — nothing in the
+plugin assumes the defaults.
+
+The exception is `resourcepackai.emote.multi`, which is operators-only and is
+**not** a child of `resourcepackai.emote`. An emote with a cast teleports the
+players it names and takes their game mode for its length, so granting "emotes"
+should not quietly include the half that moves other people.
 
 ## Under the hood: the engine is a library
 
