@@ -34,6 +34,7 @@ listening for it.
 The two you want are place and break. Both behave like the block events you
 already know:
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 @EventHandler(ignoreCancelled = true)
 public void onPlace(ModelPlaceEvent event) {
@@ -51,6 +52,24 @@ public void onBreak(ModelBreakEvent event) {
     }
 }
 ```
+```kotlin
+@EventHandler(ignoreCancelled = true)
+fun onPlace(event: ModelPlaceEvent) {
+    if (!canBuildHere(event.player, event.block.location)) {
+        event.isCancelled = true
+        event.player.sendMessage("Not here.")
+    }
+}
+
+@EventHandler(ignoreCancelled = true)
+fun onBreak(event: ModelBreakEvent) {
+    val breaker = event.player ?: return     // null when code did it
+    if (!canBuildHere(breaker, event.placement.location())) {
+        event.isCancelled = true
+    }
+}
+```
+</CodeTabs>
 
 <Callout type="warning" title="A null player is a real case">
   `ModelBreakEvent.getPlayer()` is null when another plugin removed the rig
@@ -64,6 +83,7 @@ public void onBreak(ModelBreakEvent event) {
 
 ## Stopping an animation
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 @EventHandler
 public void onAnimate(ModelAnimationEvent event) {
@@ -73,6 +93,15 @@ public void onAnimate(ModelAnimationEvent event) {
     }
 }
 ```
+```kotlin
+@EventHandler
+fun onAnimate(event: ModelAnimationEvent) {
+    if (event.cause == ModelAnimationEvent.Cause.RIGHT_CLICK && isQuiet(event.placement)) {
+        event.isCancelled = true
+    }
+}
+```
+</CodeTabs>
 
 `getCause()` tells you what asked: `PLACE`, `RIGHT_CLICK`, `LEFT_CLICK`,
 `RANGE` or `API`. `getPlayer()` is who set it off, and is null for `PLACE` and
@@ -91,6 +120,7 @@ each of those breaks the emote itself. It deliberately has no opinion about
 arenas, minigames, regions or whose turn it is — it runs on servers we don't
 own and can't guess the rules of, so it asks:
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 @EventHandler
 public void onEmoteStart(EmoteStartEvent event) {
@@ -100,6 +130,16 @@ public void onEmoteStart(EmoteStartEvent event) {
     }
 }
 ```
+```kotlin
+@EventHandler
+fun onEmoteStart(event: EmoteStartEvent) {
+    if (inArena(event.lead)) {
+        event.isCancelled = true
+        event.lead.sendMessage("Save it for the lobby.")
+    }
+}
+```
+</CodeTabs>
 
 Say why yourself. The caller only learns `Reason.CANCELLED` with nothing
 attached — the reason belongs to whoever cancelled, and that's you.
@@ -109,6 +149,7 @@ teleported into place. Empty for a solo emote.
 
 ## Knowing when an emote ends
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 @EventHandler
 public void onEmoteEnd(EmoteEndEvent event) {
@@ -117,6 +158,15 @@ public void onEmoteEnd(EmoteEndEvent event) {
     }
 }
 ```
+```kotlin
+@EventHandler
+fun onEmoteEnd(event: EmoteEndEvent) {
+    if (event.cause == EmoteEndEvent.Cause.FINISHED) {
+        reward(event.player)
+    }
+}
+```
+</CodeTabs>
 
 Causes are `FINISHED`, `STOPPED`, `MOVED`, `DAMAGED`, `QUIT` and `SHUTDOWN`.
 Not cancellable — by the time it fires the rig is gone and the player is
@@ -128,6 +178,7 @@ ends. A duet fires it twice, once per person, with the same cause.
 Model ids, animation names and emote names can all appear and disappear when
 somebody presses Sync. If you cache any of them, listen:
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 @EventHandler
 public void onContent(ContentLoadedEvent event) {
@@ -136,6 +187,15 @@ public void onContent(ContentLoadedEvent event) {
     }
 }
 ```
+```kotlin
+@EventHandler
+fun onContent(event: ContentLoadedEvent) {
+    if (event.kind == ContentLoadedEvent.Kind.MODELS) {
+        rebuildMyMenu()
+    }
+}
+```
+</CodeTabs>
 
 Rigs already standing keep animating — the new manifest applies to them too.
 

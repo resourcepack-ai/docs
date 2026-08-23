@@ -1,0 +1,128 @@
+export const metadata = {
+  title: "The plugin",
+  description:
+    "The ResourcePack AI plugin — what it adds to a Paper or Spigot server, how to install it, and the engine underneath it that your own plugin can use.",
+};
+
+# The plugin
+
+Vanilla Minecraft can't do most of what a pack made here is for. It has no
+concept of an animated block model, no way to play an emote on a player, and
+no way for a server to hand one person a pack without handing it to everybody.
+
+The **ResourcePack AI plugin** is the half that makes those work. It's what
+[our test server](/testing/test-server) runs — the models you see standing
+around and moving on <ServerAddress /> are this plugin doing it — and it's the
+same jar you can put on your own server.
+
+<Callout type="note" title="You don't need it to use a pack">
+  A pack made here is an ordinary resource pack. Export the `.zip`, point
+  `server.properties` at it, done — nothing of ours installed. The plugin is
+  for the things a resource pack alone can't do, which is the list below.
+</Callout>
+
+## What it adds
+
+| | Without the plugin | With it |
+| --- | --- | --- |
+| **Models** | The model renders, standing still | Place it, pick it up, and it animates |
+| **Animations** | Nothing — the keyframes sit in fields vanilla ignores | Plays on loop, on click, on approach, or [from code](/plugin-api/models) |
+| **Emotes** | Nothing | `/emote` plays one on a player, wearing their own skin |
+| **Custom GUIs** | The art ships, but nothing opens a screen with it | `/gui` opens the screen with your art drawn over it |
+| **HUD overlays** | Same | `/hud` draws a meter or a frame over the world |
+| **Pack sounds** | `/playsound` works, if you're an operator | `/sound` works for anybody, so the person testing can hear their own sound |
+| **Live testing** | Re-export, re-upload, rejoin | The Studio pushes a pack to one player in seconds |
+| **Distribution** | One pack for everybody, one version | Every player gets the build for the version they're on |
+
+## Installing it
+
+<Callout type="note" title="Requirements">
+  A Paper or Spigot server on **1.21.4 or newer**, running **Java 21+**, and
+  permission to install plugins on it. Placed models use display entities and
+  string-valued custom model data, neither of which exists on older versions —
+  so there's no build for 1.8, because the features it exists to deliver
+  aren't there to use.
+</Callout>
+
+<Steps>
+  <Step title="Download the jar">
+    ```
+    https://cdn.resourcepack.ai/resourcepackai.jar
+    ```
+  </Step>
+  <Step title="Drop it in /plugins">
+    Alongside everything else. It has no dependencies and no required
+    configuration.
+  </Step>
+  <Step title="Restart the server">
+    A `/reload` won't do it — plugin jars are only picked up on a real
+    restart. Check the console for the plugin's startup line.
+  </Step>
+</Steps>
+
+## Using it
+
+Two things it does, and they're independent — a server can do either without
+the other.
+
+### Pushing a pack to one player
+
+For building. A player runs `/link` with the 8-digit code the Studio shows,
+and from then on **Sync** in the editor pushes the pack straight to them, in
+seconds, without anybody touching `server.properties`. `/party` shares your
+pushes with the people building alongside you.
+
+That's per player on purpose: it's how you and your builders see a pack while
+it's being made, not how a public server serves one.
+
+### Serving your published pack to everyone
+
+For launch. `/rpai bind <code>` ties the server to a pack from the
+Distribution tab, and from then on every joining player is served the build
+for the Minecraft version they're actually on. That's the
+[Distribution](/distribution) feature, and it needs no `/link` from anybody.
+
+## Commands
+
+| Command | Who can run it |
+| --- | --- |
+| `/link <code>` | Anyone — it only affects the player who ran it |
+| `/party invite\|accept\|leave\|kick\|list` | Anyone |
+| `/emote [name] [player…]` | Anyone. Naming other players needs `resourcepackai.emote.multi` (op by default) |
+| `/gui`, `/hud`, `/sound` | Anyone — each only draws or plays to one client |
+| `/rpai bind\|unbind\|refresh\|status\|reconnect` | Operators |
+
+<Callout type="tip" title="Why /sound exists when /playsound already does">
+  Vanilla's `/playsound` needs permission level 2. The command the Studio shows
+  next to a sound you just made was therefore unrunnable by the person who made
+  it, which reads as the pack being broken rather than as a permission. `/sound`
+  plays to exactly one client and needs nothing.
+</Callout>
+
+## Under the hood: the engine is a library
+
+Everything above — the animation engine, the emote director, screens, HUD
+overlays, sounds, skins — lives in a **separate library** that the plugin is
+built on top of. The plugin is the ResourcePack AI part: talking to the
+Studio, pairing codes, parties, distribution, and the branded messages in
+chat.
+
+That split is why your own plugin can do all of it too:
+
+- **Reach what the plugin already runs.** With `ResourcePackAI.jar` installed,
+  any plugin on the server can take our API off Bukkit's services manager and
+  place models, play emotes, open screens and listen for our events. Start at
+  [Plugin API](/plugin-api).
+- **Or build on the engine directly.** The library can be embedded in your own
+  plugin, with your own pack content and no ResourcePack AI plugin on the
+  server at all — same engine, none of our plumbing. Ask in
+  [Discord](https://resourcepack.ai/discord) if that's what you're doing.
+
+<CardGroup>
+  <Card title="Plugin API" href="/plugin-api" icon="plug">
+    Drive all of it from your own Java or Kotlin plugin.
+  </Card>
+  <Card title="Distribution" href="/distribution" icon="server">
+    Serve your published pack to every player who joins.
+  </Card>
+</CardGroup>

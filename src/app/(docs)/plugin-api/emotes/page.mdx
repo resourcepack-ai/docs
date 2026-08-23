@@ -14,6 +14,7 @@ Everything here needs `rpai` — see [Plugin API](/plugin-api) for how to get it
 
 ## Play one
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 EmoteResult result = rpai.emotes().play(player, "Bow");
 
@@ -21,6 +22,14 @@ if (!result.started()) {
     player.sendMessage("Can't do that right now.");
 }
 ```
+```kotlin
+val result = rpai.emotes().play(player, "Bow")
+
+if (!result.started()) {
+    player.sendMessage("Can't do that right now.")
+}
+```
+</CodeTabs>
 
 That's the whole happy path. The interesting part is the result.
 
@@ -31,24 +40,42 @@ have the same fix — "you're in combat" and "this pack was synced without your
 skin" send a player to completely different places. So the API hands back a
 **reason**, not a sentence, and you write the words:
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 EmoteResult result = rpai.emotes().play(player, "Bow");
 if (result.started()) return;
 
 player.sendMessage(switch (result.reason()) {
-    case IN_COMBAT      -> "Not while you're fighting.";
-    case NOT_ON_GROUND  -> "You need to be standing on solid ground.";
-    case ALREADY_EMOTING-> "You're already doing one.";
-    case UNKNOWN_EMOTE  -> "No emote called " + result.subject()
-                             + ". Try: " + String.join(", ", result.options());
-    case CAST_NOT_ONLINE-> result.subject() + " isn't online.";
-    default             -> "Can't do that right now.";
+    case IN_COMBAT       -> "Not while you're fighting.";
+    case NOT_ON_GROUND   -> "You need to be standing on solid ground.";
+    case ALREADY_EMOTING -> "You're already doing one.";
+    case UNKNOWN_EMOTE   -> "No emote called " + result.subject()
+                              + ". Try: " + String.join(", ", result.options());
+    case CAST_NOT_ONLINE -> result.subject() + " isn't online.";
+    default              -> "Can't do that right now.";
 });
 ```
+```kotlin
+val result = rpai.emotes().play(player, "Bow")
+if (result.started()) return
+
+player.sendMessage(when (result.reason()) {
+    Reason.IN_COMBAT       -> "Not while you're fighting."
+    Reason.NOT_ON_GROUND   -> "You need to be standing on solid ground."
+    Reason.ALREADY_EMOTING -> "You're already doing one."
+    Reason.UNKNOWN_EMOTE   -> "No emote called ${result.subject()}" +
+                                ". Try: " + result.options().joinToString(", ")
+    Reason.CAST_NOT_ONLINE -> "${result.subject()} isn't online."
+    else                   -> "Can't do that right now."
+})
+```
+</CodeTabs>
 
 <Callout type="tip" title="Always have a default branch">
-  The reason list only ever grows. A `switch` without a default will stop
-  compiling — or worse, stop covering — the first time we add one.
+  The reason list only ever grows, so always have an `else` / `default`
+  branch. A Kotlin `when` used as an expression needs one anyway; a Java
+  `switch` will happily compile without one and then say nothing at all the
+  first time we add a reason.
 </Callout>
 
 The extras on a result are worth knowing:
@@ -67,12 +94,20 @@ pack was pushed. The fix is a re-sync they can choose to do later.
 
 ## Check before you offer
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 if (!rpai.emotes().canPerform(player)) {
     // No rig baked for them in the pack they're wearing.
     // They joined after the last Sync — nothing they did wrong.
 }
 ```
+```kotlin
+if (!rpai.emotes().canPerform(player)) {
+    // No rig baked for them in the pack they're wearing.
+    // They joined after the last Sync — nothing they did wrong.
+}
+```
+</CodeTabs>
 
 <Callout type="warning" title="Why an emote needs the player to be in the pack">
   An emote renders somebody's **skin**, and a resource pack can't reach a live
@@ -88,6 +123,7 @@ Some emotes are authored for more than one person — a handshake, a high five.
 They can't be played alone, and the cast has to be exactly the size the emote
 expects.
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 Optional<EmoteInfo> info = rpai.emotes().info("Handshake");
 
@@ -98,6 +134,15 @@ info.ifPresent(emote -> {
     }
 });
 ```
+```kotlin
+val emote = rpai.emotes().info("Handshake").orElse(null)
+
+if (emote != null && emote.needsCast()) {
+    // emote.castSlots() is ["partner"] — labels for a prompt, not names
+    rpai.emotes().play(player, "Handshake", listOf(partner))
+}
+```
+</CodeTabs>
 
 The people you name are teleported into place, turned to face where the emote
 puts them, and put back afterwards. Nothing is spawned and nobody is moved
@@ -115,6 +160,7 @@ either one emote or an emote and a player, and there's no separator to tell
 them apart. `perform` resolves that for you — longest leading run of words
 that names an emote wins:
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 @Override
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -132,6 +178,19 @@ public List<String> onTabComplete(CommandSender sender, Command cmd, String labe
     return options;
 }
 ```
+```kotlin
+override fun onCommand(sender: CommandSender, cmd: Command, label: String, args: Array<String>): Boolean {
+    val player = sender as? Player ?: return true
+
+    val result = rpai.emotes().perform(player, args.toList())
+    player.sendMessage(describe(result))     // your when from above
+    return true
+}
+
+override fun onTabComplete(sender: CommandSender, cmd: Command, label: String, args: Array<String>): List<String> =
+    rpai.emotes().ids() + rpai.emotes().castCandidates(sender, args)
+```
+</CodeTabs>
 
 `castCandidates` is empty unless the words so far name an emote that takes a
 cast and there are slots left — so completing a solo emote offers nobody, and
@@ -139,10 +198,16 @@ a duet stops offering once its partner is typed.
 
 ## Stopping one
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 rpai.emotes().stop(player);              // false if they weren't emoting
 rpai.emotes().isEmoting(player.getUniqueId());
 ```
+```kotlin
+rpai.emotes().stop(player)               // false if they weren't emoting
+rpai.emotes().isEmoting(player.uniqueId)
+```
+</CodeTabs>
 
 ## Refusing an emote on your own terms
 
@@ -151,6 +216,7 @@ those break the emote itself. It has no opinion about arenas, minigames,
 regions or whose turn it is — that's yours, and
 [`EmoteStartEvent`](/plugin-api/events) is where you say so.
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 @EventHandler
 public void onEmote(EmoteStartEvent event) {
@@ -160,6 +226,16 @@ public void onEmote(EmoteStartEvent event) {
     }
 }
 ```
+```kotlin
+@EventHandler
+fun onEmote(event: EmoteStartEvent) {
+    if (inMatch(event.lead)) {
+        event.isCancelled = true
+        event.lead.sendMessage("Not during a match.")
+    }
+}
+```
+</CodeTabs>
 
 Cancelling reaches the caller as `Reason.CANCELLED` with nothing attached —
 the reason belongs to whoever cancelled, so say it yourself as above.

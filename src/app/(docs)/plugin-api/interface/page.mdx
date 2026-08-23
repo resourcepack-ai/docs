@@ -17,6 +17,7 @@ A [custom GUI](/guis) is a font glyph in the screen's **title**: the pack ships
 a negative-space character that pulls the cursor back, then the sheet itself,
 so the art is drawn over the window. That's why what you pass here is text.
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 Optional<Screen> screen = rpai.screens().open(player, ScreenType.CHEST_9X3, glyphs);
 
@@ -25,6 +26,15 @@ screen.ifPresent(s -> {
     s.inventory().setItem(15, shield);
 });
 ```
+```kotlin
+val screen = rpai.screens().open(player, ScreenType.CHEST_9X3, glyphs)
+
+screen.ifPresent {
+    it.inventory().setItem(11, sword)      // ordinary Bukkit inventory
+    it.inventory().setItem(15, shield)
+}
+```
+</CodeTabs>
 
 The inventory is yours: fill it, listen to it with `InventoryClickEvent`, own
 it. We draw the art and get out of the way — a menu's behaviour is your
@@ -46,10 +56,16 @@ you, so those private-use characters never have to survive a config file.
 A [HUD overlay](/hud) is the same trick, drawn over the world instead of over
 a window.
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 rpai.hud().draw(player, glyphs, HudSlot.BOSS_BAR, Duration.ofSeconds(10));
 rpai.hud().clear(player);
 ```
+```kotlin
+rpai.hud().draw(player, glyphs, HudSlot.BOSS_BAR, Duration.ofSeconds(10))
+rpai.hud().clear(player)
+```
+</CodeTabs>
 
 Two places to put it:
 
@@ -72,6 +88,7 @@ are somebody adjusting what they're looking at, not asking for two meters.
 
 ## Play a pack sound
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 // At the listener — nothing attenuates it. "Let me hear this."
 rpai.sounds().play(player, "custom.horn.blast");
@@ -79,6 +96,14 @@ rpai.sounds().play(player, "custom.horn.blast");
 // At a place in the world — quieter with distance, like any game sound.
 rpai.sounds().playAt(location, "custom.horn.blast", SoundCategory.AMBIENT, 1f, 1f);
 ```
+```kotlin
+// At the listener — nothing attenuates it. "Let me hear this."
+rpai.sounds().play(player, "custom.horn.blast")
+
+// At a place in the world — quieter with distance, like any game sound.
+rpai.sounds().playAt(location, "custom.horn.blast", SoundCategory.AMBIENT, 1f, 1f)
+```
+</CodeTabs>
 
 `play` is the right shape for a UI noise or a confirmation. `playAt` is the
 right shape for anything that should come from somewhere.
@@ -93,10 +118,16 @@ right shape for anything that should come from somewhere.
 If you're reading a category out of a config, use `categoryFor` rather than
 `SoundCategory.valueOf`:
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 SoundCategory source = rpai.sounds().categoryFor(config.getString("source"));
 if (source == null) { /* it isn't one — say which ones are */ }
 ```
+```kotlin
+val source = rpai.sounds().categoryFor(config.getString("source"))
+    ?: return say("That isn't a sound source.")
+```
+</CodeTabs>
 
 Three of vanilla's names are singular where Bukkit's constants are plural
 (`record`/`RECORDS`, `block`/`BLOCKS`, `player`/`PLAYERS`), so `valueOf`
@@ -104,11 +135,18 @@ returns null for exactly the three people type most.
 
 ## Apply a skin
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 if (rpai.skins().available()) {
     SkinResult result = rpai.skins().apply(player, value, signature);
 }
 ```
+```kotlin
+if (rpai.skins().available()) {
+    val result = rpai.skins().apply(player, value, signature)
+}
+```
+</CodeTabs>
 
 | Result | Means |
 | --- | --- |
@@ -131,6 +169,7 @@ if (rpai.skins().available()) {
 If your plugin ships its own model or emote manifests, or you want to reload
 after writing one:
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 rpai.content()
     .loadModels(ContentSource.resource(this, "rigs.json"))
@@ -139,6 +178,15 @@ rpai.content()
         else getLogger().warning("Didn't load: " + result.error());
     });
 ```
+```kotlin
+rpai.content()
+    .loadModels(ContentSource.resource(this, "rigs.json"))
+    .thenAccept { result ->
+        if (result.ok()) logger.info("Loaded ${result.count()} models")
+        else logger.warning("Didn't load: ${result.error()}")
+    }
+```
+</CodeTabs>
 
 Sources are `file(path)`, `resource(plugin, name)`, `json(string)` and
 `url(uri)`. The reading happens off the main thread and the applying on it, so
