@@ -10,12 +10,14 @@
  * landing's `llms.txt` must stay short — its own comment is emphatic about not
  * becoming a dump — and this is where the dump belongs.
  *
- * **Why it's written into ../landing/public.** The convention is only
- * recognised at the root of a host, and landing owns that root; this app is a
- * path route under it and cannot serve `/llms-full.txt`. Same reason robots.txt
- * and llms.txt live over there. Generated and committed, so landing gains no
- * build-time dependency on this app — the coupling is a file in a diff, exactly
- * as with openapi.json.
+ * **Why it's written outside this app.** The convention is only recognised at
+ * the root of a host, and the marketing site on resourcepack.ai owns that
+ * root; this app is a path route under it and cannot serve `/llms-full.txt`.
+ * Same reason robots.txt and llms.txt live over there. Generated and
+ * committed, so that site gains no build-time dependency on this one — the
+ * coupling is a file in a diff, exactly as with openapi.json. That directory
+ * is not part of this repository, so this script only runs where both are
+ * checked out side by side.
  *
  * The MDX is flattened rather than rendered: component tags become their inner
  * text, since `<Callout title="…">` around a paragraph is presentation, and a
@@ -101,5 +103,17 @@ for (const [path, methods] of Object.entries(spec.paths)) {
   }
 }
 
-await writeFile(OUT, `${parts.join("\n").replace(/\n{3,}/g, "\n\n")}\n`);
+try {
+  await writeFile(OUT, `${parts.join("\n").replace(/\n{3,}/g, "\n\n")}\n`);
+} catch (err) {
+  if (err.code === "ENOENT") {
+    console.error(
+      `[llms-full] ${OUT} is not there to write to.\n` +
+        "That file belongs to the site serving the root of resourcepack.ai, which " +
+        "is not part of this repository — see the note at the top of this script.",
+    );
+    process.exit(1);
+  }
+  throw err;
+}
 console.log(`[llms-full] wrote ${OUT} (${pages.length} pages + ${Object.keys(spec.paths).length} paths)`);
