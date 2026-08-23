@@ -93,6 +93,7 @@ on your server, so nothing it adds reaches a player until you grant it.
 | `/party invite\|accept\|deny\|leave\|kick\|list\|disband` | `resourcepackai.party` |
 | `/emote [name]` | `resourcepackai.emote` |
 | `/emote <name> <player…>` | `resourcepackai.emote.multi` |
+| `/emotereply <accept\|deny> <token>` | none — see below |
 | `/gui <player> <screen> <escapes>` | `resourcepackai.gui` |
 | `/hud <player> <bar> <escapes> [secs]` | `resourcepackai.hud` |
 | `/sound <player> <event> […]` | `resourcepackai.sound` |
@@ -108,8 +109,26 @@ Grant them to the people building your pack, not to everyone.
 
 `resourcepackai.emote.multi` is the same idea and is deliberately **not** a
 child of `resourcepackai.emote`: an emote with a cast teleports the players it
-names and takes their game mode for its length, so granting "emotes" must not
-quietly include the half that moves other people.
+names and holds them for its length, so granting "emotes" must not quietly
+include the half that moves other people.
+
+### Nobody is pulled into an emote without agreeing
+
+`/emote <name> <player…>` doesn't start anything. Everyone it names gets a line
+in chat with **[accept]** and **[deny]** buttons, and the emote runs only once
+all of them have accepted. A deny calls the whole thing off, and so does
+thirty seconds of silence.
+
+Answering is `/emotereply`, which the buttons run for you. It is **the one
+command here that needs no permission**, on purpose: it answers a question
+somebody else asked, its token is unguessable and is checked against that
+invitation's own cast, and gating it would mean showing two buttons to a player
+who cannot click either. You never need to type it.
+
+<Callout type="note">
+  Solo emotes are unchanged — `/emote <name>` on yourself still plays
+  immediately, because there is nobody to ask.
+</Callout>
 
 ## Under the hood: the engine is a library
 
