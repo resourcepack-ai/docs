@@ -6,27 +6,13 @@ export const metadata = {
 
 # Plugin API
 
-Everything the ResourcePack AI plugin does in game, your own plugin can do
-too. Place a statue when a quest completes. Play an emote when somebody wins.
-Open a custom screen. Draw a health meter your pack drew the art for.
+Everything the [ResourcePack AI plugin](/testing/plugin) does in game, your own
+plugin can do too. Place a statue when a quest completes. Play an emote when
+somebody wins. Open a custom screen. Draw a health meter your pack drew the art
+for.
 
-This section is for people writing Java. If you just want your pack in game,
-you want [Distribution](/distribution) instead.
-
-<CardGroup>
-  <Card title="Models" href="/plugin-api/models" icon="boxes">
-    Place, remove, animate and react to models in the world.
-  </Card>
-  <Card title="Emotes" href="/plugin-api/emotes" icon="users">
-    Play an emote on a player, or a duet on two.
-  </Card>
-  <Card title="Screens, HUD and sounds" href="/plugin-api/interface" icon="gui">
-    Open a reskinned screen, draw an overlay, play a pack sound.
-  </Card>
-  <Card title="Events" href="/plugin-api/events" icon="plug">
-    Refuse a placement, react to an emote, hear when a pack changes.
-  </Card>
-</CardGroup>
+This section is for people writing Java or Kotlin. If you just want your pack
+in game, you want [Distribution](/distribution) instead.
 
 ## Installing
 
@@ -38,14 +24,23 @@ against it.
   <Step title="Get the jar">
     There is no maven repository yet. Download
     [the jar](https://cdn.resourcepack.ai/resourcepackai.jar) and drop it in
-    your project's `libs/` folder.
+    your project's `libs/` folder. Grab the `-sources.jar` beside it too and
+    your IDE will show the documentation for every call instead of decompiled
+    bytecode.
   </Step>
   <Step title="Depend on it, but don't bundle it">
+    <CodeTabs labels={["Groovy", "Kotlin"]}>
     ```groovy
     dependencies {
         compileOnly files("libs/resourcepackai.jar")
     }
     ```
+    ```kotlin
+    dependencies {
+        compileOnly(files("libs/resourcepackai.jar"))
+    }
+    ```
+    </CodeTabs>
 
     `compileOnly` matters. The classes come from the plugin at runtime, and a
     second copy inside your jar would be a second copy of the engine fighting
@@ -65,6 +60,7 @@ against it.
 
 ## Your first call
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 import ai.resourcepack.api.ResourcePackAI;
 
@@ -86,6 +82,28 @@ public class MyPlugin extends JavaPlugin {
     }
 }
 ```
+```kotlin
+import ai.resourcepack.api.ResourcePackAI
+
+class MyPlugin : JavaPlugin() {
+
+    private var rpai: ResourcePackAI? = null
+
+    override fun onEnable() {
+        val api = server.servicesManager.load(ResourcePackAI::class.java)
+        if (api == null) {
+            logger.info("ResourcePack AI isn't installed — statues are off.")
+            return
+        }
+        rpai = api
+
+        for (model in api.models().ids()) {
+            logger.info("This server knows how to animate $model")
+        }
+    }
+}
+```
+</CodeTabs>
 
 Two things to copy from that, because both bite people:
 
@@ -135,6 +153,7 @@ Asking what the server *holds* is safe from anywhere — `ids()`, `info()`,
 thread-safe state. So you can build a menu on an async task and only hop back
 when you act on it:
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
     List<String> models = rpai.models().ids();          // fine off-thread
@@ -144,23 +163,30 @@ Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
     });
 });
 ```
+```kotlin
+server.scheduler.runTaskAsynchronously(this, Runnable {
+    val models = rpai.models().ids()                    // fine off-thread
 
-## What's supported, and what isn't
+    server.scheduler.runTask(this, Runnable {
+        rpai.models().place(spot, models[0], PlaceOptions.defaults())
+    })
+})
+```
+</CodeTabs>
 
-Two packages, and the difference matters if you don't want your plugin to
-break on an update:
+## Where to go next
 
-- **`ai.resourcepack.api`** — everything on this page and the four beside it.
-  It follows semver: nothing here breaks without a major version bump.
-- **`ai.resourcepack.core`** — the implementation. It changes whenever we like,
-  including in a patch release. If your IDE autocompletes something from here,
-  you've gone too far.
-
-<Callout type="note" title="Building a plugin without ours installed">
-  The engine can also be embedded directly in your own plugin — shaded in,
-  driven by `RpaiLibrary.builder(this)`, with your own pack content and no
-  ResourcePack AI plugin on the server at all. Everything on these pages works
-  the same way once you have it; the difference is only where the classes come
-  from. Ask in [Discord](https://resourcepack.ai/discord) if that's what you're
-  building and we'll walk you through it.
-</Callout>
+<CardGroup>
+  <Card title="Models" href="/plugin-api/models" icon="boxes">
+    Place, remove, animate and react to models in the world.
+  </Card>
+  <Card title="Emotes" href="/plugin-api/emotes" icon="users">
+    Play an emote on a player, or a duet on two.
+  </Card>
+  <Card title="Screens, HUD and sounds" href="/plugin-api/interface" icon="gui">
+    Open a reskinned screen, draw an overlay, play a pack sound.
+  </Card>
+  <Card title="Events" href="/plugin-api/events" icon="plug">
+    Refuse a placement, react to an emote, hear when a pack changes.
+  </Card>
+</CardGroup>

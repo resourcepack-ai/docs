@@ -175,6 +175,26 @@ export const nav: NavGroup[] = [
         description: "play.resourcepack.ai — a lobby and a private world of your own.",
         keywords: ["sandbox", "lobby", "portal", "play", "world"],
       },
+      {
+        title: "The plugin",
+        href: "/testing/plugin",
+        description: "What the plugin adds to a Paper or Spigot server, and how to install it.",
+        keywords: [
+          "plugin",
+          "spigot",
+          "paper",
+          "jar",
+          "install",
+          "download",
+          "server",
+          "link",
+          "sync",
+          "emote",
+          "commands",
+          "library",
+          "engine",
+        ],
+      },
       // "Your own server" is held back from launch (owner call, 2026-08-08).
       // The page itself is parked at app/(docs)/testing/_your-server — the
       // underscore keeps Next from routing it. To bring it back: rename the

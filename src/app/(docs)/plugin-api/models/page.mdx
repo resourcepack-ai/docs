@@ -1,15 +1,141 @@
 export const metadata = {
   title: "Models from code",
   description:
-    "Place and remove models, play their animations by name, give out the item that places one, and react when a player clicks one.",
+    "Place and remove models, give out the item that places one, play animations by name, and react when a player clicks one.",
 };
 
 # Models from code
 
 A placed model is a rig of display entities with a clickable hitbox holding it
-together. This page is the four things you'll actually want to do with one.
+together. This page is the things you'll actually want to do with one, roughly
+in the order you'll want them.
 
 Everything here needs `rpai` — see [Plugin API](/plugin-api) for how to get it.
+
+## Place one
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+```java
+Optional<Placement> statue = rpai.models().place(
+    spot,
+    "wizard_statue",
+    PlaceOptions.defaults()
+        .animation("Idle")     // which animation this copy prefers
+        .scale(2f)             // 0.125 to 8
+        .placer(player));      // who is doing it, if anybody
+```
+```kotlin
+val statue = rpai.models().place(
+    spot,
+    "wizard_statue",
+    PlaceOptions.defaults()
+        .animation("Idle")     // which animation this copy prefers
+        .scale(2f)             // 0.125 to 8
+        .placer(player),       // who is doing it, if anybody
+)
+```
+</CodeTabs>
+
+- The location **names a block**: the rig is centred in it, exactly as a
+  player's placement is.
+- The **yaw is used as given** and not snapped to a cardinal — so a statue can
+  face any direction, which a player placing one by hand can't do.
+- Empty comes back if the world isn't loaded, there's already a rig in that
+  block, or a listener refused it.
+
+<Callout type="warning" title="Pass a placer if there is one">
+  With a placer, other plugins get a `ModelPlaceEvent` and can refuse the
+  placement — which is how a region protection plugin does its job. **With no
+  placer, nothing is fired and nothing can refuse**, because that event carries
+  a player and inventing one would be a lie. Use it for placements your plugin
+  makes on its own behalf; pass the player whenever somebody asked.
+</Callout>
+
+## Remove one
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+```java
+statue.remove(true);   // true drops the item, as breaking it by hand would
+```
+```kotlin
+statue.remove(true)    // true drops the item, as breaking it by hand would
+```
+</CodeTabs>
+
+`false` comes back if it was already gone or a listener refused. If you're
+holding a handle across ticks — perfectly fine to do — `isValid()` tells you
+whether the rig is still standing.
+
+## Give out the item
+
+The item the panel hands out is just an item. You can mint it yourself for a
+shop, a kit or a reward:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+```java
+rpai.models()
+    .itemFor("wizard_statue", ItemOptions.defaults()
+        .name("Wizard Statue")
+        .amount(2)
+        .animation("Idle")
+        .scale(2f))
+    .ifPresent(item -> player.getInventory().addItem(item));
+```
+```kotlin
+rpai.models()
+    .itemFor("wizard_statue", ItemOptions.defaults()
+        .name("Wizard Statue")
+        .amount(2)
+        .animation("Idle")
+        .scale(2f))
+    .ifPresent { player.inventory.addItem(it) }
+```
+</CodeTabs>
+
+The animation and scale ride on the stack, so breaking a placement puts them
+back on the item that drops.
+
+## Find the model you mean
+
+Three ways in, and which one you use is usually decided by what you already
+have in your hand.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+```java
+// From a place in the world — nearest first.
+List<Placement> nearby = rpai.models().near(location, 8);
+
+// From an entity, straight out of an event.
+Optional<Placement> clicked = rpai.models().at(event.getRightClicked());
+
+// From a chunk, for a sweep with a bound on it.
+List<Placement> here = rpai.models().in(chunk);
+```
+```kotlin
+// From a place in the world — nearest first.
+val nearby = rpai.models().near(location, 8.0)
+
+// From an entity, straight out of an event.
+val clicked = rpai.models().at(event.rightClicked)
+
+// From a chunk, for a sweep with a bound on it.
+val here = rpai.models().`in`(chunk)
+```
+</CodeTabs>
+
+<Callout type="note" title="`in` is a keyword in Kotlin">
+  Hence the backticks. It reads badly enough that a Kotlin plugin usually wants
+  a one-line extension — `fun Models.inChunk(chunk: Chunk) = this.`in`(chunk)` —
+  and never thinks about it again.
+</Callout>
+
+There's deliberately no "every model on the server" call. That means walking
+every entity in every world, and a cost like that should be something you ask
+for with a radius rather than something the API makes look free.
+
+**A rig in an unloaded chunk isn't there.** `near` only finds what's loaded,
+which is also the only thing anybody could be looking at. It keeps whatever it
+was last told to do and picks it up again when its chunk comes back.
 
 ## Play an animation
 
@@ -17,11 +143,18 @@ Everything here needs `rpai` — see [Plugin API](/plugin-api) for how to get it
 model". For anything else — a quest completing, a boss dying, a timer — name
 the animation and play it.
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 for (Placement statue : rpai.models().near(altar, 8)) {
     statue.play("Wave");
 }
 ```
+```kotlin
+for (statue in rpai.models().near(altar, 8.0)) {
+    statue.play("Wave")
+}
+```
+</CodeTabs>
 
 **Naming it is all it takes.** Unlike a trigger, this doesn't care what the
 animation claims — so an animation with *no* triggers is playable this way and
@@ -44,90 +177,12 @@ off by accident.
   over*.
 </Callout>
 
-## Find the model you mean
-
-Three ways in, and which one you use is usually decided by what you already
-have in your hand.
-
-```java
-// From a place in the world — nearest first.
-List<Placement> nearby = rpai.models().near(location, 8);
-
-// From an entity, straight out of an event.
-Optional<Placement> clicked = rpai.models().at(event.getRightClicked());
-
-// From a chunk, for a sweep with a bound on it.
-List<Placement> here = rpai.models().in(chunk);
-```
-
-There's deliberately no "every model on the server" call. That means walking
-every entity in every world, and a cost like that should be something you ask
-for with a radius rather than something the API makes look free.
-
-**A rig in an unloaded chunk isn't there.** `near` only finds what's loaded,
-which is also the only thing anybody could be looking at. It keeps whatever it
-was last told to do and picks it up again when its chunk comes back.
-
-## Place one
-
-```java
-Optional<Placement> statue = rpai.models().place(
-    spot,
-    "wizard_statue",
-    PlaceOptions.defaults()
-        .animation("Idle")     // which animation this copy prefers
-        .scale(2f)             // 0.125 to 8
-        .placer(player));      // who is doing it, if anybody
-```
-
-- The location **names a block**: the rig is centred in it, exactly as a
-  player's placement is.
-- The **yaw is used as given** and not snapped to a cardinal — so a statue can
-  face any direction, which a player placing one by hand can't do.
-- Empty comes back if the world isn't loaded, there's already a rig in that
-  block, or a listener refused it.
-
-<Callout type="warning" title="Pass a placer if there is one">
-  With a placer, other plugins get a `ModelPlaceEvent` and can refuse the
-  placement — which is how a region protection plugin does its job. **With no
-  placer, nothing is fired and nothing can refuse**, because that event carries
-  a player and inventing one would be a lie. Use it for placements your plugin
-  makes on its own behalf; pass the player whenever somebody asked.
-</Callout>
-
-## Remove one
-
-```java
-statue.remove(true);   // true drops the item, as breaking it by hand would
-```
-
-`false` comes back if it was already gone or a listener refused. If you're
-holding a handle across ticks — perfectly fine to do — `isValid()` tells you
-whether the rig is still standing.
-
-## Give out the item
-
-The item the panel hands out is just an item. You can mint it yourself for a
-shop, a kit or a reward:
-
-```java
-rpai.models()
-    .itemFor("wizard_statue", ItemOptions.defaults()
-        .name("Wizard Statue")
-        .amount(2)
-        .animation("Idle")
-        .scale(2f))
-    .ifPresent(item -> player.getInventory().addItem(item));
-```
-
-The animation and scale ride on the stack, so breaking a placement puts them
-back on the item that drops.
-
 ## React to a player clicking one
 
 `isModel` answers "is this entity part of a model" without building a handle
 you're about to throw away:
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 @EventHandler(priority = EventPriority.LOWEST)
 public void onUse(PlayerInteractAtEntityEvent event) {
@@ -141,6 +196,20 @@ public void onUse(PlayerInteractAtEntityEvent event) {
     }
 }
 ```
+```kotlin
+@EventHandler(priority = EventPriority.LOWEST)
+fun onUse(event: PlayerInteractAtEntityEvent) {
+    if (event.hand != EquipmentSlot.HAND) return            // offhand fires twice
+    if (!rpai.models().isModel(event.rightClicked)) return
+
+    val rig = rpai.models().at(event.rightClicked).orElse(null) ?: return
+    if (rig.modelId() == "shop_sign") {
+        openShop(event.player)
+        event.isCancelled = true
+    }
+}
+```
+</CodeTabs>
 
 <Callout type="warning" title="Listen at LOWEST or LOW">
   We handle that event at `NORMAL` and **cancel it** when the model has a
@@ -154,12 +223,20 @@ public void onUse(PlayerInteractAtEntityEvent event) {
 
 Persistent data on the hitbox, saved with the chunk and gone when the rig is:
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 NamespacedKey owner = Placement.key(this, "owner");
 
 statue.data().set(owner, PersistentDataType.STRING, player.getUniqueId().toString());
 String who = statue.data().get(owner, PersistentDataType.STRING);
 ```
+```kotlin
+val owner = Placement.key(this, "owner")
+
+statue.data().set(owner, PersistentDataType.STRING, player.uniqueId.toString())
+val who = statue.data().get(owner, PersistentDataType.STRING)
+```
+</CodeTabs>
 
 The container is shared with the animator, and the **namespace** is what keeps
 you apart — a key made with your own plugin can never collide with one of
@@ -168,12 +245,20 @@ ours.
 ## Handles are values
 
 Two handles on the same rig are equal and hash alike, so you can keep them in
-a `Set` without collecting duplicates of one statue. Every lookup mints a fresh
-object, so `==` is never what you want.
+a set without collecting duplicates of one statue. Every lookup mints a fresh
+object, so identity comparison is never what you want.
 
+<CodeTabs labels={["Java", "Kotlin"]}>
 ```java
 Set<Placement> animated = new HashSet<>();
 for (Placement rig : rpai.models().near(spawn, 32)) {
     if (animated.add(rig)) rig.play("Greet");   // each statue once
 }
 ```
+```kotlin
+val animated = mutableSetOf<Placement>()
+for (rig in rpai.models().near(spawn, 32.0)) {
+    if (animated.add(rig)) rig.play("Greet")    // each statue once
+}
+```
+</CodeTabs>
