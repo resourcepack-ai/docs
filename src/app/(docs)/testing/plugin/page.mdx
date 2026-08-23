@@ -84,36 +84,55 @@ for the Minecraft version they're actually on. That's the
 
 ## Commands
 
-| Command | Permission | Default |
-| --- | --- | --- |
-| `/link <code>` | `resourcepackai.link` | Everyone |
-| `/party invite\|accept\|deny\|leave\|kick\|list\|disband` | `resourcepackai.party` | Everyone |
-| `/emote [name]` | `resourcepackai.emote` | Everyone |
-| `/emote <name> <player…>` | `resourcepackai.emote.multi` | Operators |
-| `/gui <player> <screen> <escapes>` | `resourcepackai.gui` | Everyone |
-| `/hud <player> <bar> <escapes> [secs]` | `resourcepackai.hud` | Everyone |
-| `/sound <player> <event> […]` | `resourcepackai.sound` | Everyone |
-| `/rpai bind\|unbind\|refresh\|status\|reconnect` | `resourcepackai.admin` | Operators |
+**Every command is operators-only until you say otherwise.** The plugin runs
+on your server, so nothing it adds reaches a player until you grant it.
 
-`resourcepackai.*` grants all of the above in one node, including
-`resourcepackai.emote.multi`.
+| Command | Permission |
+| --- | --- |
+| `/link <code>` | `resourcepackai.link` |
+| `/party invite\|accept\|deny\|leave\|kick\|list\|disband` | `resourcepackai.party` |
+| `/emote [name]` | `resourcepackai.emote` |
+| `/emote <name> <player…>` | `resourcepackai.emote.multi` |
+| `/gui <player> <screen> <escapes>` | `resourcepackai.gui` |
+| `/hud <player> <bar> <escapes> [secs]` | `resourcepackai.hud` |
+| `/sound <player> <event> […]` | `resourcepackai.sound` |
+| `/rpai bind\|unbind\|refresh\|status\|reconnect` | `resourcepackai.admin` |
 
-### Why most of these are open by default
+`resourcepackai.*` grants all of them at once, `resourcepackai.emote.multi`
+included.
 
-The Studio shows you the command to copy next to the thing you just
-generated — a sound, a screen, an emote. If that command were operators-only,
-the player it was meant for would see **"Unknown command"**, which reads as the
-pack being broken rather than as a permission they're missing.
+### Granting them to your players
 
-So the default for each is the honest one: every command above affects a single
-client, and naming somebody else still means typing their name. Tighten any of
-them in your permissions plugin if your server wants that — nothing in the
-plugin assumes the defaults.
+Emotes are content your players are meant to use, so most servers will want at
+least that one open. With LuckPerms:
 
-The exception is `resourcepackai.emote.multi`, which is operators-only and is
-**not** a child of `resourcepackai.emote`. An emote with a cast teleports the
-players it names and takes their game mode for its length, so granting "emotes"
-should not quietly include the half that moves other people.
+```
+/lp group default permission set resourcepackai.emote true
+```
+
+Add `resourcepackai.link` and `resourcepackai.party` too if several people on
+your server build packs — a pairing code only ever affects the player who
+claimed it, and a party needs both sides to accept.
+
+<Callout type="warning" title="An ungranted command looks like it does not exist">
+  Minecraft sends each client a command list filtered by permission, so a
+  command a player hasn't been granted doesn't appear to exist for them —
+  they see **"Unknown or incomplete command"** rather than a refusal. That is
+  the client's wording, not ours, and it is worth knowing before you conclude
+  the plugin is broken. Anyone who does reach a refusal is told which node
+  they need.
+</Callout>
+
+### The three that reach other players
+
+`/gui`, `/hud` and `/sound` all take a target player, so granting them lets
+that player draw a screen, an overlay or a sound onto somebody else's client.
+Grant them to the people building your pack, not to everyone.
+
+`resourcepackai.emote.multi` is the same idea and is deliberately **not** a
+child of `resourcepackai.emote`: an emote with a cast teleports the players it
+names and takes their game mode for its length, so granting "emotes" must not
+quietly include the half that moves other people.
 
 ## Under the hood: the engine is a library
 
