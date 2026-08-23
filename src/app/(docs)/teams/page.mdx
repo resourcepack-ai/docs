@@ -193,11 +193,71 @@ audit log. A team whose plan has lapsed is never charged.
 
 Admins can point the team's activity at a URL — everything the audit log
 records gets POSTed there as JSON, which is how you get it into Slack, Discord
-or your own tooling. Each delivery is signed so you can tell ours from anybody
-else's, and the signing secret is shown once when you save the URL.
+or your own tooling. Set it on the team's **Settings** page; the signing secret
+is shown once, when you save the URL, and rotates every time you save a new one.
 
-Delivery is best effort and there's no retry: if you need a guaranteed complete
-record, the CSV export is it.
+### The request
+
+Each event is a `POST` with a JSON body and these headers:
+
+```
+Content-Type: application/json
+User-Agent: resourcepack.ai-webhook/1
+X-RPAI-Signature: sha256=<hex>
+```
+
+The body is one event:
+
+```json
+{
+  "type": "pack.published",
+  "team": "a1b2c3d4",
+  "actor": "user_9f8e7d",
+  "target": "ruined_kingdom",
+  "detail": { "version": 3 },
+  "id": "b7c1e0f2-…",
+  "at": "2026-08-23T14:02:11.904Z"
+}
+```
+
+- **`type`** is the action — the same vocabulary the audit log and the CSV
+  export use (`member.joined`, `member.role_changed`, `seat.changed`,
+  `pack.published`, and so on).
+- **`actor`** is the account id that did it, or `null` for a system event.
+- **`target`** and **`detail`** vary by type: `target` is what it happened to
+  (a pack name, the person a role changed for), `detail` is any extra fields
+  that type carries, or `null`.
+- **`id`** is unique per delivery — use it to dedupe, since delivery is
+  at-least-once in spirit rather than exactly-once.
+- **`at`** is when it was sent, ISO 8601.
+
+### Verifying the signature
+
+`X-RPAI-Signature` is `sha256=` followed by the hex **HMAC-SHA256** of the
+**raw request body**, keyed with your signing secret. Compute the same over the
+bytes you received and compare — if they don't match, it isn't from us. Verify
+against the raw body, not a re-serialized copy of the parsed JSON, or a
+re-ordered key will fail a signature that was actually valid.
+
+```js
+import { createHmac, timingSafeEqual } from "node:crypto";
+
+function verify(rawBody, header, secret) {
+  const expected = "sha256=" + createHmac("sha256", secret).update(rawBody).digest("hex");
+  const a = Buffer.from(header ?? "");
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+```
+
+### Delivery
+
+`https` only, and we won't POST to loopback or private-network addresses. Each
+attempt times out after five seconds, and **delivery is best effort with no
+retry** — a receiver that's down loses that event rather than blocking the
+action that produced it. If you need a guaranteed complete record, the CSV
+export is it. The **Settings** card shows the last delivery's status so you can
+tell whether your endpoint is answering.
 
 ## Leaving, and what happens to the packs
 
