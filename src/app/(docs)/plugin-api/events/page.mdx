@@ -1,0 +1,148 @@
+export const metadata = {
+  title: "Events",
+  description:
+    "Refuse a model being placed or broken, stop an animation or an emote, and hear when a pack's content changes.",
+};
+
+# Events
+
+A model rig is entities, not blocks. Spawning one fires none of the events a
+placement normally does — not `BlockPlaceEvent`, not `EntityPlaceEvent`, not
+`CreatureSpawnEvent` — so without these, **nothing on your server could refuse
+a model going down, because nothing was told one was.**
+
+That's what this page is for. Every one of them is an ordinary Bukkit event.
+
+## What there is
+
+| Event | Fires | Cancellable |
+| --- | --- | --- |
+| `ModelPlaceEvent` | Before a rig spawns | Yes — the item stays in hand |
+| `ModelBreakEvent` | Before a placed rig is removed | Yes — the rig stays |
+| `ModelAnimationEvent` | An animation is about to start | Yes — the rig stays where it was |
+| `EmoteStartEvent` | After every check, before anybody is moved | Yes |
+| `EmoteEndEvent` | Per participant, after they're back | No |
+| `ContentLoadedEvent` | A manifest has been merged in | No |
+
+`ModelPlaceEvent` lives in `ai.resourcepack.presence`; everything else is in
+`ai.resourcepack.api.event`. That's not tidiness — it's the package that event
+has always been in, and moving it would silently break every plugin already
+listening for it.
+
+## Protecting a region
+
+The two you want are place and break. Both behave like the block events you
+already know:
+
+```java
+@EventHandler(ignoreCancelled = true)
+public void onPlace(ModelPlaceEvent event) {
+    if (!canBuildHere(event.getPlayer(), event.getBlock().getLocation())) {
+        event.setCancelled(true);
+        event.getPlayer().sendMessage("Not here.");
+    }
+}
+
+@EventHandler(ignoreCancelled = true)
+public void onBreak(ModelBreakEvent event) {
+    Player breaker = event.getPlayer();      // null when code did it
+    if (breaker != null && !canBuildHere(breaker, event.getPlacement().location())) {
+        event.setCancelled(true);
+    }
+}
+```
+
+<Callout type="warning" title="A null player is a real case">
+  `ModelBreakEvent.getPlayer()` is null when another plugin removed the rig
+  rather than a person punching it. Check for it — a protection plugin that
+  assumed a player would throw the first time somebody's quest script tidied
+  up a statue.
+</Callout>
+
+`ModelBreakEvent` also lets you allow the break but keep the item:
+`event.setDropItem(false)`.
+
+## Stopping an animation
+
+```java
+@EventHandler
+public void onAnimate(ModelAnimationEvent event) {
+    if (event.getCause() == ModelAnimationEvent.Cause.RIGHT_CLICK
+            && isQuiet(event.getPlacement())) {
+        event.setCancelled(true);
+    }
+}
+```
+
+`getCause()` tells you what asked: `PLACE`, `RIGHT_CLICK`, `LEFT_CLICK`,
+`RANGE` or `API`. `getPlayer()` is who set it off, and is null for `PLACE` and
+`API`.
+
+<Callout type="note" title="It doesn't fire for an idle loop resuming">
+  When a one-shot finishes and the model falls back to its loop, that's the rig
+  going back to rest rather than a new animation. If it fired here, a listener
+  that cancelled it would pin the model on its last frame for ever.
+</Callout>
+
+## Refusing an emote
+
+The library refuses an emote in combat, in the air and in spectator, because
+each of those breaks the emote itself. It deliberately has no opinion about
+arenas, minigames, regions or whose turn it is — it runs on servers we don't
+own and can't guess the rules of, so it asks:
+
+```java
+@EventHandler
+public void onEmoteStart(EmoteStartEvent event) {
+    if (inArena(event.getLead())) {
+        event.setCancelled(true);
+        event.getLead().sendMessage("Save it for the lobby.");
+    }
+}
+```
+
+Say why yourself. The caller only learns `Reason.CANCELLED` with nothing
+attached — the reason belongs to whoever cancelled, and that's you.
+
+`getCast()` is everybody else in it, in slot order, and they're about to be
+teleported into place. Empty for a solo emote.
+
+## Knowing when an emote ends
+
+```java
+@EventHandler
+public void onEmoteEnd(EmoteEndEvent event) {
+    if (event.getCause() == EmoteEndEvent.Cause.FINISHED) {
+        reward(event.getPlayer());
+    }
+}
+```
+
+Causes are `FINISHED`, `STOPPED`, `MOVED`, `DAMAGED`, `QUIT` and `SHUTDOWN`.
+Not cancellable — by the time it fires the rig is gone and the player is
+visible again, and an emote that could be refused an ending is one that never
+ends. A duet fires it twice, once per person, with the same cause.
+
+## Reacting to a pack changing
+
+Model ids, animation names and emote names can all appear and disappear when
+somebody presses Sync. If you cache any of them, listen:
+
+```java
+@EventHandler
+public void onContent(ContentLoadedEvent event) {
+    if (event.getKind() == ContentLoadedEvent.Kind.MODELS) {
+        rebuildMyMenu();
+    }
+}
+```
+
+Rigs already standing keep animating — the new manifest applies to them too.
+
+## The one rule behind all of these
+
+**We restrict nothing ourselves.** No gamemode rule, no region rule, no
+permission node of our own. Your server's rules are yours, and every one of
+these events exists so you can apply them. If you find yourself wishing the
+plugin blocked something by default, that's a request for another event rather
+than for a setting — [tell us](https://resourcepack.ai/discord).
