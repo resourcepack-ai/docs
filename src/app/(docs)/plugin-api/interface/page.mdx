@@ -1,0 +1,148 @@
+export const metadata = {
+  title: "Screens, HUD and sounds from code",
+  description:
+    "Open a screen with your pack's GUI art on it, draw a HUD overlay, play a pack sound, and apply a signed skin.",
+};
+
+# Screens, HUD and sounds
+
+The three things a pack draws that aren't in the world, plus skins. All four
+are one call each.
+
+Everything here needs `rpai` — see [Plugin API](/plugin-api) for how to get it.
+
+## Open a screen with your GUI on it
+
+A [custom GUI](/guis) is a font glyph in the screen's **title**: the pack ships
+a negative-space character that pulls the cursor back, then the sheet itself,
+so the art is drawn over the window. That's why what you pass here is text.
+
+```java
+Optional<Screen> screen = rpai.screens().open(player, ScreenType.CHEST_9X3, glyphs);
+
+screen.ifPresent(s -> {
+    s.inventory().setItem(11, sword);      // ordinary Bukkit inventory
+    s.inventory().setItem(15, shield);
+});
+```
+
+The inventory is yours: fill it, listen to it with `InventoryClickEvent`, own
+it. We draw the art and get out of the way — a menu's behaviour is your
+plugin's whole point, not ours.
+
+**Where do the glyphs come from?** The panel prints them next to your GUI, as
+``-style escapes. Paste that string in as-is — it's decoded for
+you, so those private-use characters never have to survive a config file.
+
+<Callout type="warning" title="Match the screen size to the art">
+  Every chest size is its own `ScreenType`, because an overlay is drawn at the
+  size of the window under it. A 9×3 sheet on a 9×6 menu lands nowhere near
+  right. `ScreenType.fromToken("chest_9x3")` takes the same token the panel
+  shows, if you're reading it out of a config.
+</Callout>
+
+## Draw a HUD overlay
+
+A [HUD overlay](/hud) is the same trick, drawn over the world instead of over
+a window.
+
+```java
+rpai.hud().draw(player, glyphs, HudSlot.BOSS_BAR, Duration.ofSeconds(10));
+rpai.hud().clear(player);
+```
+
+Two places to put it:
+
+| Slot | Behaves like |
+| --- | --- |
+| `ACTION_BAR` | Just above the hotbar. The client fades it after a couple of seconds, so a longer duration is redrawn for you |
+| `BOSS_BAR` | Higher up, where nothing competes for the space, and it doesn't fade |
+
+The boss bar is **made invisible** — no colour segments, no progress, no sky
+darkening — so what's left on screen is your art rather than a pink bar with a
+picture on it. One per player, replaced rather than stacked: two calls in a row
+are somebody adjusting what they're looking at, not asking for two meters.
+
+<Callout type="note" title="Meters take a picture, not a number — for now">
+  A pack doesn't yet ship a manifest of its HUD art, so this library can't map
+  `0.35` to the nearest fill step your pack holds; you pick the glyph. When
+  that manifest lands, `show(player, "health", 0.35)` arrives beside this and
+  the call above stays as the low-level form.
+</Callout>
+
+## Play a pack sound
+
+```java
+// At the listener — nothing attenuates it. "Let me hear this."
+rpai.sounds().play(player, "custom.horn.blast");
+
+// At a place in the world — quieter with distance, like any game sound.
+rpai.sounds().playAt(location, "custom.horn.blast", SoundCategory.AMBIENT, 1f, 1f);
+```
+
+`play` is the right shape for a UI noise or a confirmation. `playAt` is the
+right shape for anything that should come from somewhere.
+
+<Callout type="warning" title="Nothing tells you whether they heard it">
+  A client that hasn't downloaded the pack silently plays nothing. There's no
+  way to ask it and no error comes back — `true` here means the packet was
+  sent, not that anybody heard anything. If people report silence, the first
+  question is always whether they've actually taken the pack.
+</Callout>
+
+If you're reading a category out of a config, use `categoryFor` rather than
+`SoundCategory.valueOf`:
+
+```java
+SoundCategory source = rpai.sounds().categoryFor(config.getString("source"));
+if (source == null) { /* it isn't one — say which ones are */ }
+```
+
+Three of vanilla's names are singular where Bukkit's constants are plural
+(`record`/`RECORDS`, `block`/`BLOCKS`, `player`/`PLAYERS`), so `valueOf`
+returns null for exactly the three people type most.
+
+## Apply a skin
+
+```java
+if (rpai.skins().available()) {
+    SkinResult result = rpai.skins().apply(player, value, signature);
+}
+```
+
+| Result | Means |
+| --- | --- |
+| `APPLIED` | On, and visible to everybody including them |
+| `NEEDS_PAPER` | This server is Spigot, which can't change a skin after a player joins |
+| `INVALID` | The value or signature was empty, malformed, or rejected |
+| `FAILED` | They went offline, or the server threw |
+
+<Callout type="note" title="Where the signed pair comes from">
+  A skin isn't a file the client downloads on your terms — it's a `textures`
+  property on the player's profile, and the vanilla client only loads skin
+  images from Mojang's own host. So a link to your own storage renders as
+  nothing however correct your code is. You need a value/signature pair from a
+  service that has already put the pixels on that host; producing one isn't
+  something this API does.
+</Callout>
+
+## Loading pack content yourself
+
+If your plugin ships its own model or emote manifests, or you want to reload
+after writing one:
+
+```java
+rpai.content()
+    .loadModels(ContentSource.resource(this, "rigs.json"))
+    .thenAccept(result -> {
+        if (result.ok()) getLogger().info("Loaded " + result.count() + " models");
+        else getLogger().warning("Didn't load: " + result.error());
+    });
+```
+
+Sources are `file(path)`, `resource(plugin, name)`, `json(string)` and
+`url(uri)`. The reading happens off the main thread and the applying on it, so
+none of this costs you a tick — and the future **never** completes
+exceptionally. A manifest failing to arrive is an ordinary Tuesday, so it comes
+back as a result that says so rather than as an exception you have to remember
+to catch.

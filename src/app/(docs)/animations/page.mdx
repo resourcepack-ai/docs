@@ -120,16 +120,16 @@ same jar your server runs (there's no maven repo for it — drop
 `compileOnly files("libs/resourcepackai.jar")`).
 
 ```java
-ModelAnimations models = Bukkit.getServicesManager().load(ModelAnimations.class);
-if (models == null) return; // plugin isn't installed
+ResourcePackAI rpai = Bukkit.getServicesManager().load(ResourcePackAI.class);
+if (rpai == null) return; // plugin isn't installed
 
-for (ModelPlacement statue : models.placementsNear(altar, 8)) {
+for (Placement statue : rpai.models().near(altar, 8)) {
     statue.play("Wave");
 }
 ```
 
-You get a `ModelPlacement` from a location (`placementsNear`) or straight from
-an entity (`placementOf`) — pass it the entity out of a
+You get a `Placement` from a location (`near`), from a chunk (`in`), or
+straight from an entity (`at`) — pass it the entity out of a
 `PlayerInteractAtEntityEvent` and it resolves the rig that was clicked. From
 there:
 
@@ -143,9 +143,11 @@ there:
 
 Two things worth knowing before you wire it up. **Call it on the main thread**
 — it moves entities, so an async call throws rather than quietly corrupting
-something. And **a rig in an unloaded chunk isn't there**: `placementsNear`
-only finds what's loaded, which is also the only thing anyone could be looking
-at.
+something. And **a rig in an unloaded chunk isn't there**: `near` only finds
+what's loaded, which is also the only thing anyone could be looking at.
+
+Placing models from code, giving out the item that places one, and refusing a
+placement are all on the [Plugin API](/plugin-api/models) pages.
 
 ### Reacting to a player clicking a model
 
@@ -156,9 +158,9 @@ handle you're about to discard:
 @EventHandler(priority = EventPriority.LOWEST)
 public void onUse(PlayerInteractAtEntityEvent event) {
     if (event.getHand() != EquipmentSlot.HAND) return;
-    if (!models.isModel(event.getRightClicked())) return;
+    if (!rpai.models().isModel(event.getRightClicked())) return;
 
-    ModelPlacement rig = models.placementOf(event.getRightClicked()).orElseThrow();
+    Placement rig = rpai.models().at(event.getRightClicked()).orElseThrow();
     rig.play("Open");
 }
 ```
@@ -180,22 +182,27 @@ public void onUse(PlayerInteractAtEntityEvent event) {
 ### Surviving an older plugin version
 
 A `null` check isn't enough on its own. If the server runs a jar from before
-this API existed, merely *resolving* `ModelAnimations` throws
+this API existed, merely *resolving* `ResourcePackAI` throws
 `NoClassDefFoundError` — before your null check runs, and it takes your whole
 `onEnable` with it. Keep every reference to our types in one class you only
 touch after checking:
 
 ```java
-if (Bukkit.getPluginManager().getPlugin("ResourcePackAI") != null
-        && plugin.getDescription().getVersion().compareTo("1.1.1") >= 0) {
+if (Bukkit.getPluginManager().getPlugin("ResourcePackAI") != null) {
     this.rigs = new MyRigHook(this);   // the only class naming our types
 }
 ```
 
-The API arrived in plugin version 1.1.0 and `isModel` in **1.1.1**, which is
-what everything on this page needs. The jar also ships a
-`-sources.jar` beside it, so put that in `libs/` too and your IDE shows the
-documentation for every call above instead of decompiled bytecode.
+The `ResourcePackAI` service arrived in plugin version **2.0.0**. The older
+`ModelAnimations` service is still registered beside it and still works, so a
+plugin written against 1.1.x keeps running — but new code should take
+`ResourcePackAI`, which is where everything since lives. Rather than comparing
+version strings, ask `rpai.supports(Feature.MODELS)` and friends: a feature
+question has an answer that stays true.
+
+The jar ships a `-sources.jar` beside it, so put that in `libs/` too and your
+IDE shows the documentation for every call above instead of decompiled
+bytecode.
 
 <Callout type="note" title="Bedrock players see it too">
   A code-driven animation is the same animation as a triggered one in every

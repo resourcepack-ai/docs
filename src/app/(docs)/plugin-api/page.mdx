@@ -1,0 +1,166 @@
+export const metadata = {
+  title: "Plugin API",
+  description:
+    "Drive models, emotes, screens, HUD overlays and sounds from your own Spigot or Paper plugin — install, first call, and the rules that apply everywhere.",
+};
+
+# Plugin API
+
+Everything the ResourcePack AI plugin does in game, your own plugin can do
+too. Place a statue when a quest completes. Play an emote when somebody wins.
+Open a custom screen. Draw a health meter your pack drew the art for.
+
+This section is for people writing Java. If you just want your pack in game,
+you want [Distribution](/distribution) instead.
+
+<CardGroup>
+  <Card title="Models" href="/plugin-api/models" icon="boxes">
+    Place, remove, animate and react to models in the world.
+  </Card>
+  <Card title="Emotes" href="/plugin-api/emotes" icon="users">
+    Play an emote on a player, or a duet on two.
+  </Card>
+  <Card title="Screens, HUD and sounds" href="/plugin-api/interface" icon="gui">
+    Open a reskinned screen, draw an overlay, play a pack sound.
+  </Card>
+  <Card title="Events" href="/plugin-api/events" icon="plug">
+    Refuse a placement, react to an emote, hear when a pack changes.
+  </Card>
+</CardGroup>
+
+## Installing
+
+The plugin ships the whole API inside it, so a server that runs
+`ResourcePackAI.jar` already has everything. Your plugin only needs to compile
+against it.
+
+<Steps>
+  <Step title="Get the jar">
+    There is no maven repository yet. Download
+    [the jar](https://cdn.resourcepack.ai/resourcepackai.jar) and drop it in
+    your project's `libs/` folder.
+  </Step>
+  <Step title="Depend on it, but don't bundle it">
+    ```groovy
+    dependencies {
+        compileOnly files("libs/resourcepackai.jar")
+    }
+    ```
+
+    `compileOnly` matters. The classes come from the plugin at runtime, and a
+    second copy inside your jar would be a second copy of the engine fighting
+    the first over the same entities.
+  </Step>
+  <Step title="Tell Bukkit the order">
+    In your `plugin.yml`:
+
+    ```yaml
+    softdepend: [ResourcePackAI]
+    ```
+
+    `softdepend`, not `depend` — your plugin should still load on a server
+    that doesn't run ours. The next step is how you handle that.
+  </Step>
+</Steps>
+
+## Your first call
+
+```java
+import ai.resourcepack.api.ResourcePackAI;
+
+public class MyPlugin extends JavaPlugin {
+
+    private ResourcePackAI rpai;
+
+    @Override
+    public void onEnable() {
+        rpai = Bukkit.getServicesManager().load(ResourcePackAI.class);
+        if (rpai == null) {
+            getLogger().info("ResourcePack AI isn't installed — statues are off.");
+            return;
+        }
+
+        for (String model : rpai.models().ids()) {
+            getLogger().info("This server knows how to animate " + model);
+        }
+    }
+}
+```
+
+Two things to copy from that, because both bite people:
+
+- **Load it in `onEnable`, not in your constructor.** Services are registered
+  as plugins enable, and yours may run before ours.
+- **Null means "not installed".** No exception, no crash. Check it once and
+  keep the reference, or check it each time — both are fine, but never assume.
+
+<Callout type="tip" title="Is a feature actually usable?">
+  Being installed isn't the same as being ready. `rpai.supports(Feature.EMOTES)`
+  answers whether this server has emote data *and* a rig for somebody to wear;
+  `Feature.SKINS` is false on Spigot, which can't change a skin after a player
+  joins. Ask before offering something in your own menu.
+</Callout>
+
+## The shape of everything
+
+The API is deliberately repetitive. Learn one service and you know the rest.
+
+| You want | You call | You get |
+| --- | --- | --- |
+| Everything of a kind | `ids()` | `List<String>` |
+| Details of one | `info(id)` | `Optional<…Info>` |
+| Do a thing that can fail | `play(…)`, `draw(…)` | `boolean` |
+| Do a thing that returns something | `place(…)`, `open(…)` | `Optional<…>` |
+| Do a thing that can fail *several ways* | `emotes().play(…)` | a result with a reason |
+
+And the rules that hold everywhere:
+
+- **Nothing returns `null`.** Empty lists, `Optional.empty()`, `false`.
+- **Nothing throws because you passed `null`.** A model id read out of a
+  config that turned out to be missing gives you `Optional.empty()`, not a
+  stack trace in your console.
+- **Whoever the action is about comes first.** `play(player, …)`,
+  `draw(viewer, …)`, `place(location, …)`.
+- **Optional arguments come last, as an options object.**
+  `PlaceOptions.defaults().scale(2f)` — build it by chaining, in any order.
+
+## Threading
+
+Anything that touches a player, an entity or the world **must be on the main
+thread**. It throws `IllegalStateException` if it isn't, rather than letting
+Bukkit corrupt something quietly hours later.
+
+Asking what the server *holds* is safe from anywhere — `ids()`, `info()`,
+`animationsOf()`, `isAnimated()` and everything on `content()` read
+thread-safe state. So you can build a menu on an async task and only hop back
+when you act on it:
+
+```java
+Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+    List<String> models = rpai.models().ids();          // fine off-thread
+
+    Bukkit.getScheduler().runTask(this, () -> {
+        rpai.models().place(spot, models.get(0), PlaceOptions.defaults());
+    });
+});
+```
+
+## What's supported, and what isn't
+
+Two packages, and the difference matters if you don't want your plugin to
+break on an update:
+
+- **`ai.resourcepack.api`** — everything on this page and the four beside it.
+  It follows semver: nothing here breaks without a major version bump.
+- **`ai.resourcepack.core`** — the implementation. It changes whenever we like,
+  including in a patch release. If your IDE autocompletes something from here,
+  you've gone too far.
+
+<Callout type="note" title="Building a plugin without ours installed">
+  The engine can also be embedded directly in your own plugin — shaded in,
+  driven by `RpaiLibrary.builder(this)`, with your own pack content and no
+  ResourcePack AI plugin on the server at all. Everything on these pages works
+  the same way once you have it; the difference is only where the classes come
+  from. Ask in [Discord](https://resourcepack.ai/discord) if that's what you're
+  building and we'll walk you through it.
+</Callout>
