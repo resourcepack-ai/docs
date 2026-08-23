@@ -6,13 +6,32 @@ export const metadata = {
 
 # Plugin API
 
-Everything the [ResourcePack AI plugin](/testing/plugin) does in game, your own
-plugin can do too. Place a statue when a quest completes. Play an emote when
-somebody wins. Open a custom screen. Draw a health meter your pack drew the art
-for.
+The [plugin](/testing/plugin) connects your pack to the Studio: a player runs
+`/link`, you press Sync, and models animate and emotes play. What it can't know
+is what any of that means on *your* server — when a statue should appear, who
+has earned an emote, what a screen is for.
 
-This section is for people writing Java or Kotlin. If you just want your pack
-in game, you want [Distribution](/distribution) instead.
+That's what this API is. It hands the whole engine to your own plugin, so the
+things a pack can do stop being commands somebody types and become part of how
+your server actually works:
+
+- A quest completes, and the statue you generated **places itself** at the
+  shrine.
+- A player wins a duel, and their character **takes a bow** in front of the
+  crowd.
+- Somebody clicks a model you made, and **your shop opens** with your GUI art
+  drawn over it.
+- A boss loses health, and the meter you drew **updates on everyone's screen**.
+
+Without it, a pack is art the server hands out. With it, the art is something
+your server can react to and drive.
+
+<Callout type="note" title="It's the same engine either way">
+  These calls are exactly the ones the plugin makes for its own commands —
+  `/emote`, `/gui`, `/hud` and the rest are thin wrappers over what's on these
+  pages. Nothing here is a limited version of anything, and nothing the plugin
+  does is off-limits to you.
+</Callout>
 
 ## Installing
 
