@@ -40,30 +40,39 @@ The plugin ships the whole API inside it, so a server that runs
 against it.
 
 <Steps>
-  <Step title="Get the jar">
-    There is no maven repository yet. Download
-    [the jar](https://cdn.resourcepack.ai/resourcepackai.jar) and drop it in
-    your project's `libs/` folder. Grab the `-sources.jar` beside it too and
-    your IDE will show the documentation for every call instead of decompiled
-    bytecode.
-  </Step>
-  <Step title="Depend on it, but don't bundle it">
+  <Step title="Add the repository and the dependency">
     <CodeTabs labels={["Groovy", "Kotlin"]}>
     ```groovy
+    repositories {
+        maven { url = 'https://repo.resourcepack.ai' }
+    }
+
     dependencies {
-        compileOnly files("libs/resourcepackai.jar")
+        compileOnly 'ai.resourcepack:library:2.0.0'
     }
     ```
     ```kotlin
+    repositories {
+        maven("https://repo.resourcepack.ai")
+    }
+
     dependencies {
-        compileOnly(files("libs/resourcepackai.jar"))
+        compileOnly("ai.resourcepack:library:2.0.0")
     }
     ```
     </CodeTabs>
 
+    Sources and javadoc are published beside the jar, so your IDE shows the
+    documentation for every call rather than decompiled bytecode.
+
     `compileOnly` matters. The classes come from the plugin at runtime, and a
     second copy inside your jar would be a second copy of the engine fighting
     the first over the same entities.
+
+    Not using a build tool? Download [the plugin
+    jar](https://cdn.resourcepack.ai/resourcepackai.jar), drop it in a `libs/`
+    folder and use `compileOnly files("libs/resourcepackai.jar")` instead — it
+    contains the whole API.
   </Step>
   <Step title="Tell Bukkit the order">
     In your `plugin.yml`:

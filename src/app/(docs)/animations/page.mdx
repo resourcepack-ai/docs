@@ -114,10 +114,9 @@ and nothing else can reach it. That's a reasonable way to build: give the
 animations you drive from code no triggers, and they'll never fire by accident
 when somebody clicks.
 
-Add `softdepend: [ResourcePackAI]` to your `plugin.yml`, and build against the
-same jar your server runs (there's no maven repo for it — drop
-[the jar](https://cdn.resourcepack.ai/resourcepackai.jar) in `libs/` and use
-`compileOnly files("libs/resourcepackai.jar")`).
+Add `softdepend: [ResourcePackAI]` to your `plugin.yml`, and compile against
+`ai.resourcepack:library` from `https://repo.resourcepack.ai` — see
+[Plugin API](/plugin-api) for the four lines of build config.
 
 ```java
 ResourcePackAI rpai = Bukkit.getServicesManager().load(ResourcePackAI.class);
