@@ -1,5 +1,12 @@
 # What this is
 
+> This directory is mirrored to a public repository,
+> [docs](https://github.com/resourcepack-ai/docs). Its canonical home is
+> the private monorepo, where the sibling directories referred to below
+> actually exist; in a standalone clone those references are context rather
+> than paths you can open. Nothing here is secret — write it as though a
+> stranger will read it, because one will.
+
 The product documentation site, served at **resourcepack.ai/docs**. Next.js +
 MDX on Cloudflare Workers, same shape as `../landing`: no auth, no database,
 no secrets, no bindings at all — every page is prerendered static content.
