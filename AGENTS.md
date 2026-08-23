@@ -1,19 +1,11 @@
 # What this is
 
-> This directory is mirrored to a public repository,
-> [docs](https://github.com/resourcepack-ai/docs). Its canonical home is
-> the private monorepo, where the sibling directories referred to below
-> actually exist; in a standalone clone those references are context rather
-> than paths you can open. Nothing here is secret — write it as though a
-> stranger will read it, because one will.
-
 The product documentation site, served at **resourcepack.ai/docs**. Next.js +
-MDX on Cloudflare Workers, same shape as `../landing`: no auth, no database,
-no secrets, no bindings at all — every page is prerendered static content.
+MDX on Cloudflare Workers: no auth, no database, no secrets, no bindings at
+all — every page is prerendered static content.
 
-It documents `studio`, both plugins and the test server, but has **no code
-dependency on any of them**. Nothing here imports from a sibling directory.
-When behaviour in `studio` or `user-plugin` changes in a way a user would
+It documents the studio, both plugins and the test server, but has **no code
+dependency on any of them**. When behaviour changes in a way a user would
 notice, the matching page here needs updating by hand — nothing will warn you.
 
 # Setup
@@ -27,13 +19,13 @@ That's the whole thing. No `.env`, no `wrangler d1 migrations apply`, no
 `cf:typegen` (there are no bindings to generate types for — if you ever add
 one, add the `cf:typegen` step back to this list).
 
-Port 3001, not 3000, so it can run alongside `studio` or `landing`.
+Port 3001, not 3000, so it can run alongside the app itself.
 
 # Working on this repo
 
 ```bash
 npx tsc --noEmit        # typecheck
-npm run lint            # eslint — the react-hooks rules are strict, as in studio
+npm run lint            # eslint — the react-hooks rules are strict
 ```
 
 Both are cheap; run them before considering a change done. `npm run build` is
@@ -62,7 +54,7 @@ instance. Kill the first.
 
 ## The build must be Turbopack — do NOT add `--webpack`
 
-`landing` and `studio` both build with `next build --webpack`. This app
+Our other two Next.js apps build with `next build --webpack`. This app
 **can't**, and the failure is not obvious:
 
 ```
@@ -77,8 +69,8 @@ bisected — it's not our `mdx-components.tsx`, and it's not `@mdx-js/react`).
 which is why `package.json`'s `build` script is a bare `next build`.
 
 OpenNext shells out to `npm run build`, so the Cloudflare deploy inherits
-this automatically. If someone "fixes" the inconsistency with the sibling apps
-by adding `--webpack`, every deploy breaks.
+this automatically. If someone "fixes" the inconsistency with those apps by
+adding `--webpack`, every deploy breaks.
 
 ## `@opennextjs/cloudflare` is patched for Windows builds
 
@@ -110,8 +102,8 @@ Building in WSL avoids the whole problem, if you'd rather do that.
 ## `@opennextjs/cloudflare` is pinned exactly
 
 `1.20.1`, not a caret range. `1.20.2` tightened its peer dependency to
-`next >=16.2.11` and won't install against the `next@16.2.9` all three
-Next apps in this repo are on. Bump it when studio and landing move.
+`next >=16.2.11` and won't install against `next@16.2.9`, which is what this
+app is on. Bump it when the app moves.
 
 # Content pipeline
 
@@ -119,38 +111,34 @@ A page is `src/app/(docs)/<path>/page.mdx`, routed by folder like any other
 Next page. There's no CMS and no runtime markdown compilation — MDX is
 compiled at build time by `@next/mdx`.
 
-**Adding a page is three steps, and none of them is optional:**
+**Adding a page is two steps, and neither is optional:**
 
 1. create `src/app/(docs)/<path>/page.mdx` with a `metadata` export and an `h1`
 2. add an entry to `src/lib/nav.ts`
-3. add the same page to `../landing/src/app/llms.txt/route.ts`
-4. run `npm run gen:llms-full`, which rebuilds
-   `../landing/public/llms-full.txt` from the MDX and the API spec
 
 **The API Reference is a different tree.** `/api-reference` and everything
 under it is a separate top-level section with its own sidebar
-(`src/lib/api-nav.ts`), generated from `src/openapi.json` — which studio writes
-(`npm run gen:openapi` there) and which `npm run check:openapi` keeps honest.
-Endpoint pages have no MDX and adding an endpoint needs nothing here; the
-prose pages beside them (`(api)/api-reference/(guides)/`) follow steps 1, 3 and
-4 above, but list themselves in `api-nav.ts` rather than `nav.ts`. The spec is
-also published at `/docs/openapi.json`.
+(`src/lib/api-nav.ts`), generated from `src/openapi.json`, which the app itself
+emits — endpoint pages have no MDX and adding an endpoint needs nothing here,
+and a wrong description is fixed upstream rather than in this repo. The prose
+pages beside them (`(api)/api-reference/(guides)/`) are ordinary MDX but list
+themselves in `api-nav.ts` rather than `nav.ts`. The spec is also published at
+`/docs/openapi.json`.
 
 `nav.ts` is the single source of truth for the sidebar, the ⌘K search index,
 the prev/next pager and the group label above each page title. A page that
 exists but isn't listed is reachable by URL and invisible everywhere else.
 
-Step 3 is in **another app**, which is why it's written down here rather than
-being obvious: `landing` serves `/llms.txt`, the llmstxt.org file that tells an
-assistant which of our URLs are worth reading, and its link list is a hand-kept
-mirror of `nav.ts`. It has to live there because the convention is only
-recognised at the root of a host and this app is a path route under landing's
-apex — the same reason there's no `robots.ts` here. **Any change to what routes
-exist belongs in that file**: a new page, a renamed segment, a deleted one. The
-whole point of the file is being trustworthy about which links resolve, and a
-crawler that finds a 404 there has no way to tell us. Prose descriptions in it
-don't have to match `nav.ts` word for word — it's written for a model reading
-the file cold, not for our sidebar — but the URLs and the set of pages do.
+A new or renamed page also has to be reflected in `/llms.txt` and
+`/llms-full.txt`, the llmstxt.org files that tell an assistant which of our
+URLs are worth reading. Those are served from the root of resourcepack.ai
+rather than from this app, because the convention is only recognised at the
+root of a host and this app sits at a path under it — the same reason there's
+no `robots.ts` here. `npm run gen:llms-full` regenerates the second of them
+from the MDX and the API spec. **Any change to what routes exist matters
+there**: a new page, a renamed segment, a deleted one. The whole point of those
+files is being trustworthy about which links resolve, and a crawler that finds
+a 404 in one has no way to tell us.
 
 The components a page can use without importing anything — `Callout`, `Card`,
 `CardGroup`, `Steps`, `Step` — are registered in `src/mdx-components.tsx`;
@@ -182,20 +170,19 @@ is for us, not for users.
 - **`eslint.config.mjs` ignores `.open-next/**` and `.wrangler/**`**, which
   `eslint-config-next` does not. Without those two lines `npm run lint` is
   clean until the first Cloudflare build, then reports ~7000 problems in
-  bundled Next server code. (`landing` and `studio` have the same gap.)
+  bundled Next server code.
 
 # Design
 
-Dark-only, like studio (`<html>` is permanently `.dark`). There's no theme
-toggle rather than a half-built one.
+Dark-only, like the app itself (`<html>` is permanently `.dark`). There's no
+theme toggle rather than a half-built one.
 
-`src/app/globals.css` **duplicates studio's design tokens** — same warm-dark
+`src/app/globals.css` **duplicates the app's design tokens** — same warm-dark
 surfaces (`#1b1b18` family), same `--primary: #4d8dff`, same
 `--brand-ai-blue: #3670f8` for the `.ai` in the wordmark, same Onest +
-IBM Plex Mono pairing. As with `landing`, this is a real copy and not a shared
-package: if studio's palette moves, move these too, because nothing will warn
-you. It's a trimmed copy — only the tokens this site uses, none of studio's
-animation keyframes.
+IBM Plex Mono pairing. It is a real copy rather than a shared package, and a
+trimmed one: only the tokens this site uses. If the palette moves, it moves
+here too, because nothing will warn you.
 
 No `@tailwindcss/typography`. Prose styling lives in `mdx-components.tsx`
 against our own tokens; `prose` classes are a stranger's design system and
@@ -203,58 +190,33 @@ fight them.
 
 # Deployment
 
-Preferred: from the repo root, `npm run deploy -- docs prod` (see
-`../AGENTS.md`). Same `opennextjs-cloudflare` shape as landing and studio.
-
-No staging environment, same reasoning as `landing`: nothing here is
-auth-gated or data-touching, so there's nothing to stage. `wrangler.jsonc` has
-no `env.staging` block — don't add one without a real reason.
+Cloudflare Workers via `opennextjs-cloudflare`, straight to production: nothing
+here is auth-gated or data-touching, so there is nothing to stage.
+`wrangler.jsonc` has no `env.staging` block — don't add one without a real
+reason.
 
 ## This app lives under a basePath
 
 `next.config.ts` sets `basePath: "/docs"`, because the public address is
-resourcepack.ai/docs rather than a subdomain of its own — a subdirectory so
-the docs' search authority lands on the domain that sells something. It is
-still a wholly separate Worker with its own deploy; `landing` has no idea
-this exists.
-
-The mechanism is a Cloudflare **path route**, `resourcepack.ai/docs*`, and
-the thing that makes it safe is that Cloudflare runs a route *before* a
-Custom Domain on the same hostname. So `landing` keeps its custom domain on
-the apex, unchanged and unreleased — there is **no** release-then-claim
-ordering here, unlike the landing/studio handover. Deploy this app whenever;
-nothing else needs redeploying with it.
+resourcepack.ai/docs rather than a subdomain of its own — a subdirectory so the
+docs' search authority lands on the domain that sells something. It is still a
+wholly separate Worker with its own deploy, and the marketing site on the apex
+has no idea it exists.
 
 What that costs you when working here:
 
-- **`zone_name` is mandatory** on the path route in `wrangler.jsonc`. A path
-  route can't infer its zone the way a custom domain does.
 - **`next/link` hrefs and `_next` assets get the prefix for free**, which is
   why nothing in `nav.ts` or the `.mdx` Cards changed. Nothing else does —
   **including `next/image`'s `src`**, which is emitted verbatim. This bit
   twice, in the metadata favicon and the header mark, both of which asked
-  for `/logo.svg` and so resolved against *landing's* Worker. Landing serves
-  a byte-identical logo, so both looked correct in production while pointing
-  at the wrong app; the only symptom was a 404 per page load in local dev,
-  where nothing serves the apex.
+  for `/logo.svg` and so resolved against the marketing site instead. That
+  site serves a byte-identical logo, so both looked correct in production
+  while pointing at the wrong app; the only symptom was a 404 per page load
+  in local dev, where nothing serves the apex.
   Use `asset()` from `src/lib/base-path.ts` for any literal path, and build
   absolute URLs (`sitemap.ts`, `metadataBase`) from its `BASE_PATH` rather
   than typing `/docs` again.
 - **There is no `robots.ts` here, on purpose.** A robots.txt is only honoured
-  at the root of a host and this app no longer owns one; `landing`'s
-  `robots.ts` lists this app's sitemap. If the docs move again, that line
-  moves too. **`/llms.txt` is over there for the same reason** and links to
-  every page here by hand — see step 3 of adding a page, above; if the docs
-  move, its URLs all move with them.
-
-**`docs.resourcepack.ai` is gone**, and isn't coming back. It was this app's
-original home, kept for a few hours as a permanent redirect before being
-retired outright: the product was still pre-launch (`WAITLIST_MODE`), so
-nothing on the public internet linked to it, and the only references anywhere
-were `server-plugin`'s in-game menu — updated in the same change. A redirect
-preserving zero equity is ceremony. Had this happened after launch the answer
-would have been the opposite, and the redirect would still be here.
-
-The practical consequence: this app has exactly **one** route, and any link
-to the old subdomain is dead rather than redirected. If one turns up in an
-old Discord message, fix the message.
+  at the root of a host and this app doesn't own one; the marketing site's
+  `robots.ts` lists this app's sitemap. `/llms.txt` is over there for the same
+  reason, and links to every page here by hand — see adding a page, above.

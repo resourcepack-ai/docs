@@ -15,9 +15,9 @@ const nextConfig: NextConfig = {
   // .mdx files under src/app are real pages — that's the whole content
   // pipeline here, no CMS and no runtime markdown compilation.
   pageExtensions: ["ts", "tsx", "mdx"],
-  // This app is its own workspace. Without this, Turbopack sees the
-  // monorepo root's package-lock.json alongside ours, picks the root, and
-  // warns on every `npm run dev`.
+  // This app is its own workspace. Without this, Turbopack can see a
+  // package-lock.json in a directory above ours, pick that as the root, and
+  // warn on every `npm run dev`.
   turbopack: { root: import.meta.dirname },
 };
 

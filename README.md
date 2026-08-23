@@ -52,19 +52,13 @@ prose guides beside it are ordinary MDX pages.
 `AGENTS.md` is the full working guide to this app — the content pipeline, the
 things that will bite you, and how it deploys.
 
-## A note on layout
+## Contributing
 
-ResourcePack AI is developed in a private monorepo alongside the app, the
-plugins and the rest of the infrastructure, and this repository is a mirror of
-one directory of it, kept in sync commit for commit. Everything here builds and
-runs on its own, but `AGENTS.md` occasionally refers to a sibling directory
-(`../landing`, `../studio`) that only exists in that monorepo — those
-references are context, not a missing dependency. The one script that reaches
-across, `npm run gen:llms-full`, writes into `../landing` and is ours to run.
+Issues and pull requests are welcome.
 
-Pull requests are merged into the monorepo and flow back out here, so a merged
-change may land as a commit with a different hash. It's still your commit and
-your authorship.
+This repository is a mirror of the directory this code is developed in, so a
+merged pull request comes back here as a commit with a different hash. It is
+still your commit and your authorship.
 
 ## Licence
 
