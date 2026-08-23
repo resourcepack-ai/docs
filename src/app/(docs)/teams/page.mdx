@@ -193,8 +193,9 @@ audit log. A team whose plan has lapsed is never charged.
 
 Admins can point the team's activity at a URL — everything the audit log
 records gets POSTed there as JSON, which is how you get it into Slack, Discord
-or your own tooling. Set it on the team's **Settings** page; the signing secret
-is shown once, when you save the URL, and rotates every time you save a new one.
+or your own tooling. Add them on the team's **Settings** page; a team can have
+several (up to five), each with its own signing secret shown once when you add
+it. Every event is delivered to all of them.
 
 ### The request
 
