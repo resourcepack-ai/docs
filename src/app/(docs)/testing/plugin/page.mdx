@@ -100,26 +100,6 @@ on your server, so nothing it adds reaches a player until you grant it.
 
 `resourcepackai.*` grants all of them at once.
 
-Emotes are content your players are meant to use, so most servers will want at
-least that one open. With LuckPerms:
-
-```
-/lp group default permission set resourcepackai.emote true
-```
-
-Add `resourcepackai.link` and `resourcepackai.party` too if several people on
-your server build packs — a pairing code only ever affects the player who
-claimed it, and a party needs both sides to accept.
-
-<Callout type="warning" title="An ungranted command looks like it does not exist">
-  Minecraft sends each client a command list filtered by permission, so a
-  command a player hasn't been granted doesn't appear to exist for them —
-  they see **"Unknown or incomplete command"** rather than a refusal. That is
-  the client's wording, not ours, and it is worth knowing before you conclude
-  the plugin is broken. Anyone who does reach a refusal is told which node
-  they need.
-</Callout>
-
 ### The three that reach other players
 
 `/gui`, `/hud` and `/sound` all take a target player, so granting them lets
