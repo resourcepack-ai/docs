@@ -93,6 +93,7 @@ on your server, so nothing it adds reaches a player until you grant it.
 | `/party invite\|accept\|deny\|leave\|kick\|list\|disband` | `resourcepackai.party` |
 | `/emote [name]` | `resourcepackai.emote` |
 | `/emote <name> <player…>` | `resourcepackai.emote.multi` |
+| `/emote <name> <player…>`, no prompt | `resourcepackai.emote.force` |
 | `/emotereply <accept\|deny> <token>` | none — see below |
 | `/gui <player> <screen> <escapes>` | `resourcepackai.gui` |
 | `/hud <player> <bar> <escapes> [secs]` | `resourcepackai.hud` |
@@ -118,6 +119,15 @@ include the half that moves other people.
 in chat with **[accept]** and **[deny]** buttons, and the emote runs only once
 all of them have accepted. A deny calls the whole thing off, and so does
 thirty seconds of silence.
+
+**`resourcepackai.emote.force` skips the asking.** A player holding it starts a
+cast emote the moment they run it, with no prompt and no wait — it's for staff
+setting up a shot, or for testing a duet on your own second account, and it is
+operators-only like everything else. It is deliberately not a child of
+`resourcepackai.emote.multi`: holding that one is being allowed to ask, holding
+this one is not having to. Everything else still applies — the players named
+are still checked for being online, free and standing somewhere the emote can
+run, and the emote is still refused if they aren't.
 
 Answering is `/emotereply`, which the buttons run for you. It is **the one
 command here that needs no permission**, on purpose: it answers a question
