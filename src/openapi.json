@@ -296,7 +296,7 @@
       "post": {
         "operationId": "createPack",
         "summary": "Create a pack",
-        "description": "The slug is derived from the name and made unique — read it from the response rather than predicting it, because a second pack of the same name doesn't get the slug you'd guess.\n\nJSON only. The Studio's own create dialog is multipart because it also accepts a banner image, which has no business being the shape of the API's simplest call.",
+        "description": "The slug is derived from the name and made unique — read it from the response rather than predicting it, because a second pack of the same name doesn't get the slug you'd guess.\n\nJSON only. The Studio's own create dialog is multipart because it also accepts an icon image, which has no business being the shape of the API's simplest call.",
         "tags": [
           "Packs"
         ],
