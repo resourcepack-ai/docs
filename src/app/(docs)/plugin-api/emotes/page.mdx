@@ -10,8 +10,9 @@ An emote animates the **player** rather than a placed model. Their body is
 replaced with a rig wearing their own skin, they're made invisible for the
 duration, and they're put back exactly where they were afterwards.
 
-Some emotes are **worn** instead — see [Stances](#stances). Those don't end
-when the player moves; that's the whole point of them.
+Some emotes are **worn** instead — see [Stances](#stances) and [Movement
+groups](#movement-groups). Those don't end when the player moves; that's the
+whole point of them.
 
 Everything here needs `rpai` — see [Plugin API](/plugin-api) for how to get it.
 
@@ -161,11 +162,17 @@ if (emote != null && emote.isWorn()) {
 | Position afterwards | Put back where they started | Left where they walked to |
 | Can have a cast | Yes | No |
 
-There are four states — `IDLE`, `WALK`, `SPRINT` and `SNEAK` — and **exactly
-one holds at a time**: sneaking wins over sprinting and sprinting over
-walking, so a crouch-walk is `SNEAK` and never also `WALK`. While the player
-is in a state the stance doesn't list, the rig rests on the animation's first
-frame.
+There are five states — `IDLE`, `WALK`, `SPRINT`, `SNEAK` and `JUMP` — and
+**exactly one holds at a time**: being off the ground wins over everything,
+then sneaking over sprinting and sprinting over walking, so a crouch-walk is
+`SNEAK` and never also `WALK`. While the player is in a state the stance
+doesn't list, the rig rests on the animation's first frame.
+
+`JUMP` is opt-in in a way the other four aren't. A stance that doesn't list it
+treats the air as whatever the body is otherwise doing, which is what stances
+did before the state existed — one authored for standing still should keep
+playing while its wearer falls down a shaft, not freeze in mid-air. List it and
+the air becomes a state of its own.
 
 <Callout type="warning" title="A stance is not a hiding place, and doesn't need to be treated as one">
   It doesn't end on damage, which sounds like an invisibility exploit and
@@ -176,12 +183,66 @@ frame.
   every other gameplay rule about emotes belongs.
 </Callout>
 
-## Duets and group emotes
+## Movement groups
+
+A **group** is a set of emotes worn as one thing: one per movement state,
+swapped as the player moves. It's what a stance can't be on its own — a rig has
+one clock, so a walk cycle, a run and a sneak are three stances a player can
+only wear one of at a time, and a group is the character those three add up to.
+
+A state the group leaves alone shows the player's **own** animation: the rig is
+put away and vanilla animates them until they're back in a state the group
+covers. That's how a pack keeps custom walking and running while leaving
+jumping exactly as it was.
+
+Playing one is the same call as playing an emote — it's reached by name through
+`play`, `perform` and `ids()`, and a name is never both:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+```java
+Optional<EmoteInfo> info = rpai.emotes().info("Heavy armour");
+
+info.ifPresent(set -> {
+    if (set.isGroup()) {
+        // set.triggers() is [WALK, SPRINT] — the states it wears something in.
+        // The rest are the player's own animation.
+        rpai.emotes().play(player, "Heavy armour");
+        player.sendMessage("/emote stop to take it off.");
+    }
+});
+```
+```kotlin
+val set = rpai.emotes().info("Heavy armour").orElse(null)
+
+if (set != null && set.isGroup()) {
+    // set.triggers() is [WALK, SPRINT] — the states it wears something in.
+    // The rest are the player's own animation.
+    rpai.emotes().play(player, "Heavy armour")
+    player.sendMessage("/emote stop to take it off.")
+}
+```
+</CodeTabs>
+
+A group behaves as a stance in every way the table above describes, and
+`isWorn()` is true for one. Two things differ, and both follow from it having
+no keyframes of its own: `length()` is `0`, because each member has its own
+length and which one is running depends on what the wearer is doing; and its
+members are ordinary emotes that stay playable by name, editable, and usable by
+a second group.
+
+<Callout type="note" title="Nothing here is a new call">
+  If your plugin already plays emotes by name, it already plays groups. Ask
+  `isGroup()` only where the difference shows — a menu printing a duration, or
+  anything reasoning about the animation behind a name.
+</Callout>
+
+## Duets and casts
 
 Some emotes are authored for more than one person — a handshake, a high five.
 They can't be played alone, and the cast has to be exactly the size the emote
-expects. A cast emote is never a stance: a performer is placed relative to a
-lead who's standing still, and a stance walks off.
+expects. A cast emote is never a stance and is never a group's member: a
+performer is placed relative to a lead who's standing still, and both of those
+walk off.
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 ```java
