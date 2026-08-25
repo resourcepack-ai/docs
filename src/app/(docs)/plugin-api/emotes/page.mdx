@@ -162,17 +162,26 @@ if (emote != null && emote.isWorn()) {
 | Position afterwards | Put back where they started | Left where they walked to |
 | Can have a cast | Yes | No |
 
-There are six states — `IDLE`, `WALK`, `SPRINT`, `SNEAK_IDLE`, `SNEAK_MOVE`
-and `JUMP` — and **exactly one holds at a time**: being off the ground wins
-over everything, then crouching over sprinting and sprinting over walking, so a
-crouch-walk is `SNEAK_MOVE` and never also `WALK`. While the player is in a
-state the stance doesn't list, the rig rests on the animation's first frame.
+There are seven states — `IDLE`, `WALK`, `SPRINT`, `SNEAK_IDLE`, `SNEAK_MOVE`,
+`JUMP` and `SWING` — and **exactly one holds at a time**: a swing wins over
+everything, then being off the ground, then crouching over sprinting and
+sprinting over walking, so a crouch-walk is `SNEAK_MOVE` and never also `WALK`.
+While the player is in a state the stance doesn't list, the rig rests on the
+animation's first frame.
 
-`JUMP` is opt-in in a way the first four aren't. A stance that doesn't list it
-treats the air as whatever the body is otherwise doing, which is what stances
-did before the state existed — one authored for standing still should keep
-playing while its wearer falls down a shaft, not freeze in mid-air. List it and
-the air becomes a state of its own.
+`SWING` is the odd one: every other state is a posture the player is holding,
+and a swing is something they **did** — an attack, a mined block, a left click
+at the air. So it wins over whatever they were doing, and it plays for its own
+length (capped at two seconds) rather than until the body changes. Swinging
+again while it's still playing starts it over, the way a real swing does.
+
+`JUMP` and `SWING` are both opt-in, and `SWING` is opt-in even for a group —
+which `JUMP` isn't. A stance that doesn't list `JUMP` treats the air as whatever
+the body is otherwise doing, which is what stances did before the state existed;
+a group always answers the air, because "the player's own animation" is one of
+its answers. Nothing resolves `SWING` unless it's named, because nobody wearing
+a set that says nothing about swinging expects their rig to vanish every time
+they hit something.
 
 `SNEAK` is a seventh constant that nothing ever resolves to. Crouching used to
 be one state covering both standing still and crouch-walking; the two are
