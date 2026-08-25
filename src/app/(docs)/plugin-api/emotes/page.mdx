@@ -162,17 +162,24 @@ if (emote != null && emote.isWorn()) {
 | Position afterwards | Put back where they started | Left where they walked to |
 | Can have a cast | Yes | No |
 
-There are five states — `IDLE`, `WALK`, `SPRINT`, `SNEAK` and `JUMP` — and
-**exactly one holds at a time**: being off the ground wins over everything,
-then sneaking over sprinting and sprinting over walking, so a crouch-walk is
-`SNEAK` and never also `WALK`. While the player is in a state the stance
-doesn't list, the rig rests on the animation's first frame.
+There are six states — `IDLE`, `WALK`, `SPRINT`, `SNEAK_IDLE`, `SNEAK_MOVE`
+and `JUMP` — and **exactly one holds at a time**: being off the ground wins
+over everything, then crouching over sprinting and sprinting over walking, so a
+crouch-walk is `SNEAK_MOVE` and never also `WALK`. While the player is in a
+state the stance doesn't list, the rig rests on the animation's first frame.
 
-`JUMP` is opt-in in a way the other four aren't. A stance that doesn't list it
+`JUMP` is opt-in in a way the first four aren't. A stance that doesn't list it
 treats the air as whatever the body is otherwise doing, which is what stances
 did before the state existed — one authored for standing still should keep
 playing while its wearer falls down a shaft, not freeze in mid-air. List it and
 the air becomes a state of its own.
+
+`SNEAK` is a seventh constant that nothing ever resolves to. Crouching used to
+be one state covering both standing still and crouch-walking; the two are
+separate now, and the old name is kept as an umbrella a resolved state falls
+back to. So a pack built before the split goes on wearing its one crouch emote
+in both, and a stance or a group that lists `SNEAK_IDLE` or `SNEAK_MOVE` means
+that one exactly.
 
 <Callout type="warning" title="A stance is not a hiding place, and doesn't need to be treated as one">
   It doesn't end on damage, which sounds like an invisibility exploit and
@@ -187,7 +194,7 @@ the air becomes a state of its own.
 
 A **group** is a set of emotes worn as one thing: one per movement state,
 swapped as the player moves. It's what a stance can't be on its own — a rig has
-one clock, so a walk cycle, a run and a sneak are three stances a player can
+one clock, so a walk cycle, a run and a crouch are three stances a player can
 only wear one of at a time, and a group is the character those three add up to.
 
 A state the group leaves alone shows the player's **own** animation: the rig is
