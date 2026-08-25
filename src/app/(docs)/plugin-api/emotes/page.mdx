@@ -10,6 +10,9 @@ An emote animates the **player** rather than a placed model. Their body is
 replaced with a rig wearing their own skin, they're made invisible for the
 duration, and they're put back exactly where they were afterwards.
 
+Some emotes are **worn** instead — see [Stances](#stances). Those don't end
+when the player moves; that's the whole point of them.
+
 Everything here needs `rpai` — see [Plugin API](/plugin-api) for how to get it.
 
 ## Play one
@@ -115,11 +118,70 @@ if (!rpai.emotes().canPerform(player)) {
   find out before you build them a menu they can't use.
 </Callout>
 
+## Stances
+
+A **stance** is an emote a player puts on and keeps on. They stay in whatever
+game mode they were already in and carry on playing — walking, jumping,
+fighting — with the rig carried along on top of them, and the animation runs
+only while they're in one of the movement states the pack author picked.
+
+Ask `EmoteInfo` which kind you're holding:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+```java
+Optional<EmoteInfo> info = rpai.emotes().info("Swagger");
+
+info.ifPresent(emote -> {
+    if (emote.isWorn()) {
+        // emote.triggers() is [WALK, SPRINT] — when it animates
+        rpai.emotes().play(player, "Swagger");
+        player.sendMessage("/emote stop to take it off.");
+    }
+});
+```
+```kotlin
+val emote = rpai.emotes().info("Swagger").orElse(null)
+
+if (emote != null && emote.isWorn()) {
+    // emote.triggers() is [WALK, SPRINT] — when it animates
+    rpai.emotes().play(player, "Swagger")
+    player.sendMessage("/emote stop to take it off.")
+}
+```
+</CodeTabs>
+
+`play` is the same call either way. What changes is what happens next:
+
+| | An emote | A stance |
+|---|---|---|
+| Ends when they move | Yes | No |
+| Ends when they're hit | Yes | No |
+| Ends when they die | Yes | Yes |
+| Game mode | Untouched | Untouched |
+| Position afterwards | Put back where they started | Left where they walked to |
+| Can have a cast | Yes | No |
+
+There are four states — `IDLE`, `WALK`, `SPRINT` and `SNEAK` — and **exactly
+one holds at a time**: sneaking wins over sprinting and sprinting over
+walking, so a crouch-walk is `SNEAK` and never also `WALK`. While the player
+is in a state the stance doesn't list, the rig rests on the animation's first
+frame.
+
+<Callout type="warning" title="A stance is not a hiding place, and doesn't need to be treated as one">
+  It doesn't end on damage, which sounds like an invisibility exploit and
+  isn't: the rig stands exactly where the body stands and follows it
+  everywhere, so a player wearing one is as visible as a player who isn't. If
+  your server still wants a rule about it — no stances in an arena, none
+  during a duel — cancel `EmoteStartEvent` on your own terms, the same place
+  every other gameplay rule about emotes belongs.
+</Callout>
+
 ## Duets and group emotes
 
 Some emotes are authored for more than one person — a handshake, a high five.
 They can't be played alone, and the cast has to be exactly the size the emote
-expects.
+expects. A cast emote is never a stance: a performer is placed relative to a
+lead who's standing still, and a stance walks off.
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 ```java
