@@ -308,8 +308,22 @@ export const nav: NavGroup[] = [
       {
         title: "Emotes from code",
         href: "/plugin-api/emotes",
-        description: "Play an emote or a duet, and tell a player why one was refused.",
-        keywords: ["emote", "duet", "cast", "perform", "EmoteResult", "canPerform"],
+        description:
+          "Play an emote, a duet or a worn stance, and tell a player why one was refused.",
+        keywords: [
+          "emote",
+          "duet",
+          "cast",
+          "perform",
+          "stance",
+          "worn",
+          "walk",
+          "sprint",
+          "sneak",
+          "EmoteResult",
+          "EmoteTrigger",
+          "canPerform",
+        ],
       },
       {
         title: "Screens, HUD and sounds",
