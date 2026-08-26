@@ -46,6 +46,18 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
+              // Next's App Router streams its RSC payload in an inline script,
+              // so this is not a constraint on script — see studio's file. It
+              // is written out because OMITTING it is what silently bound it
+              // to `default-src 'self'` and left every page an unhydrated
+              // shell. Every fetch directive below is named for that reason.
+              "script-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https:",
+              "font-src 'self' data: https:",
+              "connect-src 'self' https:",
+              "media-src 'self' data: blob: https:",
+              "worker-src 'self' blob:",
               "object-src 'none'",
               "base-uri 'none'",
               "form-action 'self'",
