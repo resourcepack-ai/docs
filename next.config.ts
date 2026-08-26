@@ -19,6 +19,53 @@ const nextConfig: NextConfig = {
   // package-lock.json in a directory above ours, pick that as the root, and
   // warn on every `npm run dev`.
   turbopack: { root: import.meta.dirname },
+
+  /**
+   * Security response headers.
+   *
+   * The same set studio sends from its Worker (see
+   * ../studio/src/lib/security-headers.ts, which has the reasoning) — this app
+   * has no custom worker branch to hang them off, so they go through Next's own
+   * `headers()`.
+   *
+   * `frame-ancestors 'none'` is the one that matters most here: the docs sit on the apex
+   * under /docs, sharing an origin with the marketing site.
+   *
+   * **A strict `script-src` is deliberately absent.** It needs per-request
+   * nonces, which need middleware, which the Cloudflare adapter can't run —
+   * adding `'unsafe-inline'` instead would be a policy that looks like
+   * protection and blocks nothing. What is here are the directives that work
+   * without a nonce and still constrain what injected script could reach.
+   */
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "object-src 'none'",
+              "base-uri 'none'",
+              "form-action 'self'",
+              "frame-ancestors 'none'",
+            ].join("; "),
+          },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()",
+          },
+          // No `preload` — see studio's note. That is a browser-vendor list
+          // submission, and it is slow to leave.
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+        ],
+      },
+    ];
+  },
 };
 
 const withMDX = createMDX({
