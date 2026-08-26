@@ -114,16 +114,16 @@ and nothing else can reach it. That's a reasonable way to build: give the
 animations you drive from code no triggers, and they'll never fire by accident
 when somebody clicks.
 
-Add `softdepend: [ResourcePackAI]` to your `plugin.yml`, and compile against
-`ai.resourcepack:library` from `https://repo.resourcepack.ai` — the
-[library's README](https://github.com/resourcepack-ai/plugin-library) has the
-four lines of build config.
+Add `softdepend: [RPEngine]` to your `plugin.yml` so you load after it, and
+take the plugin off Bukkit — see
+[For plugin developers](/rp-engine/api) for the rest of the surface.
 
 ```java
-ResourcePackAI rpai = Bukkit.getServicesManager().load(ResourcePackAI.class);
-if (rpai == null) return; // plugin isn't installed
+RPEnginePlugin engine =
+    (RPEnginePlugin) Bukkit.getPluginManager().getPlugin("RPEngine");
+if (engine == null) return; // plugin isn't installed
 
-for (Placement statue : rpai.models().near(altar, 8)) {
+for (Placement statue : engine.models().near(altar, 8)) {
     statue.play("Wave");
 }
 ```
@@ -147,8 +147,7 @@ something. And **a rig in an unloaded chunk isn't there**: `near` only finds
 what's loaded, which is also the only thing anyone could be looking at.
 
 Placing models from code, giving out the item that places one, and refusing a
-placement are all in the
-[library's README](https://github.com/resourcepack-ai/plugin-library).
+placement are all on [For plugin developers](/rp-engine/api).
 
 ### Reacting to a player clicking a model
 
