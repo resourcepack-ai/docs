@@ -13,8 +13,6 @@ plugins/RPEngine/content/
   mypack/
     pack.yml               required
     items/       *.yml
-    models/      *.yml
-    emotes/      *.yml
     sounds/      *.yml
     fonts/       *.yml
     screens/     *.yml
@@ -36,7 +34,13 @@ folder called `MyPack` is refused rather than lowercased, because `MyPack` and
 
 **The category folder decides the kind.** Top-level keys in a file are id
 paths, so nesting under an `items:` key would say the same thing twice. One
-file may declare many; the file name means nothing.
+file may declare many; the file name means nothing, and subfolders are
+organisation only — `items/weapons/swords.yml` contributes nothing to the id.
+
+**A folder exists only if something reads it.** There is no `models/` — a
+placed model is a `place:` block on the item — no `blocks/`, and no `emotes/`
+yet. Any other folder is warned about by name, which is what catches `item/`
+and `Sounds/`.
 
 **Errors are collected, never thrown.** A bad definition is skipped and the
 rest of the pack loads; a bad pack never stops another one. You get every
@@ -57,6 +61,9 @@ ruby:
   unbreakable: true
   armor: head              # head | chest | legs | feet
   permission: mypack.ruby  # checked when USED, not when held
+  place:                   # makes it placeable. See Models
+    facing: cardinal
+    seat: 0.6
 ```
 
 **Models live in `assets/models/`** and either form works: the Blockbench
@@ -65,9 +72,14 @@ ruby:
 it, so a model is one file you can hand to somebody.
 
 **Armour uses the vanilla equipment path**, so any item can be worn with its own
-art. Ship the texture at
-`assets/textures/entity/equipment/humanoid/<id>.png`, and for `legs` a second
-one under `humanoid_leggings/`.
+art. Ship one texture:
+
+- `armor: legs` → `assets/textures/entity/equipment/humanoid_leggings/<id>.png`
+- anything else → `assets/textures/entity/equipment/humanoid/<id>.png`
+
+Leggings are a different layer, not a second one — the game draws them at their
+own narrower proportions, which is why a belt buckle drawn on the wide sheet
+would end up on somebody's knee.
 
 ## Sounds
 
