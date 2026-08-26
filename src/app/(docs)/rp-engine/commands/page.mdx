@@ -1,0 +1,101 @@
+export const metadata = {
+  title: "Commands and permissions",
+  description:
+    "Every RP Engine command, what it needs, and how the permission nodes are laid out.",
+};
+
+# Commands and permissions
+
+One command, `/rpengine`, with `/rpe` and `/rp` as aliases — plus `/emote` and
+`/emotereply` for players.
+
+**Everything tab-completes**, at every argument. A subcommand you cannot run is
+not offered, because completing a command that then refuses is worse than not
+completing it.
+
+## Content
+
+| Command | What it does |
+|---|---|
+| `/rp reload` | Reread the content folder and rebuild every pack |
+| `/rp info` | What this server is holding |
+| `/rp bundles` | The built packs, with their sizes and hashes |
+| `/rp items` | Every custom item |
+| `/rp give <id> [player]` | Give one |
+| `/rp models` | Placed models near you |
+| `/rp purge` | Remove placed models whose content is gone |
+| `/rp spawn <id>` | Spawn a custom entity |
+| `/rp entities` | Every custom entity |
+| `/rp recipes` | Every recipe |
+
+## Sound, text and interface
+
+| Command | What it does |
+|---|---|
+| `/rp sounds` | Every custom sound |
+| `/rp sound <id>` | Play one to yourself |
+| `/rp icons` | Every icon, with the character it became |
+| `/rp say <text>` | Send yourself text, with `:pack:icon:` resolved |
+| `/rp screens` | Every screen and HUD |
+| `/rp screen <id>` | Open one |
+| `/rp hud <id>` | Draw an overlay on yourself |
+
+## Liquids
+
+| Command | What it does |
+|---|---|
+| `/rp liquid corner` | Mark one corner of a pool |
+| `/rp liquid fill <id>` | Make the box between it and where you stand that liquid |
+| `/rp liquid clear` | Remove the pool you are in |
+| `/rp liquid list` | Every pool, per world |
+
+## Studio
+
+| Command | What it does |
+|---|---|
+| `/rp sync <code>` | Pair with a pack open in Studio |
+| `/rp sync add <player>` | Ask somebody onto your sync |
+| `/rp sync accept` / `deny` | Answer that |
+| `/rp sync who` | Who is on it |
+| `/rp sync remove <player>` | Take somebody off, and the pack off them |
+| `/rp sync leave` | Leave somebody else's |
+| `/rp sync stop` | End yours, for everybody |
+| `/rp push` | Re-send this server's pack to yourself |
+| `/rp publish <id>` | Bind the server to a published pack, so joining players get it |
+
+## Emotes
+
+| Command | What it does |
+|---|---|
+| `/emote <name>` | Perform it, or wear it if it is a movement set |
+| `/emote <name> <player...>` | With a cast. They are asked first |
+| `/emote stop` | Stop yours, and everybody in it with you |
+| `/emotereply accept` / `deny` | Answer an invitation |
+| `/rp emotes` | Every emote the server holds |
+
+## Permissions
+
+**One node per command**, always `rpengine.<subcommand>` — `rpengine.give`,
+`rpengine.purge`, `rpengine.sync`. No exceptions and no buckets: whoever may
+reload content is not necessarily whoever may purge every model within a
+hundred blocks, and a bucket is a guess about that which is wrong on some
+server.
+
+`rpengine.admin` is a parent granting all of them, for a server that does not
+want to think about it. Nothing checks it directly.
+
+Everything defaults to `op`, except:
+
+| Node | Default | |
+|---|---|---|
+| `rpengine.emote` | everyone | Playing an emote |
+| `rpengine.emotes` | everyone | Listing them |
+| `rpengine.emote.cast` | op | Naming a cast. They are still asked |
+| `rpengine.emote.force` | op | Naming one **without** asking |
+
+`rpengine.emote.force` is deliberately not a child of `rpengine.emote.cast`.
+Holding one is being allowed to ask; holding the other is being allowed to skip
+the asking, and a server that granted the first has not agreed to the second.
+
+Individual content can carry its own node too — `permission:` on an item or a
+model — which is checked when it is used or placed rather than when it is held.

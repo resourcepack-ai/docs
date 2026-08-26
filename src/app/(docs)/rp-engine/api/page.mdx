@@ -1,0 +1,162 @@
+export const metadata = {
+  title: "For plugin developers",
+  description:
+    "Drive items, models, emotes, icons and sounds from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
+};
+
+# For plugin developers
+
+RP Engine has a Java API. Your plugin can give a custom item, place a model,
+play an emote, put an icon in a message, and cancel any of those when your own
+rules say no.
+
+## Getting in
+
+Everything hangs off the plugin instance.
+
+```java
+RPEnginePlugin engine =
+    (RPEnginePlugin) Bukkit.getPluginManager().getPlugin("RPEngine");
+
+engine.items();      // custom items
+engine.models();     // models, and the ones standing in your worlds
+engine.emotes();     // emotes and movement sets
+engine.sounds();     // custom sounds
+engine.icons();      // icons, and putting one into text
+engine.registry();   // everything this server holds, by id
+```
+
+Add `softdepend: [RPEngine]` to your `plugin.yml` so you load after it.
+
+<Callout type="warning" title="What is API and what is not">
+  Everything in `ai.resourcepack.engine.api` is supported. **Nothing in
+  `ai.resourcepack.engine.core` is** — it is public only because javac demanded
+  it across a package boundary, and it may change in any release, including a
+  patch.
+</Callout>
+
+## Ids
+
+One `namespace:path` id for everything, and it is an ordinary Minecraft
+resource location. `parse` answers empty rather than throwing, so an id out of
+somebody's config is a message and not a stack trace.
+
+```java
+ContentId ruby = ContentId.parse("mypack:ruby").orElseThrow();
+```
+
+**Store ids, never what they resolve to.** An icon's codepoint moves when
+content changes and an item's model is derived from its id — the id is the only
+stable reference in the system, and everything else is worked out from it at
+the moment it is needed.
+
+## Items
+
+```java
+Optional<ItemStack> stack = engine.items().create(ruby);
+Optional<ContentId> what  = engine.items().idOf(hand);
+boolean isRuby            = engine.items().is(hand, ruby);
+```
+
+Identity lives in the stack's persistent data, not its name or its model. An
+item renamed at an anvil is still itself, and a vanilla diamond somebody called
+"Ruby" is still not one.
+
+## Models
+
+```java
+engine.models().place(location, "golem", PlaceOptions.defaults());
+engine.models().itemFor("golem", ItemOptions.defaults());
+engine.models().near(location, 16);   // what is standing around here
+engine.models().at(entity);           // is this entity part of a model?
+```
+
+A `Placement` is a handle on a model standing in a world: ask it what it is,
+tell it to play an animation, remove it.
+
+## Emotes
+
+```java
+engine.emotes().play(player, "wave");            // solo
+engine.emotes().play(lead, "hug", List.of(other)); // with a cast
+engine.emotes().canPerform(player);
+engine.emotes().stop(player);
+```
+
+<Callout type="warning" title="A cast is moved, so ask them first">
+  An emote with a cast teleports the people it names. If your plugin plays one,
+  having asked them is your job — the engine's own `/emote` does that through
+  an invitation, and `play` does not.
+</Callout>
+
+`EmoteResult` carries a typed reason rather than a sentence, so you write the
+words in your own palette and your own language.
+
+## Icons in your own text
+
+```java
+String line = engine.icons().format(config.getString("welcome"));
+```
+
+Every `:namespace:id:` becomes its picture. An id naming nothing is left
+exactly as written, so text never silently loses a chunk of itself.
+
+## Events
+
+All cancellable unless noted.
+
+| Event | When |
+|---|---|
+| `ItemUseEvent` | A custom item was clicked. Cancelling cancels the vanilla use too |
+| `ModelPlaceEvent` | A model is about to be put down |
+| `ModelBreakEvent` | A model is about to be broken. Carries a drop flag, separate from cancelling |
+| `ModelInteractEvent` | A placed model was right-clicked |
+| `ModelAnimationEvent` | A model is about to play an animation |
+| `EmoteStartEvent` | An emote is about to start |
+| `EmoteEndEvent` | An emote ended. Carries why — finished, stopped, moved, damaged, quit, shutdown |
+
+**The engine decides whether something can physically happen, never whether it
+is allowed to.** Region protection, plot ownership, an event world where
+nothing may be built: those are rules about your server, which the engine
+cannot see. That is what these events are for.
+
+```java
+@EventHandler
+public void onPlace(ModelPlaceEvent event) {
+    if (!myRegions.mayBuild(event.getPlayer(), event.block())) {
+        event.setCancelled(true);
+    }
+}
+```
+
+## Registering content from code
+
+A plugin can add content of its own rather than shipping a folder. Claim a
+namespace, register against the handle you get back, and the pack builder picks
+it up on the next build.
+
+```java
+ClaimResult claim = engine.registration()
+        .claim("myplugin", ContentSource.EMBEDDED);
+
+claim.namespace().ifPresent(ns -> {
+    ns.define(ContentKind.ITEM, "ruby");
+    // ... and release() it when your plugin disables
+});
+```
+
+The handle is what proves ownership: a plugin holding `myplugin` cannot define
+`otherpack:thing` by accident or on purpose, so two sources loading at once
+cannot corrupt each other's half of the id space. `release()` drops the
+namespace and everything in it, which is also the only reload granularity there
+is — a namespace is replaced whole or not at all.
+
+Content from a plugin is not a second-class source. It lands in the same
+registry, under the same id rules, and the pack builder cannot tell it from a
+hand-written folder.
+
+## Threading
+
+Reads that ask what the server **holds** — `ids`, `info`, the whole of
+`ContentRegistry` — are safe from any thread. Anything touching a player, an
+entity or a world is main thread only, and says so on the method.

@@ -26,7 +26,7 @@ same jar you can put on your own server.
 | | Without the plugin | With it |
 | --- | --- | --- |
 | **Models** | The model renders, standing still | Place it, pick it up, and it animates |
-| **Animations** | Nothing — the keyframes sit in fields vanilla ignores | Plays on loop, on click, on approach, or [from code](/plugin-api/models) |
+| **Animations** | Nothing — the keyframes sit in fields vanilla ignores | Plays on loop, on click, on approach, or from your own plugin |
 | **Emotes** | Nothing | `/emote` plays one on a player, wearing their own skin — or puts on a stance they keep while they carry on playing |
 | **Custom GUIs** | The art ships, but nothing opens a screen with it | `/gui` opens the screen with your art drawn over it |
 | **HUD overlays** | Same | `/hud` draws a meter or a frame over the world |
@@ -152,8 +152,10 @@ That split is why your own plugin can do all of it too:
 
 - **Reach what the plugin already runs.** With `ResourcePackAI.jar` installed,
   any plugin on the server can take our API off Bukkit's services manager and
-  place models, play emotes, open screens and listen for our events. Start at
-  [Plugin API](/plugin-api).
+  place models, play emotes, open screens and listen for our events. The
+  library's own
+  [README](https://github.com/resourcepack-ai/plugin-library) has the build
+  config and the surface.
 - **Or build on the engine directly.** The library can be embedded in your own
   plugin, with your own pack content and no ResourcePack AI plugin on the
   server at all — same engine, none of our plumbing. Ask in

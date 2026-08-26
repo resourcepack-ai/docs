@@ -1,0 +1,223 @@
+export const metadata = {
+  title: "The content folder",
+  description:
+    "Every kind of content RP Engine holds, and the YAML that describes it — items, sounds, icons, screens, recipes, entities and liquids.",
+};
+
+# The content folder
+
+One folder per pack, and the folder name is the namespace.
+
+```
+plugins/RPEngine/content/
+  mypack/
+    pack.yml               required
+    items/       *.yml
+    sounds/      *.yml
+    fonts/       *.yml
+    screens/     *.yml
+    huds/        *.yml
+    recipes/     *.yml
+    entities/    *.yml
+    liquids/     *.yml
+    assets/                → assets/mypack/ in the built pack
+      textures/
+      models/              Blockbench files
+      sounds/
+    overrides/             → assets/minecraft/, for replacing vanilla art
+    pack.png               optional
+```
+
+**The folder name is the namespace**, lowercase `a-z`, digits and `_ . -`. A
+folder called `MyPack` is refused rather than lowercased, because `MyPack` and
+`mypack` are one id to us and two to the client.
+
+**The category folder decides the kind.** Top-level keys in a file are id
+paths, so nesting under an `items:` key would say the same thing twice. One
+file may declare many; the file name means nothing, and subfolders are
+organisation only — `items/weapons/swords.yml` contributes nothing to the id.
+
+**A folder exists only if something reads it.** There is no `models/` — a
+placed model is a `place:` block on the item — no `blocks/`, and no `emotes/`
+yet. Any other folder is warned about by name, which is what catches `item/`
+and `Sounds/`.
+
+**Errors are collected, never thrown.** A bad definition is skipped and the
+rest of the pack loads; a bad pack never stops another one. You get every
+problem in one pass rather than restarting ten times.
+
+## Items
+
+```yaml
+ruby:
+  material: DIAMOND        # required: the vanilla item underneath
+  name: "&cRuby"
+  lore: ["&7Warm to the touch."]
+  texture: item/ruby       # defaults to item/<id>
+  model: ruby              # a Blockbench file, for a 3D item
+  copy-model: mypack:other # or wear another item's model
+  stack: 16
+  glow: true
+  unbreakable: true
+  armor: head              # head | chest | legs | feet
+  permission: mypack.ruby  # checked when USED, not when held
+  place:                   # makes it placeable. See Models
+    facing: cardinal
+    seat: 0.6
+```
+
+**Models live in `assets/models/`** and either form works: the Blockbench
+**project** (`.bbmodel`) saved straight out of the editor, or a Java model
+**exported** from it (`.json`). Prefer the project — its textures are inside
+it, so a model is one file you can hand to somebody.
+
+**Armour uses the vanilla equipment path**, so any item can be worn with its own
+art. Ship one texture:
+
+- `armor: legs` → `assets/textures/entity/equipment/humanoid_leggings/<id>.png`
+- anything else → `assets/textures/entity/equipment/humanoid/<id>.png`
+
+Leggings are a different layer, not a second one — the game draws them at their
+own narrower proportions, which is why a belt buckle drawn on the wide sheet
+would end up on somebody's knee.
+
+## Sounds
+
+```yaml
+chime:
+  file: bells/chime    # assets/sounds/bells/chime.ogg. Defaults to the id.
+  category: ambient    # which volume slider it obeys
+  subtitle: "A chime rings"
+  volume: 1.0
+  pitch: 1.0
+  stream: false        # true for anything long
+```
+
+**Ogg Vorbis only.** An mp3 renamed to `.ogg` is silence with nothing in game
+to say why, so a missing or wrong file is a build error naming the path.
+
+**Write a subtitle.** Without one your sound does not exist for anybody playing
+with subtitles instead of audio, which is more people than most server owners
+expect.
+
+## Icons
+
+A picture that behaves like a letter.
+
+```yaml
+sword:
+  file: sword     # assets/textures/font/sword.png
+  height: 10
+  ascent: 8
+```
+
+Put one into any text with `:mypack:sword:`. Icons go into the game's **default
+font**, so they render in chat, in an item name typed at an anvil, on a sign and
+on a scoreboard — anywhere the game draws text.
+
+**Store the id, never the character.** Codepoints are handed out in id order, so
+adding an icon shifts the ones after it. That is invisible to anything resolving
+an id as it writes text, and wrong for anything that saved the character.
+
+## Screens and HUDs
+
+```yaml
+# screens/menus.yml
+shop:
+  container: chest_9x6   # the real container it opens as
+```
+
+Draw the sheet 256×256 with the vanilla window art centred on it and say which
+container it was drawn for. Everything else — height, ascent, the negative
+space that slides it into place — follows from that.
+
+**`container:` is what positions the picture**, not just what gives it slots.
+Declare a five-row sheet as a six-row chest and the whole screen sits nine
+pixels out.
+
+The word "Inventory" disappears from every container screen while a bundle
+holds any custom GUI. The client draws that label after the title, so a backdrop
+cannot cover it, and blanking it in a language file is the only lever there is.
+
+```yaml
+# huds/overlays.yml
+mana:
+  slot: action_bar       # action_bar | boss_bar
+  height: 64
+  ascent: 32
+```
+
+## Recipes
+
+```yaml
+ruby_block:
+  type: shaped           # the default
+  result: mypack:ruby_block
+  pattern: ["RRR", "RRR", "RRR"]
+  keys:
+    R: mypack:ruby       # a space in the pattern is an empty slot
+
+sapphire_from_lapis:
+  type: smelting         # blasting | smoking | campfire | stonecutting | shapeless
+  result: mypack:sapphire
+  ingredient: LAPIS_LAZULI
+  experience: 0.5
+  time: 100
+```
+
+A content id matches that **exact** item — an ordinary diamond will not satisfy
+a recipe calling for `mypack:ruby`. A vanilla material matches loosely, the way
+a vanilla ingredient should.
+
+A recipe id is not a content id, so a recipe may be called `ruby_block` while an
+item is too.
+
+## Entities
+
+A real mob wearing a model.
+
+```yaml
+guard:
+  type: ZOMBIE           # choose it for BEHAVIOUR; the looks are replaced
+  model: mypack:guard    # an item id, whose model it wears
+  name: "&cTemple Guard"
+  health: 40
+  scale: 1.2
+  silent: false
+  tags: [temple, boss]
+```
+
+It is genuinely a mob: it walks with its own AI, takes damage, drops its loot,
+is found by `@e[tag=boss]` and is seen by every other plugin. Pick the `type`
+for how you want it to *behave* — a zombie hunts and burns in daylight, a
+villager wanders and flees, an armour stand does nothing at all.
+
+`/rp spawn mypack:guard` puts one where you are standing.
+
+## Liquids
+
+<Callout type="warning" title="What a custom liquid is, and is not">
+  Minecraft has two fluids and a server cannot add a third. A custom liquid is
+  **real water or lava, wearing your texture, with your rules applied to whoever
+  is in it.** It genuinely behaves like a fluid because it is one — you swim in
+  it, boats float, it flows, other plugins see water. The **texture is
+  per-pack**, so every water on the server looks the same; and what tells acid
+  from ocean is a **volume you mark out**, not the blocks in it.
+</Callout>
+
+```yaml
+acid:
+  base: water            # water | lava
+  effect: POISON
+  amplifier: 1
+  damage: 1.0            # per second
+  fireproof: false
+```
+
+Mark out a pool in game: stand at one corner, `/rp liquid corner`, stand at the
+opposite one, `/rp liquid fill mypack:acid`. `/rp liquid clear` removes the pool
+you are standing in.
+
+Pools are boxes rather than lists of blocks, because a lake is thousands of
+blocks that change shape as it flows — a per-block record would be wrong within
+a second of somebody breaking a bank.
