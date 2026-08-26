@@ -116,7 +116,8 @@ cannot be used to extend a potion.
 
 ## Hand-authored emotes
 
-Emote **animations** are authored in Studio today and arrive by push. A
-`content/<pack>/emotes/` folder is reserved for writing them by hand and is not
-read yet; when it is, it will be the same keyframes, in YAML, and nothing about
-the commands or the API changes.
+Emote animations are authored in Studio today and arrive by push. There is no
+`emotes/` folder in the content format — deliberately, because a folder that
+loaded and then did nothing would be an afternoon's work with no error to
+explain it. When keyframes can be hand-written, that folder appears, and
+nothing about the commands or the API changes.

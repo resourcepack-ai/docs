@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Models in the world",
   description:
-    "Placing a model as a display entity, sitting on one, animating it, and the rules that decide who may.",
+    "Placing a model as a display entity at its real size, sitting on one, and the rules that decide who may.",
 };
 
 # Models in the world
@@ -10,105 +10,115 @@ A model is a Blockbench file and an item that carries it. Placing one puts a
 **display entity** in the world at its true size — not a block, not an armour
 stand wearing a helmet.
 
+It is declared on the item, in a `place:` block:
+
 ```
 content/mypack/
-  models/statues.yml
-  assets/models/lamp.bbmodel
+  items/furniture.yml
+  assets/models/chair.bbmodel
 ```
 
 ```yaml
-lamp:
-  model: lamp            # assets/models/lamp.bbmodel, defaults to the id
-  name: "&eStreet Lamp"
+chair:
+  material: PAPER
+  model: chair           # assets/models/chair.bbmodel
+  name: "&eOak Chair"
   place:
+    facing: cardinal     # cardinal | diagonal | free | fixed
     scale: 1.0
-    snap: block          # block | half | free
-    rotate: 90           # the step it turns in, in degrees
-    solid: true          # give it a hitbox you can walk into
-    seat: 0.6            # sit on it, at this height in blocks
-  permission: mypack.lamp
+    solid: false         # true gives it something to walk into
+    seat: 0.6            # sit on it, this far above its base. 0 is no seat
+  permission: mypack.chair
 ```
 
-`/rp give mypack:lamp` gives you the item; right-click the ground to place it,
+`/rp give mypack:chair` gives you the item; right-click the ground to place it,
 and hit it to take it back.
 
-<Callout type="note" title="Why a display entity and not a block">
-  A block is a 16×16×16 box with a fixed set of states, and a server cannot add
-  one without spending vanilla states it does not own. A display entity has no
-  such ceiling: your model is placed at the size you built it, at any angle, at
-  any offset, and nothing about the world's blocks changes.
+<Callout type="note" title="Why it is not its own category">
+  `mypack:chair` is the item and the thing you put down, because an id is
+  unique across the whole registry. Needing `mypack:chair` and
+  `mypack:chair_placed` for one chair is the sort of tax that makes a format
+  feel like paperwork — and it means the item and the placed model can never
+  disagree about which file to use.
 </Callout>
 
 ## Size
 
-A placed model is the size the Blockbench file says it is. If a lamp looks a
-block tall when you built it three, the model itself is small — open it and
-check the cube coordinates rather than reaching for `scale`.
-
-`scale` is a deliberate multiplier, for when you want the same model in two
+A placed model is the size the Blockbench file says it is: 16 model units to
+the block, no transform applied, so a model built to y=32 stands two blocks
+tall. If a lamp looks a block tall when you built it three, the model itself is
+small — open it and check the cube coordinates rather than reaching for
+`scale`, which is there for when you deliberately want the same model in two
 sizes.
 
-## Snapping and turning
+## Which way it faces
 
-`snap: block` puts it on the block grid, `half` on half-blocks, `free` wherever
-you clicked. `rotate` is the step it turns in as you look around while placing —
-`90` for anything square, `15` for something that should follow you.
+| | |
+|---|---|
+| `cardinal` | North, east, south or west, like a placed furnace. The default |
+| `diagonal` | Eight directions, for something that reads as angled |
+| `free` | However you were looking |
+| `fixed` | Always the same way, for something with no front |
+
+## The hitbox
+
+Measured off the model unless you say otherwise. Whoever built it already
+decided how big it is, and a hitbox smaller than what you can see means most of
+a statue cannot be punched and the part that can is buried inside it. `width:`
+and `height:` in blocks override it.
+
+`solid: false` by default, because a display entity has no collision at all.
+`solid: true` puts an invisible barrier behind it, removed when the model is
+broken — right for a bench, wrong for a rug.
 
 ## Sitting
 
-`seat:` makes the model something you can sit on — a chair, a bench, a throne.
-Its value is how far above the model's base a player's backside goes, in
-blocks; a dining chair is about `0.6`.
+`seat:` makes the model something you can sit on. Its value is how far above
+the model's base a player's backside goes, in blocks; a dining chair is about
+`0.6`. Right-click to sit, shift to get up.
 
-Right-click to sit, shift to get up. The seat is a marker the player rides and
-it is **never saved**: it is gone on dismount, on quit, when the model is
-broken, and when the server stops. Nothing is left behind to accumulate in a
-world over months.
+The seat is a marker the player rides, and it is **never saved**: gone on
+dismount, on quit, when the model is broken, and when the server stops. Nothing
+is left behind to accumulate in a world over months — a field of invisible
+things players can stand on is how this feature usually rots.
 
-Only one player sits per model, and a model with a seat still keeps its hitbox.
+One player per model, and a model with a seat keeps its hitbox.
 
-## Solid or not
+## Animation
 
-`solid: true` gives the model a hitbox matching its bounds, so players walk into
-it rather than through it. Leave it off for anything decorative and flat — a
-rug, a wall vine, a puddle — where a hitbox is a thing people trip on.
+Models pushed from [Studio](https://studio.resourcepack.ai) animate: the push
+carries a rig manifest, and a placed one plays on a loop, on a click, or on a
+call from your own plugin.
 
-## Animating
-
-If the model has animations in its Blockbench file, they come with it.
-
-```yaml
-lamp:
-  place:
-    animation: idle      # plays on loop as soon as it is placed
-    click: flicker       # plays once when somebody right-clicks it
-```
-
-From a plugin, `Models.play(placement, "flicker")` does the same thing, and
-`Models.place(...)` puts one down with no item involved. See
-[the API](/rp-engine/api).
+A model from your own content folder does not, yet. Blockbench animations
+inside a `.bbmodel` are carried into the pack untouched, and nothing plays them
+— so the file is ready for the day it can, and today it stands still.
 
 ## Who may place what
 
-Three gates, and they answer different questions.
+Three gates, answering different questions.
 
-**`permission:`** on the model decides who may place *this one*. Without it,
-anybody holding the item may.
+**`permission:`** on the item decides who may place *this one*. Without it,
+anybody holding it may.
 
 **The build check** decides where. A placement asks the server whether that
-player could have placed a block there, so world protection plugins — WorldGuard,
-GriefPrevention, a claims plugin, spawn protection — apply with nothing to
-configure. If somebody cannot build there, they cannot place a model there.
+player could have placed a block there, so world protection — WorldGuard,
+GriefPrevention, a claims plugin, spawn protection — applies with nothing to
+configure.
 
 **`ModelPlaceEvent`** is the escape hatch for your own rule. Cancel it and the
-placement does not happen and the item is not consumed.
+placement does not happen and the item is not consumed. See
+[the API](/rp-engine/api).
 
 ## What is stored
 
-A placed model is remembered by **id**, on the entity itself. Nothing is stored
-in a database of ours, so a model survives a restart, moves with a world you
-copy, and does not need us to be running to be there.
+A placed model is two entities — a display for what you see, an interaction for
+what you can hit — both tagged in persistent data. Nothing is written to a
+database of ours, so a model survives a restart, moves with a world you copy,
+and does not need us to be running to be there.
 
-If a pack stops declaring a model, everything already placed keeps standing —
-it simply has no art until the pack declares it again. That is on purpose: the
-alternative is a reload that quietly deletes somebody's build.
+If a pack stops declaring a model, everything already placed keeps standing; it
+simply has no art until the pack declares it again. `/rp models` lists what is
+around you and marks the orphans, and `/rp purge` removes those and only those
+— purging models a pack still defines would be a demolition command wearing a
+cleanup command's name.
