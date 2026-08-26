@@ -1,0 +1,122 @@
+export const metadata = {
+  title: "Emotes",
+  description:
+    "Animations played on the player rather than on a model — solo, with a cast, and worn as a movement set.",
+};
+
+# Emotes
+
+An emote is an animation played on **a player**, wearing their own skin. They
+disappear for its length, a rig of them dances in their place, and they are put
+back exactly where they were.
+
+```
+/emote wave
+/emote handshake Steve
+/emote stop
+```
+
+Tab completion offers every emote the server holds, and once you have typed one
+that needs a partner it offers the players who could be it — and stops offering
+once the last slot is filled.
+
+## The rig is not the animation
+
+Two separate things, and mixing them up makes nothing about emotes make sense.
+
+**The rig** is a model of *that player*, cut out of their skin. It is generated,
+never authored: nobody opens Blockbench to make a rig for Steve.
+
+**The animation** is keyframes — a wave, a bow, a handshake — and is authored
+once, for everybody. It moves bones by name, so the same wave fits every player
+alive.
+
+That split is also why an emote needs a push. A resource pack is built and
+downloaded before anybody moves, and it cannot reach out to a live skin, so the
+pack has to **carry a baked rig for each player it was built for**. A player
+absent from that pack has no rig in it and cannot emote — which the command
+says out loud, rather than putting a Steve in their place.
+
+<Callout type="note" title="Somebody joined after the push">
+  That is the whole of it, and the fix is one more push. `Emotes.canPerform` is
+  the same question in Java.
+</Callout>
+
+## Getting emotes onto a server
+
+Make them in [Studio](https://studio.resourcepack.ai), then push:
+
+<Steps>
+  <Step title="Sync">
+    In Studio, open your pack and hit **Sync**. It shows a pairing code.
+    In game: `/rp sync <code>`.
+  </Step>
+  <Step title="Push">
+    Hit push in Studio. The pack arrives, the emotes with it, and the rigs are
+    baked for whoever is on that sync.
+  </Step>
+  <Step title="Emote">
+    `/emote` and tab, and everything in the pack is there.
+  </Step>
+</Steps>
+
+`/rp emotes` lists what the server is holding right now.
+
+### Sharing a push
+
+A sync is one player's, so a second person testing the same pack would need a
+second code. Instead, put them on yours:
+
+```
+/rp sync add Steve     they get /rp sync accept, or deny
+/rp sync who           who is on it
+/rp sync remove Steve  and the pack comes back off them
+/rp sync leave         if you are on somebody else's
+/rp sync stop          end yours, for everybody
+```
+
+It exists to answer "who else receives my pushes", so it lives as long as the
+sync does — there is nothing to disband and no ownership to hand on.
+
+## Emotes with a cast
+
+Some emotes take more than one person: a handshake, a hug, a high five. The
+lead names the others and everybody is teleported into position, turned to face
+correctly, and given their positions back at the end.
+
+Nobody is moved until every participant and every destination has been checked,
+and the emote ends for everybody or for nobody.
+
+An invited player is asked first — `/emotereply accept` or `deny` — so nobody is
+dragged across the room by a stranger. That command is deliberately ungated: a
+player who cannot reply is a player who cannot refuse.
+
+`rpengine.emote.cast` is who may name a cast at all. `rpengine.emote.force`
+skips the invitation, for staff running an event.
+
+## Movement sets
+
+A movement set is a group of emotes you **wear** rather than perform once — a
+walk, a run, an idle, applied for as long as you have it on. Wearing one is the
+same command:
+
+```
+/emote strut
+```
+
+Groups and single emotes share one list of names and one name space, so nothing
+can collide and nothing has to be told apart to be typed.
+
+## What stops an emote
+
+Being hit. Moving, in most cases. `/emote stop`. A plugin cancelling
+`EmoteStartEvent`, or calling `Emotes.stop`. When it ends, whatever invisibility
+the player already had comes back — minus the time the emote took, so an emote
+cannot be used to extend a potion.
+
+## Hand-authored emotes
+
+Emote **animations** are authored in Studio today and arrive by push. A
+`content/<pack>/emotes/` folder is reserved for writing them by hand and is not
+read yet; when it is, it will be the same keyframes, in YAML, and nothing about
+the commands or the API changes.

@@ -1,0 +1,117 @@
+export const metadata = {
+  title: "RP Engine",
+  description:
+    "A custom content engine for Spigot and Paper: items, models, emotes, sounds, icons, screens, recipes, entities and liquids, from a folder on your server.",
+};
+
+# RP Engine
+
+RP Engine turns a folder on your server into custom content. Items with their
+own models, models you can place and sit on, emotes your players wear, sounds,
+icons, GUI backdrops, recipes, entities and liquids — written as YAML, built
+into a resource pack by the plugin, and served to whoever joins.
+
+It builds the pack itself. There is no zip to make, nowhere to upload it, and
+no step where you run a command and then go and find the output.
+
+<Callout type="note" title="Studio is optional">
+  You can drive RP Engine entirely from files on disk and never open a browser.
+  [Studio](https://studio.resourcepack.ai) makes the art and can push it
+  straight to a running server, which is faster — but it is one source of
+  content among several, not a requirement. Anything that only worked with
+  Studio in the picture would be a bug.
+</Callout>
+
+## Installing
+
+<Steps>
+  <Step title="Drop the jar in">
+    `RPEngine.jar` into `plugins/`, then start the server. It needs **Paper or
+    Spigot 1.21.4 or newer** — the floor is not negotiable, because the id
+    scheme rests on a component that arrived in 1.21.4.
+  </Step>
+  <Step title="Look at what it made">
+    ```
+    plugins/RPEngine/
+      config.yml
+      content/      ← yours
+      output/       ← the built packs, rebuilt on every reload
+    ```
+  </Step>
+  <Step title="Set the pack format">
+    In `config.yml`, `pack.format` has to match the version your players are
+    on, or the client shows a "made for a different version" warning. The
+    comment beside it lists the numbers.
+  </Step>
+</Steps>
+
+## Your first item
+
+<Steps>
+  <Step title="Make a pack">
+    ```
+    content/mypack/
+      pack.yml
+      items/gems.yml
+      assets/textures/item/ruby.png
+    ```
+
+    `pack.yml` can be as short as a name:
+
+    ```yaml
+    name: My Pack
+    ```
+  </Step>
+  <Step title="Describe the item">
+    `items/gems.yml`:
+
+    ```yaml
+    ruby:
+      material: DIAMOND
+      name: "&cRuby"
+    ```
+
+    That is `mypack:ruby`. The folder name is the namespace, the key is the id,
+    and the texture path falls out of the id — `assets/textures/item/ruby.png`
+    with nothing pointing at it.
+  </Step>
+  <Step title="Reload and take one">
+    ```
+    /rp reload
+    /rp give mypack:ruby
+    ```
+  </Step>
+</Steps>
+
+## What it can hold
+
+| | |
+|---|---|
+| [Items](/rp-engine/content#items) | Flat sprites or 3D models, wearable as armour, gated by permission |
+| [Models](/rp-engine/models) | Placed in the world, sat on, animated |
+| [Emotes](/rp-engine/emotes) | Worn or performed, alone or with a cast |
+| [Sounds](/rp-engine/content#sounds) | Real sound events with subtitles |
+| [Icons](/rp-engine/content#icons) | Pictures that behave like letters, anywhere text renders |
+| [Screens and HUDs](/rp-engine/content#screens-and-huds) | GUI backdrops and overlays |
+| [Recipes](/rp-engine/content#recipes) | Crafting, cooking, stonecutting |
+| [Entities](/rp-engine/content#entities) | A real mob wearing a model |
+| [Liquids](/rp-engine/content#liquids) | Pools with rules about who is in them |
+
+## The two ideas worth knowing
+
+**One id for everything, and it is the reference.** `mypack:ruby` is the item,
+the model path, and what goes into the stack's persistent data. Nothing is
+allocated, there is no numbers file to keep in sync, and nothing can drift out
+of step with anything else. **Store ids, never what they resolve to.**
+
+**A bundle is what a player is holding.** A pack is built per bundle rather
+than one per server, and a player can hold several stacked on top of each other
+— so a lobby pack and a dungeon pack can be different things, and swapping is
+instant because the client already has both.
+
+## Where to go next
+
+- [The content folder](/rp-engine/content) — every kind, in full
+- [Models in the world](/rp-engine/models) — placing, sitting, animating
+- [Emotes](/rp-engine/emotes) — stances, movement sets, casts
+- [For plugin developers](/rp-engine/api) — the Java API and the events
