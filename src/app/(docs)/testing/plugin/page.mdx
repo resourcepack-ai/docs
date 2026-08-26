@@ -82,7 +82,7 @@ it's being made, not how a public server serves one.
 
 ### Serving your published pack to everyone
 
-For launch. `/rp publish <code>` ties the server to a pack from the
+For launch. `/rp distribute <code>` ties the server to a pack from the
 Distribution tab, and from then on every joining player is served the build
 for the Minecraft version they're actually on. That's the
 [Distribution](/distribution) feature, and it needs no sync from anybody.
@@ -98,9 +98,10 @@ The full table is on
 [Commands and permissions](/rp-engine/commands). Two things worth knowing
 before you grant anything:
 
-**`/rp screen`, `/rp hud` and `/rp sound` reach the player who runs them**, and
-a plugin using the API can point them at somebody else. Grant them to the
-people building your pack.
+**`/rp screen`, `/rp hud` and `/rp sound` each take an optional player**, so
+granting one lets that person draw a screen, an overlay or a sound onto
+somebody else's client. Grant them to the people building your pack, not to
+everyone.
 
 **Nobody is pulled into an emote without agreeing.** `/emote <name> <player…>`
 asks everyone it names first, and `rpengine.emote.force` is what skips the
