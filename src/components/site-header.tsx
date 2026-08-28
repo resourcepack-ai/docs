@@ -7,8 +7,10 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { DocsSearch } from "@/components/docs-search";
+import { EngineNavTree } from "@/components/engine-nav-tree";
 import { NavTree } from "@/components/nav-tree";
 import { SectionTabs } from "@/components/section-tabs";
+import { inEngine } from "@/lib/engine-nav";
 import { externalLinks } from "@/lib/nav";
 import { asset } from "@/lib/base-path";
 
@@ -133,7 +135,16 @@ export function SiteHeader() {
                 <X className="size-4" />
               </button>
             </div>
-            <NavTree onNavigate={() => setMenuOpen(false)} />
+            {/* The drawer shows the section you are in, the same as the
+                desktop rail beside it. A drawer that always showed the
+                Documentation tree would be a second, contradictory answer to
+                "where am I" on the one screen where the rail is not there to
+                correct it. */}
+            {inEngine(pathname) ? (
+              <EngineNavTree onNavigate={() => setMenuOpen(false)} />
+            ) : (
+              <NavTree onNavigate={() => setMenuOpen(false)} />
+            )}
             <div className="border-line mt-7 flex flex-col gap-1 border-t pt-5 sm:hidden">
               {externalLinks.map((link) => (
                 <a

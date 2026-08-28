@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { flatNav } from "@/lib/nav";
 import { flatApiNav } from "@/lib/api-nav";
+import { engineItems } from "@/lib/engine-nav";
 import { BASE_PATH } from "@/lib/base-path";
 
 /**
@@ -27,7 +28,7 @@ export const SITE_URL = `https://resourcepack.ai${BASE_PATH}`;
  * landing's robots.ts is what points crawlers at this sitemap.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [...flatNav, ...flatApiNav].map((item) => ({
+  return [...flatNav, ...engineItems, ...flatApiNav].map((item) => ({
     // nav hrefs are root-relative and the index is "/" — trim it so the home
     // page doesn't come out as "https://resourcepack.ai/docs/".
     url: item.href === "/" ? SITE_URL : `${SITE_URL}${item.href}`,

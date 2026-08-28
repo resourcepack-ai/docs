@@ -116,6 +116,19 @@ compiled at build time by `@next/mdx`.
 1. create `src/app/(docs)/<path>/page.mdx` with a `metadata` export and an `h1`
 2. add an entry to `src/lib/nav.ts`
 
+**There are three top-level sections, not one**, each with its own route group,
+layout, sidebar tree and pager: `(docs)` on `lib/nav.ts`, `(engine)` on
+`lib/engine-nav.ts`, and `(api)` on `lib/api-nav.ts`. Route groups do not
+appear in a URL, so an RP Engine page lives at `src/app/(engine)/rp-engine/…`
+and is served from `/rp-engine/…` exactly as before it moved.
+
+Adding an RP Engine page is the same two steps against `engine-nav.ts`. What is
+easy to forget is the four places that walk ALL the trees and must keep doing
+so: the ⌘K palette (`docs-search.tsx`), the sitemap, the JSON-LD
+(`structured-data.tsx`), and the mobile drawer in `site-header.tsx`, which
+picks a tree by pathname because there is no rail beside it to correct a wrong
+answer.
+
 **The API Reference is a different tree.** `/api-reference` and everything
 under it is a separate top-level section with its own sidebar
 (`src/lib/api-nav.ts`), generated from `src/openapi.json`, which the app itself

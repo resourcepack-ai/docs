@@ -87,15 +87,15 @@ no step where you run a command and then go and find the output.
 
 | | |
 |---|---|
-| [Items](/rp-engine/content#items) | Flat sprites or 3D models, wearable as armour, gated by permission |
-| [Models](/rp-engine/models) | Placed in the world, sat on, animated |
+| [Items](/rp-engine/items) | Sprites or 3D models, wearable as armour, carrying real vanilla stats |
+| [Item actions](/rp-engine/actions) | A closed list of verbs, on nine triggers |
+| [Placed models](/rp-engine/models) | Put down, sat on, lighting a room |
+| [Animation](/rp-engine/animation) | Keyframes from Blockbench, layered and blended |
+| [Bones](/rp-engine/bones) | Heads that track, hitboxes you can aim at, seats |
+| [Models on mobs](/rp-engine/mobs) | Worn by an entity another plugin spawned |
 | [Emotes](/rp-engine/emotes) | Worn or performed, alone or with a cast |
-| [Sounds](/rp-engine/content#sounds) | Real sound events with subtitles |
-| [Icons](/rp-engine/content#icons) | Pictures that behave like letters, anywhere text renders |
-| [Screens and HUDs](/rp-engine/content#screens-and-huds) | GUI backdrops and overlays |
-| [Recipes](/rp-engine/content#recipes) | Crafting, cooking, stonecutting |
-| [Entities](/rp-engine/content#entities) | A real mob wearing a model |
-| [Liquids](/rp-engine/content#liquids) | Pools with rules about who is in them |
+| [Sounds, icons, screens](/rp-engine/interface) | Sound events, glyphs, GUI backdrops, HUD overlays |
+| [Recipes, entities, liquids](/rp-engine/world) | Crafting, mobs wearing models, pools with rules |
 
 ## The two ideas worth knowing
 
@@ -111,7 +111,17 @@ instant because the client already has both.
 
 ## Where to go next
 
-- [The content folder](/rp-engine/content) — every kind, in full
-- [Models in the world](/rp-engine/models) — placing, sitting, animating
-- [Emotes](/rp-engine/emotes) — stances, movement sets, casts
-- [For plugin developers](/rp-engine/api) — the Java API and the events
+<CardGroup>
+  <Card title="The content folder" href="/rp-engine/content">
+    How a pack is laid out, what an id is, and what a reload does.
+  </Card>
+  <Card title="Items" href="/rp-engine/items">
+    The kind of content everything else hangs off.
+  </Card>
+  <Card title="Placing a model" href="/rp-engine/models">
+    Statues, furniture, lamps — put down at their real size.
+  </Card>
+  <Card title="Other plugins" href="/rp-engine/integrations">
+    PlaceholderAPI, WorldGuard, MythicMobs, Citizens, Geyser.
+  </Card>
+</CardGroup>

@@ -1,0 +1,102 @@
+export const metadata = {
+  title: "Sounds, icons and screens",
+  description:
+    "Custom sound events, pictures that behave like letters, GUI backdrops and HUD overlays.",
+};
+
+# Sounds, icons and screens
+
+## Sounds
+
+```yaml
+# sounds/ambient.yml
+chime:
+  file: bells/chime    # assets/sounds/bells/chime.ogg. Defaults to the id.
+  category: ambient    # which volume slider it obeys
+  subtitle: "A chime rings"
+  volume: 1.0
+  pitch: 1.0
+  stream: false        # true for anything long
+```
+
+**Ogg Vorbis only.** An mp3 renamed to `.ogg` is silence with nothing in game
+to say why, so a missing or wrong file is a build error naming the path.
+
+**Write a subtitle.** Without one your sound does not exist for anybody playing
+with subtitles instead of audio, which is more people than most server owners
+expect.
+
+`/rp sound mypack:chime` plays one at yourself; `/rp sounds` lists them.
+
+## Icons
+
+A picture that behaves like a letter.
+
+```yaml
+# fonts/icons.yml
+sword:
+  file: sword     # assets/textures/font/sword.png
+  height: 10
+  ascent: 8
+```
+
+Put one into any text with `:mypack:sword:`. Icons go into the game's **default
+font**, so they render in chat, in an item name typed at an anvil, on a sign and
+on a scoreboard — anywhere the game draws text.
+
+`height` is how tall it is drawn, in pixels. `ascent` is how far above the text
+baseline it sits; an ascent equal to the height puts its bottom edge on the
+line.
+
+<Callout type="warning" title="Store the id, never the character">
+  Codepoints are handed out in id order, so adding an icon shifts the ones
+  after it. That is invisible to anything that resolves an id as it writes the
+  text, and wrong for anything that saved the character into a config file, a
+  database or a sign.
+</Callout>
+
+Players can type icons in chat too — see
+[`chat.icons`](/rp-engine/config#icons-in-chat).
+
+## Screens
+
+A picture drawn behind a container GUI.
+
+```yaml
+# screens/menus.yml
+shop:
+  container: chest_9x6   # the real container it opens as
+```
+
+Draw the sheet 256×256 with the vanilla window art centred on it and say which
+container it was drawn for. Everything else — height, ascent, the negative
+space that slides it into place — follows from that.
+
+**`container:` is what positions the picture**, not just what gives it slots.
+Declare a five-row sheet as a six-row chest and the whole screen sits nine
+pixels out.
+
+`/rp screen mypack:shop` opens one.
+
+The word "Inventory" disappears from every container screen while a bundle
+holds any custom GUI. The client draws that label after the title, so a backdrop
+cannot cover it, and blanking it in a language file is the only lever there is.
+
+## HUD overlays
+
+Something drawn over the game rather than behind a window.
+
+```yaml
+# huds/overlays.yml
+mana:
+  slot: action_bar       # action_bar | boss_bar
+  height: 64
+  ascent: 32
+```
+
+`/rp hud mypack:mana` shows one.
+
+Both slots are text the game already draws somewhere fixed, which is the whole
+trick: an overlay is a glyph placed into that text with enough negative space
+around it to land where you drew it. `action_bar` sits above the hotbar and
+`boss_bar` at the top of the screen.

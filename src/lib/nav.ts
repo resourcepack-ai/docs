@@ -269,123 +269,6 @@ export const nav: NavGroup[] = [
     ],
   },
   {
-    title: "RP Engine",
-    items: [
-      {
-        title: "Overview",
-        href: "/rp-engine",
-        description: "A custom content engine for Spigot and Paper, driven by a folder on your server.",
-        keywords: [
-          "rp engine",
-          "rpengine",
-          "plugin",
-          "spigot",
-          "paper",
-          "itemsadder",
-          "modelengine",
-          "custom items",
-          "custom content",
-          "install",
-        ],
-      },
-      {
-        title: "The content folder",
-        href: "/rp-engine/content",
-        description: "Every kind of content and the YAML that describes it.",
-        keywords: [
-          "content",
-          "yaml",
-          "namespace",
-          "items",
-          "sounds",
-          "icons",
-          "screens",
-          "hud",
-          "recipes",
-          "entities",
-          "liquids",
-          "armor",
-          "armour",
-          "equipment",
-          "pack.yml",
-        ],
-      },
-      {
-        title: "Models in the world",
-        href: "/rp-engine/models",
-        description: "Placing a model, sitting on one, animating it, and who may.",
-        keywords: [
-          "model",
-          "place",
-          "display entity",
-          "furniture",
-          "seat",
-          "sit",
-          "chair",
-          "hitbox",
-          "scale",
-          "bbmodel",
-          "blockbench",
-          "animation",
-        ],
-      },
-      {
-        title: "Emotes",
-        href: "/rp-engine/emotes",
-        description: "Animations played on the player — solo, with a cast, or worn.",
-        keywords: [
-          "emote",
-          "emotes",
-          "rig",
-          "skin",
-          "duet",
-          "cast",
-          "invite",
-          "movement set",
-          "stance",
-          "sync",
-          "push",
-        ],
-      },
-      {
-        title: "Commands and permissions",
-        href: "/rp-engine/commands",
-        description: "Every command, what it needs, and how the nodes are laid out.",
-        keywords: [
-          "command",
-          "commands",
-          "permission",
-          "permissions",
-          "node",
-          "rpengine.admin",
-          "tab complete",
-          "op",
-          "luckperms",
-        ],
-      },
-      {
-        title: "For plugin developers",
-        href: "/rp-engine/api",
-        description: "Drive items, models, emotes and icons from your own plugin.",
-        keywords: [
-          "api",
-          "java",
-          "developer",
-          "code",
-          "bukkit",
-          "softdepend",
-          "event",
-          "listener",
-          "cancel",
-          "ModelPlaceEvent",
-          "EmoteStartEvent",
-          "registry",
-          "namespace",
-        ],
-      },
-    ],
-  },
-  {
     title: "Platform",
     items: [
       // Moved here from "Testing in Minecraft" (owner call, 2026-08-17):
@@ -473,9 +356,10 @@ export function navGroupOf(href: string): string | undefined {
   return nav.find((group) => group.items.some((item) => item.href === href))?.title;
 }
 
-// The API Reference is NOT here. It is a separate top-level section with its
-// own tree (lib/api-nav.ts), derived from the spec rather than hand-listed —
-// see SectionTabs for why the two are split rather than grouped.
+// Neither the API Reference nor RP Engine is here. Both are separate
+// top-level sections with their own trees (lib/api-nav.ts, lib/engine-nav.ts)
+// — see SectionTabs for why all three are split rather than grouped. The API's
+// is derived from the spec; RP Engine's is hand-written like this one.
 
 /** Off-site links in the top bar. */
 export const externalLinks = [

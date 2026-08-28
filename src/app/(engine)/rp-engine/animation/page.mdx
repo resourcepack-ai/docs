@@ -1,0 +1,121 @@
+export const metadata = {
+  title: "Animation",
+  description:
+    "Keyframes from a Blockbench project, how they play, and playing two at once.",
+};
+
+# Animation
+
+If a model's `.bbmodel` has animations in it, the model moves. There is nothing
+to declare and nothing to export.
+
+```
+content/mypack/
+  items/furniture.yml
+  assets/models/windmill.bbmodel   ← bones and keyframes, as Blockbench saved it
+```
+
+<Callout type="warning" title="Save the project, do not export it">
+  Blockbench's **File → Export → Java Block/Item model** writes cubes and
+  nothing else: no bones, no keyframes. The save file is the only place your
+  animation exists. Put the `.bbmodel` in `assets/models/` and RP Engine reads
+  it whole.
+</Callout>
+
+## How it works, briefly
+
+The client cannot animate a block model. A server can move display entities —
+so an animated model is placed as **one display per moving bone**, plus one for
+everything that stays still, and the server retimes their transforms a few
+times a second.
+
+Two things follow from that:
+
+- **It costs entities.** A ten-bone model is eleven entities standing in the
+  world. An animated model is a centrepiece, not something to place a hundred
+  of.
+- **A rig is a tree.** A part composes its bone's whole ancestor chain, so
+  rotating a torso carries the arms inside it.
+
+## When it plays
+
+A looping animation loops on its own. A one-shot plays when the piece is
+right-clicked. That pair is derived rather than declared, because a `.bbmodel`
+has no notion of a trigger and those are the two things an animation is usually
+for.
+
+Right-clicking a piece that animates plays it rather than sitting on it;
+shift-right-click still sits, if it has a `seat`.
+
+## Telling it how to play
+
+Blockbench's own **loop / hold / once** comes across as authored. `hold` is the
+one worth knowing: it stops on the last frame and stays there, which is what a
+door, a lid and a drawbridge all are — without it they spring shut the moment
+they finish opening.
+
+Everything else is a decision about your server rather than about the model, so
+it lives beside the piece:
+
+```yaml
+chair:
+  material: PAPER
+  model: chair
+  place:
+    animations:
+      spin:
+        mode: loop      # loop | hold | once, overriding the .bbmodel
+        speed: 0.5      # half the authored speed
+        priority: 10    # wins when two animations claim one trigger
+        blend: 0.25     # seconds to ease in and out of it
+        layer: 0        # 0 plays instead of what is running; 1+ plays OVER it
+        weight: 1.0     # how strongly, 0-1
+        bones: [torso]  # only these bones, and everything hanging off them
+```
+
+An animation nobody mentions plays exactly as authored.
+
+**`blend`** is the difference between a model that snaps between poses and one
+that moves. A quarter of a second covers most things, and it eases out as well
+as in — going back to rest is a transition too.
+
+**`priority`** matters once a model has more than one animation on the same
+trigger. Higher wins; equal falls back to the order they are in the file.
+
+**`speed`** is here and not in a second Blockbench file because the same walk
+cycle is a stroll on one server and a sprint on another.
+
+## Two at once
+
+**`layer`** is how a model plays more than one animation.
+
+Layer 0 is the base — a walk cycle, an idle — and only one plays at a time.
+Anything above it composes **on top**, so a wave on layer 1 plays over
+whichever gait is running rather than replacing it. One animation per layer, so
+waving twice replaces the first wave and leaves the walk alone.
+
+```yaml
+    animations:
+      walk:  { mode: loop, layer: 0 }
+      wave:  { mode: once, layer: 1, bones: [torso], blend: 0.2 }
+```
+
+**`bones`** is what makes a layer partial. Naming a bone reaches **everything
+hanging off it**, so `bones: [torso]` moves the arms with it — which is what
+"upper body only" means in practice.
+
+**`weight`** scales how far the layer moves what it touches. Half a wave is a
+smaller wave.
+
+Nothing needs to know about any of this to use it: `/rp` and the API play an
+animation by name, and an animation that names a layer goes on that layer.
+
+## Playing one yourself
+
+```
+/rp models              what is around you
+```
+
+From a plugin, a placement can be told to play by name — see
+[the API](/rp-engine/api). On a model worn by a mob, so can
+[MythicMobs](/rp-engine/mobs).

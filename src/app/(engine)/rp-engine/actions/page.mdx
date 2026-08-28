@@ -1,0 +1,116 @@
+export const metadata = {
+  title: "Making items do things",
+  description:
+    "Triggers and a closed list of verbs — messages, sounds, effects, commands and cooldowns — with an event for everything else.",
+};
+
+# Making items do things
+
+```yaml
+wand:
+  material: STICK
+  model: wand
+  actions:
+    right_click:
+      - cooldown: 5
+      - message: "&bWhoosh."
+      - sound: mypack:chime
+      - effect: SPEED 10 2
+      - console: "effect give {player} minecraft:levitation 3"
+```
+
+A trigger holds a **list of steps**, run in order. Each step is one key, so it
+needs its own `-`.
+
+<Callout type="warning" title="The mistake that costs an afternoon">
+  Two keys in one list entry is a missing dash. YAML is perfectly happy with
+  it, and the second verb silently never runs. RP Engine refuses a step with
+  two keys and names both of them at load, because in game the symptom is
+  identical to the feature not working.
+</Callout>
+
+## Triggers
+
+| Trigger | When |
+|---|---|
+| `right_click` | Right-clicked, on a block or in the air |
+| `left_click` | Left-clicked |
+| `attack` | Used to hit an entity |
+| `consume` | Eaten or drunk |
+| `drop` | Dropped |
+| `pickup` | Picked up off the ground |
+| `block_break` | Used to break a block |
+| `shoot` | Shot, for a bow or crossbow |
+| `break` | Ran out of durability |
+
+`break` fires after the item is already gone and cannot be cancelled — that is
+vanilla's shape, not ours. It is still worth having for the sound and the
+message.
+
+There is deliberately no `wear`/`unwear`: Spigot has no equip event, and the
+alternatives are a Paper dependency or polling everybody's armour every tick.
+
+## Steps
+
+| Step | What it does |
+|---|---|
+| `message` | A line of chat to whoever used it. `&` colour codes |
+| `broadcast` | The same, to everybody |
+| `actionbar` | A line above their hotbar |
+| `console` | Runs a command as the console |
+| `run` | Runs a command as the user, with their own permissions |
+| `sound` | `mypack:chime`, or a vanilla key. Optional volume and pitch |
+| `effect` | `SPEED 10 2` — type, seconds, level. Level is 1-based |
+| `give` | `mypack:ruby 3`. What will not fit drops on the floor |
+| `take` | Takes this many off the stack |
+| `cancel` | Cancels the vanilla use of the item |
+| `cooldown` | Seconds. **Stops the run** if it has not been that long |
+| `permission` | Stops the run unless they have it |
+
+**`console` and `run` are different on purpose.** `console` is how an action
+reaches something the player may not do themselves; `run` is how it does
+something *as* them, with their permissions checked.
+
+**`cooldown` stops the rest of the list**, so put a `message` before it and the
+refusal says something:
+
+```yaml
+    right_click:
+      - message: "&7You steady yourself…"
+      - cooldown: 30
+      - message: "&bAgain!"
+```
+
+**`cancel` is what stops the vanilla use.** A wand built on a bucket fills with
+water without it.
+
+A step that cannot run is skipped and the rest still run — a misspelled potion
+costs that line, not the command after it.
+
+## Text
+
+Anything you write can carry `{player}`, `{uuid}`, `{world}`, `{x}`, `{y}`,
+`{z}`, and any PlaceholderAPI placeholder if that plugin is installed.
+
+```yaml
+      - broadcast: "&e{player} found the shrine at {x} {y} {z}"
+```
+
+## Where this stops
+
+<Callout type="note" title="This is not scripting and will not become it">
+  There is no branching, no state and no expressions here. The moment there is
+  an `if` it is a programming language, and one nobody chose to design — you
+  would be writing code in YAML, without a debugger, in a plugin that is not a
+  scripting engine.
+
+  Anything past these verbs is a plugin's job, and
+  [`ItemUseEvent`](/rp-engine/api) is what it listens to: the id, the stack,
+  the click and the block. Cancel that event and the vanilla use is cancelled
+  too — **and the item's own actions do not run either**, because the event is
+  the stronger statement of the two.
+</Callout>
+
+There is also no `gun`, `vehicle` or `music_disc` here, for the same reason.
+Those are whole games rather than item properties, and a half-opinionated gun
+is something every server then has to fight.

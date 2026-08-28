@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 
 import { flatApiNav } from "@/lib/api-nav";
+import { engineItems } from "@/lib/engine-nav";
 import { BASE_PATH } from "@/lib/base-path";
 import { flatNav } from "@/lib/nav";
 
@@ -26,7 +27,7 @@ const SITE = "https://resourcepack.ai";
 
 export function StructuredData() {
   const pathname = usePathname();
-  const entry = [...flatNav, ...flatApiNav].find((item) => item.href === pathname);
+  const entry = [...flatNav, ...engineItems, ...flatApiNav].find((item) => item.href === pathname);
   if (!entry) return null;
 
   const url = `${SITE}${BASE_PATH}${entry.href === "/" ? "" : entry.href}`;

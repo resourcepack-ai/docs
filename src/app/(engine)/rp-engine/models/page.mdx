@@ -1,10 +1,10 @@
 export const metadata = {
-  title: "Models in the world",
+  title: "Placing a model",
   description:
-    "Placing a model as a display entity at its real size, sitting on one, and the rules that decide who may.",
+    "Putting a model in the world as a display entity at its real size, sitting on one, lighting a room, and the rules that decide who may.",
 };
 
-# Models in the world
+# Placing a model
 
 A model is a Blockbench file and an item that carries it. Placing one puts a
 **display entity** in the world at its true size — not a block, not an armour
@@ -28,6 +28,9 @@ chair:
     scale: 1.0
     solid: false         # true gives it something to walk into
     seat: 0.6            # sit on it, this far above its base. 0 is no seat
+    light: 0             # 0-15, what it gives off
+    surface: floor       # floor | wall | ceiling | any
+    drop: mypack:shard   # what breaking it gives back. Default: itself
   permission: mypack.chair
 ```
 
@@ -84,15 +87,40 @@ things players can stand on is how this feature usually rots.
 
 One player per model, and a model with a seat keeps its hitbox.
 
+## Light
+
+A display entity emits nothing, so `light:` puts a real light block in the
+model's anchor and takes it away when the piece is broken. A lamp wants about
+`14`.
+
+**A solid piece cannot also be a lamp.** One block cannot be a barrier and a
+light at once, and the barrier wins.
+
+## Where it may go
+
+`surface:` refuses a placement rather than turning the piece sideways.
+
+| | |
+|---|---|
+| `floor` | The top of a block. Chairs, tables, statues. The default |
+| `wall` | The side of one. Torches, signs, brackets |
+| `ceiling` | The underside. Chandeliers, hanging plants |
+| `any` | Anywhere |
+
+A chandelier stuck to the underside of a floor is somebody's build ruined, so
+the wrong face is a refusal.
+
+## What it drops
+
+Breaking a piece gives back the item it was placed from, keeping whatever name
+or enchantments that item had. `drop:` overrides it with a different content
+id, for a piece that is meant to break rather than come back.
+
 ## Animation
 
-Models pushed from [Studio](https://studio.resourcepack.ai) animate: the push
-carries a rig manifest, and a placed one plays on a loop, on a click, or on a
-call from your own plugin.
-
-A model from your own content folder does not, yet. Blockbench animations
-inside a `.bbmodel` are carried into the pack untouched, and nothing plays them
-— so the file is ready for the day it can, and today it stands still.
+If the `.bbmodel` has keyframes in it, the piece moves — see
+[Animation](/rp-engine/animation). Bones can also carry hitboxes, seats and
+nametags; see [Bones that do something](/rp-engine/bones).
 
 ## Who may place what
 
