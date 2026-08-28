@@ -51,9 +51,9 @@ const nextConfig: NextConfig = {
               // is written out because OMITTING it is what silently bound it
               // to `default-src 'self'` and left every page an unhydrated
               // shell. Every fetch directive below is named for that reason.
-              // googletagmanager.com is the GA4 tag (components/google-analytics.tsx);
-              // its beacons to google-analytics.com are already inside `connect-src https:`.
-              "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+              // static.cloudflareinsights.com is the Web Analytics beacon (components/cloudflare-analytics.tsx);
+              // its report to cloudflareinsights.com is already inside `connect-src https:`.
+              "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https:",
               "font-src 'self' data: https:",
