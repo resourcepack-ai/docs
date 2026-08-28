@@ -4,13 +4,28 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { navNeighbours } from "@/lib/nav";
+import { navNeighbours, type NavItem } from "@/lib/nav";
 
 /** Prev/next links at the foot of a page, in `lib/nav.ts` order. */
 export function Pager() {
   const pathname = usePathname();
-  const { previous, next } = navNeighbours(pathname);
+  return <PagerLinks {...navNeighbours(pathname)} />;
+}
 
+/**
+ * The markup, given the two neighbours.
+ *
+ * Split out so RP Engine's pager can walk its own list without a second copy
+ * of this. Which list a section pages through is the only thing that differs,
+ * and it is the caller's business.
+ */
+export function PagerLinks({
+  previous,
+  next,
+}: {
+  previous?: NavItem;
+  next?: NavItem;
+}) {
   if (!previous && !next) return null;
 
   return (

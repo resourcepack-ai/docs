@@ -1,0 +1,97 @@
+export const metadata = {
+  title: "Bones that do something",
+  description:
+    "Heads that track, hitboxes you can aim at, seats and nametags — named the way your rig already names them.",
+};
+
+# Bones that do something
+
+Name a bone with one of these prefixes in Blockbench and it does more than get
+drawn.
+
+<Callout type="note" title="These are ModelEngine's prefixes, on purpose">
+  A rig you already have — or bought — names its bones this way. Inventing our
+  own spelling would mean re-authoring a model to move it here, for no gain to
+  anybody. It is a naming convention, and this one is already the convention.
+</Callout>
+
+| Bone name | What it does |
+|---|---|
+| `h_head` | Turns to look at whatever its mob is targeting |
+| `hi_head` | The same, and every bone under it inherits it |
+| `b_wing` | A hitbox of its own — the mob is hit on the wing you aimed at |
+| `ob_wing` | The same, turning with the bone |
+| `p_seat1` | Somewhere to sit. Right-click it |
+| `mount` | Where the driver sits. One per model |
+| `tag_name` | Where a name floats |
+
+Anything else is an ordinary bone, which is nearly all of them. A model needs
+none of this.
+
+## Heads
+
+A head bone turns toward what its mob is fighting, on top of whatever the
+animation is already doing to it — so a walk cycle still moves the head and
+looking is composed over it.
+
+<Callout type="warning" title="It follows the target, not the gaze">
+  Bukkit does not expose a mob's head yaw — the yaw you can read is the body's
+  — so "look where it is looking" is not a question the API can answer. Looking
+  at what it is fighting is, and is what you actually want from a boss. A mob
+  with no target faces the way its body does, which is right: an idle mob's
+  head is straight ahead.
+</Callout>
+
+Only on [a model worn by a mob](/rp-engine/mobs). A placed statue has nothing
+to look with.
+
+## Hitboxes
+
+`b_` and `ob_` give a bone a hitbox of its own, so a dragon is hit on the wing
+you aimed at rather than inside one rectangle around the whole animal.
+
+They ride the bone, so they follow the animation. Sized from the bone itself,
+measured when the pack is built.
+
+**A hit on a bone is forwarded to the mob.** The wing is not a creature: it has
+no health of its own, and the mob takes the damage with its own resistances,
+its own death and its own loot. What a bone changes is where you have to aim,
+and how much that is worth:
+
+```yaml
+  place:
+    hitboxes:
+      head: 2.0
+      wing: 0.5
+```
+
+Matched against the bone's **own** name and not its lineage — unlike an
+[animation's bone mask](/rp-engine/animation#two-at-once). A hitbox is a place
+you aimed at, and counting everything inside a torso as a torso hit would make
+a head worthless the moment it was inside one.
+
+## Seats
+
+`p_` is a passenger seat and `mount` is the driver's. Right-click one to sit;
+the seat follows the bone, so a seat on a walking mount goes with it.
+
+`mount` is a whole bone name rather than a prefix, which is ModelEngine's one
+exception and is copied exactly. A bone called `mountain` is scenery.
+
+## Nametags
+
+`tag_` says where a name floats. Vanilla puts a name a fixed distance above the
+hitbox, which on a model three blocks tall and five wide is somewhere inside
+its knee.
+
+The text is the mob's own custom name, and its vanilla one is hidden while the
+tag is up so there are not two. Taking the model off gives it back.
+
+## What is deliberately not here
+
+Procedural bones — tails, segments — and item-display slots on a bone.
+
+Both are animation the engine would be **inventing** rather than a position it
+can read off your rig, and half-doing either is worse than not having it: a
+tail that lags wrongly reads as the plugin being broken, and there is no
+setting anybody can reach to fix it.

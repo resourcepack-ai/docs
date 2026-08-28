@@ -1,0 +1,90 @@
+export const metadata = {
+  title: "Configuration",
+  description:
+    "config.yml — the pack format, how the plugin talks in chat, and icons players can type.",
+};
+
+# Configuration
+
+`plugins/RPEngine/config.yml`. Everything in it has a working default; most
+servers change the first setting and nothing else.
+
+## The pack
+
+```yaml
+pack:
+  format: 46                  # must match the version your players are on
+  description: "My server"
+default-bundle: main          # what a joining player is handed
+```
+
+**`pack.format` is the one to get right.** A number that does not match the
+client's version shows a "made for a different version" warning on join. The
+comment beside it lists the numbers.
+
+## Serving
+
+```yaml
+host:
+  port: 8181
+  public-address: "http://203.0.113.4:8181"
+```
+
+The plugin serves its own built packs over HTTP. It is **told** its public
+address rather than guessing one: a server behind a proxy or a NAT cannot work
+out how the outside world reaches it, and a guess produces a pack that
+downloads on the machine you tested on and nowhere else.
+
+## How it talks
+
+Every line the plugin writes wears a prefix and a palette, and both are yours:
+
+```yaml
+chat:
+  prefix: "RPEngine"
+  colour:
+    prefix: "#3670f8"
+    brackets: "#555555"
+    body: "#aaaaaa"
+    accent: "#3670f8"
+    error: "#ff5555"
+    success: "#55ff55"
+```
+
+A plugin that shouts in its own brand colours on somebody else's server is a
+plugin whose messages get muted. The defaults are ours; the palette is yours.
+
+Colours are hex, with or without the `#`. Anything that is not a hex triple
+falls back to its default rather than throwing — a typo in a colour is not a
+reason for a plugin to stop talking.
+
+## Icons in chat
+
+```yaml
+chat:
+  icons: false
+```
+
+Turn it on and anybody with `rpengine.chat.icons` can type `:wave:` in chat to
+get the [icon](/rp-engine/interface#icons) called `wave`. Use
+`:mypack:wave:` where two packs use one name.
+
+**Off by default**, because a plugin that starts rewriting what people type the
+moment it is installed is one somebody has to find the setting for in a hurry.
+
+A name that is not an icon is left exactly as typed, so `10:30`, `:)` and a URL
+all survive.
+
+## Studio
+
+```yaml
+sync:
+  url: "wss://sync.resourcepack.ai/connect"
+  server-token: ""
+```
+
+Only needed if you use [Studio](https://studio.resourcepack.ai) to push packs
+to a running server. Leave it alone and the plugin never reaches out.
+
+A server that never links behaves exactly as it did before any of this
+existed — Studio is one content source among several, not a requirement.

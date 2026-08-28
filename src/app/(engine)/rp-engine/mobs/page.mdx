@@ -1,0 +1,85 @@
+export const metadata = {
+  title: "Models on mobs",
+  description:
+    "Putting one of your models on an entity another plugin spawned — a MythicMobs boss, a Citizens NPC — without replacing it.",
+};
+
+# Models on mobs
+
+Any entity on the server can wear one of your models. A MythicMobs boss, a
+Citizens NPC, a shopkeeper, a mob another plugin owns.
+
+```
+/rp bind mypack:golem     look at a mob, put the model on it
+/rp unbind                take it off again
+```
+
+<Callout type="note" title="The entity is never replaced">
+  It keeps its AI, its loot table, its health, its hitbox and its uuid, and
+  every plugin holding a reference to it still has the same entity. Its vanilla
+  body is made invisible; `unbind` gives it back.
+
+  An implementation that spawned a new mob to carry the model would take the
+  mob away from the plugin running it, and hand back something that only looks
+  similar.
+</Callout>
+
+The model is an **item id** — the same id a [`place:`](/rp-engine/models) block
+names — so one model can be stood in a world and worn by a mob without being
+written twice. If it animates, the worn copy animates: it faces wherever its
+host faces, and [bones that do something](/rp-engine/bones) do them here.
+
+## From MythicMobs
+
+This is where it is usually wanted, so it is three mechanics rather than a
+command:
+
+```yaml
+Skills:
+- rpmodel{model=mypack:golem} @self ~onSpawn
+- rpanimate{animation=roar} @self ~onDamaged
+- rpunmodel @self ~onDeath
+```
+
+| Mechanic | |
+|---|---|
+| `rpmodel{model=…;scale=…}` | Put the model on |
+| `rpanimate{animation=…}` | Play one by name. `animation=stop` stops |
+| `rpunmodel` | Take it off |
+
+Targeted at an entity, so `@self` dresses the caster and any other targeter
+dresses whatever it names — which is what lets a summoner dress what it
+summons.
+
+Animations are played **by name** here rather than by trigger: a worn model has
+nothing to punch and nothing to walk into, so the triggers a placed model
+resolves have nothing to fire from. The skill tree decides when a mob roars.
+
+## From Citizens
+
+Binding an NPC works with `/rp bind` like anything else — an NPC is an ordinary
+entity. What needs the plugin's help is that Citizens **despawns and respawns**
+its NPCs on a chunk unload, a reload and a restart: the entity that comes back
+is a new one.
+
+So `/rp bind` on an NPC writes the model down against the NPC itself. It comes
+back wearing it, for ever, with nothing else to configure.
+
+## From your own plugin
+
+```java
+models.bind(entity, ContentId.of("mypack", "golem").orElseThrow());
+models.animate(entity, "roar");
+models.unbind(entity);
+```
+
+See [the Java API](/rp-engine/api).
+
+## What it costs
+
+An animated model is one display entity per moving bone, and they are
+passengers of the mob — so vanilla moves them, and there is no per-tick work of
+ours involved.
+
+That still makes a ten-bone boss eleven entities. It is a boss, not a spawner
+mob.

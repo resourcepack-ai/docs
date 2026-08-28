@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 
 import { flatNav, type NavItem } from "@/lib/nav";
 import { flatApiNav } from "@/lib/api-nav";
+import { engineItems } from "@/lib/engine-nav";
 
 import { cn } from "@/lib/utils";
 
@@ -14,7 +15,7 @@ import { cn } from "@/lib/utils";
 // of the two sections a page lives in — that's the cost of splitting them, and
 // this is what pays it. Module scope: both lists are static, so this is built
 // once rather than per mount.
-const searchable: NavItem[] = [...flatNav, ...flatApiNav];
+const searchable: NavItem[] = [...flatNav, ...engineItems, ...flatApiNav];
 
 /**
  * ⌘K palette over the nav manifest.
