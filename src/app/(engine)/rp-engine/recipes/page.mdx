@@ -1,0 +1,66 @@
+export const metadata = {
+  title: "Recipes",
+  description:
+    "Crafting, cooking and stonecutting your own items, with exact-match ingredients.",
+};
+
+# Recipes
+
+```yaml
+# recipes/gems.yml
+ruby_block:
+  type: shaped           # the default
+  result: mypack:ruby_block
+  pattern: ["RRR", "RRR", "RRR"]
+  keys:
+    R: mypack:ruby       # a space in the pattern is an empty slot
+```
+
+`/rp recipes` lists what loaded.
+
+## Types
+
+| `type` | |
+|---|---|
+| `shaped` | A pattern and a key. The default |
+| `shapeless` | An `ingredients` list, in any arrangement |
+| `smelting` | A furnace |
+| `blasting` · `smoking` · `campfire` | The three other cookers |
+| `stonecutting` | One in, several out |
+
+```yaml
+sapphire_from_lapis:
+  type: smelting
+  result: mypack:sapphire
+  ingredient: LAPIS_LAZULI
+  experience: 0.5
+  time: 100              # ticks
+
+dust:
+  type: shapeless
+  result: mypack:dust
+  ingredients: [mypack:ruby, FLINT]
+```
+
+## Exact and loose ingredients
+
+<Callout type="note" title="A content id matches that item and nothing else">
+  An ordinary diamond will not satisfy a recipe calling for `mypack:ruby`, even
+  though a ruby *is* a diamond underneath. The persistent-data tag is what is
+  checked, not the material.
+
+  A vanilla material matches loosely, the way a vanilla ingredient should — any
+  `LAPIS_LAZULI` will do.
+</Callout>
+
+That asymmetry is the useful one. Your custom items are safe from being crafted
+around, and vanilla ingredients still behave like vanilla.
+
+## Naming
+
+A recipe id is **not** a content id, so a recipe may be called `ruby_block`
+while an item of that name also exists. They live in different registries and
+never collide.
+
+Recipes are registered with the server on load and cleared on reload, so a
+recipe you delete stops working without a restart.

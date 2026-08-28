@@ -1,0 +1,72 @@
+export const metadata = {
+  title: "Icons",
+  description:
+    "Pictures that behave like letters — in chat, on signs, in item names, anywhere the game draws text.",
+};
+
+# Icons
+
+An icon is a picture that behaves like a letter.
+
+```yaml
+# fonts/icons.yml
+sword:
+  file: sword     # assets/textures/font/sword.png
+  height: 10
+  ascent: 8
+```
+
+Put one into any text with `:mypack:sword:`.
+
+Icons go into the game's **default font**, which is what makes them work
+everywhere text does: chat, an item name typed at an anvil, a sign, a
+scoreboard, a boss bar, the title of a GUI. Nothing has to know about RP Engine
+to render one — by the time the text reaches the client it is a character like
+any other.
+
+## Height and ascent
+
+`height` is how tall it is drawn, in pixels. `ascent` is how far above the text
+baseline it sits.
+
+An ascent equal to the height puts the icon's bottom edge on the line, which is
+what you usually want. A smaller ascent drops it; a larger one lifts it. An
+ascent **greater than the height** is refused by the client and the font fails
+to load, taking every icon in it down — so this is the one number worth
+checking.
+
+Start with `height: 8, ascent: 7` to sit an icon in a line of chat, then adjust.
+
+## Store the id, never the character
+
+<Callout type="warning" title="Codepoints move">
+  Icons are handed codepoints in id order, so adding one shifts every icon
+  after it. That is invisible to anything resolving an id as it writes the text
+  — and wrong for anything that saved the character into a config file, a
+  database or a sign.
+
+  `/rp icons` shows the character each icon became. It is there for debugging,
+  not for copying into your configs.
+</Callout>
+
+## Using them
+
+```
+/rp icons              every icon, with what it became
+/rp say :mypack:sword: sends yourself text with icons resolved
+```
+
+Anywhere your own config takes text, write the shortcode and RP Engine's API
+will resolve it — see [the Java API](/rp-engine/api).
+
+Players can type them in chat too, if you turn that on:
+
+```yaml
+chat:
+  icons: true
+```
+
+Then anybody with `rpengine.chat.icons` can type `:wave:` for the icon called
+`wave`, or `:mypack:wave:` where two packs use one name. It is off by default,
+and a name that is not an icon is left exactly as typed — so `10:30`, `:)` and
+a URL all survive. See [Configuration](/rp-engine/config#icons-in-chat).

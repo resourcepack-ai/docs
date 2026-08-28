@@ -1,0 +1,89 @@
+export const metadata = {
+  title: "Installing",
+  description:
+    "Dropping the jar in, the version floor and why it is not negotiable, and your first item.",
+};
+
+# Installing
+
+<Steps>
+  <Step title="Drop the jar in">
+    `RPEngine.jar` into `plugins/`, then start the server. It needs **Paper or
+    Spigot 1.21.4 or newer**.
+  </Step>
+  <Step title="Look at what it made">
+    ```
+    plugins/RPEngine/
+      config.yml
+      content/      ← yours
+      output/       ← the built packs, rebuilt on every reload
+    ```
+  </Step>
+  <Step title="Set the pack format">
+    In `config.yml`, `pack.format` has to match the version your players are
+    on, or the client shows a "made for a different version" warning. The
+    comment beside it lists the numbers.
+  </Step>
+</Steps>
+
+<Callout type="warning" title="1.21.4 is the floor, and it is not negotiable">
+  An item's model is chosen by a string-valued component that arrived in
+  1.21.4. Before it, custom items shared a pool of numbers and every plugin
+  doing this needed a table saying which number meant what.
+
+  That component is the reason RP Engine has no id registry, no allocation and
+  no file two people have to keep in sync — so supporting a version without it
+  would mean building all of that back. See [ids](/rp-engine/ids).
+</Callout>
+
+## Your first item
+
+<Steps>
+  <Step title="Make a pack">
+    ```
+    content/mypack/
+      pack.yml
+      items/gems.yml
+      assets/textures/item/ruby.png
+    ```
+
+    `pack.yml` can be as short as a name:
+
+    ```yaml
+    name: My Pack
+    ```
+  </Step>
+  <Step title="Describe the item">
+    `items/gems.yml`:
+
+    ```yaml
+    ruby:
+      material: DIAMOND
+      name: "&cRuby"
+    ```
+
+    That is `mypack:ruby`. The folder name is the namespace, the key is the id,
+    and the texture path falls out of the id — `assets/textures/item/ruby.png`
+    with nothing pointing at it.
+  </Step>
+  <Step title="Reload and take one">
+    ```
+    /rp reload
+    /rp give mypack:ruby
+    ```
+  </Step>
+</Steps>
+
+If the item is a purple-and-black square, the texture is not where the id says
+it should be — `/rp reload` names every missing file in the console.
+
+## Where to go next
+
+<CardGroup>
+  <Card title="The content folder" href="/rp-engine/content">
+    Everything a pack can contain, and where it goes.
+  </Card>
+  <Card title="Items" href="/rp-engine/items">
+    3D models, borrowed models, and gating one by permission.
+  </Card>
+</CardGroup>

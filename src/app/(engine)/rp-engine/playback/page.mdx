@@ -1,0 +1,69 @@
+export const metadata = {
+  title: "Controlling playback",
+  description:
+    "Loop, hold or once — and the speed, priority and crossfade a server decides rather than a model.",
+};
+
+# Controlling playback
+
+Blockbench's own **loop / hold / once** comes across as authored. Everything
+else is a decision about your server rather than about the model, so it lives
+beside the piece:
+
+```yaml
+chair:
+  material: PAPER
+  model: chair
+  place:
+    animations:
+      spin:
+        mode: loop      # loop | hold | once, overriding the .bbmodel
+        speed: 0.5      # half the authored speed
+        priority: 10    # wins when two animations claim one trigger
+        blend: 0.25     # seconds to ease in and out of it
+```
+
+An animation nobody mentions plays exactly as authored.
+
+## What happens at the end
+
+| `mode` | |
+|---|---|
+| `loop` | Starts again |
+| `hold` | Stops on the last frame and stays there |
+| `once` | Plays and goes back to rest |
+
+**`hold` is the one worth knowing.** A door, a lid, a drawbridge and a portcullis
+are all animations that should stop where they finished — without it they spring
+shut the moment they finish opening, because a one-shot that runs out goes back
+to rest.
+
+## Speed
+
+`speed: 0.5` is half as fast; `2` is twice.
+
+It is here and not in a second Blockbench file because the same walk cycle is a
+stroll on one server and a sprint on another, and re-exporting a model to change
+its tempo is a bad trade.
+
+## Priority
+
+Matters once a model has more than one animation on the same trigger. **Higher
+wins**; equal falls back to the order they appear in the file.
+
+Without it, the first claimant of a trigger wins and the second is unreachable —
+which is fine until you add a rare animation that should beat the common one.
+
+## Blend
+
+`blend: 0.25` is the difference between a model that **snaps** between poses and
+one that moves.
+
+A quarter of a second covers most things. It eases out as well as in — going
+back to rest is a transition too, so there is no separate setting for it.
+
+<Callout type="note" title="Why a crossfade needs to be asked for">
+  A blend is only correct if the two poses are far apart. Blending a
+  two-frame flicker would smear it into nothing, so it is off unless a model
+  asks, rather than on by default with a way to turn it off.
+</Callout>

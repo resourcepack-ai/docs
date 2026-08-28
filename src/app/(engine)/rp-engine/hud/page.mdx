@@ -1,0 +1,52 @@
+export const metadata = {
+  title: "HUD overlays",
+  description:
+    "Something drawn over the game rather than behind a window — a mana bar, a compass, a vignette.",
+};
+
+# HUD overlays
+
+An overlay is drawn over the game rather than behind a window.
+
+```yaml
+# huds/overlays.yml
+mana:
+  slot: action_bar       # action_bar | boss_bar
+  height: 64
+  ascent: 32
+```
+
+`/rp hud mypack:mana` shows one; `/rp hud clear` takes it away.
+
+## The two slots
+
+Both are places the game already draws text somewhere fixed, which is the whole
+trick: an overlay is a glyph placed into that text with enough negative space
+around it to land where you drew it.
+
+| | |
+|---|---|
+| `action_bar` | Above the hotbar. Vanilla uses it for item names |
+| `boss_bar` | The top of the screen, where a boss health bar goes |
+
+There is no third slot, because there is no third piece of text the game will
+draw wherever you ask.
+
+## Height and ascent
+
+`height` is how tall the picture is drawn. `ascent` moves it up the screen from
+the slot's baseline — a bigger ascent is higher.
+
+An ascent **greater than the height** is refused by the client and takes the
+whole font down with it, so if every icon on your server vanishes at once, this
+is the first number to check.
+
+## What it is not
+
+An overlay is a picture, and a picture cannot know anything. A mana bar that
+empties is several overlays and something of yours choosing which to show —
+RP Engine draws whichever you ask for and has no opinion about mana.
+
+That "something of yours" is usually a scoreboard or menu plugin reading
+[a placeholder](/rp-engine/placeholderapi), or your own plugin calling the
+[API](/rp-engine/api).

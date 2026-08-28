@@ -1,0 +1,55 @@
+export const metadata = {
+  title: "WorldGuard",
+  description:
+    "Two region flags for placing models and using custom items, built on events the engine already fired.",
+};
+
+# WorldGuard
+
+Two region flags, if WorldGuard is installed:
+
+```
+/rg flag spawn rpengine-place deny
+/rg flag arena rpengine-use deny
+```
+
+| Flag | Covers |
+|---|---|
+| `rpengine-place` | Putting a model down, and breaking one |
+| `rpengine-use` | Using a custom item |
+
+Both **allow** by default, so installing WorldGuard changes nothing until you
+set one.
+
+## It fails open
+
+<Callout type="note" title="Anything that goes wrong allows">
+  A flag that never registered, an exception, WorldGuard not answering, a
+  player with bypass — all of them allow.
+
+  A protection hook that failed **closed** would lock a server out of its own
+  content the moment anything went wrong with it, which is a worse outcome than
+  an unguarded region. You would find out from players who cannot place
+  anything anywhere, with a stack trace nobody saw.
+</Callout>
+
+## Why this needed no engine change
+
+The whole integration is a listener cancelling
+[events](/rp-engine/api) RP Engine already fired: `ModelPlaceEvent`,
+`ModelBreakEvent`, `ItemUseEvent`.
+
+That is what those events are for. A region check baked into placement would
+have locked every other protection plugin out of the same decision — and the
+same events are why GriefPrevention, a claims plugin or your own rule can do
+exactly what WorldGuard does here, without waiting for us.
+
+## Placement already respects protection
+
+Separately from the flags: **a placement asks the server whether that player
+could have placed a block there.**
+
+So spawn protection, world protection and most claim plugins already apply with
+nothing configured. The flags are for the case where you want models and items
+treated differently from blocks — a region where building is fine but statues
+are not.

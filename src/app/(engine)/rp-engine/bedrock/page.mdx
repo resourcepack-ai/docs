@@ -1,0 +1,52 @@
+export const metadata = {
+  title: "Bedrock and Geyser",
+  description:
+    "What Bedrock players get from an RP Engine server, and what they do not.",
+};
+
+# Bedrock and Geyser
+
+If **Geyser-Spigot** is on the server, Bedrock players are handed a Bedrock pack
+rather than being left out. There is nothing to configure; it is detected and
+used.
+
+## What crosses over
+
+Items, textures, sounds and armour. A Bedrock player joining sees your custom
+items with your art, hears your sounds, and wears your armour — the same content
+your Java players have.
+
+## What does not
+
+**Animation.** Bedrock does not translate a Java model rig, and there is no
+honest way to make it.
+
+<Callout type="warning" title="An animated model stands still for Bedrock players">
+  It is there, it has its art, it does not move. Everybody on Java sees it
+  animate.
+
+  This is worth designing around rather than discovering: a puzzle whose
+  solution is watching a mechanism animate is a puzzle Bedrock players cannot
+  solve, and nothing in game tells them why.
+</Callout>
+
+**Emotes**, for the same reason — an emote is a rig played on a player.
+
+**Custom screens and HUD overlays.** Both are glyphs in a font, and Bedrock's
+font handling is not the same mechanism.
+
+## Designing for both
+
+The rule that works: **make the model carry the meaning, and the animation
+carry the delight.** A door that animates open is fine if it is also obviously a
+door; a lever whose only feedback is a two-second animation is not.
+
+If your server is Java-first and Bedrock is a bonus, none of this matters much.
+If Bedrock is a real part of your player base, it is worth knowing which of your
+content is decoration and which is information.
+
+## Distribution
+
+Pack distribution builds a Bedrock `.mcpack` alongside the Java zip, so a
+published pack reaches both. See the studio's own
+[distribution](/distribution) docs for what that covers.

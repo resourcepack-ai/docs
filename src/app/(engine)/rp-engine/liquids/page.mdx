@@ -1,0 +1,62 @@
+export const metadata = {
+  title: "Liquids",
+  description:
+    "Real water or lava with your rules applied to whoever is inside a marked-out box.",
+};
+
+# Liquids
+
+<Callout type="warning" title="What a custom liquid is, and is not">
+  Minecraft has two fluids and a server cannot add a third. A custom liquid is
+  **real water or lava, wearing your texture, with your rules applied to whoever
+  is in it.** It genuinely behaves like a fluid because it is one — you swim in
+  it, boats float, it flows, other plugins see water.
+
+  Two consequences, both worth knowing before you build around it: the
+  **texture is per-pack**, so every water on the server looks the same; and what
+  tells acid from ocean is a **volume you mark out**, not the blocks in it.
+</Callout>
+
+```yaml
+# liquids/acid.yml
+acid:
+  base: water            # water | lava
+  effect: POISON
+  amplifier: 1
+  damage: 1.0            # per second
+  fireproof: false
+```
+
+## Marking out a pool
+
+```
+/rp liquid corner              stand at one corner
+/rp liquid fill mypack:acid    stand at the opposite one
+/rp liquid clear               removes the pool you are standing in
+/rp liquid list                every pool, per world
+```
+
+The two corners define a box, and everything inside it that is the right fluid
+gets the rules.
+
+## Why a box and not the blocks
+
+A lake is thousands of blocks that change shape as it flows. A per-block record
+would be wrong within a second of somebody breaking a bank, and would need
+rewriting every time the water moved.
+
+A box does not move. It is a few numbers per pool, it survives a restart, and
+the fluid inside it can do whatever fluids do.
+
+The cost is that a pool is rectangular and your lake probably is not. Use
+several overlapping boxes; a player is in whichever they are inside.
+
+## The rules
+
+| | |
+|---|---|
+| `base` | `water` or `lava`. What it actually is |
+| `effect` | A potion effect applied while inside |
+| `amplifier` | Its level, 1-based |
+| `damage` | Per second, on top of anything lava already does |
+| `fireproof` | Whether a lava-based liquid stops burning you |

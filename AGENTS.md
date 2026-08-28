@@ -129,6 +129,18 @@ so: the ⌘K palette (`docs-search.tsx`), the sitemap, the JSON-LD
 picks a tree by pathname because there is no rail beside it to correct a wrong
 answer.
 
+**`engine-nav.ts` is the only tree with two levels**, and its sidebar collapses
+where the other two do not. Thirty-four pages is a wall otherwise. Two rules
+worth keeping if you touch `EngineNavTree`: everything with children starts
+CLOSED, and the group and parent holding the current page open themselves —
+a nav that hides where the reader already is, is the failure mode of every
+collapsing sidebar. Open state is deliberately not remembered across
+navigations, or it ends up entirely open, which is the wall again.
+
+**One feature per page in that section.** Recipes, entities and liquids were
+one page for a day and it was three unrelated things sharing a URL. A short
+page is fine; a page that answers two questions is not.
+
 **The API Reference is a different tree.** `/api-reference` and everything
 under it is a separate top-level section with its own sidebar
 (`src/lib/api-nav.ts`), generated from `src/openapi.json`, which the app itself

@@ -1,0 +1,51 @@
+export const metadata = {
+  title: "Citizens",
+  description:
+    "An NPC that keeps its model across the despawn and respawn Citizens does on every chunk unload.",
+};
+
+# Citizens
+
+```
+/npc select
+/rp bind mypack:shopkeeper
+```
+
+That is the whole thing. There is no trait to add by hand and nothing to
+configure.
+
+## What needed solving
+
+Binding an NPC always worked — a Citizens NPC is an ordinary Bukkit entity, so
+[`/rp bind`](/rp-engine/mobs) has been able to dress one since binding existed.
+
+What did **not** work is the NPC being despawned and respawned, which Citizens
+does on a chunk unload, a `/npc reload` and a server restart. The entity that
+comes back is a new one, and the model went with the old one — so an NPC dressed
+on Monday was bare by Tuesday, with nothing to say why.
+
+<Callout type="note" title="So the model is written down against the NPC">
+  Binding an NPC adds an `rpmodel` trait carrying the id. Citizens saves it with
+  everything else it knows about that NPC, and RP Engine puts the model back the
+  moment the new entity exists.
+
+  `/rp unbind` clears it, so an NPC told to take its model off does not put it
+  back on at the next respawn.
+</Callout>
+
+## What the NPC keeps
+
+Everything. Its skin, its name, its pathing, its commands, its traits, its uuid
+as far as Citizens is concerned. RP Engine makes the vanilla body invisible and
+hangs a model off it; take the model off and the NPC is exactly what it was.
+
+## Animating one
+
+```java
+models.animate(npc.getEntity(), "wave");
+```
+
+There is no Citizens-side trigger for it, because Citizens has no skill tree to
+hang one on. If you want an NPC that waves when somebody walks up, that is your
+own plugin listening for whatever "walks up" means on your server — see
+[the Java API](/rp-engine/api).

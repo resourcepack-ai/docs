@@ -1,0 +1,70 @@
+export const metadata = {
+  title: "Bundles",
+  description:
+    "The built zips, holding more than one at a time, and why a swap is instant.",
+};
+
+# Bundles
+
+A **bundle** is a built zip. Most servers have one and never think about it.
+
+```yaml
+# in a pack's pack.yml
+bundles: [main]
+```
+
+```yaml
+# in config.yml
+default-bundle: main
+```
+
+`/rp bundles` lists them with their sizes and hashes.
+
+A pack lists the bundles it belongs to; a bundle may hold many packs. One pack
+can be in several, which is how a shared base pack gets into every bundle
+without being copied.
+
+## Why more than one
+
+A resource pack is no longer all-or-nothing. Since 1.20.3 a server can add and
+remove packs **per player**, so a lobby can carry one bundle, a dungeon
+another, and an event pack can be stacked on top of whatever somebody already
+holds.
+
+Two things follow, and both are the client's rules rather than ours:
+
+- **A later bundle overrides an earlier one.** That is the honest answer to two
+  packs replacing the same vanilla texture, and it is decided by the order they
+  were sent in.
+- **A bundle is cached by its contents.** Swapping back to one somebody already
+  holds is instant and downloads nothing.
+
+## Why a build is byte-identical every time
+
+That second point only holds because the zips are **reproducible**: the same
+content produces the same bytes, so the client recognises a pack it already
+has.
+
+If a build were not reproducible — if it carried a timestamp, say — every
+restart would give every bundle a new identity, every player would redownload
+everything, and swapping between two bundles would stop being free. The whole
+feature would feel broken without anything obviously being wrong.
+
+So: sorted entries, fixed compression, and a timestamp of zero. It is worth
+knowing because it explains why a rebuild that changes nothing sends nothing.
+
+## Serving them
+
+The plugin serves its own built packs over HTTP, from the address you give it:
+
+```yaml
+host:
+  port: 8181
+  public-address: "http://203.0.113.4:8181"
+```
+
+It is **told** its public address rather than guessing one — a server behind a
+proxy or a NAT cannot work out how the outside world reaches it, and a guess
+produces a pack that downloads on the machine you tested on and nowhere else.
+
+See [Configuration](/rp-engine/config).

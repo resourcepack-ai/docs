@@ -1,0 +1,54 @@
+export const metadata = {
+  title: "MythicMobs",
+  description:
+    "Three mechanics so a MythicMobs mob can wear one of your models and animate from its skill tree.",
+};
+
+# MythicMobs
+
+```yaml
+Skills:
+- rpmodel{model=mypack:golem} @self ~onSpawn
+- rpanimate{animation=roar} @self ~onDamaged
+- rpunmodel @self ~onDeath
+```
+
+Nothing to enable. If MythicMobs is on the server, the mechanics are there.
+
+## The mechanics
+
+| | |
+|---|---|
+| `rpmodel{model=…;scale=…}` | Put the model on |
+| `rpanimate{animation=…}` | Play one by name. `animation=stop` stops |
+| `rpunmodel` | Take it off |
+
+`model`, `scale` and `animation` all accept short aliases (`m`, `s`, `a`),
+because a config line is typed from memory.
+
+All three are **targeted at an entity**, so `@self` dresses the caster and any
+other targeter dresses whatever it names — which is what lets a summoner dress
+what it summons.
+
+## `~onSpawn` is the important one
+
+A bind lasts as long as the entity does. Binding in `~onSpawn` means every mob
+of that type wears the model, including ones spawned long after you wrote the
+skill, and including the ones that come back after a chunk reload.
+
+## Animation is your skill tree's job
+
+A worn model has nothing to punch and nothing to walk into, so RP Engine's own
+[triggers](/rp-engine/playback) have nothing to fire from here. `rpanimate` is
+how a mob roars, and *when* is a decision your skill tree already knows how to
+make — `~onDamaged`, `~onAttack`, a timer, a health threshold.
+
+```yaml
+- rpanimate{animation=enrage} @self ~onDamaged =50%
+```
+
+## The mob stays MythicMobs'
+
+RP Engine changes what it looks like and nothing else. Its health, its damage,
+its AI, its drops, its skill tree and its uuid are all still MythicMobs' — see
+[binding a model](/rp-engine/mobs) for why that is the whole design.

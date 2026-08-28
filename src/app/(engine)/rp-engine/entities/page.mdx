@@ -1,0 +1,57 @@
+export const metadata = {
+  title: "Entities",
+  description:
+    "A real mob wearing one of your models — its own AI, its own loot, its own hitbox.",
+};
+
+# Entities
+
+```yaml
+# entities/guards.yml
+guard:
+  type: ZOMBIE           # choose it for BEHAVIOUR; the looks are replaced
+  model: mypack:guard    # an item id, whose model it wears
+  name: "&cTemple Guard"
+  health: 40
+  scale: 1.2
+  silent: false
+  tags: [temple, boss]
+```
+
+`/rp spawn mypack:guard` puts one where you are standing. `/rp entities` lists
+them.
+
+## It is genuinely a mob
+
+It walks with its own AI, takes damage, drops its loot, is found by
+`@e[tag=boss]`, and is seen by every other plugin on the server as the vanilla
+type it is.
+
+**Pick `type` for how you want it to behave**, not how you want it to look — a
+zombie hunts and burns in daylight, a villager wanders and flees, an armour
+stand does nothing at all. The looks are replaced either way.
+
+## How the model is worn
+
+The model is a display entity riding the mob, with the vanilla body made
+**invisible rather than removed**, so the hitbox stays exactly where the model
+looks and the mob is hit where it appears to be.
+
+A custom entity never despawns. One that vanished because a player walked away
+would leave its model standing there in an empty field — removing a mount
+ejects its passengers rather than taking them with it.
+
+## `tags`
+
+Scoreboard tags, applied at spawn. They are how everything else on your server
+finds these: `@e[tag=boss]` in a command block, a MythicMobs condition, a
+`/kill` that clears one kind of mob and not another.
+
+## This is for mobs you define
+
+<Callout type="note" title="Somebody else's mob is a different page">
+  To put a model on a mob **another plugin spawned** — a MythicMobs boss, a
+  Citizens NPC — see [putting one on a mob](/rp-engine/mobs). The difference is
+  who owns the entity, and it matters: that page never replaces one, and this
+  one creates it.
+</Callout>

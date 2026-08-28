@@ -1,0 +1,75 @@
+export const metadata = {
+  title: "Sounds",
+  description:
+    "Custom sound events on a Spigot server — Ogg files, categories, and why a subtitle matters.",
+};
+
+# Sounds
+
+```yaml
+# sounds/ambient.yml
+chime:
+  file: bells/chime    # assets/sounds/bells/chime.ogg. Defaults to the id.
+  category: ambient    # which volume slider it obeys
+  subtitle: "A chime rings"
+  volume: 1.0
+  pitch: 1.0
+  stream: false        # true for anything long
+```
+
+These are **real sound events**, not a file played at somebody. They obey the
+volume sliders, they carry subtitles, they can be stopped by category, and any
+plugin or command that takes a sound key takes `mypack:chime`.
+
+## The file
+
+**Ogg Vorbis only.** An mp3 renamed to `.ogg` is silence in game with nothing
+to say why, so a missing or wrong file is a build error naming the path.
+
+`file:` is relative to `assets/sounds/` and defaults to the id, so a sound
+called `chime` finds `assets/sounds/chime.ogg` with nothing pointing at it.
+
+`stream: true` for anything long — music, ambience over about ten seconds. A
+streamed sound is decoded as it plays instead of held in memory, which is what
+stops a five-minute track costing every player who hears it.
+
+## Categories
+
+`category:` decides which slider in the audio settings turns it down.
+
+| | |
+|---|---|
+| `master` | Everything. Rarely the right answer |
+| `music` · `record` | Background music, and jukeboxes |
+| `weather` · `block` · `hostile` · `neutral` | Vanilla's own groupings |
+| `player` · `ambient` · `voice` | Footsteps, atmosphere, speech |
+
+Pick the one a player would expect to reach for. Somebody who turns music down
+has said something about your ambient track too.
+
+## Subtitles
+
+```yaml
+  subtitle: "A chime rings"
+```
+
+**Write one.** Without it your sound does not exist for anybody playing with
+subtitles instead of audio, which is more people than most server owners
+expect — and it costs one line.
+
+## Playing one
+
+```
+/rp sounds                     every sound this server holds
+/rp sound mypack:chime         play it at yourself
+/rp sound mypack:chime Steve   at somebody else
+```
+
+From an [item action](/rp-engine/actions):
+
+```yaml
+      - sound: mypack:chime 1 1.2     # id, volume, pitch
+```
+
+A vanilla key works there too — `minecraft:block.anvil.land` — so an action can
+reach the whole vanilla sound set without you redeclaring any of it.

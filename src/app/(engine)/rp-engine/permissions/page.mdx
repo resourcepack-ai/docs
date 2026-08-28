@@ -1,0 +1,53 @@
+export const metadata = {
+  title: "Permissions",
+  description:
+    "One node per command, what defaults to what, and the three nodes that gate something other than a command.",
+};
+
+# Permissions
+
+**One node per command**, always `rpengine.<subcommand>` — `rpengine.give`,
+`rpengine.purge`, `rpengine.sync`. No buckets: whoever may reload content is
+not necessarily whoever may purge every model within a hundred blocks, and a
+bucket is a guess about that which is wrong on some server.
+
+`rpengine.admin` is a parent granting all of them, for a server that does not
+want to think about it. Nothing checks it directly.
+
+Everything defaults to `op`, except:
+
+| Node | Default | |
+|---|---|---|
+| `rpengine.emote` | everyone | Playing an emote |
+| `rpengine.emotes` | everyone | Listing them |
+| `rpengine.emote.cast` | op | Naming a cast. They are still asked |
+| `rpengine.emote.force` | op | Naming one **without** asking |
+| `rpengine.chat.icons` | everyone | Typing `:wave:` in chat |
+
+`rpengine.emote.force` is deliberately not a child of `rpengine.emote.cast`.
+Holding one is being allowed to ask; holding the other is being allowed to skip
+the asking, and a server that granted the first has not agreed to the second.
+
+`rpengine.chat.icons` is deliberately **not** granted by `rpengine.admin`
+either. Admin means "every command", and a server that gives its ops every
+command has not thereby said only ops may use an emoji. It is one of three
+nodes that gate something other than a command — the emote pair above are the
+others.
+
+Individual content can carry its own node too — `permission:` on an item or a
+model — which is checked when it is used or placed rather than when it is held.
+
+## Granting them
+
+RP Engine checks Bukkit permissions, so **whatever already provides them
+works** — LuckPerms, and anything else that plugs into Vault. There is no
+integration to install and nothing RP Engine needs to know about your setup.
+
+```
+/lp group builder permission set rpengine.give true
+/lp group admin permission set rpengine.admin true
+```
+
+A subcommand somebody cannot run is **not offered in tab completion**, so a
+player with a narrow grant sees a short, honest command rather than a long one
+that refuses most of itself.
