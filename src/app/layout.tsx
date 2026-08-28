@@ -4,6 +4,7 @@ import { IBM_Plex_Mono, Onest } from "next/font/google";
 import "./globals.css";
 import { SITE_URL } from "./sitemap";
 import { asset } from "@/lib/base-path";
+import { GoogleAnalytics } from "@/components/google-analytics";
 
 // Same pairing as studio and landing — the docs are the same product.
 const onest = Onest({
@@ -71,7 +72,10 @@ export default function RootLayout({
   // `.dark` is permanent, matching studio — there is no light theme.
   return (
     <html lang="en" className={`dark ${onest.variable} ${plexMono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <GoogleAnalytics />
+        {children}
+      </body>
     </html>
   );
 }
