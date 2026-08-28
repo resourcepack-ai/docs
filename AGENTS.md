@@ -130,12 +130,18 @@ picks a tree by pathname because there is no rail beside it to correct a wrong
 answer.
 
 **`engine-nav.ts` is the only tree with two levels**, and its sidebar collapses
-where the other two do not. Thirty-four pages is a wall otherwise. Two rules
-worth keeping if you touch `EngineNavTree`: everything with children starts
-CLOSED, and the group and parent holding the current page open themselves —
-a nav that hides where the reader already is, is the failure mode of every
-collapsing sidebar. Open state is deliberately not remembered across
-navigations, or it ends up entirely open, which is the wall again.
+where the other two do not. Thirty-four pages is a wall otherwise. Three rules
+worth keeping if you touch `EngineNavTree`:
+
+- **Group headings never collapse; pages with children do.** A group is a label
+  rather than a destination, and folding one hides a whole subject behind a
+  word — that turns the section into a menu to navigate instead of a list to
+  scan. What is worth folding is the detail hanging off a page.
+- **They start closed, except the one holding the current page.** A nav that
+  hides where the reader already is is the failure mode of every collapsing
+  sidebar.
+- **Open state is not remembered across navigations**, or it ends up entirely
+  open, which is the wall again.
 
 **One feature per page in that section.** Recipes, entities and liquids were
 one page for a day and it was three unrelated things sharing a URL. A short

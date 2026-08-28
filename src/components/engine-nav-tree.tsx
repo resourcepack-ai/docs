@@ -12,119 +12,96 @@ import { cn } from "@/lib/utils";
 /**
  * RP Engine's sidebar, driven by `lib/engine-nav.ts`.
  *
- * Thirty pages in seven groups, so **everything with children collapses and
- * starts closed**. A flat list of thirty is a wall; closed, the whole section
- * is seven lines somebody can take in at once and open the one they want.
+ * **The group headings never collapse; the pages with children do.** A group
+ * is a label rather than a destination — collapsing one hides a whole subject
+ * behind a word and makes the section a menu to navigate instead of a list to
+ * scan. What is worth folding away is the detail hanging off a page: Armour
+ * and Stats are things you read *while* reading Items, and thirty-four flat
+ * entries is a wall.
  *
- * <p>The one thing that must never be closed is where you already are. Both
- * the group holding the current page and the parent holding it open
- * themselves, so the sidebar always shows the reader their own position —
- * that is the failure mode of every collapsing nav, and it is worth the extra
- * state to avoid.
+ * <p>They start closed, except the one holding the page you are on, which
+ * opens itself. A nav that hides where the reader already is is the failure
+ * mode of every collapsing sidebar, and it is worth the extra state to avoid.
  *
  * <p>Open state is per render rather than remembered across pages: a click
  * navigates, and arriving at the new page reopens exactly the path to it.
- * Persisting it would mean the sidebar slowly ends up entirely open, which is
- * the wall again.
+ * Persisting it would leave the sidebar slowly entirely open, which is the
+ * wall again.
  */
 export function EngineNavTree({ onNavigate }: { onNavigate?: () => void }) {
-  const pathname = usePathname();
-
-  const holdsCurrent = (item: EngineItem) =>
-    item.href === pathname || (item.items?.some((child) => child.href === pathname) ?? false);
-
   return (
-    <nav aria-label="RP Engine" className="flex flex-col gap-1.5">
+    <nav aria-label="RP Engine" className="flex flex-col gap-7">
       {engineNav.map((group) => (
-        <Section
-          key={group.title}
-          title={group.title}
-          heading
-          open={group.items.some(holdsCurrent)}
-        >
-          <ul className="border-line mt-1 flex flex-col border-l">
+        <div key={group.title}>
+          <h2 className="mb-2.5 px-3 text-[0.68rem] font-semibold tracking-[0.09em] text-faint uppercase">
+            {group.title}
+          </h2>
+          <ul className="border-line flex flex-col border-l">
             {group.items.map((item) =>
               item.items ? (
-                <li key={item.href}>
-                  <Section title={item.title} href={item.href} open={holdsCurrent(item)}>
-                    <ul className="border-line ml-3 flex flex-col border-l">
-                      {item.items.map((child) => (
-                        <Row key={child.href} item={child} onNavigate={onNavigate} child />
-                      ))}
-                    </ul>
-                  </Section>
-                </li>
+                <Parent key={item.href} item={item} onNavigate={onNavigate} />
               ) : (
                 <Row key={item.href} item={item} onNavigate={onNavigate} />
               ),
             )}
           </ul>
-        </Section>
+        </div>
       ))}
     </nav>
   );
 }
 
 /**
- * A heading that opens and closes.
+ * A page with pages under it.
  *
- * <p>`href` turns the label itself into a link, for a parent that is a page in
- * its own right — "Items" is both a heading and something to read. The chevron
- * is then its own button, because a click on the word should go to the page
- * and a click on the arrow should not navigate at all. Rolling both into one
- * control makes one of those two behaviours impossible.
+ * <p>The title links and the chevron is its own button, because a click on the
+ * word should open the page and a click on the arrow should not navigate at
+ * all. One control doing both makes one of those two impossible.
  */
-function Section({
-  title,
-  href,
-  heading,
-  open: openInitially,
-  children,
-}: {
-  title: string;
-  href?: string;
-  heading?: boolean;
-  open: boolean;
-  children: React.ReactNode;
-}) {
+function Parent({ item, onNavigate }: { item: EngineItem; onNavigate?: () => void }) {
   const pathname = usePathname();
-  const [open, setOpen] = useState(openInitially);
-  const active = href === pathname;
-
-  const label = cn(
-    "flex-1 text-left transition-colors",
-    heading
-      ? "text-[0.68rem] font-semibold tracking-[0.09em] text-faint uppercase hover:text-muted-foreground"
-      : "text-[0.875rem]",
-    !heading && active
-      ? "text-brand font-medium"
-      : !heading && "text-muted-foreground hover:text-foreground",
-  );
+  const active = pathname === item.href;
+  const holdsCurrent =
+    active || (item.items?.some((child) => child.href === pathname) ?? false);
+  const [open, setOpen] = useState(holdsCurrent);
 
   return (
-    <div className={cn(heading ? "" : "-ml-px border-l", !heading && active ? "border-brand" : "border-transparent")}>
-      <div className={cn("flex items-center gap-1", heading ? "px-3 py-1.5" : "py-[0.34rem] pr-2 pl-[calc(0.75rem-1px)]")}>
-        {href ? (
-          <Link href={href} className={label} aria-current={active ? "page" : undefined}>
-            {title}
-          </Link>
-        ) : (
-          <button type="button" onClick={() => setOpen(!open)} className={label}>
-            {title}
-          </button>
+    <li className="-ml-px">
+      <div
+        className={cn(
+          "flex items-center gap-1 border-l pr-2",
+          active ? "border-brand" : "border-transparent",
         )}
+      >
+        <Link
+          href={item.href}
+          onClick={onNavigate}
+          aria-current={active ? "page" : undefined}
+          className={cn(
+            "flex-1 py-[0.34rem] pl-[calc(0.75rem-1px)] text-[0.875rem] transition-colors",
+            active ? "text-brand font-medium" : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          {item.title}
+        </Link>
         <button
           type="button"
           onClick={() => setOpen(!open)}
           aria-expanded={open}
-          aria-label={`${open ? "Collapse" : "Expand"} ${title}`}
+          aria-label={`${open ? "Collapse" : "Expand"} ${item.title}`}
           className="text-faint hover:text-foreground shrink-0 rounded p-0.5 transition-colors"
         >
           <ChevronRight className={cn("size-3 transition-transform", open && "rotate-90")} />
         </button>
       </div>
-      {open && children}
-    </div>
+      {open && (
+        <ul className="border-line ml-3 flex flex-col border-l">
+          {item.items?.map((child) => (
+            <Row key={child.href} item={child} onNavigate={onNavigate} child />
+          ))}
+        </ul>
+      )}
+    </li>
   );
 }
 
