@@ -21,7 +21,7 @@ import Script from "next/script";
  * because they are separate Workers with no shared package (see the root
  * AGENTS.md list of duplicated files). Change the id here, change all three.
  */
-export const GA_MEASUREMENT_ID = "";
+export const GA_MEASUREMENT_ID = "G-LYPEZ2KR6E";
 
 /**
  * Hostnames that report. A Worker preview, `localhost` and studio's staging
