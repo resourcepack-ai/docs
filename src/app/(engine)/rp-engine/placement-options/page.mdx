@@ -1,0 +1,75 @@
+export const metadata = {
+  title: "Seats, light and surfaces",
+  description:
+    "Sitting on a placed model, lighting a room with one, where one may go, and what it drops.",
+};
+
+# Seats, light and surfaces
+
+Four more things a `place:` block can say.
+
+```yaml
+chair:
+  material: PAPER
+  model: chair
+  place:
+    seat: 0.6            # sit on it, this far above its base. 0 is no seat
+    light: 0             # 0-15, what it gives off
+    surface: floor       # floor | wall | ceiling | any
+    drop: mypack:shard   # what breaking it gives back. Default: itself
+```
+
+## Sitting
+
+`seat:` is how far above the model's base a player's backside goes, in blocks.
+A dining chair is about `0.6`.
+
+Right-click to sit, shift to get up. One player per model, and a model with a
+seat keeps its hitbox.
+
+<Callout type="note" title="The seat is never saved">
+  It is a marker the player rides, and it is gone on dismount, on quit, when
+  the model is broken, and when the server stops.
+
+  That is deliberate. The way this feature usually rots is a world slowly
+  filling with invisible things players can stand on, months after the chairs
+  they belonged to were removed — so nothing is left behind to accumulate.
+</Callout>
+
+A model that animates plays its animation on right-click instead. Shift-right-
+click still sits.
+
+## Light
+
+A display entity emits nothing, so `light:` puts a **real light block** in the
+model's anchor and takes it away when the piece is broken. A lamp wants about
+`14`.
+
+<Callout type="warning" title="A solid piece cannot also be a lamp">
+  One block cannot be a barrier and a light at once, and the barrier wins. If
+  you need both, the usual answer is a solid model beside a non-solid lamp
+  rather than one piece trying to be two things.
+</Callout>
+
+## Where it may go
+
+`surface:` refuses a placement rather than turning the piece sideways.
+
+| | |
+|---|---|
+| `floor` | The top of a block. Chairs, tables, statues. The default |
+| `wall` | The side of one. Torches, signs, brackets |
+| `ceiling` | The underside. Chandeliers, hanging plants |
+| `any` | Anywhere |
+
+A chandelier stuck to the underside of a floor is somebody's build ruined, so
+the wrong face is a refusal and not a rotation.
+
+## What it drops
+
+Breaking a piece gives back **the item it was placed from**, keeping whatever
+name or enchantments that item had — so a renamed chair comes back renamed.
+
+`drop:` overrides that with a different content id, for a piece that is meant
+to break rather than come back. A statue that drops rubble, a window that
+drops shards.

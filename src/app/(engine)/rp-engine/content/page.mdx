@@ -1,12 +1,13 @@
 export const metadata = {
   title: "The content folder",
   description:
-    "How an RP Engine pack is laid out on disk, what an id is, and what happens on a reload.",
+    "How an RP Engine pack is laid out on disk, and what pack.yml says.",
 };
 
 # The content folder
 
-One folder per pack, and the folder name is the namespace.
+One folder per pack, and the folder name is the
+[namespace](/rp-engine/ids).
 
 ```
 plugins/RPEngine/content/
@@ -28,9 +29,7 @@ plugins/RPEngine/content/
     pack.png               optional
 ```
 
-**The folder name is the namespace**, lowercase `a-z`, digits and `_ . -`. A
-folder called `MyPack` is refused rather than lowercased, because `MyPack` and
-`mypack` are one id to us and two to the client.
+## The rules
 
 **The category folder decides the kind.** Top-level keys in a file are id
 paths, so nesting under an `items:` key would say the same thing twice. One
@@ -38,45 +37,11 @@ file may declare many; the file name means nothing, and subfolders are
 organisation only — `items/weapons/swords.yml` contributes nothing to the id.
 
 **A folder exists only if something reads it.** There is no `models/` — a
-placed model is a `place:` block on the item — no `blocks/`, and no `emotes/`
-yet. Any other folder is warned about by name, which is what catches `item/`
-and `Sounds/`.
+placed model is a [`place:` block on the item](/rp-engine/models) — no
+`blocks/`, and no `emotes/`. Any other folder is warned about by name, which is
+what catches `item/` and `Sounds/`.
 
-**Errors are collected, never thrown.** A bad definition is skipped and the
-rest of the pack loads; a bad pack never stops another one. You get every
-problem in one pass rather than restarting ten times.
-
-## What an id is
-
-Everything RP Engine holds has one id, and it looks like a Minecraft resource
-location: `mypack:ruby`, `mypack:furniture/chair`. Lowercase, and an uppercase
-letter is refused rather than quietly folded.
-
-That id is not a label. **It goes verbatim into the item's model reference**,
-which is what makes the whole thing work with no numbers in it:
-
-```
-mypack:ruby  →  assets/mypack/items/ruby.json      the item definition
-             →  assets/mypack/models/item/ruby.json the model
-             →  assets/mypack/textures/item/ruby.png yours
-```
-
-Only the last one is yours to ship. The path falls out of the id, so nothing is
-allocated and there is no registry file to keep in sync — and two packs can
-never collide unless two people pick the same folder name, which is refused at
-load with both named.
-
-<Callout type="note" title="Why 1.21.4 is the floor">
-  An item's model is chosen by a string-valued component that arrived in
-  1.21.4. Before it, custom items had to share a pool of numbers, and every
-  plugin that did this needed a table saying which number meant what. That is
-  the entire reason the version floor is where it is and why it will not move
-  down.
-</Callout>
-
-`minecraft` and `realms` are reserved. Content defined there writes a reference
-that resolves to vanilla art and fails as a missing texture, with nothing in
-game to trace back here.
+**Errors are collected, never thrown.** See [reloading](/rp-engine/reloading).
 
 ## pack.yml
 
@@ -95,38 +60,32 @@ version: 1.0.0
 bundles: [main]      # which built packs this content goes into
 ```
 
-## Bundles
+`bundles:` is the only one that changes behaviour — see
+[Bundles](/rp-engine/bundles). The rest is what a player sees on the pack
+screen.
 
-A **bundle** is a built zip. Most servers have one and never think about it;
-`default-bundle` in `config.yml` names the one a joining player is handed.
+## assets/ and overrides/
 
-They exist because a resource pack is no longer all-or-nothing. Since 1.20.3 a
-server can add and remove packs per player, so a lobby can carry one bundle, a
-dungeon another, and an event pack can be stacked on top of whatever somebody
-already holds. A pack lists the bundles it belongs to; a bundle may hold many
-packs.
+Two folders, and the difference matters.
 
-Two things follow, and both are the client's rules rather than ours:
+**`assets/`** becomes `assets/mypack/` in the built pack. It is namespaced, so
+nothing in it can collide with another pack or with vanilla.
 
-- **A later bundle overrides an earlier one.** That is how two packs replacing
-  the same vanilla texture is resolved, and it is decided by the order they are
-  sent in.
-- **A bundle is cached by its contents.** Swapping back to one somebody already
-  holds is instant and downloads nothing, which is only true because the zips
-  are built byte-identically every time.
+**`overrides/`** becomes `assets/minecraft/`. It is how you replace vanilla art
+— a different dirt texture, a new font, a changed sound.
 
-## Reloading
+<Callout type="warning" title="overrides/ is the one place two packs can fight">
+  Two packs both replacing `assets/minecraft/textures/block/dirt.png` is a real
+  conflict, and the later namespace alphabetically wins. Both are named in a
+  build warning.
 
-`/rp reload` re-reads every pack, rebuilds every bundle, and re-serves it to
-everybody holding one.
+  It is a separate folder rather than letting a pack write `assets/minecraft/`
+  itself, so the risk is visible while somebody is authoring rather than on the
+  day two packs are installed together.
+</Callout>
 
-**A pack is replaced whole or not at all.** There is no diffing: a model you
-deleted stops existing rather than lingering because nothing noticed it had
-gone. The cost is that a reload rebuilds everything, which on a large pack is
-seconds rather than milliseconds — so it is a command you run while authoring,
-not something to put on a timer.
+## Blockbench files
 
-What survives a reload: everything already placed in the world. Placed models
-are ordinary chunk-saved entities tagged with their id, so they are still
-standing there afterwards. If you delete the pack that defined one,
-`/rp models` marks it as an orphan and `/rp purge` clears them.
+`assets/models/` holds `.bbmodel` project files or `.json` exports. See
+[Items](/rp-engine/items#3d-items) for which to use and why the project file is
+the answer.

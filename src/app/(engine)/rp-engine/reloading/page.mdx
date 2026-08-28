@@ -1,0 +1,58 @@
+export const metadata = {
+  title: "Reloading",
+  description:
+    "What /rp reload replaces, what survives it, and what to do about content you deleted.",
+};
+
+# Reloading
+
+```
+/rp reload
+```
+
+Re-reads every pack, rebuilds every bundle, and re-serves it to everybody
+holding one.
+
+## A pack is replaced whole
+
+There is no diffing. A model you deleted stops existing, rather than lingering
+because nothing noticed it had gone.
+
+That is deliberate: diffing two versions of a content pack and touching only
+what changed is how you get a registry that disagrees with the built pack, and
+the disagreement shows up as content that works until the next restart.
+
+The cost is that a reload rebuilds everything, which on a large pack is seconds
+rather than milliseconds. It is a command you run while authoring, not
+something to put on a timer.
+
+## Errors do not stop it
+
+A bad definition is skipped and the rest of the pack loads. A bad pack never
+stops another one.
+
+You get every problem in one pass, named by file and id, rather than fixing one
+and restarting to find the next.
+
+## What survives
+
+**Everything already placed in the world.** Placed models are ordinary
+chunk-saved entities tagged with their id — nothing of ours is written to a
+database, so they survive a reload, a restart, and a world you copy to another
+server.
+
+That means deleting a pack does not delete what was built with it. The models
+are still standing; they simply have no art until the pack comes back.
+
+## Orphans
+
+```
+/rp models        placed models near you, orphans marked
+/rp purge         remove the orphans, and only those
+```
+
+An orphan is a placed model whose content no longer exists. `/rp purge` removes
+those and nothing else — purging models a pack still defines would be a
+demolition command wearing a cleanup command's name.
+
+Both take a radius. Neither touches anything outside it.

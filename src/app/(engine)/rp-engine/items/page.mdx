@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Items",
   description:
-    "A vanilla item wearing a different model — its art, its armour, and the vanilla numbers it carries.",
+    "A vanilla item wearing a different model — the kind of content everything else hangs off.",
 };
 
 # Items
@@ -25,7 +25,16 @@ ruby:
 `material` is what it *is* when nothing else is looking — pick it for
 behaviour. A `PAPER` ruby is inert; a `DIAMOND_SWORD` one swings like a sword.
 
-`/rp give <id> [amount] [player]` puts one in a hand.
+`/rp give mypack:ruby` puts one in your hand. `/rp items` lists them.
+
+## The texture
+
+Falls out of the id. `mypack:ruby` looks for
+`assets/textures/item/ruby.png` with nothing pointing at it, and `texture:`
+overrides that if you want two items sharing one picture.
+
+A texture nobody shipped is a build warning naming the path, rather than a
+purple-and-black square in game with nothing to trace it back to.
 
 ## 3D items
 
@@ -39,101 +48,29 @@ sword:
 
 **Both forms work**, and the project file is the one to use:
 
-- `sword.bbmodel` — what Blockbench **saves**. Its textures are inside it, so
+- **`sword.bbmodel`** — what Blockbench *saves*. Its textures are inside it, so
   the model is one file you can hand to somebody, and there is no export step
   to forget.
-- `sword.json` — what Blockbench **exports**. Cubes only: no bones and no
-  keyframes, which means [an animated model](/rp-engine/animation) must be
-  saved rather than exported.
+- **`sword.json`** — what Blockbench *exports*. Cubes only: no bones and no
+  keyframes, so [an animated model](/rp-engine/animation) must be saved rather
+  than exported.
 
-Source that an item consumed is dropped from the built pack; source nothing
+Source that an item consumed is dropped from the built pack. Source nothing
 referenced is kept, because it is probably a shared parent something else
 inherits from.
 
+## Borrowing another item's model
+
 ```yaml
-copy-model: mypack:sword   # wear another item's model instead
+ruby_sword:
+  material: IRON_SWORD
+  copy-model: mypack:sword
 ```
 
 An item that copies generates nothing of its own — the files already exist
 under the id it borrowed, and writing them twice would be two definitions
-fighting over one path.
-
-## Armour
-
-Any item can be worn, with its own art:
-
-```yaml
-crown:
-  material: GOLDEN_HELMET
-  armor: head              # head | chest | legs | feet
-```
-
-Ship one texture, and which one depends on the slot:
-
-- `armor: legs` → `assets/textures/entity/equipment/humanoid_leggings/<id>.png`
-- anything else → `assets/textures/entity/equipment/humanoid/<id>.png`
-
-Leggings are a different layer, not a second one — the game draws them at their
-own narrower proportions, so art drawn for the wide sheet puts a belt buckle on
-somebody's knee.
-
-This is vanilla's own equipment path and it replaces the old tricks outright.
-Dyed leather spends a colour that can then never be used for anything else;
-armour trims are stuck in the trim palette. Neither is needed.
-
-## The numbers on an item
-
-A custom sword built on a stick hits exactly as hard as a stick. These are the
-vanilla components that fix that:
-
-```yaml
-sword:
-  material: IRON_SWORD
-  model: sword
-  durability: 500                     # replaces the material's own
-  enchantments: { sharpness: 3, unbreaking: 2 }
-  attributes:
-    - attack_damage: 9
-    - attack_speed: -2.4
-    - max_health: { amount: 4, operation: add, slot: hand }
-  food: { nutrition: 6, saturation: 7.2, always: false }
-```
-
-**Names are vanilla's, unprefixed** — `sharpness`, `attack_damage` — because
-that is what is written on the wiki you are reading them off.
-
-An attribute is `name: amount` for the usual case, or a block with an
-`operation` (`add`, `multiply_base`, `multiply`) and a `slot` (`hand`, `head`,
-`chest`, `legs`, `feet`, `any`).
-
-<Callout type="note" title="These are real item components">
-  The game applies them, other plugins read them, and an item that leaves your
-  server in somebody's inventory keeps them. Nothing here needs RP Engine
-  installed to work — which is the test for whether something belongs in this
-  list at all.
-</Callout>
-
-A name that resolves to nothing is one line in the console the first time the
-item is given, not an error at load. Enchantment and attribute names live in
-the server's own registries, and those need a running server to ask.
-
-## Two more flags
-
-```yaml
-crown:
-  material: GOLDEN_APPLE
-  hat: true                # right-click to wear it, any item at all
-  keep-on-death: true      # survives dying
-```
-
-`hat` is the click that saves a drag — vanilla already lets anybody wear
-anything by dragging it into the helmet slot. A head that is already wearing
-something is left alone rather than swapped: a click that quietly removes your
-helmet mid-fight is worse than one that does nothing.
-
-`keep-on-death` takes the item out of the drops and gives it back when the
-player respawns. Vanilla has no per-item keep flag and `keepInventory` is
-all-or-nothing for a whole server.
+fighting over one path. Useful for a set of items that look alike and behave
+differently.
 
 ## Permissions
 
@@ -151,11 +88,16 @@ engine makes.
 ## Where to go next
 
 <CardGroup>
-  <Card title="Making items do things" href="/rp-engine/actions">
-    Triggers and a closed list of verbs — messages, sounds, commands,
-    cooldowns.
+  <Card title="Armour" href="/rp-engine/armour">
+    Any item worn on a body, with its own art.
   </Card>
-  <Card title="Placing a model" href="/rp-engine/models">
+  <Card title="Stats and components" href="/rp-engine/stats">
+    Damage, durability, enchantments and food.
+  </Card>
+  <Card title="Actions" href="/rp-engine/actions">
+    Making an item do something when it is used.
+  </Card>
+  <Card title="Models" href="/rp-engine/models">
     A `place:` block turns an item into something you can put down.
   </Card>
 </CardGroup>

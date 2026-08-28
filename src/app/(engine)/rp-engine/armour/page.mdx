@@ -1,0 +1,55 @@
+export const metadata = {
+  title: "Armour",
+  description:
+    "Any item worn on a body with its own art, on vanilla's own equipment path.",
+};
+
+# Armour
+
+Any item can be worn, with art of your own:
+
+```yaml
+crown:
+  material: GOLDEN_HELMET
+  model: crown
+  armor: head              # head | chest | legs | feet
+```
+
+Ship one texture, and which one depends on the slot:
+
+- `armor: legs` → `assets/textures/entity/equipment/humanoid_leggings/<id>.png`
+- anything else → `assets/textures/entity/equipment/humanoid/<id>.png`
+
+## Leggings are a different layer
+
+Not a second one. The game draws leggings from their own narrower sheet at
+their own proportions, so art drawn for the wide sheet puts a belt buckle on
+somebody's knee.
+
+That is why a slot asks for exactly one texture: declaring both layers would
+name a file your pack has no reason to ship, and shipping the wrong one is a
+mistake you only see on a player.
+
+## This replaces the old tricks
+
+<Callout type="note" title="Vanilla's own equipment path, since 1.21.4">
+  An item declares an `equippable` component naming an asset, and the asset
+  names the layer the game draws it from. It is the same mechanism vanilla
+  armour uses.
+
+  It replaces both of the old workarounds outright. **Dyed leather** spends a
+  colour that can then never be used for anything else on the server, and looks
+  wrong on every other item. **Armour trims** are stuck in the trim palette and
+  limited to what the trim system can draw. Neither is needed, and neither is
+  supported alongside this.
+</Callout>
+
+## The model and the armour are separate
+
+`model:` is what the item looks like **in a hand or a chest**. `armor:` is what
+it looks like **on a body**. A crown can be a 3D model in your hand and a flat
+texture on your head, and usually is — they are drawn by different parts of the
+game and neither can substitute for the other.
+
+An item with `armor:` and no `model:` is a vanilla-looking item that draws
+custom armour, which is a perfectly ordinary thing to want.

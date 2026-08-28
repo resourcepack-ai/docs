@@ -22,80 +22,20 @@ no step where you run a command and then go and find the output.
   Studio in the picture would be a bug.
 </Callout>
 
-## Installing
-
-<Steps>
-  <Step title="Drop the jar in">
-    `RPEngine.jar` into `plugins/`, then start the server. It needs **Paper or
-    Spigot 1.21.4 or newer** — the floor is not negotiable, because the id
-    scheme rests on a component that arrived in 1.21.4.
-  </Step>
-  <Step title="Look at what it made">
-    ```
-    plugins/RPEngine/
-      config.yml
-      content/      ← yours
-      output/       ← the built packs, rebuilt on every reload
-    ```
-  </Step>
-  <Step title="Set the pack format">
-    In `config.yml`, `pack.format` has to match the version your players are
-    on, or the client shows a "made for a different version" warning. The
-    comment beside it lists the numbers.
-  </Step>
-</Steps>
-
-## Your first item
-
-<Steps>
-  <Step title="Make a pack">
-    ```
-    content/mypack/
-      pack.yml
-      items/gems.yml
-      assets/textures/item/ruby.png
-    ```
-
-    `pack.yml` can be as short as a name:
-
-    ```yaml
-    name: My Pack
-    ```
-  </Step>
-  <Step title="Describe the item">
-    `items/gems.yml`:
-
-    ```yaml
-    ruby:
-      material: DIAMOND
-      name: "&cRuby"
-    ```
-
-    That is `mypack:ruby`. The folder name is the namespace, the key is the id,
-    and the texture path falls out of the id — `assets/textures/item/ruby.png`
-    with nothing pointing at it.
-  </Step>
-  <Step title="Reload and take one">
-    ```
-    /rp reload
-    /rp give mypack:ruby
-    ```
-  </Step>
-</Steps>
-
 ## What it can hold
 
 | | |
 |---|---|
-| [Items](/rp-engine/items) | Sprites or 3D models, wearable as armour, carrying real vanilla stats |
-| [Item actions](/rp-engine/actions) | A closed list of verbs, on nine triggers |
-| [Placed models](/rp-engine/models) | Put down, sat on, lighting a room |
-| [Animation](/rp-engine/animation) | Keyframes from Blockbench, layered and blended |
-| [Bones](/rp-engine/bones) | Heads that track, hitboxes you can aim at, seats |
-| [Models on mobs](/rp-engine/mobs) | Worn by an entity another plugin spawned |
+| [Items](/rp-engine/items) | Sprites or 3D models, wearable as [armour](/rp-engine/armour), carrying real [vanilla stats](/rp-engine/stats) |
+| [Actions](/rp-engine/actions) | A closed list of verbs, on nine triggers |
+| [Models](/rp-engine/models) | Put down, [sat on](/rp-engine/placement-options), [animated](/rp-engine/animation), [worn by a mob](/rp-engine/mobs) |
 | [Emotes](/rp-engine/emotes) | Worn or performed, alone or with a cast |
-| [Sounds, icons, screens](/rp-engine/interface) | Sound events, glyphs, GUI backdrops, HUD overlays |
-| [Recipes, entities, liquids](/rp-engine/world) | Crafting, mobs wearing models, pools with rules |
+| [Sounds](/rp-engine/sounds) | Real sound events, with subtitles |
+| [Icons](/rp-engine/icons) | Pictures that behave like letters, anywhere text renders |
+| [Screens](/rp-engine/screens) and [HUDs](/rp-engine/hud) | GUI backdrops and overlays |
+| [Recipes](/rp-engine/recipes) | Crafting, cooking, stonecutting |
+| [Entities](/rp-engine/entities) | A real mob wearing a model |
+| [Liquids](/rp-engine/liquids) | Pools with rules about who is in them |
 
 ## The two ideas worth knowing
 
@@ -112,16 +52,16 @@ instant because the client already has both.
 ## Where to go next
 
 <CardGroup>
+  <Card title="Installing" href="/rp-engine/install">
+    The jar, the version floor, and your first item.
+  </Card>
   <Card title="The content folder" href="/rp-engine/content">
-    How a pack is laid out, what an id is, and what a reload does.
+    How a pack is laid out on disk.
   </Card>
   <Card title="Items" href="/rp-engine/items">
     The kind of content everything else hangs off.
   </Card>
-  <Card title="Placing a model" href="/rp-engine/models">
-    Statues, furniture, lamps — put down at their real size.
-  </Card>
-  <Card title="Other plugins" href="/rp-engine/integrations">
-    PlaceholderAPI, WorldGuard, MythicMobs, Citizens, Geyser.
+  <Card title="PlaceholderAPI" href="/rp-engine/placeholderapi">
+    Every placeholder, for scoreboards and menus.
   </Card>
 </CardGroup>

@@ -1,0 +1,73 @@
+export const metadata = {
+  title: "PlaceholderAPI",
+  description:
+    "Every RP Engine placeholder, for scoreboards, menus, holograms and chat formats.",
+};
+
+# PlaceholderAPI
+
+A scoreboard, a chat format, a hologram and a menu plugin can none of them call
+an API, and all of them can read a placeholder. Install PlaceholderAPI and these
+appear — there is nothing to enable and no expansion to download.
+
+## About the server
+
+| Placeholder | |
+|---|---|
+| `%rpengine_version%` | The plugin version |
+| `%rpengine_content%` | Everything loaded, counted |
+| `%rpengine_namespaces%` | How many packs |
+| `%rpengine_items%` | How many items |
+| `%rpengine_models%` | How many models |
+| `%rpengine_sounds%` | How many sounds |
+| `%rpengine_screens%` · `%rpengine_huds%` | Screens and overlays |
+| `%rpengine_entities%` · `%rpengine_recipes%` | Entities and recipes |
+| `%rpengine_emotes%` | How many emotes |
+
+These answer for the console and for an offline player too, since none of them
+is about anybody in particular.
+
+## About a player
+
+| Placeholder | |
+|---|---|
+| `%rpengine_bundle%` | The bundle they are wearing |
+| `%rpengine_bundles%` | How many they hold |
+| `%rpengine_holding%` | The content id in their hand, or empty |
+| `%rpengine_holding_name%` | The same without the namespace |
+| `%rpengine_emoting%` | Whether they are mid-emote |
+| `%rpengine_can_emote%` | Whether they have a rig to emote with |
+| `%rpengine_seated%` | Whether they are sitting on a model |
+| `%rpengine_synced%` | Whether they are paired with Studio |
+| `%rpengine_sync_code%` · `%rpengine_sync_owner%` · `%rpengine_sync_size%` | Which pairing, whose, and how many are on it |
+
+An offline player gets an empty string rather than `false` — "no" would be a
+claim about somebody who is not there to have an answer.
+
+## Asking a question
+
+Two take an argument:
+
+| | |
+|---|---|
+| `%rpengine_holds_<bundle>%` | Whether this player holds that bundle |
+| `%rpengine_has_<namespace>:<id>%` | Whether this server has that content |
+
+```
+%rpengine_holds_dungeon%
+%rpengine_has_mypack:ruby%
+```
+
+## They answer and never act
+
+Every one of these is a lookup. A placeholder is evaluated wherever a string is
+rendered — several times a tick per player on a scoreboard — so nothing here
+builds a pack, walks the world, or writes anything.
+
+That is worth knowing if you are tempted to put one somewhere hot: you can.
+
+## A name that is not one of ours
+
+Renders as the text you typed, rather than as an empty string. A typo you can
+see is one you can fix; a placeholder that silently becomes nothing is a blank
+space on a scoreboard with no way to tell what was meant to be there.

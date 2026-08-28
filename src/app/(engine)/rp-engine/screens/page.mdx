@@ -1,0 +1,52 @@
+export const metadata = {
+  title: "Screens",
+  description:
+    "A picture drawn behind a container GUI, positioned from the window it was drawn for.",
+};
+
+# Screens
+
+A screen is a picture drawn behind a container window.
+
+```yaml
+# screens/menus.yml
+shop:
+  container: chest_9x6   # the real container it opens as
+```
+
+Draw the sheet **256×256** with the vanilla window art centred on it, and say
+which container it was drawn for. Everything else — the height, the ascent, the
+negative space that slides it into place — follows from that.
+
+`/rp screen mypack:shop` opens one. `/rp screens` lists them.
+
+## The container is the geometry
+
+<Callout type="warning" title="This is the setting that goes wrong">
+  `container:` is what **positions** the picture, not just what gives it slots.
+  Declare a five-row sheet as a six-row chest and the whole screen sits nine
+  pixels out, with nothing in game to say why.
+</Callout>
+
+The name is the real container the GUI opens as, and it decides both the window
+your backdrop is aligned against and the inventory a player sees. Chests,
+droppers, hoppers, furnaces, anvils, looms — the ones vanilla has.
+
+## The Inventory label
+
+The word "Inventory" disappears from every container screen while a bundle
+holds any custom GUI.
+
+That is not a choice so much as the only lever there is. The client draws that
+label *after* the window title, so a backdrop cannot cover it, and blanking it
+in a language file is the one place it can be reached. A server with no custom
+screens is unaffected.
+
+## Opening one from a plugin
+
+A screen is art, not a menu — RP Engine draws the backdrop and does not decide
+what the slots do. Any inventory plugin you already use fills them; open the
+container it was drawn for and the picture is behind it.
+
+From your own code, `Icons` gives you the character run that positions it, and
+you put it in the inventory title. See [the Java API](/rp-engine/api).

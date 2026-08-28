@@ -1,0 +1,61 @@
+export const metadata = {
+  title: "Layers and masks",
+  description:
+    "Playing two animations at once, and playing one on part of a model.",
+};
+
+# Layers and masks
+
+```yaml
+    animations:
+      walk:  { mode: loop, layer: 0 }
+      wave:  { mode: once, layer: 1, bones: [torso], blend: 0.2 }
+```
+
+## Layers
+
+**Layer 0 is the base** — a walk cycle, an idle — and only one plays at a time.
+Anything above it composes **on top**, so a wave on layer 1 plays over whichever
+gait is running rather than replacing it.
+
+One animation per layer, which is what a layer is: waving twice replaces the
+first wave and leaves the walk alone.
+
+Nothing needs to know about this to use it. `/rp` and the API play an animation
+by name, and an animation that names a layer goes on that layer — because
+whether something plays *over* or *instead* is a property of the animation, not
+of the call.
+
+## Masks
+
+**`bones:`** is what makes a layer partial.
+
+```yaml
+      wave: { layer: 1, bones: [torso] }
+```
+
+Naming a bone reaches **everything hanging off it**, so `bones: [torso]` moves
+the arms with it — which is what "upper body only" means in practice, and why
+you name the parent rather than listing every limb.
+
+A model's bone names are whatever you called them in Blockbench.
+
+## Weight
+
+**`weight:`** scales how far the layer moves what it touches, from 0 to 1. Half
+a wave is a smaller wave.
+
+It applies to the animation's values rather than to the finished pose: rotation
+and position are scaled toward zero, and scale toward **1**, because 1 is what
+"no scaling" is — half of a bone scaled to 2 is 1.5, not 1.
+
+## What this does not do
+
+<Callout type="note" title="A layer is all-or-nothing per bone">
+  A bone is either in the mask or it is not. There is no per-bone weight curve,
+  no falloff from the masked bone outward, and no way to say "the shoulder at
+  half strength and the hand at full".
+
+  If you need that, the honest answer today is two animations authored the way
+  you want them, rather than one the engine is asked to blend cleverly.
+</Callout>

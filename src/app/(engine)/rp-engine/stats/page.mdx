@@ -1,0 +1,102 @@
+export const metadata = {
+  title: "Stats and components",
+  description:
+    "Damage, durability, enchantments and food — the vanilla numbers that stop a custom sword hitting like a stick.",
+};
+
+# Stats and components
+
+An item is a vanilla item wearing a different model, which is what makes the
+whole id scheme work — and it leaves a custom sword built on a stick hitting
+exactly as hard as a stick.
+
+These are the vanilla components that fix that:
+
+```yaml
+sword:
+  material: IRON_SWORD
+  model: sword
+  durability: 500                     # replaces the material's own
+  enchantments: { sharpness: 3, unbreaking: 2 }
+  attributes:
+    - attack_damage: 9
+    - attack_speed: -2.4
+    - max_health: { amount: 4, operation: add, slot: hand }
+  food: { nutrition: 6, saturation: 7.2, always: false }
+```
+
+<Callout type="note" title="These are real item components">
+  The game applies them, other plugins read them, and an item that leaves your
+  server in somebody's inventory keeps them. Nothing here needs RP Engine
+  installed to work — which is the test for whether something belongs in this
+  list at all.
+</Callout>
+
+## Names are vanilla's
+
+`sharpness`, `unbreaking`, `attack_damage`, `max_health` — unprefixed, because
+that is what is written on the wiki you are reading them off. Anything the
+server's own registries know is accepted.
+
+**A name that resolves to nothing is a console line the first time the item is
+given, not an error at load.** Those registries need a running server to ask,
+and the definition parser deliberately runs without one. Each stat is skipped
+on its own: an item that comes out with three of its four enchantments is
+traceable, and one that refuses to exist because of a typo in the fourth is
+not.
+
+## Attributes
+
+The short form is a name and an amount:
+
+```yaml
+  attributes:
+    - attack_damage: 9
+```
+
+The long form adds an operation and a slot:
+
+```yaml
+  attributes:
+    - max_health: { amount: 4, operation: add, slot: hand }
+```
+
+| `operation` | |
+|---|---|
+| `add` | Adds the amount. The default |
+| `multiply_base` | Adds a fraction of the base value |
+| `multiply` | Multiplies the total |
+
+`slot` is where it applies: `hand`, `head`, `chest`, `legs`, `feet`, or `any`.
+
+## Durability
+
+`durability:` replaces the material's own maximum. A material that cannot be
+damaged — paper, a block — is warned about rather than silently doing nothing.
+
+## Food
+
+```yaml
+  food: { nutrition: 6, saturation: 7.2, always: false }
+```
+
+`nutrition` is half-drumsticks. `always: true` lets it be eaten on a full
+stomach, the way a golden apple can.
+
+## Two flags beside them
+
+```yaml
+crown:
+  material: GOLDEN_APPLE
+  hat: true                # right-click to wear it, any item at all
+  keep-on-death: true      # survives dying
+```
+
+**`hat`** is the click that saves a drag — vanilla already lets anybody wear
+anything by dragging it into the helmet slot. A head that is already wearing
+something is left alone rather than swapped: a click that quietly removes your
+helmet mid-fight is worse than one that does nothing.
+
+**`keep-on-death`** takes the item out of the drops and gives it back when the
+player respawns. Vanilla has no per-item keep flag, and `keepInventory` is
+all-or-nothing for a whole server.
