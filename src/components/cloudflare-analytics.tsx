@@ -20,7 +20,7 @@ import Script from "next/script";
  * because they are separate Workers with no shared package (see the root
  * AGENTS.md list of duplicated files). Change the token here, change all three.
  */
-export const CF_BEACON_TOKEN = "";
+export const CF_BEACON_TOKEN = "e1d6205f080340d784158ab953a3bec8";
 
 export function CloudflareAnalytics() {
   if (!CF_BEACON_TOKEN) return null;
