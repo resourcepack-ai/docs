@@ -25,6 +25,20 @@ chair:
 A dining chair is about `0.5`, a bar stool nearer `1.1`, a log on the ground
 `0.25` — it is per model, because furniture is any height.
 
+A seat is not always in the middle of a piece — a bench, a car, an L-shaped
+sofa — so it can be three numbers instead of one:
+
+```yaml
+place:
+  seat:
+    x: 0.4      # to the piece's RIGHT. Negative is left
+    y: 0.5      # up, the same number the short form gives
+    z: -0.15    # in FRONT of it. Negative is behind
+```
+
+**Side and forward, not world x and z.** They turn with the piece, so a bench
+placed facing east seats people along itself rather than across it.
+
 If **every** chair on your server sits people a little high or low, that is not
 your number: it is how the game draws a seated player. Nudge them all at once
 with `models.seat-offset` in [`config.yml`](/rp-engine/config) and
