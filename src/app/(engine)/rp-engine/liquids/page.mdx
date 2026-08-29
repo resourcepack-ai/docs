@@ -100,6 +100,14 @@ Clearing a pool paints it back to the biome that was there when the pool was
 made. That is one biome for the whole box, which is all a pool records: a pool
 straddling two biomes comes back as the first of them.
 
+## Doing more than an effect
+
+`effect` and `damage` are applied by the engine every second. Everything else a
+server means by acid — a title, a sound, a quest step — is a
+[`PlayerLiquidEvent`](/rp-engine/api#events), which fires when somebody goes
+into a pool and again when they come out rather than every second they stand
+there.
+
 ## The rules
 
 | Field | What it does |
