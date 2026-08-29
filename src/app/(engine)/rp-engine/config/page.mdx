@@ -75,6 +75,28 @@ moment it is installed is one somebody has to find the setting for in a hurry.
 A name that is not an icon is left exactly as typed, so `10:30`, `:)` and a URL
 all survive.
 
+## The /emote command
+
+```yaml
+emotes:
+  player-commands: true
+```
+
+Whether `/emote` and `/emotereply` are registered as commands of their own.
+Turn it off and nothing is lost — `/rp emote` runs the same code — but the
+server has one command instead of three.
+
+**On by default.** It is worth turning off on a server that already has an
+`/emote` from another plugin: two plugins claiming one name means whichever
+loaded first wins, and the loser's version is reachable only as
+`/theirplugin:emote`, which no player will ever type.
+
+<Callout type="note" title="Upgrading">
+  This setting is new, so an existing `config.yml` will not have the line in
+  it. A missing line reads as `true`, which is what the plugin has always done
+  — add it by hand if you want it off.
+</Callout>
+
 ## Studio
 
 ```yaml

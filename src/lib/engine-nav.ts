@@ -277,10 +277,10 @@ export const engineNav: EngineGroup[] = [
     title: "Developers",
     items: [
       {
-        title: "The Java API",
+        title: "Plugin API",
         href: "/rp-engine/api",
         description: "Drive items, models, emotes and icons from your own plugin.",
-        keywords: ["api", "java", "developer", "bukkit", "softdepend", "event", "listener", "registry"],
+        keywords: ["api", "java", "kotlin", "developer", "bukkit", "softdepend", "event", "listener", "registry"],
       },
     ],
   },

@@ -6,6 +6,15 @@ export const metadata = {
 
 # WorldGuard
 
+RP Engine hooks into WorldGuard to keep custom content out of the places your
+regions already protect: a spawn where nobody may put models down, an arena
+where custom items do nothing.
+
+RP Engine has no protection of its own and is not trying to grow any. It knows
+whether something can physically happen, never whether it is allowed to, so a
+server with regions says where using content is allowed the same way it says
+where building is.
+
 Two region flags, if WorldGuard is installed:
 
 ```
