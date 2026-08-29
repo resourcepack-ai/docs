@@ -6,6 +6,9 @@ export const metadata = {
 
 # Citizens
 
+RP Engine hooks into Citizens so an NPC can wear one of your models and keep
+it — through a chunk unloading, a respawn, and a server restart.
+
 ```
 /npc select
 /rp bind mypack:shopkeeper
@@ -48,4 +51,4 @@ models.animate(npc.getEntity(), "wave");
 There is no Citizens-side trigger for it, because Citizens has no skill tree to
 hang one on. If you want an NPC that waves when somebody walks up, that is your
 own plugin listening for whatever "walks up" means on your server — see
-[the Java API](/rp-engine/api).
+[the plugin API](/rp-engine/api).

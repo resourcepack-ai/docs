@@ -51,6 +51,20 @@ completing it.
 | `/rp liquid clear` | Remove the pool you are in | `rpengine.liquid` |
 | `/rp liquid list` | Every pool, per world | `rpengine.liquid` |
 
+## Emotes
+
+| Command | What it does | Permission |
+|---|---|---|
+| `/emote <name>` | Perform it, or wear it if it is a movement set | `rpengine.emote` |
+| `/emote <name> <player...>` | With a cast. They are asked first | `rpengine.emote.cast` |
+| `/emote stop` | Stop yours, and everybody in it with you | `rpengine.emote` |
+| `/emotereply accept` / `deny` | Answer an invitation | none — see below |
+| `/rp emotes` | Every emote the server holds | `rpengine.emotes` |
+
+`/emote` and `/emotereply` can be turned off in
+[`config.yml`](/rp-engine/config) — `/rp emote` is the same code, so a server
+that would rather have one command than three loses nothing.
+
 ## Studio
 
 | Command | What it does | Permission |
@@ -64,16 +78,6 @@ completing it.
 | `/rp sync stop` | End yours, for everybody | `rpengine.sync` |
 | `/rp push` | Re-send this server's pack to yourself | `rpengine.push` |
 | `/rp distribute <code>` | Serve a published pack to everybody who joins. `off` stops | `rpengine.distribute` |
-
-## Emotes
-
-| Command | What it does | Permission |
-|---|---|---|
-| `/emote <name>` | Perform it, or wear it if it is a movement set | `rpengine.emote` |
-| `/emote <name> <player...>` | With a cast. They are asked first | `rpengine.emote.cast` |
-| `/emote stop` | Stop yours, and everybody in it with you | `rpengine.emote` |
-| `/emotereply accept` / `deny` | Answer an invitation | none — see below |
-| `/rp emotes` | Every emote the server holds | `rpengine.emotes` |
 
 ## Permissions
 

@@ -1,18 +1,21 @@
 export const metadata = {
-  title: "The Java API",
+  title: "Plugin API",
   description:
     "Drive items, models, emotes, icons and sounds from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
 };
 
-# The Java API
+# Plugin API
 
-RP Engine has a Java API. Your plugin can give a custom item, place a model,
-play an emote, put an icon in a message, and cancel any of those when your own
-rules say no.
+Your own Spigot or Paper plugin can give a custom item, place a model, play an
+emote, put an icon in a message, and cancel any of those when your rules say
+no. Every snippet here is in Java and Kotlin — pick one and the whole of the
+docs follows you.
 
 ## Getting in
 
 Everything hangs off the plugin instance.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
 
 ```java
 RPEnginePlugin engine =
@@ -25,6 +28,19 @@ engine.sounds();     // custom sounds
 engine.icons();      // icons, and putting one into text
 engine.registry();   // everything this server holds, by id
 ```
+
+```kotlin
+val engine = Bukkit.getPluginManager().getPlugin("RPEngine") as RPEnginePlugin
+
+engine.items()      // custom items
+engine.models()     // models, and the ones standing in your worlds
+engine.emotes()     // emotes and movement sets
+engine.sounds()     // custom sounds
+engine.icons()      // icons, and putting one into text
+engine.registry()   // everything this server holds, by id
+```
+
+</CodeTabs>
 
 Add `softdepend: [RPEngine]` to your `plugin.yml` so you load after it.
 
@@ -40,9 +56,17 @@ One `namespace:path` ID for everything, and it is an ordinary Minecraft
 resource location. `parse` answers empty rather than throwing, so an ID out of
 somebody's config is a message and not a stack trace.
 
+<CodeTabs labels={["Java", "Kotlin"]}>
+
 ```java
 ContentId ruby = ContentId.parse("mypack:ruby").orElseThrow();
 ```
+
+```kotlin
+val ruby = ContentId.parse("mypack:ruby").orElseThrow()
+```
+
+</CodeTabs>
 
 **Store IDs, never what they resolve to.** An icon's codepoint moves when
 content changes and an item's model is derived from its ID — the ID is the only
@@ -51,17 +75,29 @@ the moment it is needed.
 
 ## Items
 
+<CodeTabs labels={["Java", "Kotlin"]}>
+
 ```java
 Optional<ItemStack> stack = engine.items().create(ruby);
 Optional<ContentId> what  = engine.items().idOf(hand);
 boolean isRuby            = engine.items().is(hand, ruby);
 ```
 
+```kotlin
+val stack: Optional<ItemStack> = engine.items().create(ruby)
+val what: Optional<ContentId> = engine.items().idOf(hand)
+val isRuby: Boolean = engine.items().`is`(hand, ruby)
+```
+
+</CodeTabs>
+
 Identity lives in the stack's persistent data, not its name or its model. An
 item renamed at an anvil is still itself, and a vanilla diamond somebody called
 "Ruby" is still not one.
 
 ## Models
+
+<CodeTabs labels={["Java", "Kotlin"]}>
 
 ```java
 engine.models().place(location, "golem", PlaceOptions.defaults());
@@ -70,10 +106,21 @@ engine.models().near(location, 16);   // what is standing around here
 engine.models().at(entity);           // is this entity part of a model?
 ```
 
+```kotlin
+engine.models().place(location, "golem", PlaceOptions.defaults())
+engine.models().itemFor("golem", ItemOptions.defaults())
+engine.models().near(location, 16)   // what is standing around here
+engine.models().at(entity)           // is this entity part of a model?
+```
+
+</CodeTabs>
+
 A `Placement` is a handle on a model standing in a world: ask it what it is,
 tell it to play an animation, remove it.
 
 ## Emotes
+
+<CodeTabs labels={["Java", "Kotlin"]}>
 
 ```java
 engine.emotes().play(player, "wave");            // solo
@@ -81,6 +128,15 @@ engine.emotes().play(lead, "hug", List.of(other)); // with a cast
 engine.emotes().canPerform(player);
 engine.emotes().stop(player);
 ```
+
+```kotlin
+engine.emotes().play(player, "wave")               // solo
+engine.emotes().play(lead, "hug", listOf(other))   // with a cast
+engine.emotes().canPerform(player)
+engine.emotes().stop(player)
+```
+
+</CodeTabs>
 
 <Callout type="warning" title="A cast is moved, so ask them first">
   An emote with a cast teleports the people it names. If your plugin plays one,
@@ -93,9 +149,17 @@ words in your own palette and your own language.
 
 ## Icons in your own text
 
+<CodeTabs labels={["Java", "Kotlin"]}>
+
 ```java
 String line = engine.icons().format(config.getString("welcome"));
 ```
+
+```kotlin
+val line = engine.icons().format(config.getString("welcome"))
+```
+
+</CodeTabs>
 
 Every `:namespace:id:` becomes its picture. An ID naming nothing is left
 exactly as written, so text never silently loses a chunk of itself.
@@ -119,6 +183,8 @@ is allowed to.** Region protection, plot ownership, an event world where
 nothing may be built: those are rules about your server, which the engine
 cannot see. That is what these events are for.
 
+<CodeTabs labels={["Java", "Kotlin"]}>
+
 ```java
 @EventHandler
 public void onPlace(ModelPlaceEvent event) {
@@ -127,6 +193,17 @@ public void onPlace(ModelPlaceEvent event) {
     }
 }
 ```
+
+```kotlin
+@EventHandler
+fun onPlace(event: ModelPlaceEvent) {
+    if (!myRegions.mayBuild(event.player, event.block())) {
+        event.isCancelled = true
+    }
+}
+```
+
+</CodeTabs>
 
 ### Priority
 
@@ -148,6 +225,8 @@ A plugin can add content of its own rather than shipping a folder. Claim a
 namespace, register against the handle you get back, and the pack builder picks
 it up on the next build.
 
+<CodeTabs labels={["Java", "Kotlin"]}>
+
 ```java
 ClaimResult claim = engine.registration()
         .claim("myplugin", ContentSource.EMBEDDED);
@@ -157,6 +236,18 @@ claim.namespace().ifPresent(ns -> {
     // ... and release() it when your plugin disables
 });
 ```
+
+```kotlin
+val claim = engine.registration()
+    .claim("myplugin", ContentSource.EMBEDDED)
+
+claim.namespace().ifPresent { ns ->
+    ns.define(ContentKind.ITEM, "ruby")
+    // ... and release() it when your plugin disables
+}
+```
+
+</CodeTabs>
 
 The handle is what proves ownership: a plugin holding `myplugin` cannot define
 `otherpack:thing` by accident or on purpose, so two sources loading at once
