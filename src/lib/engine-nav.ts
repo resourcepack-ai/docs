@@ -242,6 +242,13 @@ export const engineNav: EngineGroup[] = [
     title: "Plugin support",
     items: [
       {
+        title: "Moving from ItemsAdder",
+        href: "/rp-engine/itemsadder",
+        description: "Drop an ItemsAdder pack in and it loads. What comes across, and what does not.",
+        keywords: ["itemsadder", "ia", "migrate", "migration", "import", "convert", "contents",
+          "font_images", "behaviours", "compatibility"],
+      },
+      {
         title: "PlaceholderAPI",
         href: "/rp-engine/placeholderapi",
         description: "Every placeholder, for scoreboards, menus and chat formats.",
