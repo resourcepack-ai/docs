@@ -39,6 +39,7 @@ a pack of yours, which is the useful shape for moving over a piece at a time.
 | `specific_properties.armor.slot` | [`armor`](/rp-engine/armour) |
 | `behaviours.liquid_bucket` | [`liquid`](/rp-engine/liquids) |
 | `behaviours.furniture` | [`place:`](/rp-engine/models), with its light, solidity and seat |
+| `blocks.<id>` | a [custom block](/rp-engine/blocks), with its model, hardness, light and tool |
 | `font_images.<id>` | an [icon](/rp-engine/icons) |
 | `enabled: false` | skipped, as it is there |
 
@@ -48,12 +49,15 @@ Each of these is a **warning naming the ID** when the pack loads, never a
 silence — a migration that quietly drops a third of somebody's pack is worse
 than one that refuses out loud.
 
-<Callout type="warning" title="Custom blocks">
-  Not a feature here, by decision. Real custom blocks mean hijacking note
-  blocks or mushroom states — a finite pool, shared with every other plugin
-  doing it, and blocks that can never be migrated. A
-  [placed model](/rp-engine/models) does the same job with no pool to run out
-  of. This is the one thing a pack may genuinely have to be rebuilt around.
+<Callout type="warning" title="A world of blocks does not come across">
+  Block *definitions* translate. The blocks already standing in a world do not:
+  the vanilla state each one hides in was allocated by ItemsAdder against its
+  own numbering, so this engine reads them as whatever it gave that state. A
+  pack migrates; a world has to be rebuilt or remapped by hand.
+
+  Note also that the pool here is [smaller](/rp-engine/blocks) — 49 per note
+  block base rather than 800 — because the instrument cannot be part of a
+  block's identity. A pack with hundreds of blocks will not fit as it stands.
 </Callout>
 
 **Their entities and recipes** are a different feature rather than a different

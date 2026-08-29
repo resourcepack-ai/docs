@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "Custom blocks",
+  description:
+    "A block you can place, mine and stand on — how it works, what it costs, and when a placed model is the better answer.",
+};
+
+# Custom blocks
+
+An ore, a machine, a crate: something a player mines rather than decorates
+with.
+
+```yaml
+# blocks/ores.yml
+ruby_ore:
+  base: note_block     # note_block | mushroom_stem
+  model: ruby_ore      # assets/models/ruby_ore.bbmodel
+  hardness: 3.0        # stone is 1.5
+  tool: pickaxe        # what has to be held for the drop
+  drop: mypack:ruby    # default: itself
+  light: 0
+  sound: stone
+```
+
+**A block is an item too.** `/rp give mypack:ruby_ore` hands you the thing that
+places it, and nothing declares that item — a block you cannot obtain is not a
+block anybody can use.
+
+| Field | What it does |
+|---|---|
+| `base` | Which vanilla block it hides in. `note_block` (49 available) or `mushroom_stem` (63) |
+| `model` | A `.bbmodel` or Java model under `assets/models/` |
+| `hardness` | How long it takes to break. Stone is `1.5`, dirt `0.5`, `0` is instant |
+| `tool` | `pickaxe`, `axe`, `shovel`, `hoe`, or leave it out for anything |
+| `drop` | A content ID. Defaults to the block itself |
+| `light` | 0–15 |
+| `sound` | `stone`, `wood`, `metal`, `glass`, `wool` |
+
+## What it really is
+
+The game has no way to add a block, so this is **a real vanilla block in a
+state nothing else uses, wearing your model**. Every plugin that does custom
+blocks uses the same trick, and it brings the same costs — which are worth
+knowing before you design a hundred of them.
+
+<Callout type="warning" title="Back up blocks.json">
+  A custom block in your world is a note block in a particular state, and
+  `plugins/RPEngine/blocks.json` is what says which ID that state was. Lose it
+  and **every custom block on the server becomes a different block** — not
+  missing, not broken, but visibly the wrong thing, and no reload repairs it.
+
+  IDs are appended in the order they are first seen and never renumbered, so
+  adding or removing a pack cannot disturb one already placed.
+</Callout>
+
+**The pool is small — 49 or 63 per base.** Not the eight hundred a note block's
+states suggest, and the reason is worth stating: a note block recomputes its
+instrument from whatever is underneath it, and **nothing can stop that**. So
+the instrument cannot be part of what identifies a block. Every instrument for
+a given note points at the same model, the game changes it as often as it
+likes, and nobody sees anything. `/rp blocks` says how many are left.
+
+**Vanilla note blocks are hijacked.** On a server with note-block-based custom
+blocks, the pack has repainted every state — an ordinary note block still looks
+right, but a custom one does not play a note. `mushroom_stem` has none of that:
+nothing in vanilla ever changes one, which makes it the better base whenever
+you do not need the larger pool.
+
+<Callout type="note" title="Furniture still wants a placed model">
+  A [placed model](/rp-engine/models) has no pool, no limit, no mapping to
+  lose, and can be any shape. Use a custom block for what a display entity
+  cannot be: something you mine, something that holds you up, something a
+  piston should refuse to move.
+</Callout>
+
+## Moving a world from another plugin
+
+A pack migrates; **a world does not**. The state a block hides in is allocated
+by whichever plugin placed it, against that plugin's own numbering, so blocks
+already standing in a world built with ItemsAdder are read here as whatever
+this engine gave that state. Definitions come across
+[automatically](/rp-engine/itemsadder); placed blocks have to be rebuilt or
+remapped by hand.
