@@ -1,0 +1,83 @@
+export const metadata = {
+  title: "Moving from ItemsAdder",
+  description:
+    "Drop an ItemsAdder pack into RP Engine and it loads: what comes across, what does not, and why.",
+};
+
+# Moving from ItemsAdder
+
+RP Engine reads ItemsAdder config files as they are. Copy a folder out of their
+`contents/` — the configs at its root, `textures/` and `models/` beside them,
+no `pack.yml` — into `plugins/RPEngine/content/` and start the server.
+
+```
+plugins/RPEngine/content/
+  my_content/            ← straight out of ItemsAdder's contents/
+    my_config.yml
+    textures/
+    models/
+```
+
+There is nothing to turn on. A file is recognised by its own shape — an
+`info:` block beside `items:` or `font_images:` — which nothing of ours looks
+like, since our top-level keys are IDs. One of their files also works **inside**
+a pack of yours, which is the useful shape for moving over a piece at a time.
+
+## What comes across
+
+| ItemsAdder | RP Engine |
+|---|---|
+| `items.<id>` | an [item](/rp-engine/items) |
+| `resource.material` | `material` |
+| `resource.textures` / `texture` | `texture` — the first one; a flat item has one picture |
+| `resource.model_path` | `model` |
+| `display_name` or `name` | `name` — both, since 4.0.9 renamed it |
+| `lore`, `permission` | the same |
+| `enchants`, `attribute_modifiers.mainhand` | `enchantments`, [`attributes`](/rp-engine/stats) |
+| `durability.max_durability`, `unbreakable` | `durability`, `unbreakable` |
+| `max_stack_size` | `stack` |
+| `specific_properties.armor.slot` | [`armor`](/rp-engine/armour) |
+| `behaviours.liquid_bucket` | [`liquid`](/rp-engine/liquids) |
+| `behaviours.furniture` | [`place:`](/rp-engine/models), with its light, solidity and seat |
+| `font_images.<id>` | an [icon](/rp-engine/icons) |
+| `enabled: false` | skipped, as it is there |
+
+## What does not
+
+Each of these is a **warning naming the ID** when the pack loads, never a
+silence — a migration that quietly drops a third of somebody's pack is worse
+than one that refuses out loud.
+
+<Callout type="warning" title="Custom blocks">
+  Not a feature here, by decision. Real custom blocks mean hijacking note
+  blocks or mushroom states — a finite pool, shared with every other plugin
+  doing it, and blocks that can never be migrated. A
+  [placed model](/rp-engine/models) does the same job with no pool to run out
+  of. This is the one thing a pack may genuinely have to be rebuilt around.
+</Callout>
+
+**Their entities and recipes** are a different feature rather than a different
+spelling, and want writing as [`entities/`](/rp-engine/entities) and
+[`recipes/`](/rp-engine/recipes) definitions. Both are short.
+
+**`events`, `drop` and `item_flags`** are ItemsAdder's own plugin behaviour
+rather than properties of an item. [Actions](/rp-engine/actions) cover most of
+what `events` did.
+
+## Two things worth knowing
+
+**The folder name is the namespace.** A file whose `info.namespace` says
+something else loads under the folder's name and warns you: the folder is what
+the engine claimed, and IDs written elsewhere have to resolve to something.
+
+**Their art lives at the pack root**, ours under `assets/`. Both are read, so
+their `textures/item/ruby.png` and `models/lamp.json` need no moving — but if
+you are writing new content beside it, `assets/` is the documented home and is
+what the [content folder](/rp-engine/content) page assumes.
+
+**Armour art is the one file you do have to move.** ItemsAdder draws armour its
+own way; RP Engine uses [vanilla's equipment path](/rp-engine/armour), which
+arrived in 1.21.4 and is a different picture in a different place. Put yours at
+`assets/textures/entity/equipment/humanoid/<id>.png` (or
+`humanoid_leggings/` for legs) and the item is otherwise unchanged. The build
+warns with the exact path when it is missing.
