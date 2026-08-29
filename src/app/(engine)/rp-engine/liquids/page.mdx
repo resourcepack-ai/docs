@@ -96,6 +96,18 @@ of the line as a comment and you get no colour and no complaint.
   sees less of it again.
 </Callout>
 
+<Callout type="note" title="Why the colour looks muted">
+  The tint is **multiplied by the water texture**, and vanilla's is a dark
+  blue-grey — so even `#2BE04A` lands as a murky green rather than the colour
+  you picked. That is the ceiling of the mechanism, not a setting: ItemsAdder
+  tints the same texture the same way and stops in the same place.
+
+  A pack *can* ship a paler `water_still` through `overrides/` and get vivid
+  colours out of it. RP Engine will not do that for you, because it would make
+  **every ocean on the server** pale to make one pond green — that is a
+  decision about somebody's whole world, not about a liquid.
+</Callout>
+
 Clearing a pool paints it back to the biome that was there when the pool was
 made. That is one biome for the whole box, which is all a pool records: a pool
 straddling two biomes comes back as the first of them.
