@@ -75,6 +75,20 @@ moment it is installed is one somebody has to find the setting for in a hurry.
 A name that is not an icon is left exactly as typed, so `10:30`, `:)` and a URL
 all survive.
 
+## Seats
+
+```yaml
+models:
+  seat-offset: 0.0
+```
+
+Nudges every seat on the server up or down, in blocks. `seat:` on a piece says
+where that piece's seat is; this corrects how the game *draws* somebody
+sitting, which is wrong by the same amount for every chair you own.
+
+Sit on something, decide it is a hand's width out, put the number here and
+`/rp reload`. Positive is higher. Most servers never touch it.
+
 ## The /emote command
 
 ```yaml
