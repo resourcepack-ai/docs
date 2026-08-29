@@ -72,7 +72,7 @@ export const engineNav: EngineGroup[] = [
         keywords: ["content", "folder", "layout", "pack.yml", "assets", "overrides", "yaml"],
       },
       {
-        title: "Ids and namespaces",
+        title: "IDs and namespaces",
         href: "/rp-engine/ids",
         description: "One id for everything, and why it needs no numbers.",
         keywords: ["id", "namespace", "resource location", "custom model data", "item_model", "reserved"],
@@ -94,32 +94,6 @@ export const engineNav: EngineGroup[] = [
   {
     title: "Content",
     items: [
-      {
-        title: "Items",
-        href: "/rp-engine/items",
-        description: "A vanilla item wearing a different model.",
-        keywords: ["item", "material", "model", "texture", "bbmodel", "lore", "glow", "copy-model"],
-        items: [
-          {
-            title: "Armour",
-            href: "/rp-engine/armour",
-            description: "Any item worn on a body, with its own art.",
-            keywords: ["armor", "armour", "equipment", "helmet", "leggings", "humanoid", "trim"],
-          },
-          {
-            title: "Stats and components",
-            href: "/rp-engine/stats",
-            description: "Damage, durability, enchantments and food.",
-            keywords: ["attribute", "damage", "enchantment", "durability", "food", "hat", "keep on death"],
-          },
-          {
-            title: "Actions",
-            href: "/rp-engine/actions",
-            description: "Triggers and a closed list of verbs.",
-            keywords: ["action", "trigger", "right click", "cooldown", "command", "effect", "wand"],
-          },
-        ],
-      },
       {
         title: "Models",
         href: "/rp-engine/models",
@@ -165,6 +139,32 @@ export const engineNav: EngineGroup[] = [
         ],
       },
       {
+        title: "Items",
+        href: "/rp-engine/items",
+        description: "A vanilla item wearing a different model.",
+        keywords: ["item", "material", "model", "texture", "bbmodel", "lore", "glow", "copy-model"],
+        items: [
+          {
+            title: "Armour",
+            href: "/rp-engine/armour",
+            description: "Any item worn on a body, with its own art.",
+            keywords: ["armor", "armour", "equipment", "helmet", "leggings", "humanoid", "trim"],
+          },
+          {
+            title: "Stats and components",
+            href: "/rp-engine/stats",
+            description: "Damage, durability, enchantments and food.",
+            keywords: ["attribute", "damage", "enchantment", "durability", "food", "hat", "keep on death"],
+          },
+          {
+            title: "Actions",
+            href: "/rp-engine/actions",
+            description: "Triggers and a closed list of verbs.",
+            keywords: ["action", "trigger", "right click", "cooldown", "command", "effect", "wand"],
+          },
+        ],
+      },
+      {
         title: "Emotes",
         href: "/rp-engine/emotes",
         description: "Animations played on the player — solo, with a cast, or worn.",
@@ -177,24 +177,22 @@ export const engineNav: EngineGroup[] = [
         keywords: ["sound", "ogg", "vorbis", "subtitle", "category", "stream", "audio"],
       },
       {
+        title: "GUIs",
+        href: "/rp-engine/screens",
+        description: "A picture drawn behind a container window.",
+        keywords: ["screen", "gui", "menu", "container", "chest", "backdrop", "inventory"],
+      },
+      {
+        title: "HUD",
+        href: "/rp-engine/hud",
+        description: "Something drawn over the game rather than behind a window.",
+        keywords: ["hud", "overlay", "action bar", "boss bar", "mana", "health"],
+      },
+      {
         title: "Icons",
         href: "/rp-engine/icons",
         description: "Pictures that behave like letters, anywhere text renders.",
         keywords: ["icon", "font", "glyph", "emoji", "codepoint", "ascent", "shortcode"],
-      },
-      {
-        title: "Screens",
-        href: "/rp-engine/screens",
-        description: "A picture drawn behind a container GUI.",
-        keywords: ["screen", "gui", "menu", "container", "chest", "backdrop", "inventory"],
-        items: [
-          {
-            title: "HUD overlays",
-            href: "/rp-engine/hud",
-            description: "Something drawn over the game rather than behind a window.",
-            keywords: ["hud", "overlay", "action bar", "boss bar", "mana", "health"],
-          },
-        ],
       },
       {
         title: "Recipes",

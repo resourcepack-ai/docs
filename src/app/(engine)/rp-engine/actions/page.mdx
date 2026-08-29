@@ -105,7 +105,7 @@ Anything you write can carry `{player}`, `{uuid}`, `{world}`, `{x}`, `{y}`,
   scripting engine.
 
   Anything past these verbs is a plugin's job, and
-  [`ItemUseEvent`](/rp-engine/api) is what it listens to: the id, the stack,
+  [`ItemUseEvent`](/rp-engine/api) is what it listens to: the ID, the stack,
   the click and the block. Cancel that event and the vanilla use is cancelled
   too — **and the item's own actions do not run either**, because the event is
   the stronger statement of the two.

@@ -15,66 +15,75 @@ completing it.
 
 ## Content
 
-| Command | What it does |
-|---|---|
-| `/rp reload` | Reread the content folder and rebuild every pack |
-| `/rp info` | What this server is holding |
-| `/rp bundles` | The built packs, with their sizes and hashes |
-| `/rp items` | Every custom item |
-| `/rp give <id> [player]` | Give one |
-| `/rp models` | Placed models near you |
-| `/rp purge` | Remove placed models whose content is gone |
-| `/rp spawn <id>` | Spawn a custom entity |
-| `/rp entities` | Every custom entity |
-| `/rp bind <id>` | Put a model on the mob you are looking at |
-| `/rp unbind` | Take it off again |
-| `/rp recipes` | Every recipe |
+| Command | What it does | Permission |
+|---|---|---|
+| `/rp reload` | Reread the content folder and rebuild every pack | `rpengine.reload` |
+| `/rp info` | What this server is holding | `rpengine.info` |
+| `/rp bundles` | The built packs, with their sizes and hashes | `rpengine.bundles` |
+| `/rp items` | Every custom item | `rpengine.items` |
+| `/rp give <id> [player]` | Give one | `rpengine.give` |
+| `/rp models` | Placed models near you | `rpengine.models` |
+| `/rp purge` | Remove placed models whose content is gone | `rpengine.purge` |
+| `/rp spawn <id>` | Spawn a custom entity | `rpengine.spawn` |
+| `/rp entities` | Every custom entity | `rpengine.entities` |
+| `/rp bind <id>` | Put a model on the mob you are looking at | `rpengine.bind` |
+| `/rp unbind` | Take it off again | `rpengine.unbind` |
+| `/rp recipes` | Every recipe | `rpengine.recipes` |
 
 ## Sound, text and interface
 
-| Command | What it does |
-|---|---|
-| `/rp sounds` | Every custom sound |
-| `/rp sound <id> [player]` | Play one |
-| `/rp icons` | Every icon, with the character it became |
-| `/rp say <text>` | Send yourself text, with `:pack:icon:` resolved |
-| `/rp screens` | Every screen and HUD |
-| `/rp screen <id> [player]` | Open one |
-| `/rp hud <id\|clear> [player]` | Draw an overlay, or clear it |
+| Command | What it does | Permission |
+|---|---|---|
+| `/rp sounds` | Every custom sound | `rpengine.sounds` |
+| `/rp sound <id> [player]` | Play one | `rpengine.sound` |
+| `/rp icons` | Every icon, with the character it became | `rpengine.icons` |
+| `/rp say <text>` | Send yourself text, with `:pack:icon:` resolved | `rpengine.say` |
+| `/rp screens` | Every screen and HUD | `rpengine.screens` |
+| `/rp screen <id> [player]` | Open one | `rpengine.screen` |
+| `/rp hud <id\|clear> [player]` | Draw an overlay, or clear it | `rpengine.hud` |
 
 ## Liquids
 
-| Command | What it does |
-|---|---|
-| `/rp liquid corner` | Mark one corner of a pool |
-| `/rp liquid fill <id>` | Make the box between it and where you stand that liquid |
-| `/rp liquid clear` | Remove the pool you are in |
-| `/rp liquid list` | Every pool, per world |
+| Command | What it does | Permission |
+|---|---|---|
+| `/rp liquid corner` | Mark one corner of a pool | `rpengine.liquid` |
+| `/rp liquid fill <id>` | Make the box between it and where you stand that liquid | `rpengine.liquid` |
+| `/rp liquid clear` | Remove the pool you are in | `rpengine.liquid` |
+| `/rp liquid list` | Every pool, per world | `rpengine.liquid` |
 
 ## Studio
 
-| Command | What it does |
-|---|---|
-| `/rp sync <code>` | Pair with a pack open in Studio |
-| `/rp sync add <player>` | Ask somebody onto your sync |
-| `/rp sync accept` / `deny` | Answer that |
-| `/rp sync who` | Who is on it |
-| `/rp sync remove <player>` | Take somebody off, and the pack off them |
-| `/rp sync leave` | Leave somebody else's |
-| `/rp sync stop` | End yours, for everybody |
-| `/rp push` | Re-send this server's pack to yourself |
-| `/rp distribute <code>` | Serve a published pack to everybody who joins. `off` stops |
+| Command | What it does | Permission |
+|---|---|---|
+| `/rp sync <code>` | Pair with a pack open in Studio | `rpengine.sync` |
+| `/rp sync add <player>` | Ask somebody onto your sync | `rpengine.sync` |
+| `/rp sync accept` / `deny` | Answer that | `rpengine.sync` |
+| `/rp sync who` | Who is on it | `rpengine.sync` |
+| `/rp sync remove <player>` | Take somebody off, and the pack off them | `rpengine.sync` |
+| `/rp sync leave` | Leave somebody else's | `rpengine.sync` |
+| `/rp sync stop` | End yours, for everybody | `rpengine.sync` |
+| `/rp push` | Re-send this server's pack to yourself | `rpengine.push` |
+| `/rp distribute <code>` | Serve a published pack to everybody who joins. `off` stops | `rpengine.distribute` |
 
 ## Emotes
 
-| Command | What it does |
-|---|---|
-| `/emote <name>` | Perform it, or wear it if it is a movement set |
-| `/emote <name> <player...>` | With a cast. They are asked first |
-| `/emote stop` | Stop yours, and everybody in it with you |
-| `/emotereply accept` / `deny` | Answer an invitation |
-| `/rp emotes` | Every emote the server holds |
+| Command | What it does | Permission |
+|---|---|---|
+| `/emote <name>` | Perform it, or wear it if it is a movement set | `rpengine.emote` |
+| `/emote <name> <player...>` | With a cast. They are asked first | `rpengine.emote.cast` |
+| `/emote stop` | Stop yours, and everybody in it with you | `rpengine.emote` |
+| `/emotereply accept` / `deny` | Answer an invitation | none — see below |
+| `/rp emotes` | Every emote the server holds | `rpengine.emotes` |
 
 ## Permissions
 
-One node per command. See [Permissions](/rp-engine/permissions).
+One node per command, `rpengine.<subcommand>`, and `rpengine.admin` is a parent
+holding all of them. Everything above defaults to op except `rpengine.emote`
+and `rpengine.emotes`, which everybody has.
+
+`/emotereply` is deliberately ungated: it can only answer an invitation
+somebody was already sent, and a player who cannot reply is a player who cannot
+decline being pulled into an emote.
+
+The full table, including the three nodes that gate something other than a
+command, is on [Permissions](/rp-engine/permissions).
