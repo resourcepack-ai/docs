@@ -240,7 +240,7 @@ export const engineNav: EngineGroup[] = [
     ],
   },
   {
-    title: "Other plugins",
+    title: "Plugin support",
     items: [
       {
         title: "PlaceholderAPI",
