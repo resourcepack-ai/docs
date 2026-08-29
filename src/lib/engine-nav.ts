@@ -139,6 +139,13 @@ export const engineNav: EngineGroup[] = [
         ],
       },
       {
+        title: "Custom blocks",
+        href: "/rp-engine/blocks",
+        description: "A block you can place, mine and stand on. Finite, and worth knowing why.",
+        keywords: ["block", "blocks", "ore", "note block", "mushroom", "mine", "hardness",
+          "blockstate", "custom block"],
+      },
+      {
         title: "Items",
         href: "/rp-engine/items",
         description: "A vanilla item wearing a different model.",
@@ -242,13 +249,6 @@ export const engineNav: EngineGroup[] = [
     title: "Plugin support",
     items: [
       {
-        title: "Moving from ItemsAdder",
-        href: "/rp-engine/itemsadder",
-        description: "Drop an ItemsAdder pack in and it loads. What comes across, and what does not.",
-        keywords: ["itemsadder", "ia", "migrate", "migration", "import", "convert", "contents",
-          "font_images", "behaviours", "compatibility"],
-      },
-      {
         title: "PlaceholderAPI",
         href: "/rp-engine/placeholderapi",
         description: "Every placeholder, for scoreboards, menus and chat formats.",
@@ -277,6 +277,18 @@ export const engineNav: EngineGroup[] = [
         href: "/rp-engine/bedrock",
         description: "What Bedrock players get, and what they do not.",
         keywords: ["bedrock", "geyser", "floodgate", "mcpack", "cross-play"],
+      },
+    ],
+  },
+  {
+    title: "Migrating",
+    items: [
+      {
+        title: "Moving from ItemsAdder",
+        href: "/rp-engine/itemsadder",
+        description: "Drop an ItemsAdder pack in and it loads. What comes across, and what does not.",
+        keywords: ["itemsadder", "ia", "migrate", "migration", "import", "convert", "contents",
+          "font_images", "behaviours", "compatibility"],
       },
     ],
   },
