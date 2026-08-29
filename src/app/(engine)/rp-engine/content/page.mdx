@@ -43,6 +43,28 @@ what catches `item/` and `Sounds/`.
 
 **Errors are collected, never thrown.** See [reloading](/rp-engine/reloading).
 
+## YAML or TOML
+
+A definition file may be `.yml`, `.yaml` or `.toml`, and both spellings can sit
+in the same folder. They produce exactly the same thing — nothing downstream
+knows which one a definition came from.
+
+```toml
+[ruby]
+material = "DIAMOND"
+name = "&cRuby"
+
+[chair.place]
+facing = "cardinal"
+seat = 0.5
+```
+
+<Callout type="warning" title="Quote an ID with a / or a . in it">
+  Both mean something to TOML, so `weapons/sword` has to be written
+  `["weapons/sword"]`. It is the one thing that catches people out, and the
+  error message says so when it happens.
+</Callout>
+
 ## pack.yml
 
 As short as a name:
