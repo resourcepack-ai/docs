@@ -6,15 +6,21 @@ export const metadata = {
 
 # RP Engine
 
-RP Engine turns a folder on your server into custom content. Items with their
-own models, models you can place and sit on, emotes your players wear, sounds,
-icons, GUI backdrops, recipes, entities and liquids — written as YAML, built
-into a resource pack by the plugin, and served to whoever joins.
+RP Engine adds things to Minecraft that Minecraft does not have: swords with
+their own models, chairs you can sit in, emotes your players wear, custom
+sounds, icons that work in chat, artwork behind your menus, recipes, mobs and
+liquids.
+
+You write each one as a few lines of YAML in a folder on your server. The
+plugin turns that folder into a resource pack, hands it to everybody who joins,
+and makes the items real on the server side — so a `ruby` you described this
+morning is something a player can be given, craft with and hold this
+afternoon.
 
 It builds the pack itself. There is no zip to make, nowhere to upload it, and
 no step where you run a command and then go and find the output.
 
-<Callout type="note" title="Studio is optional">
+<Callout type="note" title="ResourcePack AI Studio is optional">
   You can drive RP Engine entirely from files on disk and never open a browser.
   [Studio](https://studio.resourcepack.ai) makes the art and can push it
   straight to a running server, which is faster — but it is one source of
@@ -32,17 +38,18 @@ no step where you run a command and then go and find the output.
 | [Emotes](/rp-engine/emotes) | Worn or performed, alone or with a cast |
 | [Sounds](/rp-engine/sounds) | Real sound events, with subtitles |
 | [Icons](/rp-engine/icons) | Pictures that behave like letters, anywhere text renders |
-| [Screens](/rp-engine/screens) and [HUDs](/rp-engine/hud) | GUI backdrops and overlays |
+| [GUIs](/rp-engine/screens) | A picture drawn behind a container window |
+| [HUD](/rp-engine/hud) | Overlays drawn over the game itself |
 | [Recipes](/rp-engine/recipes) | Crafting, cooking, stonecutting |
 | [Entities](/rp-engine/entities) | A real mob wearing a model |
 | [Liquids](/rp-engine/liquids) | Pools with rules about who is in them |
 
 ## The two ideas worth knowing
 
-**One id for everything, and it is the reference.** `mypack:ruby` is the item,
+**One ID for everything, and it is the reference.** `mypack:ruby` is the item,
 the model path, and what goes into the stack's persistent data. Nothing is
 allocated, there is no numbers file to keep in sync, and nothing can drift out
-of step with anything else. **Store ids, never what they resolve to.**
+of step with anything else. **Store IDs, never what they resolve to.**
 
 **A bundle is what a player is holding.** A pack is built per bundle rather
 than one per server, and a player can hold several stacked on top of each other

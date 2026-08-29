@@ -7,7 +7,13 @@ export const metadata = {
 # Installing
 
 <Steps>
-  <Step title="Drop the jar in">
+  <Step title="Get the jar">
+    <DownloadJar />
+
+    That link is always the current release and never moves, so it works in a
+    startup script or a Docker build too.
+  </Step>
+  <Step title="Drop it in">
     `RPEngine.jar` into `plugins/`, then start the server. It needs **Paper or
     Spigot 1.21.4 or newer**.
   </Step>
@@ -31,9 +37,9 @@ export const metadata = {
   1.21.4. Before it, custom items shared a pool of numbers and every plugin
   doing this needed a table saying which number meant what.
 
-  That component is the reason RP Engine has no id registry, no allocation and
+  That component is the reason RP Engine has no ID registry, no allocation and
   no file two people have to keep in sync — so supporting a version without it
-  would mean building all of that back. See [ids](/rp-engine/ids).
+  would mean building all of that back. See [IDs](/rp-engine/ids).
 </Callout>
 
 ## Your first item
@@ -62,8 +68,8 @@ export const metadata = {
       name: "&cRuby"
     ```
 
-    That is `mypack:ruby`. The folder name is the namespace, the key is the id,
-    and the texture path falls out of the id — `assets/textures/item/ruby.png`
+    That is `mypack:ruby`. The folder name is the namespace, the key is the ID,
+    and the texture path falls out of the ID — `assets/textures/item/ruby.png`
     with nothing pointing at it.
   </Step>
   <Step title="Reload and take one">
@@ -74,7 +80,7 @@ export const metadata = {
   </Step>
 </Steps>
 
-If the item is a purple-and-black square, the texture is not where the id says
+If the item is a purple-and-black square, the texture is not where the ID says
 it should be — `/rp reload` names every missing file in the console.
 
 ## Where to go next

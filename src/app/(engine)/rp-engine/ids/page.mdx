@@ -1,12 +1,12 @@
 export const metadata = {
-  title: "Ids and namespaces",
+  title: "IDs and namespaces",
   description:
-    "One id for everything in RP Engine, why it needs no numbers, and what it means for two packs on one server.",
+    "One ID for everything in RP Engine, why it needs no numbers, and what it means for two packs on one server.",
 };
 
-# Ids and namespaces
+# IDs and namespaces
 
-Everything RP Engine holds has one id, and it looks like a Minecraft resource
+Everything RP Engine holds has one ID, and it looks like a Minecraft resource
 location:
 
 ```
@@ -15,13 +15,13 @@ mypack:furniture/chair
 ```
 
 Lowercase `a-z`, digits and `_ . - /`. An uppercase letter is **refused rather
-than quietly folded**, because `MyPack` and `mypack` are one id to us and two
+than quietly folded**, because `MyPack` and `mypack` are one ID to us and two
 to the client — and finding that out in game is much worse than finding it out
 at load.
 
-## The id is the reference
+## The ID is the reference
 
-An id is not a label the plugin looks up in a table. It goes **verbatim** into
+An ID is not a label the plugin looks up in a table. It goes **verbatim** into
 the item's model reference, which is what makes the whole scheme work:
 
 ```
@@ -31,7 +31,7 @@ mypack:ruby  →  assets/mypack/items/ruby.json       the item definition
 ```
 
 Only the last one is yours to ship. The other two are generated, and the paths
-fall out of the id.
+fall out of the ID.
 
 <Callout type="note" title="What this buys, and why 1.21.4 is the floor">
   Since 1.21.4 an item's model is chosen by a **string**. Before that it was a
@@ -39,7 +39,7 @@ fall out of the id.
   file mapping numbers to meanings — a file two people had to keep in sync, and
   the reason installing two content packs used to be a negotiation.
 
-  Because the id *is* the path: nothing is allocated, there is no counter,
+  Because the ID *is* the path: nothing is allocated, there is no counter,
   there is no collision table, and adding content cannot renumber anything that
   already exists.
 </Callout>
@@ -63,12 +63,12 @@ If you want to replace vanilla art, that is what
 [`overrides/`](/rp-engine/content) is for — named for what it does, so the risk
 is visible while you are doing it.
 
-## Store ids, never what they resolve to
+## Store IDs, never what they resolve to
 
 The one rule worth carrying into your own configs.
 
-An id is stable for ever. What it resolves to — a model path, a codepoint, a
+An ID is stable for ever. What it resolves to — a model path, a codepoint, a
 character — is derived, and derived things move when content around them
 changes. [Icons](/rp-engine/icons) are the sharp case: they are handed
-codepoints in id order, so adding one shifts every icon after it, and anything
-that saved the character rather than the id is now showing a different picture.
+codepoints in ID order, so adding one shifts every icon after it, and anything
+that saved the character rather than the ID is now showing a different picture.

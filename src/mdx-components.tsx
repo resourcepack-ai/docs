@@ -7,6 +7,7 @@ import { Card, CardGroup } from "@/components/mdx/card";
 import { CodeBlock } from "@/components/mdx/code-block";
 import { CodeTabs } from "@/components/mdx/code-tabs";
 import { Copyable, ServerAddress } from "@/components/mdx/copyable";
+import { DownloadJar } from "@/components/mdx/download";
 import { ApiBaseUrl, Endpoint } from "@/components/mdx/endpoint";
 import { Step, Steps } from "@/components/mdx/steps";
 
@@ -143,6 +144,7 @@ const components: MDXComponents = {
   CardGroup,
   CodeTabs,
   Copyable,
+  DownloadJar,
   ServerAddress,
   Steps,
   Step,
