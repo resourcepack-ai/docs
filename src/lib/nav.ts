@@ -110,6 +110,23 @@ export const nav: NavGroup[] = [
         keywords: ["sprite", "icon", "hotbar", "inventory", "itemstack", "item"],
       },
       {
+        title: "Armour",
+        href: "/armor",
+        description: "Reskinning a vanilla armour set, worn on the player.",
+        keywords: [
+          "armor",
+          "armour",
+          "helmet",
+          "chestplate",
+          "leggings",
+          "boots",
+          "leather",
+          "dye",
+          "equipment",
+          "turtle shell",
+        ],
+      },
+      {
         title: "GUIs",
         href: "/guis",
         description: "Reskinning a screen, and what a pack can't change about one.",

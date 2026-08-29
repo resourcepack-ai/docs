@@ -1,0 +1,114 @@
+export const metadata = {
+  title: "Armour",
+  description:
+    "Reskinning a vanilla armour set: the two sheets, why leather has four, and what dye can and can't do.",
+};
+
+# Armour
+
+Armour is the art Minecraft draws **on a player's body** when they wear a
+helmet, chestplate, leggings or boots. A pack reskins one of the vanilla sets,
+and every piece of that set in the world changes with it.
+
+<Callout type="note" title="This is not a 3D model">
+  Armour is drawn as a flat texture on the game's own body shape. There is no
+  way to give worn armour real geometry from a Resource Pack — not with
+  OptiFine either, which never offered it. What *can* have depth is a helmet:
+  any item worn in the head slot renders its own [model](/models), which is how
+  crowns and masks are made.
+</Callout>
+
+## The sets
+
+Eight vanilla sets can be reskinned: **leather**, **chainmail**, **copper**,
+**iron**, **gold**, **diamond**, **netherite** and the **turtle shell**.
+
+A pack holds at most one of each, because an armour asset *is* the vanilla set
+it replaces — there is nothing to name. Sets your pack already has are shown
+greyed out in the Add asset sheet.
+
+<Callout type="warning" title="Copper needs 1.21.9, the turtle shell has no leggings">
+  Copper armour didn't exist before Minecraft 1.21.9, so exporting a pack for
+  anything older simply leaves it out. And a turtle shell is a helmet only —
+  it has one sheet where every other set has two.
+</Callout>
+
+## Two sheets, not one
+
+Every set is made of two **64×32** sheets, and they are not interchangeable:
+
+| Sheet | What wears it |
+| --- | --- |
+| **Outer** | Helmet, chestplate and boots |
+| **Leggings** | Leggings only — its own, narrower drawing |
+
+The game draws leggings from a separate sheet at tighter proportions, so art
+meant for the outer sheet puts a belt buckle on somebody's knee. The editor
+keeps them as two tabs and saves both together.
+
+Most of the leggings sheet is unused, and the editor dims those pixels. That
+isn't a bug in the file — the game genuinely never reads them.
+
+<Callout type="note" title="There is no left arm or left leg">
+  An armour sheet has one arm and one leg. The game draws the left side by
+  mirroring the right, so painting a boot paints both boots. This is Minecraft's
+  layout, not ours.
+</Callout>
+
+## Making one
+
+Open **Add asset**, choose **Armour**, pick a set, and choose what its sheets
+start as:
+
+- **Vanilla art** — the real set's own texture, ready to recolour. This is
+  almost always the fast way in: an armour sheet is an unwrap, so recolouring a
+  correct one beats drawing one from nothing.
+- **Empty** — transparent sheets, for drawing from scratch.
+
+There is no AI generation for armour. An armour layer is unwrapped onto the
+body rather than drawn as a picture, so a generated one looks plausible in the
+file and is wrong everywhere in game.
+
+## The editor
+
+The sheet is on the left and a player wearing it is on the right, and both
+paint the same pixels. Painting the figure writes to whichever layer is
+selected, exactly as painting the sheet does.
+
+The body underneath is a plain Steve. He's scenery: he's never edited and never
+ships with your pack. Hide him from the right-hand column if he's in the way.
+
+## Leather and dye
+
+Leather is the only dyeable set, and it works differently enough to be worth
+reading before you draw it. It has **four** sheets rather than two: a *base*
+and an *overlay* for each layer.
+
+- The **base** is multiplied by the player's dye colour.
+- The **overlay** is drawn on top and is **never tinted**.
+
+So anything that should take the dye goes on the base, and anything that must
+keep its own colour — studs, straps, buckles, metal — goes on the overlay.
+
+<Callout type="warning" title="You cannot give each dye colour its own artwork">
+  The dye is a multiply over one texture, and the format has no way to select a
+  different texture per colour. The base/overlay split is the whole of colour
+  support. Because it multiplies, a dye can only ever *darken* the base — so
+  draw the base light if you want bright dyes to read.
+</Callout>
+
+The dye picker in the editor is a preview only. The colour lives on the
+player's item, not in your pack.
+
+## Older Minecraft versions
+
+Minecraft moved where armour textures live in **1.21.2**. You don't have to
+care: the pack stores one copy and [export](/exporting) writes whichever path
+the version you picked reads. The only thing you lose going back is a set that
+didn't exist yet.
+
+## Seeing it in game
+
+There's no give command for armour, because there's no custom item involved —
+your pack reskins the real set. Put on real iron armour and it's your art.
+[Sync](/testing/plugin) the pack to a server and equip a piece to check it.
