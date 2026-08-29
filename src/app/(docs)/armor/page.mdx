@@ -57,17 +57,33 @@ isn't a bug in the file — the game genuinely never reads them.
 
 ## Making one
 
-Open **Add asset**, choose **Armour**, pick a set, and choose what its sheets
-start as:
+Open **Add asset**, choose **Armour**, and pick the set you're reskinning.
+Either door works:
 
-- **Vanilla art** — the real set's own texture, ready to recolour. This is
-  almost always the fast way in: an armour sheet is an unwrap, so recolouring a
-  correct one beats drawing one from nothing.
+**Generate** — describe the armour and it's drawn for you:
+
+> weathered bronze scale armour, green patina in the seams
+
+**Draw** — start from something and paint it yourself:
+
+- **Vanilla art** — the real set's own texture, ready to recolour. Often the
+  fast way in: an armour sheet is an unwrap, so recolouring a correct one beats
+  drawing one from nothing.
 - **Empty** — transparent sheets, for drawing from scratch.
 
-There is no AI generation for armour. An armour layer is unwrapped onto the
-body rather than drawn as a picture, so a generated one looks plausible in the
-file and is wrong everywhere in game.
+<Callout type="note" title="Why the set you pick changes the result">
+  Generation never asks the model for a sheet — it asks for a figure *wearing*
+  the armour, then folds that onto the body and cuts it to the shape of the set
+  you chose. That's why picking chainmail gives you a shallow helmet and picking
+  netherite gives you a deep one: each set covers a different amount of the
+  body, and your art is cut to the real one. It also means a generated set is
+  one credit however many sheets it has — they're all crops of a single
+  drawing.
+</Callout>
+
+Generating leather puts the art on the **dyeable base** and leaves the overlay
+empty, so the result takes dye. Add studs and straps on the overlay sheet
+afterwards if you want details that keep their own colour.
 
 ## The editor
 
