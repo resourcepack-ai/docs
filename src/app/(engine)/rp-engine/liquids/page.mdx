@@ -13,19 +13,24 @@ export const metadata = {
   it, boats float, it flows, other plugins see water.
 
   Two consequences, both worth knowing before you build around it: the
-  **texture is per-pack**, so every water on the server looks the same; and what
-  tells acid from ocean is a **volume you mark out**, not the blocks in it.
+  **texture is per-pack**, so every water on the server is drawn from the same
+  picture — what a liquid gets of its own is a **colour**; and what tells acid
+  from ocean is a **volume**, not the blocks in it.
 </Callout>
 
 ```yaml
 # liquids/acid.yml
 acid:
   base: water            # water | lava
+  color: "#3FBF4A"       # optional
   effect: POISON
   amplifier: 1
   damage: 1.0            # per second
   fireproof: false
 ```
+
+There are two ways to make a pool: mark out water that is already there, or
+build the pond in the first place with a bucket. They make the same thing.
 
 ## Marking out a pool
 
@@ -39,6 +44,25 @@ acid:
 The two corners define a box, and everything inside it that is the right fluid
 gets the rules.
 
+## A bucket of it
+
+```yaml
+# items/acid_bucket.yml
+acid_bucket:
+  material: BUCKET
+  liquid: mypack:acid
+```
+
+Right-click a block and it puts one source block down and makes that place
+count as the liquid. A block placed against a pool of the same liquid **joins
+it** rather than starting a second, so a pond built click by click carries one
+rule, not fifty — and two builders filling the same pond from opposite ends end
+up with one pool between them.
+
+What goes down is a real source block, so it flows. Water that runs out of the
+box is ordinary water: the colour and the rules stop at the pool, and a builder
+who wants a still pond digs a basin the way they would for vanilla water.
+
 ## Why a box and not the blocks
 
 A lake is thousands of blocks that change shape as it flows. A per-block record
@@ -51,11 +75,37 @@ the fluid inside it can do whatever fluids do.
 The cost is that a pool is rectangular and your lake probably is not. Use
 several overlapping boxes; a player is in whichever they are inside.
 
+## Colour
+
+`color:` takes `"#3FBF4A"`, `0x3FBF4A`, `3FBF4A` or one of the sixteen dye
+names — `RED`, `LIGHT_BLUE`, `LIME`. Quote the `#` form, or YAML reads the rest
+of the line as a comment and you get no colour and no complaint.
+
+<Callout type="warning" title="A colour needs a restart, and it is approximate">
+  The game tints water **by biome**, which is the only knob it has for this.
+  RP Engine writes one biome per tinted liquid into a datapack in your world
+  folder (`datapacks/rpengine_liquids`) every time content loads, and **biomes
+  are registered when the server starts** — so a colour you added this session
+  does not exist until you restart. The pool works in the meantime; it is just
+  the wrong colour.
+
+  Two more things follow from it being a biome. Biomes are stored per 4×4×4
+  cell, so a tinted pool has a rim of tinted water around it. And the client
+  blends biome colours across several blocks, so a pool under about 8 blocks
+  across never reaches its full colour — a player with biome blend turned up
+  sees less of it again.
+</Callout>
+
+Clearing a pool paints it back to the biome that was there when the pool was
+made. That is one biome for the whole box, which is all a pool records: a pool
+straddling two biomes comes back as the first of them.
+
 ## The rules
 
 | Field | What it does |
 |---|---|
 | `base` | `water` or `lava`. What it actually is |
+| `color` | What colour it is drawn, as hex or a dye name |
 | `effect` | A potion effect applied while inside |
 | `amplifier` | Its level, 1-based |
 | `damage` | Per second, on top of anything lava already does |
