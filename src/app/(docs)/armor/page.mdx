@@ -81,24 +81,43 @@ depends on what it is:
 | A **character or a piece of armour** on a plain background | Cropped to the subject and wrapped onto the body |
 | **Anything else** — a texture, a photo, a pattern | Tiled over the set, so you get armour *made of* it |
 
-<Callout type="note" title="Why the set you pick changes the result">
+<Callout type="note" title="How a set is made">
   Generation never asks the model for a sheet — it redraws a picture of the
-  real set being *worn*, then folds that onto the body and cuts it to the shape
-  of the set you chose. That's why picking chainmail gives you a shallow helmet
-  and picking netherite gives you a deep one: each set covers a different amount
-  of the body, and your art is cut to the real one. It also means a generated
-  set is one charge however many sheets it has — they're all crops of a single
-  drawing.
+  real set being *worn*, then folds that onto the body. It also means a
+  generated set is one charge however many sheets it has: they're all crops of
+  a single drawing.
 
-  The result is then looked at: the finished set is rendered on a body and
-  reviewed against what you asked for, and either corrected or drawn again. A
-  set that comes back wrong is worth a retry — nothing about the run is fixed
-  to the same answer.
+  The result is then looked at. The finished set is rendered on a body and
+  reviewed against what you asked for, and either corrected or drawn again — so
+  a set that comes back wrong is worth a retry, since nothing about the run is
+  fixed to the same answer.
 </Callout>
 
-An upload is free, and — apart from a straight sheet — it is cut to the same
-silhouette a generated set is. A sheet you uploaded yourself is kept exactly as
-you drew it.
+## Coverage
+
+Both Generate and Upload ask how much of the body your art may cover, and the
+answer changes the shape of the result more than anything else on the sheet.
+
+| | What you get |
+| --- | --- |
+| **Whole body** (default) | A closed helm, full sleeves and complete leggings — every pixel the game will draw |
+| **Vanilla shape** | Cut to exactly what the real set covers, so the face and forearms show through like the real thing |
+
+Vanilla's own sets cover surprisingly little: iron's helmet is a band across the
+top of the head, chainmail's is two pixels deep, and both leave the face bare.
+That's iron's design decision, not yours — so a set is drawn to the whole body
+unless you ask for the vanilla silhouette back. The 2D editor has always let you
+paint the whole head by hand; this is the same freedom on the generated side.
+
+<Callout type="note" title="Boots stop at the shin either way">
+  The one part **Whole body** doesn't extend is the boot, and that's the game's
+  doing rather than a limit here. Boots are drawn on the outer sheet, *outside*
+  the leggings — so a boot that reached the hip would hide the leggings you drew
+  in the same set, permanently, for anyone wearing both.
+</Callout>
+
+An upload is free, and takes the same coverage choice — except a straight 64×32
+sheet, which is kept exactly as you drew it and isn't cut at all.
 
 Generating leather puts the art on the **dyeable base** and leaves the overlay
 empty, so the result takes dye. Add studs and straps on the overlay sheet
