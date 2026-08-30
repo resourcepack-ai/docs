@@ -1,0 +1,79 @@
+export const metadata = {
+  title: "Moving from ModelEngine",
+  description:
+    "Drop a folder of ModelEngine blueprints into RP Engine and they load — the bone names already mean the same thing.",
+};
+
+# Moving from ModelEngine
+
+Copy your `blueprints/` folder into a pack and start the server. Every
+`.bbmodel` in it becomes something you can give, place, spawn or bind.
+
+```
+plugins/RPEngine/content/
+  mypack/
+    pack.yml
+    blueprints/          ← straight out of ModelEngine
+      golem.bbmodel
+      bosses/dragon.bbmodel
+```
+
+```
+/rp give mypack:golem       the item that wears it
+/rp bind mypack:golem       put it on the mob you are looking at
+/rp spawn mypack:guard      a mob of your own wearing one
+```
+
+**The file name is the ID.** `golem.bbmodel` is `mypack:golem`, and a subfolder
+organises without reaching the ID — the same rule as every other category.
+Uppercase or spaces in a file name are refused rather than folded, and the load
+says which file.
+
+## Why there is nothing to convert
+
+ModelEngine's content format *is* the `.bbmodel` files: the save file carries
+the geometry, the bones and the animations, and there is no YAML beside it to
+translate. RP Engine reads Blockbench projects directly for the same reason, so
+a blueprint is already in a format it understands.
+
+**The bone names already mean the same thing**, because they are ModelEngine's
+names, adopted deliberately so a rig you already have — or bought — works here
+without being re-authored:
+
+| Bone | What it does |
+|---|---|
+| `h_head` | Turns to look at whatever its mob is targeting |
+| `hi_head` | The same, and every bone under it inherits it |
+| `b_wing` | A [sub-hitbox](/rp-engine/bones) — the mob is hit on the wing you aimed at |
+| `ob_wing` | The same, turning with the bone |
+| `p_seat1` | Somewhere to sit |
+| `mount` | Where the driver sits |
+| `tag_name` | Where a name floats |
+
+Animations come across too: a looping animation loops, and a one-shot plays
+when the piece is right-clicked. What each one is called is what
+[`/rp` and the API](/rp-engine/playback) play it by.
+
+## What is different
+
+**An item owns the model here.** In ModelEngine a blueprint is a thing in its
+own right, spawned with `/meg`; in RP Engine every model belongs to an
+[item](/rp-engine/items), which is what makes one ID work as a thing you hold,
+a thing you [place](/rp-engine/models) and a thing a
+[mob wears](/rp-engine/mobs). Dropping a blueprints folder in creates that item
+for you — a plain one, on paper. Write your own under the same ID in `items/`
+if you want more than that, and yours wins.
+
+**MythicMobs mechanics have different names.** Theirs are `model`, `state` and
+`unmodel`; ours are `rpmodel`, `rpanimate` and `rpunmodel` — see
+[MythicMobs](/rp-engine/mythicmobs). Deliberately different, so a server can
+run both plugins while it moves over, rather than having two plugins fight for
+one mechanic name.
+
+<Callout type="note" title="What a .bbmodel cannot carry">
+  Meshes — convert them to cubes in Blockbench first — and rotations beyond one
+  axis at one of -45, -22.5, 0, 22.5 or 45 degrees. Both are limits of the
+  Minecraft model format rather than of the reader, and ModelEngine works
+  around them with its own renderer. A rig built for that renderer may need
+  simplifying.
+</Callout>
