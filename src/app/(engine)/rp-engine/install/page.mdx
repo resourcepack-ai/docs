@@ -15,7 +15,7 @@ export const metadata = {
   </Step>
   <Step title="Drop it in">
     `RPEngine.jar` into `plugins/`, then start the server. It needs **Paper or
-    Spigot 1.21.4 or newer**.
+    Spigot 1.19.4 or newer**, on **Java 17 or newer**.
   </Step>
   <Step title="Look at what it made">
     ```
@@ -25,21 +25,26 @@ export const metadata = {
       output/       ← the built packs, rebuilt on every reload
     ```
   </Step>
-  <Step title="Set the pack format">
-    In `config.yml`, `pack.format` has to match the version your players are
-    on, or the client shows a "made for a different version" warning. The
-    comment beside it lists the numbers.
-  </Step>
 </Steps>
 
-<Callout type="warning" title="1.21.4 is the floor, and it is not negotiable">
-  An item's model is chosen by a string-valued component that arrived in
-  1.21.4. Before it, custom items shared a pool of numbers and every plugin
-  doing this needed a table saying which number meant what.
+<Callout type="note" title="Everything works, and on an older server a few things are reduced">
+  RP Engine runs on 1.19.4 and up, and everything it does works on a current
+  server. Below 1.21.4 a handful of things are reduced — one pack at a time
+  below 1.20.3, no per-item stack sizes below 1.20.5, no custom armour art
+  below 1.21.4.
 
-  That component is the reason RP Engine has no ID registry, no allocation and
-  no file two people have to keep in sync — so supporting a version without it
-  would mean building all of that back. See [IDs](/rp-engine/ids).
+  You do not have to look any of that up. The plugin checks your version at
+  startup and prints exactly what it cannot do and what you get instead.
+  [Minecraft versions](/rp-engine/versions) is the same list, written down.
+</Callout>
+
+<Callout type="note" title="You do not set the pack format">
+  `pack.format` used to be a number in `config.yml` that had to match your game
+  version by hand, and getting it wrong showed every player a "made for a
+  different version" warning with nothing in the log to say why. The plugin now
+  reads your server's version and writes the right number itself. The key is
+  still there, commented out, for the one case that needs it — see
+  [Minecraft versions](/rp-engine/versions#the-pack-format).
 </Callout>
 
 ## Your first item

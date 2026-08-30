@@ -57,8 +57,17 @@ export const engineNav: EngineGroup[] = [
       {
         title: "Installing",
         href: "/rp-engine/install",
-        description: "The jar, the version floor, and your first item.",
-        keywords: ["install", "setup", "jar", "1.21.4", "pack format", "first item", "quickstart"],
+        description: "The jar, what it needs, and your first item.",
+        keywords: ["install", "setup", "jar", "1.19.4", "java 17", "first item", "quickstart"],
+      },
+      {
+        title: "Minecraft versions",
+        href: "/rp-engine/versions",
+        description: "What works on which version, and what an older one costs you.",
+        keywords: [
+          "version", "versions", "1.19.4", "1.20", "1.21", "supported", "compatibility",
+          "pack format", "floor", "legacy", "custom model data", "java 17",
+        ],
       },
     ],
   },

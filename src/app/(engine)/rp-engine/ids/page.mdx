@@ -33,15 +33,18 @@ mypack:ruby  →  assets/mypack/items/ruby.json       the item definition
 Only the last one is yours to ship. The other two are generated, and the paths
 fall out of the ID.
 
-<Callout type="note" title="What this buys, and why 1.21.4 is the floor">
-  Since 1.21.4 an item's model is chosen by a **string**. Before that it was a
-  number out of a shared pool, and every plugin doing this needed a registry
-  file mapping numbers to meanings — a file two people had to keep in sync, and
-  the reason installing two content packs used to be a negotiation.
+<Callout type="note" title="What this buys, and what it costs before 1.21.4">
+  Since 1.21.4 an item's model is chosen by a **string**, so the ID *is* the
+  path: nothing is allocated, there is no counter, there is no collision table,
+  and adding content cannot renumber anything that already exists. Two packs
+  from two different people work side by side with nothing to configure.
 
-  Because the ID *is* the path: nothing is allocated, there is no counter,
-  there is no collision table, and adding content cannot renumber anything that
-  already exists.
+  Before 1.21.4 the game matches a model by a **number** out of a shared pool.
+  RP Engine runs there and allocates those for you, keeping them in
+  `model-numbers.json` — but the guarantee above is the thing that cannot
+  survive it, so packs from two sources can clash and that file must never be
+  edited or deleted. [Minecraft versions](/rp-engine/versions#below-1214-items-are-numbered)
+  has the detail.
 </Callout>
 
 ## Namespaces
