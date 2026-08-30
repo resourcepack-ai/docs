@@ -1,0 +1,129 @@
+export const metadata = {
+  title: "Minecraft versions",
+  description:
+    "RP Engine runs on 1.19.4 and newer. What works on every version, what needs a newer one, and what the plugin tells you at startup.",
+};
+
+# Minecraft versions
+
+RP Engine runs on **Paper or Spigot 1.19.4 or newer**, on Java 17 or newer.
+
+Everything works on a current server. On an older one, most of the plugin works
+exactly the same and a few things are reduced — never silently. The plugin
+checks your server's version at startup and prints what it cannot do and what
+you get instead, so you never have to work out from the docs whether a feature
+reached you.
+
+<Callout type="note" title="If you can choose, choose 1.20.3 or newer">
+  1.19.4 is supported because that is where the entities placed models are made
+  of arrived. But the two losses you would most notice — stacked bundles, and
+  models that glide when they move — both sit just below 1.20.3, so those four
+  versions buy back more than any other four.
+</Callout>
+
+## What always works
+
+These do not change with your version at all:
+
+- **Custom items** — their models, textures, names, lore, permissions and actions
+- **Custom blocks**, including hardness and the right tool
+- **Models** you place, sit on, animate and bind to entities
+- **Emotes**, including worn sets and held items
+- **Sounds**, and the sound categories
+- **Icons** in chat, **GUI screens**, and **HUD overlays**
+- **Recipes**, **custom entities** and **custom liquids**
+- **Pairing with Studio**, and pushing a pack to a player
+
+## What needs a newer version
+
+| Feature | Needs | On an older server |
+|---|---|---|
+| Stacking several packs on a player | 1.20.3 | One pack at a time; a player due more than one bundle gets only the last. A server using a single bundle is unaffected. |
+| Models that glide when they move | 1.20.2 | A model that moves — a walking emote, a bound model following its entity — jumps between positions instead of gliding. Models that stay put are identical. |
+| Per-item stack size, food and durability | 1.20.5 | Those options are reported at load and not applied. The item is otherwise itself. |
+| Any item wearable as armour | 1.21.2 | Only materials that are already armour can be worn. |
+| Per-item armour artwork | 1.21.4 | Worn armour draws with vanilla artwork. |
+| Item models addressed by name | 1.21.4 | Items are addressed by an allocated number instead — see below. |
+| Tinted water and lava | 1.21.6 | Liquids keep their vanilla colour. Everything else about a custom liquid works. |
+
+## Below 1.21.4, items are numbered
+
+This is the one difference worth understanding rather than just reading.
+
+From 1.21.4 an item's model is chosen by its **id**: `mypack:ruby` is written
+straight onto the item, and the pack has a file at that path. Nothing is
+allocated, so two packs from two different people work side by side with
+nothing to configure.
+
+Before 1.21.4 the game matches a model by a **number**. RP Engine allocates
+those for you and keeps them in `plugins/RPEngine/model-numbers.json`. Three
+things follow:
+
+- **Do not delete or edit that file.** Those numbers are on items in your
+  players' inventories and on models placed in your world. Change them and
+  those items become different items, and there is no way to undo it. The file
+  says so in its own contents.
+- **Two packs can clash.** On 1.21.4 and up, installing two content packs is
+  never a negotiation. Below it, packs that were numbered separately can
+  disagree, so combining content from two sources needs care.
+- **Your base item's own look can change.** Below 1.21.4 a custom model is a
+  predicate inside the base material's own model file, which replaces vanilla's
+  copy of it. RP Engine reproduces vanilla for the ordinary cases, but a few
+  items — a bow, a compass, a crossbow, a shulker box — have models it cannot
+  reconstruct. Build a custom item on one of those and the build warns you: the
+  item works, but plain bows may look wrong for everybody on the server. Use a
+  simpler material like `PAPER` or `STICK`, or run 1.21.4.
+
+## The pack format
+
+You do not set it. RP Engine reads your server's version and writes the right
+`pack_format` into the built pack.
+
+`config.yml` still has a `pack.format` key, commented out. It exists for one
+case: a Minecraft newer than your copy of RP Engine, whose format number the
+plugin cannot know yet. The startup log tells you when that has happened. Set
+it, update the plugin, then remove it again.
+
+## What the plugin tells you
+
+On a current server, nothing — a plugin that prints a paragraph every start
+teaches you to skip its output. On an older one, it names each reduced feature,
+the version it would need, and what you get instead:
+
+```
+[RPEngine] Running on Minecraft 1.20.1, so 7 features are reduced:
+[RPEngine]   - Multiple resource packs per player (needs 1.20.3). Players hold one
+             pack at a time, so a player due more than one bundle gets only the last
+             of them and the rest do not arrive. Swapping bundles still works and
+             costs a full download each time rather than being instant. A server
+             that uses a single bundle is unaffected.
+[RPEngine]   - Item models addressed by name (needs 1.21.4). Custom items are
+             addressed by an allocated number instead. The engine keeps that
+             allocation itself, but two packs built by different people can no
+             longer be installed side by side without it.
+[RPEngine]   - Models that glide when they move (needs 1.20.2). A model that moves
+             jumps between positions about five times a second instead of gliding.
+             Models that stay put look exactly the same.
+```
+
+On 1.21.4 it is one line, about tinted liquids. On 1.21.6 and up it says
+nothing at all.
+
+Individual items say so too, naming the item and the option, so an option that
+could not be applied is never a mystery:
+
+```
+[RPEngine] mypack:ruby: max-stack needs Minecraft 1.20.5 and this server is
+           older. An item's stack size, food values and durability are whatever
+           its base material's are.
+```
+
+## Everything here is about your server's version
+
+Not your players'. A plain Paper or Spigot server only accepts clients on its
+own version, so the two are the same number and there is one answer.
+
+If you run ViaVersion so that clients on other versions can join, that does not
+change any of the above: the plugin runs on your server's version and builds one
+pack for it. A client joining through Via is shown a pack built for the server,
+which is the same thing every other pack on that server does.
