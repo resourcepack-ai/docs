@@ -82,15 +82,24 @@ depends on what it is:
 | **Anything else** — a texture, a photo, a pattern | Tiled over the set, so you get armour *made of* it |
 
 <Callout type="note" title="How a set is made">
-  Generation never asks the model for a sheet — it redraws a picture of the
-  real set being *worn*, then folds that onto the body. It also means a
-  generated set is one charge however many sheets it has: they're all crops of
-  a single drawing.
+  Nothing asks an image model for an armour sheet — that file is an unwrap, and
+  the drawing that matters is the one on a body. So a set is *designed*: a
+  director starts from the real set's own art, has the pixel-art model paint
+  the material and colour over it, and then places the identifying details
+  itself — the visor, the emblem, the bands — looking at a render of the set
+  worn after every few changes and fixing what it sees.
 
-  The result is then looked at. The finished set is rendered on a body and
-  reviewed against what you asked for, and either corrected or drawn again — so
-  a set that comes back wrong is worth a retry, since nothing about the run is
-  fixed to the same answer.
+  That division is the whole reason it works. An image model paints convincing
+  metal and cannot be told *where* to put anything, and at sixteen pixels
+  across, where a thing sits is the design: an arc reactor is a two-pixel
+  circle in the middle of a chest. Ask for a specific character's armour and
+  you'll get its faceplate and its chest light in the right places, rather than
+  a suit in roughly the right colours.
+
+  A set takes a few minutes for this reason, and costs more than a single
+  texture does. Every sheet in the set comes out of the one design, so a set is
+  one charge whether it has two sheets or four — and no two runs are the same,
+  so a set that comes back wrong is worth a retry.
 </Callout>
 
 ## Coverage
