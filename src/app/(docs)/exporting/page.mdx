@@ -28,7 +28,7 @@ from:
 
 | Export | File | When you'd pick it |
 | --- | --- | --- |
-| **ModelEngine** | `.zip` | `.bbmodel` blueprints for a server running [ModelEngine](https://git.mythiccraft.io/mythiccraft/model-engine-4) |
+| **Model Engine** | `.zip` | `.bbmodel` blueprints for a server running [Model Engine](https://git.mythiccraft.io/mythiccraft/model-engine-4) |
 | **ItemsAdder** | `.zip` | A `contents` folder for a server already running [ItemsAdder](https://wiki.itemsadder.com/) |
 
 All four are built on demand from what's currently in the editor. There's no
@@ -135,9 +135,9 @@ The export lists which ones in its `README.txt` so nothing goes missing
 quietly. Models that hadn't finished generating are left out and listed the
 same way — export again once they're done.
 
-## ModelEngine
+## Model Engine
 
-ModelEngine rigs animated models onto entities — hitboxes, mounts, mob
+Model Engine rigs animated models onto entities — hitboxes, mounts, mob
 behaviour — which is a great deal more than our own plugin's playback does.
 This export gives it your models as Blockbench blueprints.
 
@@ -159,11 +159,11 @@ Copy the `.bbmodel` files into `plugins/ModelEngine/blueprints/`, then:
 ```
 
 <Callout type="note" title="Check the subcommand against your version">
-  ModelEngine's command names have moved between releases — `/meg spawn` does
+  Model Engine's command names have moved between releases — `/meg spawn` does
   not exist on R4. Run `/meg` on its own for the list your server actually has.
 </Callout>
 
-<Callout type="warning" title="ModelEngine's textures need serving, and it won't do it for you">
+<Callout type="warning" title="Model Engine's textures need serving, and it won't do it for you">
   `/meg reload` writes a resource pack to `plugins/ModelEngine/resource pack/`
   and stops there. A player who isn't wearing that pack watches the rig spawn,
   move and animate as a black-and-magenta checkerboard — which is this step
@@ -171,7 +171,7 @@ Copy the `.bbmodel` files into `plugins/ModelEngine/blueprints/`, then:
 </Callout>
 
 If ItemsAdder runs on the same server, it owns the resource pack, so tell it to
-fold ModelEngine's in. In ItemsAdder's `config.yml`:
+fold Model Engine's in. In ItemsAdder's `config.yml`:
 
 ```yaml
 merge_other_plugins_resourcepacks_folders:
@@ -180,19 +180,19 @@ merge_other_plugins_resourcepacks_folders:
 
 Then `/meg reload`, `/iazip`, and rejoin. Without ItemsAdder, merge that folder
 into whatever pack your server already sends. A pack pushed from here is not
-that pack and can't be — ModelEngine only generates those textures once it has
+that pack and can't be — Model Engine only generates those textures once it has
 loaded the blueprints.
 
-**Models only.** ModelEngine has nothing to do with block textures, item
+**Models only.** Model Engine has nothing to do with block textures, item
 sprites, GUI screens or icons — those belong in the Java zip or the ItemsAdder
 export. Textures are *embedded* in each blueprint rather than shipped beside
-it, because ModelEngine builds its own resource pack from the blueprints it
+it, because Model Engine builds its own resource pack from the blueprints it
 loads, so an image outside the file is one it never sees.
 
 <Callout title="These are ordinary Blockbench projects">
   If a rig looks wrong in game, open the `.bbmodel` in Blockbench. What you see
-  there is what ModelEngine will render, which makes it the fastest way to tell
-  a conversion problem from a ModelEngine configuration problem.
+  there is what Model Engine will render, which makes it the fastest way to tell
+  a conversion problem from a Model Engine configuration problem.
 </Callout>
 
 Two limits worth knowing before you build on it:
@@ -200,15 +200,15 @@ Two limits worth knowing before you build on it:
 **Bones are flat.** Our bones don't nest, so no blueprint has a bone inside a
 bone. Rigs animate correctly but can't do arm-inside-shoulder chains until the
 editor's model format gains nesting. A model you never grouped still works —
-everything goes into one `root` bone, since ModelEngine needs at least one.
+everything goes into one `root` bone, since Model Engine needs at least one.
 
-**A `hitbox` bone is written, sized to the model's own bounds.** ModelEngine
+**A `hitbox` bone is written, sized to the model's own bounds.** Model Engine
 warns `Missing hitbox` without one and its hitbox renderer needs it. Redraw the
 cube in Blockbench if you want a different collision box. **`mount` and `p_*`
 seat bones are not written** — those are decisions about how an entity is
 ridden, which geometry can't imply.
 
-**Vanilla textures are embedded for you.** ModelEngine's pack contains only
+**Vanilla textures are embedded for you.** Model Engine's pack contains only
 what the blueprints carried, so a model referencing `minecraft:block/stone`
 would otherwise have nothing to render — those images are fetched and packed
 into the `.bbmodel` alongside your own. If a texture genuinely can't be found,
@@ -218,7 +218,7 @@ any model that happened to.
 
 ### Animations don't play on their own
 
-ModelEngine won't start an animation just because the blueprint has one, and
+Model Engine won't start an animation just because the blueprint has one, and
 **it has no command to play one either** — `/meg` is `reload`, `summon`,
 `disguise`, `undisguise`, `trait` and `debug`, and that's the whole list. A
 summoned model standing still is correct behaviour, not a broken export.
@@ -228,19 +228,19 @@ What it *does* do is auto-play a handful of names as entity states. Its
 lists `idle`, `walk`, `jump`, `death` and `spawn`.
 
 <Callout type="tip" title="The quickest way to see a loop in game: call it idle">
-  Name the animation **Idle** in Animate mode and ModelEngine plays it on any
+  Name the animation **Idle** in Animate mode and Model Engine plays it on any
   summoned model with nothing else installed. Names are snake_cased on export,
   so "Idle" becomes `idle` — but "Idle Wave" becomes `idle_wave`, which is not
   a state name and won't auto-play.
 </Callout>
 
-Any other name needs something to drive it: MythicMobs mechanics, ModelEngine's
+Any other name needs something to drive it: MythicMobs mechanics, Model Engine's
 API, or a separate command plugin such as
 [MEGAnim](https://hangar.papermc.io/Nogard/MEGAnim) — which is not part of
-ModelEngine and has to be installed first.
+Model Engine and has to be installed first.
 
 **The triggers you picked in Animate mode don't come across.** On loop, on right
-click, on range are our plugin's concept and mean nothing to ModelEngine. The
+click, on range are our plugin's concept and mean nothing to Model Engine. The
 `README.txt` lists each model's animation names as exported, which is what
 MythicMobs wants typed.
 

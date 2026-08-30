@@ -1,10 +1,10 @@
 export const metadata = {
-  title: "Moving from ModelEngine",
+  title: "Moving from Model Engine",
   description:
-    "Drop a folder of ModelEngine blueprints into RP Engine and they load — the bone names already mean the same thing.",
+    "Drop a folder of Model Engine blueprints into RP Engine and they load — the bone names already mean the same thing.",
 };
 
-# Moving from ModelEngine
+# Moving from Model Engine
 
 Copy your `blueprints/` folder into a pack and start the server. Every
 `.bbmodel` in it becomes something you can give, place, spawn or bind.
@@ -13,7 +13,7 @@ Copy your `blueprints/` folder into a pack and start the server. Every
 plugins/RPEngine/content/
   mypack/
     pack.yml
-    blueprints/          ← straight out of ModelEngine
+    blueprints/          ← straight out of Model Engine
       golem.bbmodel
       bosses/dragon.bbmodel
 ```
@@ -31,12 +31,12 @@ says which file.
 
 ## Why there is nothing to convert
 
-ModelEngine's content format *is* the `.bbmodel` files: the save file carries
+Model Engine's content format *is* the `.bbmodel` files: the save file carries
 the geometry, the bones and the animations, and there is no YAML beside it to
 translate. RP Engine reads Blockbench projects directly for the same reason, so
 a blueprint is already in a format it understands.
 
-**The bone names already mean the same thing**, because they are ModelEngine's
+**The bone names already mean the same thing**, because they are Model Engine's
 names, adopted deliberately so a rig you already have — or bought — works here
 without being re-authored:
 
@@ -56,7 +56,7 @@ when the piece is right-clicked. What each one is called is what
 
 ## What is different
 
-**An item owns the model here.** In ModelEngine a blueprint is a thing in its
+**An item owns the model here.** In Model Engine a blueprint is a thing in its
 own right, spawned with `/meg`; in RP Engine every model belongs to an
 [item](/rp-engine/items), which is what makes one ID work as a thing you hold,
 a thing you [place](/rp-engine/models) and a thing a
@@ -73,7 +73,7 @@ one mechanic name.
 <Callout type="note" title="What a .bbmodel cannot carry">
   Meshes — convert them to cubes in Blockbench first — and rotations beyond one
   axis at one of -45, -22.5, 0, 22.5 or 45 degrees. Both are limits of the
-  Minecraft model format rather than of the reader, and ModelEngine works
+  Minecraft model format rather than of the reader, and Model Engine works
   around them with its own renderer. A rig built for that renderer may need
   simplifying.
 </Callout>
