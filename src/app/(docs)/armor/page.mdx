@@ -57,8 +57,8 @@ isn't a bug in the file — the game genuinely never reads them.
 
 ## Making one
 
-Open **Add asset**, choose **Armour**, and pick the set you're reskinning.
-Either door works:
+Open **Add asset**, choose **Armour**, and pick the set you're reskinning. Any
+of three doors works:
 
 **Generate** — describe the armour and it's drawn for you:
 
@@ -71,15 +71,34 @@ Either door works:
   drawing one from nothing.
 - **Empty** — transparent sheets, for drawing from scratch.
 
+**Upload** — bring your own image. Anything is accepted, and what happens to it
+depends on what it is:
+
+| What you upload | What you get |
+| --- | --- |
+| A **64×32 armour sheet** (or any image twice as wide as it is tall) | Used as-is — it already *is* the file the game reads |
+| A **64×64 player skin** | That skin's clothing becomes the armour |
+| A **character or a piece of armour** on a plain background | Cropped to the subject and wrapped onto the body |
+| **Anything else** — a texture, a photo, a pattern | Tiled over the set, so you get armour *made of* it |
+
 <Callout type="note" title="Why the set you pick changes the result">
-  Generation never asks the model for a sheet — it asks for a figure *wearing*
-  the armour, then folds that onto the body and cuts it to the shape of the set
-  you chose. That's why picking chainmail gives you a shallow helmet and picking
-  netherite gives you a deep one: each set covers a different amount of the
-  body, and your art is cut to the real one. It also means a generated set is
-  one credit however many sheets it has — they're all crops of a single
+  Generation never asks the model for a sheet — it redraws a picture of the
+  real set being *worn*, then folds that onto the body and cuts it to the shape
+  of the set you chose. That's why picking chainmail gives you a shallow helmet
+  and picking netherite gives you a deep one: each set covers a different amount
+  of the body, and your art is cut to the real one. It also means a generated
+  set is one charge however many sheets it has — they're all crops of a single
   drawing.
+
+  The result is then looked at: the finished set is rendered on a body and
+  reviewed against what you asked for, and either corrected or drawn again. A
+  set that comes back wrong is worth a retry — nothing about the run is fixed
+  to the same answer.
 </Callout>
+
+An upload is free, and — apart from a straight sheet — it is cut to the same
+silhouette a generated set is. A sheet you uploaded yourself is kept exactly as
+you drew it.
 
 Generating leather puts the art on the **dyeable base** and leaves the overlay
 empty, so the result takes dye. Add studs and straps on the overlay sheet
