@@ -290,6 +290,13 @@ export const engineNav: EngineGroup[] = [
         keywords: ["itemsadder", "ia", "migrate", "migration", "import", "convert", "contents",
           "font_images", "behaviours", "compatibility"],
       },
+      {
+        title: "Moving from ModelEngine",
+        href: "/rp-engine/modelengine",
+        description: "Drop a blueprints folder in. The bone names already mean the same thing.",
+        keywords: ["modelengine", "model engine", "blueprint", "blueprints", "bbmodel", "meg",
+          "migrate", "migration", "rig", "bones"],
+      },
     ],
   },
   {
