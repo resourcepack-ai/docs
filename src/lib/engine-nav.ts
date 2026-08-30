@@ -300,7 +300,7 @@ export const engineNav: EngineGroup[] = [
           "font_images", "behaviours", "compatibility"],
       },
       {
-        title: "Moving from ModelEngine",
+        title: "Moving from Model Engine",
         href: "/rp-engine/modelengine",
         description: "Drop a blueprints folder in. The bone names already mean the same thing.",
         keywords: ["modelengine", "model engine", "blueprint", "blueprints", "bbmodel", "meg",
