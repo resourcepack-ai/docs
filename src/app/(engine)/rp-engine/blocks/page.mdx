@@ -17,8 +17,7 @@ ruby_ore:
   hardness: 3.0        # stone is 1.5
   tool: pickaxe        # what has to be held for the drop
   drop: mypack:ruby    # default: itself
-  light: 0
-  sound: stone
+  sound: minecraft:block.stone.place
 ```
 
 **A block is an item too.** `/rp give mypack:ruby_ore` hands you the thing that
@@ -32,8 +31,20 @@ block anybody can use.
 | `hardness` | How long it takes to break. Stone is `1.5`, dirt `0.5`, `0` is instant |
 | `tool` | `pickaxe`, `axe`, `shovel`, `hoe`, or leave it out for anything |
 | `drop` | A content ID. Defaults to the block itself |
-| `light` | 0–15 |
-| `sound` | `stone`, `wood`, `metal`, `glass`, `wool` |
+| `sound` | Played *over* the base block's own, on place and break |
+
+`hardness` and `tool` do real work: the engine breaks the block itself, crack
+overlay and all, because hardness belongs to a block's **type** in Minecraft
+and every custom block is a note block underneath. The wrong tool still breaks
+it and gives nothing, the way stone and a shovel do.
+
+<Callout type="warning" title="No light, and no sound of its own">
+  Both belong to a block's type rather than its state, so neither can be
+  changed for a custom block. `sound:` plays something of yours **over** the
+  base block's wooden thud rather than replacing it. For a block that glows,
+  use a [placed model](/rp-engine/models) — it puts a real light block in its
+  anchor.
+</Callout>
 
 ## What it really is
 
