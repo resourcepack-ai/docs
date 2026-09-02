@@ -91,17 +91,20 @@ depends on what it is:
 <Callout type="note" title="How a set is made">
   Nothing asks an image model for an armour sheet — that file is an unwrap, and
   the drawing that matters is the one on a body. So a set is *designed*: a
-  director starts from the real set's own art, has the pixel-art model paint
-  the material and colour over it, and then places the identifying details
-  itself — the visor, the emblem, the bands — looking at a render of the set
-  worn after every few changes and fixing what it sees.
+  director starts from the real set's own art, blocks out the colours and
+  paints the identifying details itself — the face, the emblem, the bands, the
+  sides of every piece — then has the pixel-art model redraw that design with
+  real material on it, and puts back anything the redraw softened. After every
+  few changes it looks at the set worn: flat from the front and back, and as
+  the game actually draws it, in solid boxes from a three-quarter angle.
 
   That division is the whole reason it works. An image model paints convincing
-  metal and cannot be told *where* to put anything, and at sixteen pixels
-  across, where a thing sits is the design: an arc reactor is a two-pixel
-  circle in the middle of a chest. Ask for a specific character's armour and
-  you'll get its faceplate and its chest light in the right places, rather than
-  a suit in roughly the right colours.
+  fabric and metal and cannot be told *where* to put anything — and it follows
+  the colours of what it's shown far more than the words it's given. At sixteen
+  pixels across, where a thing sits is the design: an arc reactor is a
+  two-pixel circle in the middle of a chest. Ask for a specific character's
+  armour and you'll get its faceplate and its chest light in the right places,
+  rather than a suit in roughly the right colours.
 
   A set takes a few minutes for this reason, and costs more than a single
   texture does. Every sheet in the set comes out of the one design, so a set is
