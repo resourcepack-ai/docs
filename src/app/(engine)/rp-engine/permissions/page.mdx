@@ -34,6 +34,13 @@ command has not thereby said only ops may use an emoji. It is one of three
 nodes that gate something other than a command — the emote pair above are the
 others.
 
+`rpengine.edit` is the one worth a second look before you grant it widely.
+Every other node runs a command against content somebody already wrote;
+that one lets whoever holds it **rewrite files in your content folder from a
+browser** — see [Editing in a browser](/rp-engine/editing). It is an ordinary
+child of `rpengine.admin` and defaults to `op` like the rest, which is the
+right default; it is granting it to a wider group that deserves a moment.
+
 Individual content can carry its own node too — `permission:` on an item or a
 model — which is checked when it is used or placed rather than when it is held.
 

@@ -1,0 +1,124 @@
+export const metadata = {
+  title: "Editing in a browser",
+  description:
+    "Open a model, a texture or a vehicle from your own content folder in the resourcepack.ai editors, and write your changes straight back to the server.",
+};
+
+# Editing in a browser
+
+```
+/rp edit model mypack:chair
+```
+
+You get a link. It opens the model in the editor at
+[resourcepack.ai](https://resourcepack.ai), on the file in your own content
+folder. Move the cubes around, paint the texture, press **Send to server**, and
+`assets/models/chair.bbmodel` on your machine changes and reloads.
+
+**No account, no sign-in, nothing to install.** The link works once and lasts
+three hours.
+
+## The three things you can open
+
+```
+/rp edit model <id>      the 3D model an item wears
+/rp edit texture <id>    the item's own sprite, in a pixel editor
+/rp edit vehicle <id>    a vehicle's seats, handling and effects
+```
+
+```
+/rp edit                 the links you have open, and how long they have left
+/rp edit close           end them
+```
+
+Every one of them completes on tab, so you never have to remember an ID.
+
+## Nothing changes until you press the button
+
+The editor saves as you work — that is how a browser editor has to behave — and
+**none of that reaches your server.** Your files change once, when you press
+**Send to server**, and that is when the content folder reloads.
+
+So you can open a link, try something, decide against it, and close the tab.
+Nothing happened.
+
+## What crosses, and what does not
+
+Only the thing you named: one model and the textures it uses, one texture, or
+one vehicle's settings. Not your pack, not your other content, not your
+config.
+
+The link is the credential. Anybody who has it can edit that one thing for the
+next three hours, so treat it the way you would treat any other link with a
+token in it — and `/rp edit close` ends it early.
+
+## Models
+
+A model comes back as the same kind of file it went out as.
+
+A **`.bbmodel`** — the Blockbench project, which is what
+[the models page](/rp-engine/models) recommends you save — comes back as a
+`.bbmodel`, with the geometry, the bones, the animations and the art all still
+inside the one file. Everything Blockbench cares about and the plugin does not
+read is left exactly as it was: your display settings, your texture names, your
+meta block.
+
+An **exported `.json`** comes back as a `.json`, with its PNGs written beside it
+where they already live.
+
+A texture you add in the editor is written into your item's own texture folder,
+and the model points at it.
+
+<Callout type="note" title="Your original is never half-replaced">
+The plugin converts the file it is about to write and reads it back before it
+saves anything. If the result would not load as the model you edited, it
+refuses and says so in chat rather than writing it. Every write also goes to a
+scratch file and is moved into place, so a crash or a full disk cannot leave
+half a model where a whole one was.
+</Callout>
+
+## Vehicles
+
+The vehicle editor is where seat positions stop being
+arithmetic: you drag a figure onto the seat and it is where somebody sits.
+
+Your `vehicles/*.yml` is edited in place, **and only the one entry**. The other
+vehicles in the file, the blank lines and your comments between them are all
+left exactly as they were. Comments *inside* the vehicle you edited do go — an
+editor has replaced the values they were annotating.
+
+The model rides along so the seats have real bodywork to sit in, but the
+geometry is read-only there. Use `/rp edit model` for that.
+
+## Turning it off
+
+```yaml
+# config.yml
+edit:
+  enabled: true
+  url: "https://studio.resourcepack.ai"
+```
+
+Set `enabled: false` and `/rp edit` says so instead of doing anything.
+Everything else in the plugin works exactly the same — this is the only feature
+that talks to anything outside your server.
+
+`rpengine.edit` is the permission, and it is a real one: whoever holds it can
+rewrite files in your content folder from a browser. It is granted by
+`rpengine.admin` along with everything else — see
+[Permissions](/rp-engine/permissions).
+
+## Textures have to be square
+
+A texture the editor can open is a square PNG, up to 256×256. An animated strip
+— a tall image with a `.mcmeta` beside it — is refused by name rather than
+squashed into a square and handed back broken.
+
+## This is not the same as Sync
+
+[`/rp sync`](/rp-engine/commands) pushes a pack **from** a ResourcePack AI
+account **to** a player on your server, so you can look at something before it
+ships. It needs an account and a pairing code.
+
+This is the other direction and needs neither: your content folder is the
+source, and what comes back lands in it.
