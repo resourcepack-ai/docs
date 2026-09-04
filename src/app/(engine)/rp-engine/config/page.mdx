@@ -124,3 +124,21 @@ to a running server. Leave it alone and the plugin never reaches out.
 
 A server that never links behaves exactly as it did before any of this
 existed — Studio is one content source among several, not a requirement.
+
+## Editing in a browser
+
+```yaml
+edit:
+  enabled: true
+  url: "https://studio.resourcepack.ai"
+```
+
+`/rp edit model <id>` hands you a link to the editors at resourcepack.ai,
+opened on the file in your own content folder — no account needed. See
+[Editing in a browser](/rp-engine/editing).
+
+`enabled: false` and the command says so instead of doing anything. This is
+the only feature that talks to anything outside your server, and it does so
+only while a link is open.
+
+`url:` is worth changing for one reason: pointing at a staging Studio.

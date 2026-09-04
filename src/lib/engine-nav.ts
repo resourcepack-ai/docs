@@ -98,6 +98,13 @@ export const engineNav: EngineGroup[] = [
         description: "What a reload replaces, and what survives it.",
         keywords: ["reload", "rebuild", "orphan", "purge", "restart", "persistence"],
       },
+      {
+        title: "Editing in a browser",
+        href: "/rp-engine/editing",
+        description: "Open your own content in the editors, and write it back.",
+        keywords: ["edit", "editor", "browser", "blockbench", "texture", "vehicle",
+          "model editor", "pixel editor", "link", "no account", "send to server"],
+      },
     ],
   },
   {
