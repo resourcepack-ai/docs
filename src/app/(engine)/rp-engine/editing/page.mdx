@@ -7,10 +7,10 @@ export const metadata = {
 # Editing in a browser
 
 ```
-/rp edit model mypack:chair
+/rp edit mypack:chair
 ```
 
-You get a link. It opens the model in the editor at
+You get a link. It opens that thing in the right editor at
 [resourcepack.ai](https://resourcepack.ai), on the file in your own content
 folder. Move the cubes around, paint the texture, press **Send to server**, and
 `assets/models/chair.bbmodel` on your machine changes and reloads.
@@ -18,20 +18,28 @@ folder. Move the cubes around, paint the texture, press **Send to server**, and
 **No account, no sign-in, nothing to install.** The link works once and lasts
 three hours.
 
-## The three things you can open
+## One argument
+
+You do not tell it what kind of thing you are editing, because it already
+knows. An ID is unique across everything this server holds — see
+[IDs and namespaces](/rp-engine/ids) — so `mypack:chair` is exactly one thing.
+
+| What the ID is | Where it opens |
+| --- | --- |
+| An item with a `model:` | The model editor — geometry, paint, display, animation |
+| An item with no `model:` | The pixel editor, on its sprite |
+| A vehicle | The vehicle editor — seats, handling, effects |
+
+An ID that is something else — a sound, a screen, a recipe — is answered by
+name rather than by a list. Those have no editor yet.
 
 ```
-/rp edit model <id>      the 3D model an item wears
-/rp edit texture <id>    the item's own sprite, in a pixel editor
-/rp edit vehicle <id>    a vehicle's seats, handling and effects
+/rp edit           the links you have open, and how long they have left
+/rp edit close     end them
 ```
 
-```
-/rp edit                 the links you have open, and how long they have left
-/rp edit close           end them
-```
-
-Every one of them completes on tab, so you never have to remember an ID.
+The ID completes on tab, and only what can actually be opened is offered, so
+you never have to remember one.
 
 ## Nothing changes until you press the button
 
@@ -88,7 +96,7 @@ left exactly as they were. Comments *inside* the vehicle you edited do go — an
 editor has replaced the values they were annotating.
 
 The model rides along so the seats have real bodywork to sit in, but the
-geometry is read-only there. Use `/rp edit model` for that.
+geometry is read-only there. Open the item it wears to change that.
 
 ## Turning it off
 
