@@ -89,6 +89,36 @@ sitting, which is wrong by the same amount for every chair you own.
 Sit on something, decide it is a hand's width out, put the number here and
 `/rp reload`. Positive is higher. Most servers never touch it.
 
+## Vehicles
+
+```yaml
+vehicles:
+  seat-offset: 0.0
+  seat-forward: 0.0
+  push-players: false
+  seat-rig: true
+```
+
+`seat-offset` and `seat-forward` are the same nudge as the one above, for the
+seats in a [vehicle](/rp-engine/vehicles): up, and along the vehicle toward
+its front. Where a rider ends up is the chassis, plus the seat, plus the
+game's own rule for placing a passenger — and that last one cannot be read by
+a plugin and has changed between versions. If every seat on your server is
+consistently a bit off from where the editor drew it, these close the gap in
+one `/rp reload`.
+
+`push-players` makes a moving vehicle shove players out of its way, as it
+already does mobs. Off, because cars nudging each other's drivers about in a
+car park, and a passenger being flung as they get out, are both worse than a
+vehicle passing through somebody. Nothing here changes what a vehicle does
+about blocks — it always stops at a wall.
+
+`seat-rig` puts every occupant in their emote rig, sitting the way the seat's
+pose says, even on a pack that never authored a driving pose. It is on because
+the game otherwise draws a passenger standing up to their waist in the hull.
+Off costs nothing and shows ordinary players; a seat that names an emote is
+unaffected either way.
+
 ## The /emote command
 
 ```yaml
