@@ -149,6 +149,11 @@ engine.emotes().stop(player)
 `EmoteResult` carries a typed reason rather than a sentence, so you write the
 words in your own palette and your own language.
 
+A worn rig can be kept on another animation's clock: `engine.emotes().seek(player, seconds)`
+every tick, fed from a placement's `playhead()`, poses the rig at that moment
+of its emote. That is how a vehicle keeps a paddler's arms on the paddle
+across a loop wrap.
+
 ## Vehicles
 
 <CodeTabs labels={["Java", "Kotlin"]}>
