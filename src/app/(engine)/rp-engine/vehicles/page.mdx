@@ -236,6 +236,12 @@ animation goes there, and `submerged` is only for something a vehicle does
 particularly in water. Whatever a state names **loops for as long as that
 state holds**, even if the animation was authored as a one-shot.
 
+If you map both `moving` and `reversing`, author them as the same cycle in
+opposite directions — for example, a wheel turning 0→360 forwards and 360→0
+backwards. RP Engine mirrors their normalised playheads when direction changes,
+so the opposite animation begins at the wheel angle already on screen instead
+of snapping back to frame zero. The two animations may have different lengths.
+
 ## Sounds
 
 `sounds:` maps the same states to [sounds](/rp-engine/sounds) — an engine
