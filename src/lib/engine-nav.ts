@@ -230,6 +230,13 @@ export const engineNav: EngineGroup[] = [
         keywords: ["entity", "mob", "spawn", "health", "tags", "ai", "loot", "guard"],
       },
       {
+        title: "Vehicles",
+        href: "/rp-engine/vehicles",
+        description: "A model people ride: cars, boats, helicopters and aeroplanes, with up to eight seats.",
+        keywords: ["vehicle", "car", "boat", "plane", "aeroplane", "helicopter", "drive", "seat",
+          "passenger", "driver", "flight", "takeoff", "scale", "particles", "fuel"],
+      },
+      {
         title: "Liquids",
         href: "/rp-engine/liquids",
         description: "Real water or lava with your rules applied inside a box.",
