@@ -254,7 +254,7 @@ top-to-bottom order, with a blank state falling through. A vehicle with only a
 Minecraft sound events are one-shots. Add `length:` to the sound definition
 and RP Engine replays it when it ends for as long as the state holds; without a
 length it plays once when the vehicle enters that state. Each repeat starts at
-the vehicle's current position, so short loops follow a moving vehicle best.
+the vehicle's chassis and follows it while the vehicle drives and turns.
 
 ## What the occupant does
 
@@ -304,7 +304,8 @@ is wearing.
 Turn it off for anything the rider sits **inside** — a cabin, cockpit, tank or
 fuselage — where the cape would hang through the bodywork. It removes only the
 cape; the rider stays visible and posed. A seat's `hidden: true` is the switch
-that removes the person.
+that removes the person. Studio's vehicle preview follows this switch too, so
+turning it off removes the cape from the editor as well as from the game.
 
 ## Particles
 
