@@ -1,0 +1,195 @@
+export const metadata = {
+  title: "Vehicles",
+  description:
+    "A model with a job: converting one, placing the riders, handling for land, water and air, an animation per state, sounds and effects, and how it reaches a server.",
+};
+
+# Vehicles
+
+A vehicle is a **model that has been given a job**. The model is still a
+model — the same cubes, textures and animations, edited in the same editor,
+listed in the same place — and converting it changes nothing about it. What
+you add is everything a model can't say on its own: where people sit, how it
+handles, which of its animations plays when, what it sounds like, and what
+comes out of its exhaust.
+
+<Callout type="note" title="One model, one job">
+  A model is geometry; a vehicle is that geometry plus a definition the
+  editor keeps beside it. Convert a model and the model page gains a
+  **Vehicle** card; revert it and the page loses the card but keeps the
+  settings, so converting it again picks up where you left off. Nothing about
+  the cubes is touched either way.
+</Callout>
+
+## Making one
+
+1. **Make the model.** Generate it, upload it or build it, exactly as on the
+   [Models](/models) page: a go-kart, a rowing boat, a biplane. Build it
+   facing the front of the block (**+Z**), because that is the way it drives
+   and the way its driver looks. Land, water and air all start life as an
+   ordinary model.
+2. **Convert it.** On the model's page, the **Vehicle** button in the header
+   opens the same dialog as right-clicking the model's card and choosing
+   **Convert to…**. Converting drops you straight into the vehicle editor,
+   because a vehicle with no driver seat does nothing at all in game.
+3. **Give it a driver**, then as much of the rest as it needs.
+
+<Card title="Animate with AI" href="#animate-with-ai" icon="sparkles">
+  One click bones the bodywork and every rider and writes an animation for
+  each state. Most vehicles are made this way.
+</Card>
+
+## The vehicle editor
+
+The model sits in the viewport with its seats, hitbox and effects drawn over
+it; everything else is in the panels beside it.
+
+### Moves through
+
+Land, water or air. The choice decides the physics:
+
+| Medium | In game |
+| --- | --- |
+| **Land** | Falls, drives on blocks, steps up one like a player |
+| **Water** | Floats on water; on land it drags |
+| **Air** | Flies once it is going fast enough, sinks when it slows |
+
+### Handling
+
+| Setting | What it is |
+| --- | --- |
+| **Speed** | Top speed, in blocks a second. A kayak is about 6, a car 18, a plane 30 |
+| **Acceleration** | How quickly it gets there, and how quickly it stops |
+| **Turning speed** | Degrees a second at full lock |
+| **Weight** | 1 to 100. Feel rather than physics: how it shoves mobs and how it settles |
+| **Jumps** | A land vehicle that jumps on Space instead of braking — a dirt bike, a skateboard |
+| **Turns on the spot** | Pivots where it stands without moving, for tracked things, hovercraft and diggers. Off for anything with wheels, a hull or wings |
+| **Size** | How big the model stands, as a multiplier |
+| **Hitbox** | Width, height and length in blocks: what you click to get in, and what stops it at a wall |
+
+An air vehicle also has **Flight**: the speed it takes off at, how fast it
+climbs and dives, and how fast it sinks when it has stalled.
+
+<Callout type="tip" title="Above about 20 blocks a second, look before you ship">
+  A passenger's position is broadcast twenty times a second and their client
+  fills in the gaps, which stops looking right above that. The driver holds
+  up better, because steering is their own camera.
+</Callout>
+
+### Riders
+
+One driver and up to seven passengers. Each seat has:
+
+- **Where it is**, dragged in the viewport or typed as an exact position in
+  the model's own pixels, so a saddle lands on the saddle.
+- **A pose**, sitting or standing. A sitting seat's point is where the
+  rider's backside goes; a standing one's is where their feet go.
+- **Which way it faces.** Front is the default; a passenger can face
+  backwards, and a skater stands side-on.
+- **Hide the rider**, for a seat somebody occupies without being drawn.
+- **What they hold**: a paddle, a wheel, handlebars. Name a part of the model
+  and it follows the rider's hands through every animation, so the paddle is
+  wherever the arms put it.
+
+The driver steers; passengers ride. Anybody can get in by right-clicking the
+vehicle and out by sneaking.
+
+### Animations
+
+A vehicle's animations are the model's own, made in the editor's Animate
+mode or by AI, and the **state map** says which one plays when. Each state
+has a slot for the vehicle's animation and a slot for each rider, and the
+rider's is an **emote**: pose it on the vehicle from here, or make one for the
+state and come back.
+
+| State | When |
+| --- | --- |
+| **Airborne** | Off the ground with nothing holding it up: a jump, a fall, an aircraft in flight |
+| **Turning** | Swinging round faster than a nudge. Beats Moving, so a cornering vehicle plays this |
+| **Reversing** | Travelling backwards |
+| **Moving** | Travelling forwards |
+| **Idle** | Stationary, or near enough that nobody can tell |
+| **In water** | Its base is in the water and nothing above it applies. A moored boat is Idle, not this |
+
+The list is in order of precedence: the first state that is true and has an
+animation is the one that plays. A state you leave blank falls through to the
+next one, so a vehicle with only **Moving** filled in plays its drive cycle
+while cornering too. **Idle** is the floor: leave it blank and a still
+vehicle plays nothing.
+
+Changes of state are smooth. The engine crossfades from whatever the rig is
+showing into the next cycle and joins that cycle where the rig already is,
+so a wheel keeps its angle across moving, turning and reversing, and stays
+where it stopped when the vehicle does.
+
+### Animate with AI
+
+Rather than keyframing each state by hand, **Animate with AI** does the lot:
+it groups the model's cubes into bones (wheels, steering, rotor, paddle),
+puts a rider in every seat, and writes one looping animation per state for
+the bodywork and the people together — wheels rolling, a driver's hands on
+the wheel, a passenger holding on. Pick which states to animate, and tick
+**Set it up too** to have it plan the handling and the seats from the model
+as well. Run it again for one state to redo just that one; the others are
+kept.
+
+<Callout type="tip" title="Generation is a starting position">
+  Look at it in game, then fix what is wrong. A head that turns too far, a
+  wheel that rolls the wrong way: open the animation, move the keyframe.
+</Callout>
+
+### Sounds
+
+A sound per state, so an engine can tick over at idle and work harder
+moving. Pick one from the pack or make a new one in the sound editor. In
+game the sound follows the vehicle rather than playing from the spot it was
+in when the state changed.
+
+### Effects
+
+Exhaust smoke, spray off a hull, a rotor's downwash. Each emitter has a
+particle effect, where on the model it is drawn, which states it plays in,
+and how much: count, spread, speed, how often, colour and size. Add as many
+as the vehicle needs.
+
+### Capes
+
+Riders' capes are put away while they are in the vehicle, or not — a
+cloak trailing off a motorbike is right, and off a go-kart it is a cape stuck
+through the seat.
+
+## Seeing it in game
+
+A vehicle reaches a server the way a model does, and needs RP Engine on
+that server:
+
+1. **Push the pack** to a server you have paired, or get the item with the
+   model page's **Give in-game** button on the test server. See
+   [The plugin](/testing/plugin).
+2. **Use the item** to park the vehicle where you are looking. It stays
+   where you left it.
+3. **Right-click to get in.** On Paper 1.21.4 and up, W and S drive, A and D
+   steer, and Space is the handbrake — or the jump, for a vehicle that jumps.
+   In the air, Space climbs and S descends. On older servers, right-click
+   speeds up, left-click slows and reverses, and you steer by looking.
+4. **Fix it from the game.** `/rp edit` opens the vehicle in this editor from
+   the server's own copy; Send writes it back. See
+   [Editing from the server](/rp-engine/editing).
+
+<Card title="Vehicles in RP Engine" href="/rp-engine/vehicles" icon="server">
+  What the plugin does with one: the chassis and seats it builds, driving
+  on each server version, and the same vehicle written by hand as YAML.
+</Card>
+
+## What it becomes
+
+A resource pack can carry a model, but it has no way to say that the model is
+a vehicle: there is no field in a model for a seat. So the vehicle rides in
+the **content manifest** that goes with a pushed pack, alongside its sounds
+and screens, and RP Engine reads it from there. On the server it becomes an
+invisible chassis wearing your model, with an invisible seat for each rider,
+and the model's animations are played on the chassis by state.
+
+That is also why a vehicle is a Studio-and-RP-Engine thing. The plain pack
+download, the Bedrock pack and the ItemsAdder and ModelEngine exports all
+carry the model, because it is a model; none of them carries the job.
