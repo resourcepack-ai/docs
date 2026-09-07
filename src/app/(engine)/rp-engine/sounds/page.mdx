@@ -15,6 +15,7 @@ chime:
   volume: 1.0
   pitch: 1.0
   stream: false        # true for anything long
+  length: 2.4          # seconds. Only needed by something that loops it
 ```
 
 These are **real sound events**, not a file played at somebody. They obey the
@@ -32,6 +33,19 @@ called `chime` finds `assets/sounds/chime.ogg` with nothing pointing at it.
 `stream: true` for anything long — music, ambience over about ten seconds. A
 streamed sound is decoded as it plays instead of held in memory, which is what
 stops a five-minute track costing every player who hears it.
+
+## Length, and why anything loops
+
+`length:` is how long the file runs, in seconds, and it exists for one reason:
+**Minecraft has no looping sound.** A sound event is a one-shot, so anything
+that plays continuously is the server playing a short file again the moment it
+ends — a [vehicle's](/rp-engine/vehicles) engine note, today.
+
+Nothing here can measure your file, so this is you telling it. Leave it out and
+a vehicle plays the sound **once** when it enters that state; write it (any
+audio player will tell you the figure) and the sound loops for as long as the
+state lasts. Nothing else reads it, and a wrong figure is a gap or an overlap
+rather than an error.
 
 ## Categories
 

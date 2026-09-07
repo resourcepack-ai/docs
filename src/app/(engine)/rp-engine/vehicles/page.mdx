@@ -1,0 +1,391 @@
+export const metadata = {
+  title: "Vehicles",
+  description:
+    "A model people ride — cars, boats, helicopters and aeroplanes — with up to eight seats, per-state animation and sound, rider capes, particles, and a plugin API.",
+};
+
+# Vehicles
+
+A vehicle is a model people ride, with somewhere for up to eight of them to
+sit. It is parked rather than conjured: it stands there with nobody in it,
+survives a restart, and anyone who right-clicks it gets in.
+
+Two ways to make one. **In Studio**, generate any model, convert it to a
+vehicle, place the seats in the vehicle editor and sync — the plugin receives
+it with everything below already filled in. **By hand**, a file in
+`vehicles/` in your content folder, wearing any item's model:
+
+```yaml
+# vehicles/cars.yml
+hatchback:
+  model: mypack:hatchback   # an item id, whose model it wears
+  name: "&bHatchback"
+  medium: land              # land | water | air
+  speed: 18                 # top speed, blocks per second
+  acceleration: 7.5         # how fast it gets there
+  turn-speed: 140           # degrees per second the body swings round
+  turn-in-place: false      # optional - can it turn while standing still?
+  weight: 14                # 1-100. Heavier is slower to get going
+  scale: 1                  # how many times its built size it is drawn
+  jump: false               # land only: space jumps instead of braking
+  hitbox:                   # what players click to get in, in blocks
+    width: 1.4              # side to side
+    height: 1.2             # up from the base
+    length: 3.0             # front to back
+  seats:
+    - {role: driver,    x: -0.4, y: 0.6, z: 0.6}
+    - {role: passenger, x:  0.4, y: 0.6, z: 0.6}
+    - {role: passenger, x: -0.4, y: 0.6, z: -0.5}
+    - {role: passenger, x:  0.4, y: 0.6, z: -0.5}
+  capes: true               # optional — draw riders' capes (the default)
+  animations:               # optional — which animation plays when
+    idle: parked
+    moving: drive
+  sounds:                   # optional — which sound plays when
+    idle: mypack:tickover
+    moving: mypack:engine
+  particles:                # optional — what it throws, and when
+    - effect: smoke
+      states: [moving, reversing]
+      x: 0
+      y: 0.3
+      z: -1.5
+      count: 2
+      interval: 2
+```
+
+`/rp vehicle mypack:hatchback` parks one where you stand, `/rp vehicle remove`
+takes away the nearest, and `/rp vehicles` lists them. A vehicle's own item —
+the one Studio hands you after a sync — parks one when placed against a block.
+
+**Right-click the body to get in** and you take the first free seat, the
+driver's first, so whoever gets in first is driving. Right-click a particular
+seat to take that one. Sneak gets out, as it does for a boat. Without a
+`hitbox:` a vehicle is a one-block cube — clickable, but much smaller than
+most vehicles look.
+
+## Driving one
+
+How you drive depends on the server:
+
+- **Paper 1.21.4 and up** — W and S to move, **A and D to steer**, space for
+  the handbrake on land and water. A land vehicle with `jump: true` (a dirt
+  bike, a skateboard) jumps on space instead, about a block and a half, and
+  has no handbrake — S already brakes before it reverses. In the **air**, space climbs and S
+  descends; S only reverses once you are back on the ground. Your look does
+  not fly it, so you can look around while flying.
+- **Anything else** — right-click speeds up a notch, left-click slows down
+  and then reverses, and you steer by **looking where you want to go**. An
+  air vehicle climbs and dives with your look too, since there is no key to
+  read.
+
+**S is the brake before it is reverse.** Holding it at speed stops the vehicle
+the way a brake does, and only engages reverse once it is stationary — the
+order a gearbox makes you use.
+
+<Callout type="note" title="Why Paper is worth it here">
+  Steering by look costs the driver their head. A player's body follows their
+  head, so if steering is looking, the driver swings round on every corner and
+  cannot look at anything except where they are going. With A and D their head
+  is their own.
+</Callout>
+
+`turn-speed` is how fast the body comes round — a low number is a lorry, a
+high one is a go-kart. `weight` runs 1-100, and a heavier vehicle is slower
+to get going and slower to stop.
+
+**A vehicle only turns while it is moving.** Steering is something you do to a
+vehicle that is going somewhere: a parked one holds its heading however far
+its driver turns their head, which is what lets you park it where you meant
+to. Set `turn-in-place: true` for the things that really do pivot on the spot
+— a tank, a hovercraft, a digger — and they turn at their full `turn-speed`
+from a standstill. An aircraft that is off the ground steers either way, since
+a hovering helicopter is never standing still.
+
+## Seats
+
+**The order of the list is the order people are put in them.** The driver is
+first — write it anywhere and it is moved to the front — and the rest are
+passenger 1, 2, 3 in exactly the order you wrote them. Reordering the list
+moves where people sit.
+
+| Field | What it does |
+|---|---|
+| `role` | `driver` or `passenger`. Exactly one driver, or the vehicle does not load |
+| `x`, `y`, `z` | Right, up from the base, and in front — in blocks, turning with the vehicle |
+| `yaw` | Turns the occupant, in degrees clockwise from the vehicle's heading, **as they sit down**. A rear-facing bench is `yaw: 180` |
+| `pose` | `sitting` (the default) or `standing`. Decides what the point *means*: a sitting seat's point is the occupant's backside, a standing one's is their feet — about a metre apart |
+| `name` | What the seat is called when somebody takes it |
+| `hidden` | `true` draws **nobody** in the seat |
+| `animations` | What the occupant's body does, per state — see below |
+
+```yaml
+    - {role: passenger, x: 0, y: 1.2, z: -1.4, pose: standing, yaw: 180, name: "Gunner"}
+    - {role: driver, y: 0.9, hidden: true}
+```
+
+`hidden: true` is for a vehicle whose model already has its rider built in —
+an enclosed cockpit, a tank — where any body is a second person inside the
+fuselage. The occupant is taken off every screen including their own. If F5
+shows a see-through copy of them, that is your scoreboard team's
+`canSeeFriendlyInvisibles`, which most tab-list plugins turn on; the console
+says so once, naming the team.
+
+## Making something bigger than three blocks
+
+**A block model stops at three blocks on an axis.** `scale` is the way past
+it — 0.125 to 8, with 1 the size it was built at — so a 3-block hull at
+`scale: 4` stands twelve blocks long. Seats and particle emitters move with
+the art, because both are positions quoted against the model.
+
+It deliberately does **not** touch the `hitbox`, which is stated in blocks and
+is what players click and collide with, nor `speed`, `acceleration`, `weight`
+or `turn-speed` — a bigger lorry is a bigger lorry, not a faster one. So a
+scaled vehicle usually wants its hitbox raised in the same breath.
+
+## Land, water and air
+
+`medium: water` is a hull, and a hull out of water **crawls** at about a
+seventh of its top speed — slow enough to be unmistakably wrong, fast enough
+to get you off the sand. It is not stopped dead: a boat that could not move on
+land would beach itself on the first shore for ever. The driver is told once
+above their hotbar. A `land` vehicle driven into deep water falls in and
+drives along the bottom, which is what a car does.
+
+`medium: air` on its own is a **helicopter**: it lifts straight up from a
+standstill, holds whatever height it is at, and never falls. An **aeroplane**
+is the same medium with a `flight:` block:
+
+```yaml
+cessna:
+  model: mypack:cessna
+  medium: air
+  speed: 30
+  acceleration: 8
+  flight:
+    takeoff-speed: 12     # won't fly below this, blocks per second
+    climb-rate: 7         # how fast space gains height
+    dive-rate: 14         # how fast S loses it
+    stall-sink: 6         # how fast it comes down when it's too slow
+  seats:
+    - {role: driver, y: 0.9}
+```
+
+**`takeoff-speed` is the whole of what makes it an aeroplane.** Below it the
+climb key does nothing — the plane accelerates down the runway and that is
+your takeoff run — and dropping below it in flight is a stall: it keeps the
+speed it has and sinks at `stall-sink` until you open the throttle or reach
+the ground. Set it to `0` and you are back to a helicopter.
+
+<Callout type="note" title="There is no takeoff time, on purpose">
+  How long the run takes is `takeoff-speed` and `acceleration` together — 12
+  blocks per second at 8 per second squared is a second and a half, about nine
+  blocks of runway. A stated time would be a third number free to disagree
+  with the other two. Want a shorter run: raise the acceleration, or lower the
+  takeoff speed.
+</Callout>
+
+A dive keeps its momentum: pressing S in flight puts the nose down and leaves
+the speed almost alone, because nothing but drag is slowing an aircraft. Every
+flight number is ignored on a `land` or `water` vehicle, and the loader says
+so. `takeoff-speed` above `speed` is an aircraft that can never leave the
+ground; that is a warning rather than a refusal, because it is your vehicle.
+
+## States
+
+A vehicle is always doing something, and six words describe it — several at
+once. A car coming off a kerb mid-corner is `moving`, `turning` and `airborne`
+together.
+
+| State | When |
+|---|---|
+| `airborne` | Off the ground with nothing holding it up — a jump, a fall, or an aircraft in flight |
+| `reversing` | Travelling backwards |
+| `moving` | Travelling forwards |
+| `turning` | Swinging round faster than a nudge |
+| `idle` | Stationary, or near enough |
+| `submerged` | Its base is in water |
+
+`turning` is measured against how fast the body **actually** came round, not
+how hard you are steering.
+
+## Animations
+
+`animations:` maps a state to one of the model's own animations, authored the
+usual way. Nothing new is defined here; this only says when each one plays.
+
+**One animation at a time**, chosen by the order in the table above, top
+first — an airborne car plays its jump over its drive cycle. **A state you
+leave out falls through to the next one down**, which is what makes a short
+answer a complete one:
+
+```yaml
+  animations:
+    idle: parked
+    moving: drive
+```
+
+is a finished vehicle. Cornering plays `drive`, because `turning` falls
+through to `moving`. You only write `turning:` if you have actually drawn a
+leaning animation.
+
+**`idle` is where the fall-through stops.** Leave it blank and a vehicle
+standing still plays nothing. **A boat is always `submerged`**, which is why
+that state sits *below* `idle`: a moored boat is `idle`, so its resting
+animation goes there, and `submerged` is only for something a vehicle does
+particularly in water. Whatever a state names **loops for as long as that
+state holds**, even if the animation was authored as a one-shot.
+
+If you map both `moving` and `reversing`, author them as the same cycle in
+opposite directions — for example, a wheel turning 0→360 forwards and 360→0
+backwards. RP Engine mirrors their normalised playheads when direction changes,
+so the opposite animation begins at the wheel angle already on screen instead
+of snapping back to frame zero. The two animations may have different lengths.
+
+## Sounds
+
+`sounds:` maps the same states to [sounds](/rp-engine/sounds) — an engine
+note, the wash of a hull, or a helicopter rotor:
+
+```yaml
+  sounds:
+    idle: mypack:tickover
+    moving: mypack:engine
+```
+
+It follows the animation rule: **one sound at a time**, chosen in the same
+top-to-bottom order, with a blank state falling through. A vehicle with only a
+`moving` sound therefore keeps it through a turn and goes quiet when it stops.
+
+Minecraft sound events are one-shots. Add `length:` to the sound definition
+and RP Engine replays it when it ends for as long as the state holds; without a
+length it plays once when the vehicle enters that state. Each repeat starts at
+the vehicle's chassis and follows it while the vehicle drives and turns.
+
+## What the occupant does
+
+A seat can say what its occupant's body is doing, per state:
+
+```yaml
+  seats:
+    - role: driver
+      y: 0.6
+      animations:
+        idle: mypack:lean-on-door
+        moving: mypack:steering
+```
+
+**These are emote ids.** A driver hauling a wheel round is an
+[emote](/rp-engine/emotes) like any other; this only says when it is worn.
+It is worn the way a movement set is, and getting out puts their own body
+back.
+
+A state you leave out is **the seat's own stance, not a fall-through** — legs
+out at the hip for `sitting`, at rest for `standing` — so an occupant is drawn
+sitting *in* the thing rather than standing up to their waist in the hull, on
+a pack that authored no emotes at all. A named emote is worn **over** that
+stance, bone by bone, so one that only moves the arms keeps its occupant
+seated.
+
+<Callout type="warning" title="Riding as yourself">
+  This needs the pack to carry a baked rig for that player. Without one they
+  ride as themselves, and the console says so once, naming the vehicle, the
+  player and why — no rig for them, the emote no longer exists, they were
+  mid-emote of their own. `vehicles.seat-rig: false` in
+  [config.yml](/rp-engine/config#vehicles) is for a server that would rather
+  see ordinary players; a seat that names an emote is unaffected.
+</Callout>
+
+`submerged` on a seat never fires: every vehicle is always `moving`,
+`reversing` or `idle`, all three come above it, and a seat has no
+fall-through. A moored boat is `idle` — put a rower's resting pose there and
+their rowing cycle on `moving`.
+
+## Capes
+
+`capes: false` puts every rider's cape away while they are in this vehicle.
+The default is `true`: an open cart should not take away something the player
+is wearing.
+
+Turn it off for anything the rider sits **inside** — a cabin, cockpit, tank or
+fuselage — where the cape would hang through the bodywork. It removes only the
+cape; the rider stays visible and posed. A seat's `hidden: true` is the switch
+that removes the person. Studio's vehicle preview follows this switch too, so
+turning it off removes the cape from the editor as well as from the game.
+
+## Particles
+
+`particles:` is a list of emitters — spots on the bodywork that throw a
+particle effect while the vehicle is doing something.
+
+```yaml
+  particles:
+    - effect: smoke           # a particle name
+      states: [moving, reversing]
+      x: 0                    # the same frame as a seat: right, up, forward
+      y: 0.3
+      z: -1.5
+      count: 2                # particles per burst, at most 16
+      interval: 2             # ticks between bursts; 1 is every tick
+      spread: 0.1             # how far they scatter, in blocks
+      speed: 0.02             # how fast they drift away
+      enabled: true           # the default
+    - effect: dust            # the one effect that takes a colour
+      states: [idle]
+      y: 1.2
+      color: "#ff8800"
+      size: 1
+```
+
+**An emitter fires if the vehicle is in ANY of its states** — the opposite
+reading from `animations:`, and what makes one exhaust plume one emitter.
+An emitter that lists no states never fires, and says so at load rather than
+being guessed into "always".
+
+Particle names were renamed in 1.20.5 (`SMOKE_NORMAL` became `SMOKE`,
+`REDSTONE` became `DUST`); write either and the engine uses whichever your
+server has. A name no version has, or one that needs a block or item to draw
+itself, is skipped with one line in the console. Keep `count` and `interval`
+modest — every particle is drawn by every player in range.
+
+## What a vehicle is, underneath
+
+An invisible chassis that stays where you left it, wearing your model, with an
+invisible seat for each entry in the list. Only the chassis is saved; the
+seats and the model are rebuilt whenever its chunk loads.
+
+- **It stops at a wall rather than sliding along it.** Land vehicles step up
+  one block, like a player.
+- **The hitbox is a shape, not a bounding box.** It decides what you click and
+  which blocks stop the vehicle. It does not physically block an arrow, a
+  minecart, or somebody walking into it — a plugin cannot give an entity a
+  bounding box of its own size.
+- **A vehicle passes through players and shoves mobs.** `vehicles.push-players`
+  in config.yml makes it shove people too; it is off because cars nudging
+  each other's drivers about in a car park is worse than driving through
+  somebody.
+- **Speed above about 20 stops looking right for passengers.** Their position
+  is broadcast twenty times a second and their client fills in the gaps. The
+  driver holds up better, because steering is their own camera. `speed:`
+  allows 60 for a hovercraft skimming a lake; treat anything above 20 as
+  needing a look before you ship it.
+
+**If a seat is consistently a bit off from where the editor drew it**, that is
+`vehicles.seat-offset` (up) and `vehicles.seat-forward` (along) in
+[config.yml](/rp-engine/config#vehicles), then `/rp reload`. Where a rider
+ends up is the chassis, plus the seat, plus the game's own rule for placing a
+passenger — and only the first two are ours.
+
+<Callout type="danger" title="armor-stands-tick: false stops every vehicle">
+  A stand that does not tick never moves, so with that Paper setting every
+  vehicle sits still. The engine notices and says so in the console rather
+  than leaving you to guess.
+</Callout>
+
+## For plugin developers
+
+Fuel, ownership, speed limits, "no vehicles in town": all of them are your
+plugin's, and the [Plugin API](/rp-engine/api#vehicles) has what it needs —
+who is in what, putting people in and out of seats, switching a vehicle off
+so it coasts to a halt and stays there, capping its speed, and events for
+somebody getting in, getting out, a vehicle moving and its state changing.
