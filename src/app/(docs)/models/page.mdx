@@ -217,8 +217,15 @@ placed copy of it or drives straight through.
 It needs saying because a placed model collides with nothing on its own. What
 you see is a display entity, which has no collision at all, so before this a
 car went through your fence, your statue and your parked chair as if none of
-them were there. Ticked, RP Engine gives a vehicle the model's own hitbox to
-hit, and nothing is written to the world to do it.
+them were there. Ticked, RP Engine tests a vehicle against **the model's own
+cubes** — the same ones you built in the editor — and nothing is written to the
+world to do it.
+
+That means it is shaped like the model rather than boxed around it: you can
+drive between the legs of a table, under an archway, and through a doorway you
+modelled, and a long fence stops you along its whole length rather than only in
+the middle. It works at whatever angle the piece was placed, and a piece scaled
+up in the give card collides at the size it is drawn.
 
 <Callout type="note" title="It doesn't change anything for players">
   Walking through the model is a separate setting and lives on the server, not
