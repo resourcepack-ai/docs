@@ -1,14 +1,14 @@
 export const metadata = {
   title: "Plugin API",
   description:
-    "Drive items, models, emotes, icons and sounds from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
+    "Drive items, models, emotes, vehicles, icons and sounds from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
 };
 
 # Plugin API
 
 Your own Spigot or Paper plugin can give a custom item, place a model, play an
-emote, put an icon in a message, and cancel any of those when your rules say
-no. Every snippet here is in Java and Kotlin — pick one and the whole of the
+emote, park a vehicle and switch it off, put an icon in a message, and cancel
+any of those when your rules say no. Every snippet here is in Java and Kotlin — pick one and the whole of the
 docs follows you.
 
 ## Getting in
@@ -24,6 +24,7 @@ RPEnginePlugin engine =
 engine.items();      // custom items
 engine.models();     // models, and the ones standing in your worlds
 engine.emotes();     // emotes and movement sets
+engine.vehicles();   // vehicles, and the ones standing in your worlds
 engine.sounds();     // custom sounds
 engine.icons();      // icons, and putting one into text
 engine.registry();   // everything this server holds, by id
@@ -35,6 +36,7 @@ val engine = Bukkit.getPluginManager().getPlugin("RPEngine") as RPEnginePlugin
 engine.items()      // custom items
 engine.models()     // models, and the ones standing in your worlds
 engine.emotes()     // emotes and movement sets
+engine.vehicles()   // vehicles, and the ones standing in your worlds
 engine.sounds()     // custom sounds
 engine.icons()      // icons, and putting one into text
 engine.registry()   // everything this server holds, by id
@@ -147,6 +149,154 @@ engine.emotes().stop(player)
 `EmoteResult` carries a typed reason rather than a sentence, so you write the
 words in your own palette and your own language.
 
+A worn rig can be kept on another animation's clock: `engine.emotes().seek(player, seconds)`
+every tick, fed from a placement's `playhead()`, poses the rig at that moment
+of its emote. That is how a vehicle keeps a paddler's arms on the paddle
+across a loop wrap.
+
+## Sounds
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.sounds().play(player, id);       // only this player hears it
+engine.sounds().playAt(location, id);   // everybody nearby hears it here
+engine.sounds().playFrom(entity, id);   // everybody nearby hears it follow this entity
+```
+
+```kotlin
+engine.sounds().play(player, id)       // only this player hears it
+engine.sounds().playAt(location, id)   // everybody nearby hears it here
+engine.sounds().playFrom(entity, id)   // everybody nearby hears it follow this entity
+```
+
+</CodeTabs>
+
+All three use the sound's declared category, volume and pitch; overloads let
+you replace volume and pitch. `playFrom` is the moving-source form for engines,
+creatures and anything else where a fixed coordinate would leave the sound
+behind. Playing methods are main thread only; `ids()` and `info()` are safe
+from any thread.
+
+## Vehicles
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.vehicles().spawn(location, id);   // park one, ready to get into
+engine.vehicles().of(player);            // the vehicle they are in
+engine.vehicles().at(entity);            // is this thing part of a vehicle?
+engine.vehicles().near(location, 16);    // nearest first
+engine.vehicles().loaded();              // every one in a loaded chunk
+engine.vehicles().isRiding(uuid);        // safe from any thread
+```
+
+```kotlin
+engine.vehicles().spawn(location, id)    // park one, ready to get into
+engine.vehicles().of(player)             // the vehicle they are in
+engine.vehicles().at(entity)             // is this thing part of a vehicle?
+engine.vehicles().near(location, 16.0)   // nearest first
+engine.vehicles().loaded()               // every one in a loaded chunk
+engine.vehicles().isRiding(uuid)         // safe from any thread
+```
+
+</CodeTabs>
+
+A `Vehicle` is a handle on one standing in a world, occupied or not: what it
+is, where it is going, who is aboard, and the switches a plugin turns.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+Vehicle car = engine.vehicles().of(player).orElseThrow();
+car.speed();          // blocks per second, negative in reverse
+car.states();         // MOVING, TURNING, AIRBORNE, IDLE ...
+car.driver();         // Optional<Player>
+car.occupants();      // driver first, then in seat order
+car.seat(other, 1);   // put somebody in seat 1
+car.eject(other);     // and take them out
+```
+
+```kotlin
+val car = engine.vehicles().of(player).orElseThrow()
+car.speed()           // blocks per second, negative in reverse
+car.states()          // MOVING, TURNING, AIRBORNE, IDLE ...
+car.driver()          // Optional<Player>
+car.occupants()       // driver first, then in seat order
+car.seat(other, 1)    // put somebody in seat 1
+car.eject(other)      // and take them out
+```
+
+</CodeTabs>
+
+### Fuel, and anything else that stops a vehicle going
+
+`setEnabled(false)` is the switch. A disabled vehicle ignores its driver,
+coasts to a halt where it is and stays there — it still falls if it was in
+the air and still floats on water, and people get in and out of it as normal.
+The flag is written on the chassis, so a car that ran dry is still dry after
+a restart.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+NamespacedKey fuel = car.key(this, "fuel");
+
+@EventHandler
+public void onState(VehicleStateEvent event) {
+    // Burn only while it is actually going somewhere.
+    if (event.entered(VehicleState.MOVING)) burners.add(event.vehicle());
+    if (event.left(VehicleState.MOVING)) burners.remove(event.vehicle());
+}
+
+// once a second
+for (Vehicle vehicle : burners) {
+    int left = vehicle.data().getOrDefault(fuel, PersistentDataType.INTEGER, 0) - 1;
+    vehicle.data().set(fuel, PersistentDataType.INTEGER, Math.max(0, left));
+    vehicle.setEnabled(left > 0);
+}
+```
+
+```kotlin
+val fuel = car.key(this, "fuel")
+
+@EventHandler
+fun onState(event: VehicleStateEvent) {
+    // Burn only while it is actually going somewhere.
+    if (event.entered(VehicleState.MOVING)) burners += event.vehicle()
+    if (event.left(VehicleState.MOVING)) burners -= event.vehicle()
+}
+
+// once a second
+for (vehicle in burners) {
+    val left = vehicle.data().getOrDefault(fuel, PersistentDataType.INTEGER, 0) - 1
+    vehicle.data().set(fuel, PersistentDataType.INTEGER, maxOf(0, left))
+    vehicle.setEnabled(left > 0)
+}
+```
+
+</CodeTabs>
+
+`data()` is the chassis's persistent data — the tank, the owner, the price
+paid — and it survives everything the vehicle survives. `uniqueId()` is the
+chassis's id and is the one stable key: the seats and the model are rebuilt
+on every chunk load with new ids each time, so never remember those.
+
+`setSpeedLimit` is the softer version, for a damaged engine or a road with a
+limit: a lower top speed, with braking and reversing scaled to match. An
+aircraft limited below its takeoff speed cannot take off, which is the honest
+consequence. Deliberately not remembered — keep it in `data()` yourself if it
+should be. `stop()` is a wall: dead this tick, throttle reset, still answering
+its driver afterwards.
+
+<Callout type="note" title="Who may get in is an event, not a method">
+  There is no `setLocked`. "Is this your car" is a rule about your server, so
+  it is `VehicleEnterEvent` — cancel it and they stay standing beside the
+  door. `VehicleExitEvent` cannot be cancelled: a player who could not be let
+  out would be a player who is trapped, and a race that has not finished is
+  better served by putting them back with `seat`.
+</Callout>
+
 ## Icons in your own text
 
 <CodeTabs labels={["Java", "Kotlin"]}>
@@ -178,7 +328,11 @@ All cancellable unless the row says otherwise.
 | `ModelInteractEvent` | A placed model was right-clicked |
 | `ModelAnimationEvent` | A model is about to play an animation |
 | `ModelAnimationEndEvent` | One ended — finished, replaced or stopped. The half you need to do anything in sequence. Not cancellable |
-| `ModelSeatEvent` | Somebody is about to sit on a chair or a seat bone. Cancelling leaves them standing |
+| `ModelSeatEvent` | Somebody is about to sit on a chair, a seat bone, **or a vehicle seat**. Cancelling leaves them standing |
+| `VehicleEnterEvent` | Somebody is about to get into a vehicle — fires after `ModelSeatEvent` for the same seat, with the vehicle and the seat attached. "Is this your car" lives here |
+| `VehicleExitEvent` | Somebody got out, or was taken out. Carries why — dismounted, ejected, quit, reloaded, removed, unloaded, shutdown. Not cancellable. `RELOADED` is followed by them being put back a tick later, with no enter event |
+| `VehicleMoveEvent` | A vehicle is about to move — once per tick, only while it is going somewhere. Cancelling stops it dead, like a wall. The event for a region it may not enter; **not** the event for fuel, which is `setEnabled` |
+| `VehicleStateEvent` | What a vehicle is doing changed — set off, stopped, took off, went under. The same set that drives its animation, on the change rather than every tick. Not cancellable |
 | `ModelBindEvent` | A model is going on an entity, or coming off one — a MythicMobs boss, an NPC, anything that is not ours |
 | `EntityDeathEvent` | A custom entity died. Bukkit's own event carries the drops; this one says what it was. Not cancellable |
 | `PlayerLiquidEvent` | Somebody went into one of your liquids, or came out of one. Fires on the crossing, not every second. Not cancellable |

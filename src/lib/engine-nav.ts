@@ -98,6 +98,13 @@ export const engineNav: EngineGroup[] = [
         description: "What a reload replaces, and what survives it.",
         keywords: ["reload", "rebuild", "orphan", "purge", "restart", "persistence"],
       },
+      {
+        title: "Editing in a browser",
+        href: "/rp-engine/editing",
+        description: "Open your own content in the editors, and write it back.",
+        keywords: ["edit", "editor", "browser", "blockbench", "texture", "vehicle",
+          "model editor", "pixel editor", "link", "no account", "send to server"],
+      },
     ],
   },
   {
@@ -223,6 +230,13 @@ export const engineNav: EngineGroup[] = [
         keywords: ["entity", "mob", "spawn", "health", "tags", "ai", "loot", "guard"],
       },
       {
+        title: "Vehicles",
+        href: "/rp-engine/vehicles",
+        description: "A model people ride: cars, boats, helicopters and aeroplanes, with up to eight seats.",
+        keywords: ["vehicle", "car", "boat", "plane", "aeroplane", "helicopter", "drive", "seat",
+          "passenger", "driver", "flight", "takeoff", "scale", "particles", "fuel"],
+      },
+      {
         title: "Liquids",
         href: "/rp-engine/liquids",
         description: "Real water or lava with your rules applied inside a box.",
@@ -314,8 +328,9 @@ export const engineNav: EngineGroup[] = [
       {
         title: "Plugin API",
         href: "/rp-engine/api",
-        description: "Drive items, models, emotes and icons from your own plugin.",
-        keywords: ["api", "java", "kotlin", "developer", "bukkit", "softdepend", "event", "listener", "registry"],
+        description: "Drive items, models, emotes, vehicles and icons from your own plugin.",
+        keywords: ["api", "java", "kotlin", "developer", "bukkit", "softdepend", "event", "listener", "registry",
+          "vehicle", "fuel"],
       },
     ],
   },
