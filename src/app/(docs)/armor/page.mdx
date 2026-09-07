@@ -114,19 +114,23 @@ depends on what it is:
 
 ## Coverage
 
-Both Generate and Upload ask how much of the body your art may cover, and the
-answer changes the shape of the result more than anything else on the sheet.
+**A generated set is cut to the shape of the set it reskins**, and there's
+nothing to choose. Ask for iron and you get iron's silhouette: a band across
+the top of the head, a sleeve to the elbow, the face and forearms bare — because
+that's what iron *is*. Chainmail's helmet is two pixels deep and stays that way.
 
-| | What you get |
-| --- | --- |
-| **Whole body** (default) | A closed helm, sleeves to the fingertips and complete leggings — every pixel the game will draw |
-| **Vanilla shape** | Cut to exactly what the real set covers, so the face and forearms show through like the real thing |
+Vanilla's sets cover surprisingly little, and the temptation is to let a
+generated one cover more. Don't be surprised that it doesn't: armour is worn
+**over** a player, not instead of one, and art that reaches the whole head and
+the whole leg stops reading as equipment and starts reading as a costume — a
+painted face where a helmet goes, trousers where boots go. Every armour box is
+also drawn a pixel proud of the body on each side, so a set that covers
+everything is a visibly swollen one.
 
-Vanilla's own sets cover surprisingly little: iron's helmet is a band across the
-top of the head, chainmail's is two pixels deep, and both leave the face bare.
-That's iron's design decision, not yours — so a set is drawn to the whole body
-unless you ask for the vanilla silhouette back. The 2D editor has always let you
-paint the whole head by hand; this is the same freedom on the generated side.
+If you want the whole head, paint it: **the 2D editor has no such limit** and
+never has. It greys out only the pixels the game will never read. The
+restriction is on what a *generation* fills in, where nothing is watching the
+result but you.
 
 <Callout type="note" title="Plumes and crests are placed for you">
   Ask for a plume, a crest or a ridge and it's drawn onto the crown of the
@@ -138,28 +142,25 @@ paint the whole head by hand; this is the same freedom on the generated side.
   out past the body.
 </Callout>
 
-<Callout type="note" title="Where Whole body stops, and why the arms look chunky">
+<Callout type="note" title="Why the arms look chunky">
   Minecraft grows every armour box by **one pixel on each side** — a helmet is a
   ten-pixel block around an eight-pixel head, and a sleeve is six pixels around
   a four-pixel arm. That's what makes a pauldron look like a pauldron, and it's
-  also why armour is always a size up on the player wearing it. Two things
-  follow:
+  also why armour is always a size up on the player wearing it.
 
-  - **Boots stop at the shin.** Boots live on the outer sheet, *outside* the
-    leggings, so a boot reaching the hip would permanently hide the leggings you
-    drew in the same set. This is the one place Whole body doesn't reach.
-  - **The sleeves and the chest overlap**, because six plus ten plus six is
-    wider than the body they sit on. A shadow is drawn down the inside of each
-    sleeve so the arm still reads as an arm rather than melting into the chest
-    — you'll see it on any set that covers the whole limb.
+  One thing follows that surprises people: **the sleeves and the chest
+  overlap**, because six plus ten plus six is wider than the body they sit on.
+  A shadow is drawn down the inside of each sleeve so the arm still reads as an
+  arm rather than melting into the chest — you'll see it on any set whose sleeve
+  runs down the limb.
 
-  Hands are covered. They used to be left bare to keep the arms slim, which
-  meant a full-body suit ended in bare fists poking out of its own gauntlets;
-  the shadow above is what solves that properly.
+  If a set looks fat to you, the fix is art rather than size: a sleeve a shade
+  different from the chest, painted side faces, a boundary at the shoulder.
 </Callout>
 
-An upload is free, and takes the same coverage choice — except a straight 64×32
-sheet, which is kept exactly as you drew it and isn't cut at all.
+An upload is cut to the same silhouette and is free — except a straight 64×32
+sheet, which is already the file the game reads and is kept exactly as you
+drew it.
 
 Generating leather puts the art on the **dyeable base** and leaves the overlay
 empty, so the result takes dye. Add studs and straps on the overlay sheet
