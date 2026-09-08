@@ -37,6 +37,8 @@ hatchback:
     - {role: passenger, x:  0.4, y: 0.6, z: 0.6}
     - {role: passenger, x: -0.4, y: 0.6, z: -0.5}
     - {role: passenger, x:  0.4, y: 0.6, z: -0.5}
+  coast: 0                  # optional — how freely it rolls; 0 is a car's
+  bail: false               # optional — throw the rider on a bad landing
   capes: true               # optional — draw riders' capes (the default)
   speedometer: true         # optional — show the driver their speed (the default)
   animations:               # optional — which animation plays when
@@ -314,6 +316,52 @@ fuselage — where the cape would hang through the bodywork. It removes only the
 cape; the rider stays visible and posed. A seat's `hidden: true` is the switch
 that removes the person. Studio's vehicle preview follows this switch too, so
 turning it off removes the cape from the editor as well as from the game.
+
+## How freely it rolls
+
+`coast:` is how quickly a vehicle slows when nobody is driving it, in blocks a
+second squared. Leave it out and you get the engine's own answer, which is a
+car's: on the throttle or off it, a car coasts to a stop in a few seconds.
+
+That is wrong for anything without an engine in it. Small numbers roll far:
+
+| `coast` | About right for |
+|---|---|
+| `0.15` | A skateboard on smooth concrete |
+| `0.6` | A bicycle |
+| `2` | A shopping trolley with a bad wheel |
+| `0` | Whatever the engine thinks — a car |
+
+It replaces a floor rather than the whole of the drag, so a vehicle quick
+enough to slow faster than this still does.
+
+## Bailing
+
+Land a long way round from the way you were travelling and the rider comes
+off:
+
+```yaml
+  bail:
+    from: 50          # degrees off the direction of travel
+    to: 130
+    min-speed: 3.0    # slower than this is a stumble, not a fall
+    damage: 1.0       # half a heart. 0 for nothing but the drop
+```
+
+`bail: true` on its own takes exactly those numbers.
+
+**It is off unless you ask**, because a vehicle that throws its rider is a
+game rule rather than a physical fact, and a server owner who never asked for
+one should not find it under somebody at speed.
+
+**The window has a far edge on purpose.** Landing straight is fine, and so is
+landing straight BACKWARDS — that is riding away fakie, a trick rather than a
+crash. Only the sideways part of the range throws anybody, which is why this
+is a window and not simply "not straight".
+
+A plugin can veto any one of them (`VehicleBailEvent`, see the
+[plugin API](/rp-engine/api)), which is how a server-side switch for bailing
+gets written without editing a pack that an update would overwrite.
 
 ## The speedometer
 

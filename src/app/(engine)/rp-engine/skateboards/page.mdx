@@ -1,0 +1,96 @@
+export const metadata = {
+  title: "Skateboards",
+  description:
+    "The first official RP Engine addon: a skateboard you push, tuck, ollie, grind, coffin and wall ride, plus a skatepark to build with. Install it, ride it, and read it as a worked example of the plugin API.",
+};
+
+# Skateboards
+
+An **addon**: a plugin built on RP Engine rather than a pack for it. Install
+both and every player has `/skateboard`, a board they can actually ride, and
+`/skatepark`, the pieces to build somewhere to ride it.
+
+It also exists to be read. Everything it does, it does through the public
+plugin API — no internals, no private hooks — so it is the worked example for
+anyone building their own. Several parts of that API exist *because* the
+skateboard needed them, which is the point of building it here.
+
+## Installing
+
+Drop `RPE-skateboards.jar` in `plugins/` beside `RPEngine.jar` and start the
+server. Its content — the board's model, textures, item, vehicle definition
+and rider animations, and every skatepark piece — installs itself into
+`plugins/RPEngine/content/skateboards/` on first boot, and the engine reloads
+once to pick it up. That folder is yours: edit anything in it, and a new
+version of the plugin overwrites only its own files.
+
+## Riding
+
+| Key | What it does |
+|---|---|
+| **W** | Push. A kick every 0.7 s, up to a speed the legs cannot beat |
+| **S** | Push it backwards with the front foot, once you have stopped |
+| **A/D** | Steer. In the air, flick the board round under you |
+| **Sprint** | Tuck. The speed cap comes off and the board creeps toward its top speed |
+| **Space** | Ollie. Held against a wall, ride the wall |
+| **Shift** (hold) | The coffin: lie flat on your back along the board |
+| **Shift** (tap) | Step off |
+
+Two more worth knowing. **Stance**: `/skateboard stance left|right` names the
+foot you lead with, remembered per player and for every board you ever step
+on; a right-footed rider gets the mirrored copy of every animation. And
+**bailing**: land a long way round from the way you are travelling and you
+come off. Straight is fine, and so is straight backwards — that is a fakie,
+not a fall.
+
+## The skatepark
+
+`/skatepark` lists the pieces, `/skatepark <piece>` hands one over, and
+`/skatepark all` gives you the lot. Right-click the ground to place one, punch
+it to take it back.
+
+Every piece is a placed model with vehicle collision on, which is what makes
+it a skatepark rather than scenery: a board rolls up a ramp's face and grinds
+along the top of a box, because the engine holds a vehicle up on a placed
+model's own cubes. Slabs and platforms to build the ground, banks, quarter
+pipes and a wall ride to launch off, boxes, ledges and rails to grind, and the
+park furniture round the edges.
+
+## Configuration
+
+`plugins/RPESkateboards/config.yml`. Every line the plugin says is in there,
+and two switches:
+
+```yaml
+prefix: "&b[Skateboards] &7"
+
+# Land sideways and the rider comes off. Off means a bad landing simply
+# carries on.
+bail: true
+
+# Whether the board says "Landed it", "Fakie!" and "Bailed!" in chat.
+trick-messages: true
+```
+
+`/skateboard reload` rereads it, including for somebody already on a board.
+
+## What it proves
+
+Read alongside the [plugin API](/rp-engine/api), the skateboard is a tour of
+the parts of it that are hard to discover:
+
+- **`Vehicle.input()`, `nudge` and `dress`** — a vehicle that is pushed rather
+  than throttled, with the rider wearing an emote per thing they are doing.
+- **`holdOccupant` and `VehicleInput.sneak()`** — how the shift key comes to
+  mean something on a vehicle at all, given that shift is Minecraft's
+  dismount.
+- **`turnOccupant` and `dressVariant`** — one rider facing and animating
+  differently from another on the same seat, which is what a stance is.
+- **`Placement.seek` and `animation-follows-speed`** — wheels that turn
+  because the board moved rather than because time passed.
+- **`AddonContent.install`** — shipping a content folder inside a plugin jar.
+- **`VehicleBailEvent`** — the engine's rule, with the server's veto over it.
+
+The source is in the `rpe-addons/skateboards` directory of the ResourcePack AI
+repository, and the parts that are not obvious are commented where they are,
+not here.
