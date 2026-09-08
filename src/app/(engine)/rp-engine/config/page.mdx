@@ -97,6 +97,7 @@ vehicles:
   seat-forward: 0.0
   push-players: false
   collide: true
+  speedometer: true
   seat-rig: true
 ```
 
@@ -122,6 +123,14 @@ hardly slows, a clip on the corner sends you round and a square rear-ending
 does not, and at a crawl the whole thing turns into pushing. Turn it off for a
 track where a pile-up is worse than a clean overtake, or a lobby where cars are
 parked shoulder to shoulder.
+
+`speedometer` is whether a driver sees their speed above the hotbar in
+kilometres an hour, going yellow while the tyres are sliding. On. It stays off
+the action bar for a few seconds after anything else is written there, so it
+never paints over which seat you got. Off writes nothing and puts the readout
+nowhere else. An individual vehicle can opt out on its own with
+`speedometer: false` — see [vehicles](/rp-engine/vehicles#the-speedometer),
+which is what a skateboard does.
 
 `seat-rig` puts every occupant in their emote rig, sitting the way the seat's
 pose says, even on a pack that never authored a driving pose. It is on because
