@@ -42,6 +42,15 @@ says out loud, rather than putting a Steve in their place.
   the same question in Java.
 </Callout>
 
+The engine bakes its own rigs too, from the skins of everybody who joins, so a
+server with no Studio pack at all still has them. A player it has never seen
+has nothing in the pack yet, which is why a brand-new arrival appears as the
+default rig for a moment — riding a vehicle or sitting in a seat is usually
+where somebody first notices it. It rebuilds and re-sends five seconds later,
+covering everybody who arrived in the meantime; `emotes.bake-on-join: false` in
+[config.yml](/rp-engine/config) turns that off for a server that would rather
+pick its own moment, and `/rp reload` bakes whatever has arrived since.
+
 ## Getting emotes onto a server
 
 Make them in [Studio](https://studio.resourcepack.ai), then push:
