@@ -10,10 +10,12 @@ An **addon**: a plugin built on RP Engine rather than a pack for it. Install
 both and every player has `/skateboard`, a board they can actually ride, and
 `/skatepark`, the pieces to build somewhere to ride it.
 
-It also exists to be read. Everything it does, it does through the public
-plugin API — no internals, no private hooks — so it is the worked example for
-anyone building their own. Several parts of that API exist *because* the
-skateboard needed them, which is the point of building it here.
+Everything it does, it does through the public
+[plugin API](/rp-engine/api) — no internals, no private hooks. Several parts
+of that API exist because a skateboard needed them: reading the sneak key on a
+vehicle, wheels that turn with the ground speed, a rider who leans with the
+bodywork. If you are building an addon of your own, those doors are documented
+there.
 
 ## Installing
 
@@ -100,24 +102,3 @@ first-join-only: true
 ```
 
 `/skateboard reload` rereads it, including for somebody already on a board.
-
-## What it proves
-
-Read alongside the [plugin API](/rp-engine/api), the skateboard is a tour of
-the parts of it that are hard to discover:
-
-- **`Vehicle.input()`, `nudge` and `dress`** — a vehicle that is pushed rather
-  than throttled, with the rider wearing an emote per thing they are doing.
-- **`holdOccupant` and `VehicleInput.sneak()`** — how the shift key comes to
-  mean something on a vehicle at all, given that shift is Minecraft's
-  dismount.
-- **`turnOccupant` and `dressVariant`** — one rider facing and animating
-  differently from another on the same seat, which is what a stance is.
-- **`Placement.seek` and `animation-follows-speed`** — wheels that turn
-  because the board moved rather than because time passed.
-- **`AddonContent.install`** — shipping a content folder inside a plugin jar.
-- **`VehicleBailEvent`** — the engine's rule, with the server's veto over it.
-
-The source is in the `rpe-addons/skateboards` directory of the ResourcePack AI
-repository, and the parts that are not obvious are commented where they are,
-not here.
