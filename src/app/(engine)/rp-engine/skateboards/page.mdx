@@ -56,10 +56,30 @@ model's own cubes. Slabs and platforms to build the ground, banks, quarter
 pipes and a wall ride to launch off, boxes, ledges and rails to grind, and the
 park furniture round the edges.
 
+## Permissions
+
+| Node | What it allows | Default |
+|---|---|---|
+| `skateboards.use` | `/skateboard`, and putting a board down | everyone |
+| `skateboards.ride` | Getting on a board that is already down | everyone |
+| `skateboards.park` | `/skatepark` and its pieces | operators |
+| `skateboards.reload` | `/skateboard reload` | operators |
+
+**Riding is its own node on purpose.** A board left in a public square is a
+thing anybody can walk up to and right-click, so the two questions — may you
+*have* one, may you *get on* one — have different answers on most servers.
+Revoke `skateboards.ride` and a player can still be handed a board and put it
+down for somebody else; revoke `skateboards.use` and they cannot produce one at
+all.
+
+Both default to everyone, which is what a server that installed a skateboard
+plugin probably wants. Negate them in LuckPerms (or whatever you use) to turn
+the plugin off for a group without uninstalling anything.
+
 ## Configuration
 
 `plugins/RPESkateboards/config.yml`. Every line the plugin says is in there,
-and two switches:
+and the switches:
 
 ```yaml
 prefix: "&b[Skateboards] &7"
@@ -70,6 +90,13 @@ bail: true
 
 # Whether the board says "Landed it", "Fakie!" and "Bailed!" in chat.
 trick-messages: true
+
+# Hand every player a board when they join. Off - a plugin that fills
+# somebody's inventory uninvited is one an owner has to undo. `first-join-only`
+# makes it a welcome gift rather than a daily one, and the gift still needs
+# `skateboards.use`.
+give-on-join: false
+first-join-only: true
 ```
 
 `/skateboard reload` rereads it, including for somebody already on a board.
