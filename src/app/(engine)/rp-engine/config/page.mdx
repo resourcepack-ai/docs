@@ -98,6 +98,7 @@ vehicles:
   push-players: false
   collide: true
   speedometer: true
+  mount-hint: true
   seat-rig: true
 ```
 
@@ -131,6 +132,14 @@ never paints over which seat you got. Off writes nothing and puts the readout
 nowhere else. An individual vehicle can opt out on its own with
 `speedometer: false` — see [vehicles](/rp-engine/vehicles#the-speedometer),
 which is what a skateboard does.
+
+`mount-hint` is the line above the hotbar when somebody gets in: the controls,
+once, and nothing else. On, because which keys drive depends on what this
+server can read from a client — a server that cannot read them steers by
+**look** instead, and nothing anywhere else says so. Off for a server that has
+told its players once and would rather the screen stayed clean. A passenger is
+told which seat they took either way, because on a small vehicle the seat
+markers overlap and somebody who meant to drive needs to know they did not.
 
 `seat-rig` puts every occupant in their emote rig, sitting the way the seat's
 pose says, even on a pack that never authored a driving pose. It is on because
