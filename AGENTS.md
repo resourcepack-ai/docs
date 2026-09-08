@@ -143,6 +143,21 @@ worth keeping if you touch `EngineNavTree`:
 - **Open state is not remembered across navigations**, or it ends up entirely
   open, which is the wall again.
 
+**Every addon page opens the same way**, and the shape is not decoration: two
+paragraphs, then Installing. The first says what an addon IS, with
+[RP Engine](/rp-engine) linked - the same couple of lines on every one of them,
+because a reader who lands on the second addon should not have to work that out
+again. The second says what THIS addon does, in plain terms, and nothing else.
+
+What does not belong up there is why the engine or the addon system exists.
+That is a thing we find interesting; a reader wants to know whether this page
+solves their problem, and the first two paragraphs are the only ones many of
+them will read. The same rule kills a "what this proves about the API" section
+at the bottom: an inventory of the doors an addon exercises is a note to
+ourselves, and a developer wanting those doors is better served on the API page
+where they have signatures. Never point a reader at source they cannot open -
+neither the engine nor the addons are public repositories.
+
 **One feature per page in that section.** Recipes, entities and liquids were
 one page for a day and it was three unrelated things sharing a URL. A short
 page is fine; a page that answers two questions is not.
