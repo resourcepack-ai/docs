@@ -43,30 +43,56 @@ is the first number to check.
 
 ## What it is not
 
-An overlay is a picture, and a picture cannot know anything. A mana bar that
-empties is several overlays and something of yours choosing which to show —
-RP Engine draws whichever you ask for and has no opinion about mana.
+An overlay's **picture** cannot know anything. A mana bar that empties is
+several overlays and something of yours choosing which to show — RP Engine draws
+whichever you ask for and has no opinion about mana.
 
 That "something of yours" is usually a scoreboard or menu plugin reading
 [a placeholder](/rp-engine/placeholderapi), or your own plugin calling the
 [API](/rp-engine/api).
 
+Its **text** is a different matter — see below.
+
+## Live values in an overlay's text
+
+Any `{name}` in an overlay's text is filled per player, one tick before the line
+is sent. Three things are asked, in this order, and the first that answers wins:
+
+1. Whatever a plugin published with `overlays().set(player, name, value)`.
+2. The built-ins below.
+3. PlaceholderAPI, if the server has it — `{vault_eco_balance}` is
+   `%vault_eco_balance%` in braces. Nothing to install on our side.
+
+A name none of the three knows becomes empty rather than staying as `{name}`: a
+gap reads as "no value yet", where a brace reads as a broken pack.
+
+| Placeholder | What it answers |
+|---|---|
+| `{player}` · `{displayname}` · `{uuid}` | Who they are |
+| `{health}` · `{health_max}` · `{health_percent}` | Hearts, rounded up |
+| `{food}` · `{air}` | Hunger out of 20, and seconds of breath left |
+| `{level}` · `{xp}` | Experience level, and progress to the next as a percentage |
+| `{ping}` | Latency in milliseconds |
+| `{world}` · `{x}` · `{y}` · `{z}` · `{direction}` | Where they are, and which way they face |
+| `{time}` · `{day}` | The world's 24-hour clock, and how many days it has run |
+| `{gamemode}` | Survival, Creative, … |
+| `{online}` · `{max_online}` | Players now, and the cap |
+
 ## Shader overlays from Studio
 
-Studio's **Shaders** editor builds overlays from shapes and text. Drag either
-on the canvas to position it; text rows move independently. Select an element
-in the list when another element covers it. Shape handles resize the shape.
+Studio's **Shaders** editor builds overlays out of shapes, text and player
+heads. Drag any of them on the canvas; the rail on the left adds more.
 
-The **Anchors** panel aligns the selected element inside the canvas. Check
-several elements to move them together while preserving their spacing.
-**Where on screen** sets the whole overlay's screen anchor using nine presets.
-These follow the player's window and GUI scale. Drag the blue frame in the
-screen preview to adjust the offset, or use **Right** and **Up**.
-**Reset to action bar** restores the original position above the hotbar.
+- **Canvas** is the drawing area, and you can resize it. Shapes are clipped to
+  it. Text and heads are not, so they may sit outside it — the editor keeps a
+  margin around the canvas so you can put them there and still see them.
+- **Align in the canvas** moves the selected element to an edge or a corner.
+- **Where on screen** picks the slot and moves the whole picture. Snap it to one
+  of nine points — these follow the player's own window and GUI scale — and
+  nudge it from there.
+- **Player head** draws Steve in the editor and, on a pack you **Sync** to
+  somebody, their own face: the push bakes one head per person it goes to. An
+  exported pack has nobody in particular in it, so its heads are Steve's.
 
-Text uses Minecraft's font. A `{name}` placeholder is filled by the server;
-changing its value keeps the canvas in place. Preview placeholders show their
-names, so their displayed length can differ from a player's actual value.
-
-Push the updated pack after editing. Shader overlays use the action-bar slot;
-when several overlays are shown, the most recently shown one is visible.
+Push the updated pack after editing. When several overlays are shown at once,
+the most recently shown one is the one you see.
