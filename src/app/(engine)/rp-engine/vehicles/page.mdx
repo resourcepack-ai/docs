@@ -25,7 +25,7 @@ hatchback:
   acceleration: 7.5         # how fast it gets there
   turn-speed: 140           # degrees per second the body swings round
   turn-in-place: false      # optional - can it turn while standing still?
-  weight: 14                # 1-100. Heavier is slower to get going
+  weight: 14                # 1-100. Slower to get going, harder to shove
   scale: 1                  # how many times its built size it is drawn
   jump: false               # land only: space jumps instead of braking
   hitbox:                   # what players click to get in, in blocks
@@ -37,7 +37,11 @@ hatchback:
     - {role: passenger, x:  0.4, y: 0.6, z: 0.6}
     - {role: passenger, x: -0.4, y: 0.6, z: -0.5}
     - {role: passenger, x:  0.4, y: 0.6, z: -0.5}
+  permission: ""            # optional — what somebody needs to get in
+  coast: 0                  # optional — how freely it rolls; 0 is a car's
+  bail: false               # optional — throw the rider on a bad landing
   capes: true               # optional — draw riders' capes (the default)
+  speedometer: true         # optional — show the driver their speed (the default)
   animations:               # optional — which animation plays when
     idle: parked
     moving: drive
@@ -92,7 +96,8 @@ order a gearbox makes you use.
 
 `turn-speed` is how fast the body comes round — a low number is a lorry, a
 high one is a go-kart. `weight` runs 1-100, and a heavier vehicle is slower
-to get going and slower to stop.
+to get going, slower to stop, and harder for another vehicle to shove out of
+the way.
 
 **A vehicle only turns while it is moving.** Steering is something you do to a
 vehicle that is going somewhere: a parked one holds its heading however far
@@ -313,6 +318,81 @@ cape; the rider stays visible and posed. A seat's `hidden: true` is the switch
 that removes the person. Studio's vehicle preview follows this switch too, so
 turning it off removes the cape from the editor as well as from the game.
 
+## Who may ride it
+
+`permission:` is what somebody needs to get in. Leave it out and anybody may.
+
+It is checked **when they get in**, which is the only moment that matters. A
+vehicle is a thing standing in the world that anyone can walk up to and
+right-click, so controlling who was given the *item* controls nothing once one
+is parked in a public square — and a permission that stopped somebody holding
+an item would mean taking it out of their inventory, which is a thing to do to
+somebody's stuff rather than a decision an engine makes.
+
+The same key with the same meaning exists on [items](/rp-engine/items), where
+it is checked on use.
+
+## How freely it rolls
+
+`coast:` is how quickly a vehicle slows when nobody is driving it, in blocks a
+second squared. Leave it out and you get the engine's own answer, which is a
+car's: on the throttle or off it, a car coasts to a stop in a few seconds.
+
+That is wrong for anything without an engine in it. Small numbers roll far:
+
+| `coast` | About right for |
+|---|---|
+| `0.15` | A skateboard on smooth concrete |
+| `0.6` | A bicycle |
+| `2` | A shopping trolley with a bad wheel |
+| `0` | Whatever the engine thinks — a car |
+
+It replaces a floor rather than the whole of the drag, so a vehicle quick
+enough to slow faster than this still does.
+
+## Bailing
+
+Land a long way round from the way you were travelling and the rider comes
+off:
+
+```yaml
+  bail:
+    from: 50          # degrees off the direction of travel
+    to: 130
+    min-speed: 3.0    # slower than this is a stumble, not a fall
+    damage: 1.0       # half a heart. 0 for nothing but the drop
+```
+
+`bail: true` on its own takes exactly those numbers.
+
+**It is off unless you ask**, because a vehicle that throws its rider is a
+game rule rather than a physical fact, and a server owner who never asked for
+one should not find it under somebody at speed.
+
+**The window has a far edge on purpose.** Landing straight is fine, and so is
+landing straight BACKWARDS — that is riding away fakie, a trick rather than a
+crash. Only the sideways part of the range throws anybody, which is why this
+is a window and not simply "not straight".
+
+A plugin can veto any one of them (`VehicleBailEvent`, see the
+[plugin API](/rp-engine/api)), which is how a server-side switch for bailing
+gets written without editing a pack that an update would overwrite.
+
+## The speedometer
+
+`speedometer: false` stops this vehicle writing its driver's speed above their
+hotbar. The default is `true`, which is what every vehicle did before the key
+existed.
+
+A car has a dashboard. A skateboard, a horse or a hang glider does not, and a
+number counting up in the corner of the screen turns a line you were riding
+into a stat you were watching. **Nothing takes its place** — the readout is not
+moved to the chat, a boss bar or a title, it is simply not written, and the
+action bar goes back to whatever else wants it.
+
+`vehicles.speedometer: false` in [config.yml](/rp-engine/config#vehicles) is
+the same switch for every vehicle on the server at once. Either one off is off.
+
 ## Particles
 
 `particles:` is a list of emitters — spots on the bodywork that throw a
@@ -356,10 +436,18 @@ seats and the model are rebuilt whenever its chunk loads.
 
 - **It stops at a wall rather than sliding along it.** Land vehicles step up
   one block, like a player.
-- **The hitbox is a shape, not a bounding box.** It decides what you click and
-  which blocks stop the vehicle. It does not physically block an arrow, a
-  minecart, or somebody walking into it — a plugin cannot give an entity a
-  bounding box of its own size.
+- **The hitbox is a shape, not a bounding box.** It decides what you click,
+  which blocks stop the vehicle, and where another vehicle hits this one. What
+  it is not is a box the game knows about: it does not physically block an
+  arrow, a minecart, or somebody walking into it — a plugin cannot give an
+  entity a bounding box of its own size.
+- **Two vehicles do collide with each other**, out of the hitboxes above and
+  `weight`. What each comes away with follows from how fast they were closing,
+  which way round they met and how far off centre the hit landed — so a lorry
+  shunts a hatchback aside and hardly slows, a clip on the corner sends you
+  round and a square rear-ending does not, and at a crawl it becomes pushing.
+  `vehicles.collide: false` in [config.yml](/rp-engine/config#vehicles) turns
+  it off.
 - **A vehicle passes through players and shoves mobs.** `vehicles.push-players`
   in config.yml makes it shove people too; it is off because cars nudging
   each other's drivers about in a car park is worse than driving through

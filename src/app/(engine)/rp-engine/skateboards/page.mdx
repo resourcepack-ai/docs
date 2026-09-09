@@ -1,0 +1,104 @@
+export const metadata = {
+  title: "Skateboards",
+  description:
+    "An addon for RP Engine: a skateboard you push, tuck, ollie, grind and wall ride, and a skatepark of ramps, rails and boxes to ride it in.",
+};
+
+# Skateboards
+
+An **addon** for [RP Engine](/rp-engine): a plugin that installs into the
+engine and adds one thing, rather than a pack you author yourself. Drop it in
+beside the engine and it brings its own content with it.
+
+This one is a skateboard you can actually ride — push it along, tuck for
+speed, ollie, grind, lie down on it, ride a wall — and a skatepark to ride it
+in: ramps, rails, boxes, platforms and the park furniture, all placeable and
+all skateable.
+
+## Installing
+
+Drop `RPE-skateboards.jar` in `plugins/` beside `RPEngine.jar` and start the
+server. Its content — the board's model, textures, item, vehicle definition
+and rider animations, and every skatepark piece — installs itself into
+`plugins/RPEngine/content/skateboards/` on first boot, and the engine reloads
+once to pick it up. That folder is yours: edit anything in it, and a new
+version of the plugin overwrites only its own files.
+
+## Riding
+
+| Key | What it does |
+|---|---|
+| **W** | Push. A kick every 0.7 s, up to a speed the legs cannot beat |
+| **S** | Push it backwards with the front foot, once you have stopped |
+| **A/D** | Steer. In the air, flick the board round under you |
+| **Sprint** | Tuck. The speed cap comes off and the board creeps toward its top speed |
+| **Space** | Ollie. Held against a wall, ride the wall |
+| **Shift** (hold) | The coffin: lie flat on your back along the board |
+| **Shift** (tap) | Step off |
+
+Two more worth knowing:
+
+- **Stance.** `/skateboard stance left|right` names the foot you lead with. It
+  is remembered per player and for every board you ever step on, and a
+  right-footed rider gets the mirrored copy of every animation.
+- **Bailing.** Land a long way round from the way you are travelling and you
+  come off. Straight is fine, and so is straight backwards — that is a fakie,
+  not a fall.
+
+## The skatepark
+
+`/skatepark` lists the pieces, `/skatepark <piece>` hands one over, and
+`/skatepark all` gives you the lot. Right-click the ground to place one, punch
+it to take it back.
+
+Every piece is a placed model with vehicle collision on, which is what makes
+it a skatepark rather than scenery: a board rolls up a ramp's face and grinds
+along the top of a box, because the engine holds a vehicle up on a placed
+model's own cubes. Slabs and platforms to build the ground, banks, quarter
+pipes and a wall ride to launch off, boxes, ledges and rails to grind, and the
+park furniture round the edges.
+
+## Permissions
+
+| Node | What it allows | Default |
+|---|---|---|
+| `skateboards.use` | `/skateboard`, and putting a board down | Everyone |
+| `skateboards.ride` | Getting on a board that is already down | Everyone |
+| `skateboards.park` | `/skatepark` and its pieces | Operators |
+| `skateboards.reload` | `/skateboard reload` | Operators |
+
+**Riding is its own node on purpose.** A board left in a public square is a
+thing anybody can walk up to and right-click, so the two questions — may you
+*have* one, may you *get on* one — have different answers on most servers.
+Revoke `skateboards.ride` and a player can still be handed a board and put it
+down for somebody else; revoke `skateboards.use` and they cannot produce one at
+all.
+
+Both default to everyone, which is what a server that installed a skateboard
+plugin probably wants. Negate them in LuckPerms (or whatever you use) to turn
+the plugin off for a group without uninstalling anything.
+
+## Configuration
+
+`plugins/RPESkateboards/config.yml`. Every line the plugin says is in there,
+and the switches:
+
+```yaml
+prefix: "&b[Skateboards] &7"
+
+# Land sideways and the rider comes off. Off means a bad landing simply
+# carries on.
+bail: true
+
+# Whether the board says "Landed it", "Fakie!" and "Bailed!" in chat.
+trick-messages: true
+
+# Hand every player a board when they join. Off - a plugin that fills
+# somebody's inventory uninvited is one an owner has to undo. `first-join-only`
+# makes it a welcome gift rather than a daily one, and the gift still needs
+# `skateboards.use`.
+give-on-join: false
+first-join-only: true
+```
+
+`/skateboard reload` rereads it, including for somebody already on a board.

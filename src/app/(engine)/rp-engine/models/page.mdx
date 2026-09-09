@@ -27,6 +27,7 @@ chair:
     facing: cardinal     # cardinal | diagonal | free | fixed
     scale: 1.0
     solid: false         # true gives it something to walk into
+    vehicle-collision: true  # false lets vehicles drive through it
     seat: 0.6            # sit on it, this far above its base. 0 is no seat
     light: 0             # 0-15, what it gives off
     surface: floor       # floor | wall | ceiling | any
@@ -73,6 +74,40 @@ and `height:` in blocks override it.
 `solid: false` by default, because a display entity has no collision at all.
 `solid: true` puts an invisible barrier behind it, removed when the model is
 broken — right for a bench, wrong for a rug.
+
+## Vehicles
+
+`vehicle-collision: true` by default, and it is a different question from
+`solid:` with a different answer.
+
+`solid` is about a **walking** player, and it is bought with a barrier block —
+one cube, at the anchor, whatever shape the piece actually is. That is why it
+is opt-in: it writes to the world. This is about a **driving** one. It covers
+the whole piece rather than one block of it, and it costs the world nothing: a
+vehicle asks the placed models around it where they are, and no block is
+placed.
+
+So a car stops at your fence whether or not anybody can walk through it, which
+is what you want in every pack that has a fence.
+
+**It uses the model's real shape, not a box round it.** A block model is
+already a list of cuboids, so that is what a vehicle is tested against: you can
+drive a go-kart between the legs of a table and under an archway, and a fence
+stops you along its whole length rather than only where its anchor block is.
+Any placement angle works, not just the four cardinals.
+
+Turned cubes keep their angle rather than being squared off, so a handrail
+collides where the rail is instead of filling the box around it — and a turned
+slab is a **ramp**: a vehicle rides up it rather than stopping at it. Stairs
+built as stacked cubes are climbed a tread at a time, up to a block per step.
+
+<Callout type="note" title="Low pieces are driven over, not into">
+  Anything a vehicle could step onto — up to a block high — is climbed like a
+  kerb rather than refused, and a piece a vehicle can climb also holds it up.
+  A rug is driven over, and a row of platform models is a bridge you can drive
+  across. `vehicle-collision: false` is for the pieces that should have no
+  effect at all: a painted road marking, a manhole cover, a decal.
+</Callout>
 
 ## Sitting
 

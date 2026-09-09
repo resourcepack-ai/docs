@@ -229,6 +229,57 @@ car.eject(other)      // and take them out
 
 </CodeTabs>
 
+### Building a vehicle the engine does not have
+
+A skateboard is pushed rather than throttled, tucks for speed, lies down on
+command and rides walls. None of that is in the format and none of it needs to
+be: the handle exposes the pieces.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+Vehicle board = engine.vehicles().of(player).orElseThrow();
+VehicleInput keys = board.input();          // what the driver is pressing, this tick
+if (keys.forward()) board.nudge(2.2);       // a kick, along the heading
+board.dress(player, "myplugin_push");       // wear this over the seat's states
+board.dressVariant(player, "goofy");        // ...in this rider's own variant
+board.holdOccupant(player, true);           // sneak means something else now
+board.spin(-360);                           // mid-air, it carries
+board.wallRiding();                         // is it on a wall right now?
+```
+
+```kotlin
+val board = engine.vehicles().of(player).orElseThrow()
+val keys = board.input()                    // what the driver is pressing, this tick
+if (keys.forward()) board.nudge(2.2)        // a kick, along the heading
+board.dress(player, "myplugin_push")        // wear this over the seat's states
+board.dressVariant(player, "goofy")         // ...in this rider's own variant
+board.holdOccupant(player, true)            // sneak means something else now
+board.spin(-360)                            // mid-air, it carries
+board.wallRiding()                          // is it on a wall right now?
+```
+
+</CodeTabs>
+
+**`input()` is the same demand the physics read**, so your idea of "the driver
+pressed forward" and the engine's are on the same tick. Where the keys cannot
+be read at all (Spigot, or before 1.21.4) `keys()` is false and only
+`throttle()` means anything.
+
+**The sneak key is not free.** You can read it, but sneak is Minecraft's
+dismount — so without `holdOccupant` you see the key on the tick your rider is
+already stepping into the road. Ask for the hold ONCE, when they get on: the
+dismount happens on the tick the key goes down, earlier than your next tick
+task. The engine still lets a short TAP of it through as an ordinary
+dismount, and lets go by itself once the vehicle stops, so a held rider is
+never trapped whatever your plugin does or forgets to do.
+
+**`dressVariant` is for a per-person fact a seat cannot know.** A seat's
+`animations:` is written once for everybody; a stance, a handedness or a team
+belongs to the rider. The variant is applied to whatever the seat's table
+names — `moving` becomes `moving_goofy` — and falls back per emote, so a set
+that mirrors the two states worth mirroring and leaves the rest alone works.
+
 ### Fuel, and anything else that stops a vehicle going
 
 `setEnabled(false)` is the switch. A disabled vehicle ignores its driver,
@@ -297,6 +348,39 @@ its driver afterwards.
   better served by putting them back with `seat`.
 </Callout>
 
+## Shipping content in your own jar
+
+An addon carries its models, items, vehicles and emotes as an ordinary
+[content folder](/rp-engine/content) inside its own jar, under
+`resources/content/<namespace>/`, and installs it on enable:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+if (AddonContent.install(this, engine, "skateboards")) {
+    engine.reload();   // only when something actually changed
+}
+```
+
+```kotlin
+if (AddonContent.install(this, engine, "skateboards")) {
+    engine.reload()    // only when something actually changed
+}
+```
+
+</CodeTabs>
+
+A `.version` stamp beside the files says which build last wrote them, so
+restarting on the same jar copies nothing and reloads nothing — a reload
+rebuilds every pack on the server, which is not a thing to do on every boot
+for files that have not changed. A new build overwrites its own files and only
+its own: whatever the server owner added to that folder stays, because the
+folder is theirs to extend.
+
+Catch the `IOException` and disable your plugin over it. Content that did not
+install is items that do not exist, and failing loudly at boot beats a command
+that says nothing an hour later.
+
 ## Icons in your own text
 
 <CodeTabs labels={["Java", "Kotlin"]}>
@@ -332,6 +416,7 @@ All cancellable unless the row says otherwise.
 | `VehicleEnterEvent` | Somebody is about to get into a vehicle — fires after `ModelSeatEvent` for the same seat, with the vehicle and the seat attached. "Is this your car" lives here |
 | `VehicleExitEvent` | Somebody got out, or was taken out. Carries why — dismounted, ejected, quit, reloaded, removed, unloaded, shutdown. Not cancellable. `RELOADED` is followed by them being put back a tick later, with no enter event |
 | `VehicleMoveEvent` | A vehicle is about to move — once per tick, only while it is going somewhere. Cancelling stops it dead, like a wall. The event for a region it may not enter; **not** the event for fuel, which is `setEnabled` |
+| `VehicleBailEvent` | A bad landing is about to throw a rider off a vehicle that asked for bailing. Cancelling leaves them aboard and takes nothing off them — which is how a server switch for it is written without editing the pack |
 | `VehicleStateEvent` | What a vehicle is doing changed — set off, stopped, took off, went under. The same set that drives its animation, on the change rather than every tick. Not cancellable |
 | `ModelBindEvent` | A model is going on an entity, or coming off one — a MythicMobs boss, an NPC, anything that is not ours |
 | `EntityDeathEvent` | A custom entity died. Bukkit's own event carries the drops; this one says what it was. Not cancellable |
