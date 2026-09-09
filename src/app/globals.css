@@ -54,13 +54,13 @@
     /* Body copy sits a step below heading white — long paragraphs at full
        --foreground read as glare against this background. */
     --prose: #d5d2c5;
-    --card: #202020;
+    --card: #232320;
     --muted: #2b2b27;
     --muted-foreground: #94917f;
     --faint: #807d6c;
     --border: #34342e;
     --line: #2a2a25;
-    --sidebar: #171714;
+    --sidebar: #151512;
     --primary: #4d8dff;
     --primary-foreground: #ffffff;
     --primary-ink: #8fb8f5;
