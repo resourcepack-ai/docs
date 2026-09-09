@@ -80,39 +80,37 @@ gap reads as "no value yet", where a brace reads as a broken pack.
 
 ## Shader overlays from Studio
 
-Studio's **Shaders** editor builds overlays out of shapes, text and player
-heads. Drag any of them on the canvas; the rail on the left adds more.
+Studio's **Shaders** editor builds overlays out of shapes, text, player heads
+and progress bars. It has three tabs, and they answer three different questions.
 
-- The list on the **left** is everything in the object; the panel on the
-  **right** is whatever you picked out of it.
-- **Canvas** is the drawing area, and you can resize it. Shapes are clipped to
-  it. Text and heads are not, so they may sit outside it — the editor keeps a
-  margin around the canvas so you can put them there and still see them.
-- **Where on screen** picks the slot and moves the whole picture. Snap it to one
-  of nine points — these follow the player's own window and GUI scale — and
-  nudge it from there.
-- **In game**, at the bottom, is the picture at the size it will really be,
-  against a hotbar. Drag its corner to make it bigger.
+**Design** is the elements. The list on the left is everything in the object;
+the panel on the right is whatever you picked out of it. Drag anything on the
+stage, select something and press <kbd>Delete</kbd> to remove it, or
+<kbd>Esc</kbd> to deselect.
+
+- **Canvas** — the drawing area you see behind the elements. Shapes are clipped
+  to it; labels, heads and bars are not, so they may sit outside it and the
+  editor keeps a margin around it so you can still see them.
 - **Player head** draws Steve in the editor and, on a pack you **Sync** to
   somebody, their own face: the push bakes one head per person it goes to. An
   exported pack has nobody in particular in it, so its heads are Steve's.
 - **Progress bar** fills from a live value. Pick what fills it and what full
   means — both are placeholder names, and *full at* also takes a plain number
-  for a bar out of a ceiling you chose. Select something and press
-  <kbd>Delete</kbd> to remove it.
+  for a bar out of a ceiling you chose.
+
+**Canvas** is the object itself, and it is a tab rather than four more sections
+under whatever you had selected: the canvas size, which slot it draws on, where
+on the screen it sits, and what shows it are not about the circle you are
+dragging.
+
+**Preview** is what it looks like in game, at the size it will really be,
+against a hotbar.
 
 A bar is the one element besides a label that a live value can drive, and it is
 built out of text for that reason: a shape's geometry is compiled into the pack
 and cannot move, so the bar is a run of small rectangles the server sizes each
 tick. That costs nothing you can see — the ends land on exact pixels — but it is
 why a bar has a colour and a length rather than a corner radius.
-
-**Choosing the boss bar blanks the vanilla bar art.** A boss bar always draws
-its bar, and there is no way to ask for a titled bar with no bar in it — so a
-pack with a boss-bar overlay in it overrides those textures with nothing. That
-is a resource pack overriding a vanilla file, so it applies to *every* white
-boss bar that player sees, including one another plugin puts up. Only a pack
-that uses the slot pays it.
 
 Push the updated pack after editing. When several overlays are shown at once,
 the most recently shown one is the one you see.
