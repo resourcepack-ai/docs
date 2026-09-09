@@ -83,16 +83,26 @@ gap reads as "no value yet", where a brace reads as a broken pack.
 Studio's **Shaders** editor builds overlays out of shapes, text and player
 heads. Drag any of them on the canvas; the rail on the left adds more.
 
+- The list on the **left** is everything in the object; the panel on the
+  **right** is whatever you picked out of it.
 - **Canvas** is the drawing area, and you can resize it. Shapes are clipped to
   it. Text and heads are not, so they may sit outside it — the editor keeps a
   margin around the canvas so you can put them there and still see them.
-- **Align in the canvas** moves the selected element to an edge or a corner.
 - **Where on screen** picks the slot and moves the whole picture. Snap it to one
   of nine points — these follow the player's own window and GUI scale — and
   nudge it from there.
+- **In game**, at the bottom, is the picture at the size it will really be,
+  against a hotbar. Drag its corner to make it bigger.
 - **Player head** draws Steve in the editor and, on a pack you **Sync** to
   somebody, their own face: the push bakes one head per person it goes to. An
   exported pack has nobody in particular in it, so its heads are Steve's.
+
+**Choosing the boss bar blanks the vanilla bar art.** A boss bar always draws
+its bar, and there is no way to ask for a titled bar with no bar in it — so a
+pack with a boss-bar overlay in it overrides those textures with nothing. That
+is a resource pack overriding a vanilla file, so it applies to *every* white
+boss bar that player sees, including one another plugin puts up. Only a pack
+that uses the slot pays it.
 
 Push the updated pack after editing. When several overlays are shown at once,
 the most recently shown one is the one you see.
