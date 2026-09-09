@@ -53,8 +53,9 @@ untouched past the cutoff is reported as `error` rather than left pending.
 
 <Callout type="tip" title="How often to poll">
   Every couple of seconds is plenty. Blocks, items and icons come back in
-  seconds; a model takes minutes, so back off rather than hammering — there's no
-  rate limit to hit, but there's nothing to gain either.
+  seconds; a model takes minutes, so back off rather than hammering — there's
+  nothing to gain, and polling does spend a key's read budget. Two seconds a job
+  fits four jobs in flight; see [Rate limits](/api-reference/rate-limits).
 </Callout>
 
 ## A full loop

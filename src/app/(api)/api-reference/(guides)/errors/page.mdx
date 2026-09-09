@@ -33,6 +33,7 @@ Branch on `code`, never on `message` — the wording can change, the code won't.
 | **404** | `not_found` | No such pack, asset or job |
 | **409** | `still_generating` | You asked for an asset's bytes before it was ready |
 | **409** | `generation_failed` | That asset's generation failed |
+| **429** | `rate_limited` | Over this key's budget for the minute; see [Rate limits](/api-reference/rate-limits) |
 | **503** | `unavailable` | The feature behind this endpoint is switched off |
 
 Each endpoint lists the codes it can actually answer, under **Error codes**.

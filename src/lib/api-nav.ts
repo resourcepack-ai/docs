@@ -55,6 +55,12 @@ const GUIDES: ApiNavItem[] = [
     keywords: ["job", "poll", "async", "status", "generating", "ready", "timeout"],
   },
   {
+    title: "Rate limits",
+    href: `${API_ROOT}/rate-limits`,
+    description: "Two budgets per key, what counts against each, and how a refusal looks.",
+    keywords: ["rate", "limit", "429", "throttle", "quota", "retry-after", "budget", "polling"],
+  },
+  {
     title: "Errors",
     href: `${API_ROOT}/errors`,
     description: "The error envelope, and every code you can branch on.",

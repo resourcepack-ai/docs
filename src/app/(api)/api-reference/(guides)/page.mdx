@@ -66,9 +66,13 @@ browser history and `Referer` headers, so it isn't accepted.
 
 ## Rate limits
 
-There aren't any. Credits are the throttle: a generation you can't afford is
-refused with a 402, and everything else is cheap enough not to meter. Be
-sensible when polling — see [Jobs and polling](/api-reference/jobs).
+Two budgets per key, measured over a rolling minute: **120 reads** and **30
+writes**, where a write is creating a pack, generating anything, or exporting.
+Over budget answers 429 with a `Retry-After` header.
+
+Credits are still the throttle that matters — a generation you can't afford is
+refused with a 402 however slowly you ask. See
+[Rate limits](/api-reference/rate-limits) for what counts against which.
 
 ## What's not here
 
@@ -81,6 +85,9 @@ say so in [Discord](https://resourcepack.ai/discord).
 <CardGroup cols={2}>
   <Card title="Errors" href="/api-reference/errors" icon="wrench">
     The envelope, and every code worth branching on.
+  </Card>
+  <Card title="Rate limits" href="/api-reference/rate-limits" icon="gauge">
+    Two budgets per key, and how a refusal looks.
   </Card>
   <Card title="Jobs and polling" href="/api-reference/jobs" icon="rocket">
     Why generation is asynchronous, and how to wait properly.
