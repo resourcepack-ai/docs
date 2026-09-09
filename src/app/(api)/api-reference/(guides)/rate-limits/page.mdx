@@ -1,0 +1,73 @@
+export const metadata = {
+  title: "Rate limits (API)",
+  description: "Two budgets per key, what counts against each, and how a refusal looks.",
+};
+
+# Rate limits
+
+Every request is counted against **the key that made it**, not the address it
+came from — so one team's automation behind one office connection can't spend
+another's budget, and a key that gets shared around carries its own ceiling
+with it.
+
+There are two budgets, both measured over a rolling **60 seconds**:
+
+| Budget | Per key | What spends it |
+| --- | --- | --- |
+| **Reads** | 120 a minute | Listing packs and assets, fetching an asset's bytes, polling a job |
+| **Writes** | 30 a minute | Creating a pack, every generation endpoint, and pack export |
+
+Nothing carries over. A minute in which you make no calls doesn't bank you a
+larger one.
+
+## Export counts as a write
+
+It's the one `GET` that doesn't come out of the read budget, and the reason is
+what it does rather than which verb it uses: an export builds every artifact of
+the pack on demand — the Java `.zip`, the Bedrock `.mcpack` and the rest — so it
+belongs in the budget sized for work, not the one sized for polling.
+
+## Being refused
+
+A request over budget answers **429** with the usual envelope and a
+`Retry-After` header in whole seconds:
+
+```json
+{
+  "error": {
+    "code": "rate_limited",
+    "message": "Too many requests on this API key. Try again in 24s."
+  }
+}
+```
+
+Wait out `Retry-After` and carry on. The window doesn't extend when you're
+refused, so a client that retries politely is never punished for having been
+refused once — but a client that retries immediately and repeatedly will simply
+keep being refused until the window rolls over.
+
+## Polling inside the read budget
+
+The read number is set by the polling advice on
+[Jobs and polling](/api-reference/jobs) rather than the other way round. A job
+polled every two seconds is 30 requests a minute, so 120 is **four generations
+in flight at once** without anybody having to think about it.
+
+If you need more than that, poll less often rather than fewer jobs — a model
+takes minutes, and checking it every two seconds buys nothing over checking it
+every ten.
+
+## Credits are still the real throttle
+
+Rate limits stop a loop; they don't stop spend. A generation you can't afford is
+refused with **402** `insufficient_credits` however slowly you ask for it, and a
+generation you can afford costs the same whether it was your first call of the
+minute or your thirtieth. The two limits answer different questions and neither
+substitutes for the other.
+
+<Callout type="tip" title="If you're hitting these">
+  Both numbers are set well above what a working integration does. If you're
+  hitting one, it's usually a retry loop with no backoff or a poll that fires on
+  a timer rather than after the previous response. Say so in
+  [Discord](https://resourcepack.ai/discord) if your use genuinely needs more.
+</Callout>
