@@ -96,6 +96,9 @@ vehicles:
   seat-offset: 0.0
   seat-forward: 0.0
   push-players: false
+  collide: true
+  speedometer: true
+  mount-hint: true
   seat-rig: true
 ```
 
@@ -113,6 +116,31 @@ car park, and a passenger being flung as they get out, are both worse than a
 vehicle passing through somebody. Nothing here changes what a vehicle does
 about blocks — it always stops at a wall.
 
+`collide` is whether vehicles run into **each other**. On, and what happens
+when they do is worked out rather than staged: how fast the two were closing,
+which way round they met, how far off centre the hit landed and what each of
+them [weighs](/rp-engine/vehicles). So a lorry shunts a hatchback aside and
+hardly slows, a clip on the corner sends you round and a square rear-ending
+does not, and at a crawl the whole thing turns into pushing. Turn it off for a
+track where a pile-up is worse than a clean overtake, or a lobby where cars are
+parked shoulder to shoulder.
+
+`speedometer` is whether a driver sees their speed above the hotbar in
+kilometres an hour, going yellow while the tyres are sliding. On. It stays off
+the action bar for a few seconds after anything else is written there, so it
+never paints over which seat you got. Off writes nothing and puts the readout
+nowhere else. An individual vehicle can opt out on its own with
+`speedometer: false` — see [vehicles](/rp-engine/vehicles#the-speedometer),
+which is what a skateboard does.
+
+`mount-hint` is the line above the hotbar when somebody gets in: the controls,
+once, and nothing else. On, because which keys drive depends on what this
+server can read from a client — a server that cannot read them steers by
+**look** instead, and nothing anywhere else says so. Off for a server that has
+told its players once and would rather the screen stayed clean. A passenger is
+told which seat they took either way, because on a small vehicle the seat
+markers overlap and somebody who meant to drive needs to know they did not.
+
 `seat-rig` puts every occupant in their emote rig, sitting the way the seat's
 pose says, even on a pack that never authored a driving pose. It is on because
 the game otherwise draws a passenger standing up to their waist in the hull.
@@ -124,11 +152,29 @@ unaffected either way.
 ```yaml
 emotes:
   player-commands: true
+  bake-on-join: true
 ```
 
 Whether `/emote` and `/emotereply` are registered as commands of their own.
 Turn it off and nothing is lost — `/rp emote` runs the same code — but the
 server has one command instead of three.
+
+`bake-on-join` rebuilds the packs shortly after somebody turns up whose emote
+rig is not in them, and sends the new ones out. A player's rig **is** pack
+content — a model per bone wearing their skin — so a player this server has
+never seen has no rig to wear and appears as the shared default until a build
+catches up. That is the "why is my friend a default skin" every server hits,
+and it lands on a first join, which is the worst moment for it.
+
+The rebuild starts **at once**: somebody who walked in on their own should not
+stand about as a default skin waiting out a window that exists for crowds.
+Anybody who arrives during that rebuild, or in the five seconds after it, is
+covered by a single follow-up rather than costing a rebuild each — so a server
+filling up at the start of an evening pays two, not twenty. Only players whose
+pack is actually out of date are sent a new one.
+
+Off is for a server that would rather choose the moment — a big pack, a busy
+lobby — and `/rp reload` still bakes whatever has arrived since.
 
 **On by default.** It is worth turning off on a server that already has an
 `/emote` from another plugin: two plugins claiming one name means whichever

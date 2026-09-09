@@ -323,6 +323,17 @@ export const engineNav: EngineGroup[] = [
     ],
   },
   {
+    title: "Official addons",
+    items: [
+      {
+        title: "Skateboards",
+        href: "/rp-engine/skateboards",
+        description: "Push, tuck, ollie, grind and wall ride, with a skatepark to build - and the worked example for the plugin API.",
+        keywords: ["addon", "skateboard", "skatepark", "vehicle", "trick", "grind", "wall ride", "ollie", "example"],
+      },
+    ],
+  },
+  {
     title: "Developers",
     items: [
       {
