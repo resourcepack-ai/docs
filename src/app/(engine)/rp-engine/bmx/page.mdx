@@ -1,0 +1,137 @@
+export const metadata = {
+  title: "BMX",
+  description:
+    "An addon for RP Engine: a BMX you pedal, manual and bunnyhop, with barspins, tailwhips and 360s that combine, and a set of dirt jumps to ride it at.",
+};
+
+# BMX
+
+An **addon** for [RP Engine](/rp-engine): a plugin that installs into the
+engine and adds one thing, rather than a pack you author yourself. Drop it in
+beside the engine and it brings its own content with it.
+
+This one is a BMX. You pedal it, stand up out of the saddle to sprint it, lift
+the front wheel and hold it as long as you can — and everything else happens in
+the half second after you leave the ground. It comes with a set of dirt jumps
+to ride it at, and the [skatepark](/rp-engine/skateboards) pieces work just as
+well if you have both installed.
+
+## Installing
+
+Drop `RPE-bmx.jar` in `plugins/` beside `RPEngine.jar` and start the server.
+Its content — the bike's model, textures, item, vehicle definition, thirteen
+rider animations and every dirt jump — installs itself into
+`plugins/RPEngine/content/bmx/` on first boot, and the engine reloads once to
+pick it up. That folder is yours: edit anything in it, and a new version of the
+plugin overwrites only its own files.
+
+It needs **RP Engine 0.1.35 or newer**, which is the release that added the
+door this addon is built on — see [Tricks are the model's, not the
+rider's](#tricks-are-the-models-not-the-riders) below.
+
+## Riding
+
+| Key | What it does |
+|---|---|
+| **W** | Pedal. A stroke every 0.45 s, up to a seated cruising speed |
+| **S** | Brake, then walk it backwards once you have stopped |
+| **A/D** | Steer |
+| **Sprint** | Out of the saddle. The cap comes off and it winds up to its top speed |
+| **Space** | Bunnyhop. Held against a wall, ride the wall |
+| **Shift** (hold) | Manual — front wheel up. Pedal in one and it is a wheelie |
+| **Shift** (tap) | Step off |
+
+**A manual is scored.** Hold it and the bike tells you how far you got when the
+front wheel comes down, because a manual is the one thing on a bike whose whole
+point is how long you hold it — there is no landing to judge and no trick to
+name, so without a number nothing happened.
+
+## In the air
+
+Three tricks, one of each per jump, **and they combine**:
+
+| Key | Trick |
+|---|---|
+| **A/D** | A 360 — the whole bike round under you |
+| **Sprint** | A barspin — the bars round the steerer, the fork staying put |
+| **Shift** | A tailwhip — the frame round the head tube, the bars staying put |
+
+The landing is named for what actually went into it, and every combination has
+a name of its own rather than a list: a 360 with a barspin in it is a **truck
+driver**.
+
+**The 360 is free and the other two take turns.** That is not a rule somebody
+chose — a rig has one clock, so only one model animation can play at a time,
+while the bike's yaw is physics and runs underneath whatever is playing. So a
+360 goes with either of the others, and a barspin and a whip in one jump happen
+in the order you press them. Which is what a rider does anyway.
+
+**Bailing.** Land a long way round from the way you are travelling and you come
+off, and it hurts a little more than falling off a board. Straight is fine, and
+so is straight backwards — that is riding away fakie, not a fall.
+
+## Tricks are the model's, not the rider's
+
+Worth knowing if you are building an addon of your own, because it is the
+reason RP Engine 0.1.35 exists.
+
+Every skateboard trick is something the **rider** does: a tuck is a pose, the
+coffin is a pose, the flick is the whole board spinning and the board itself
+never changes shape. `Vehicle.dress` covered all of it, and a whole addon
+needed no new engine door.
+
+A BMX is the opposite. A manual is the bike pitched back about its rear axle. A
+barspin is the bars going round with the fork and the front wheel staying
+still. A tailwhip is the frame going round with the bars staying still. None of
+those is a pose on a person, and none of them is a state the engine has a word
+for — a bike mid-barspin is `airborne`, which is also what a bike doing nothing
+at all is. So the vehicle's own `animations:` table cannot say any of it.
+
+[`Vehicle.perform`](/rp-engine/api#moving-the-vehicles-own-model) is the answer:
+`dress`, for the vehicle's own model.
+
+## The dirt jumps
+
+`/trails` lists the pieces, `/trails <piece>` hands one over, and `/trails all`
+gives you the lot. Right-click the ground to place one, punch it to take it
+back.
+
+Every piece is a placed model with vehicle collision on, which is what makes it
+a jump rather than scenery: the engine holds a vehicle up on a placed model's
+own cubes, so a bike rides up a lip and off the end of it. Takeoffs and
+landings in two sizes to build a line out of, a tabletop, a step-up, a hip, a
+berm, rollers to pump, a dirt quarter, and the flat run-in you build speed on.
+
+## Permissions
+
+| Node | What it allows | Default |
+|---|---|---|
+| `bmx.use` | `/bmx`, and putting a bike down | Everyone |
+| `bmx.ride` | Getting on a bike that is already down | Everyone |
+| `bmx.trails` | `/trails` and its pieces | Operators |
+| `bmx.reload` | `/bmx reload` | Operators |
+
+**Riding is its own node on purpose.** A bike left in a public square is a
+thing anybody can walk up to and right-click, so the two questions — may you
+*have* one, may you *get on* one — have different answers on most servers.
+Revoke `bmx.ride` and a player can still be handed a bike and put it down for
+somebody else; revoke `bmx.use` and they cannot produce one at all.
+
+## Configuration
+
+`plugins/RPEBmx/config.yml`. Every line the plugin says is in there, and the
+switches:
+
+```yaml
+prefix: "&b[BMX] &7"
+
+# Land sideways and the rider comes off. Off means a bad landing simply
+# carries on.
+bail: true
+
+# Whether the bike names the trick you just landed, says how far you
+# manualled, and tells you why you are suddenly lying in the dirt.
+trick-messages: true
+```
+
+`/bmx reload` rereads it, including for somebody already on a bike.

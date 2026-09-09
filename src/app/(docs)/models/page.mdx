@@ -27,6 +27,31 @@ or start from a stone cube and build by hand. **Edit with AI** and
 **Animate with AI** take a model you already have and a sentence about what
 to change.
 
+### Blocky or Detailed
+
+Two builders, and the choice is above the prompt box:
+
+| | Looks like | Reach for it for |
+|---|---|---|
+| **Blocky** | Minecraft's own look — a few big cubes, every face painted, octagonal wheels | Vehicles, furniture, props, anything that has to sit in the world and look like it belongs |
+| **Detailed** | More cubes and finer shapes, built up out of small pieces | Characters, creatures, statues, anything whose silhouette is the point |
+
+They are genuinely different engines rather than one with a slider, and the
+difference is where the detail goes. **Blocky puts it in the texture**: it
+paints each face at one texel per unit, so a barrel is one cube with a rim
+painted on it and a plank seam is pixels rather than geometry. **Detailed puts
+it in the geometry**: more cubes, smaller cubes, and a round thing built out of
+rotated slabs.
+
+That is why the advice above is about the subject rather than about quality.
+A jeep in the vanilla style is a jeep somebody could have built in Blockbench;
+the same jeep with three hundred cubes in it reads as a model of a jeep sitting
+in Minecraft rather than as part of it. A dragon is the other way round.
+
+**Editing follows the model.** A model built one way is edited by the builder
+that made it, so a Blocky model's painted faces stay painted and a Detailed
+one's geometry stays geometry — you do not have to remember which you picked.
+
 <Callout type="tip" title="Generation is a starting position">
   A generated model is worth editing, not shipping. The loop that produces good
   results is generate, look at it in game, fix the two things that are wrong,

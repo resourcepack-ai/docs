@@ -247,6 +247,27 @@ backwards. RP Engine mirrors their normalised playheads when direction changes,
 so the opposite animation begins at the wheel angle already on screen instead
 of snapping back to frame zero. The two animations may have different lengths.
 
+### A wheel should turn because the vehicle moved
+
+By default a cycle plays at the rate it was drawn at, whatever the vehicle is
+doing. That is a skateboard whose wheels spin at one speed from a crawl to a
+tuck, and a milk float whose wheels race while it creeps. Say so and the
+playhead is driven by the ground speed instead:
+
+```yaml
+  animation-follows-speed: true
+```
+
+At the vehicle's top speed the cycle runs at the rate it was authored at; at
+half speed, half of it; standing still it stops on the frame it reached rather
+than resetting. The phase carries across a change of state, so braking out of
+`moving` into `reversing` picks the wheels up where they were.
+
+**It is off by default because an animation on `moving` is not always a
+wheel.** A bobbing suspension, a flapping flag or an exhaust puff was authored
+at a rate somebody chose, and slowing those down with the vehicle is not
+obviously right. Turn it on for anything whose animation *is* the motion.
+
 ## Sounds
 
 `sounds:` maps the same states to [sounds](/rp-engine/sounds) — an engine
@@ -349,6 +370,31 @@ That is wrong for anything without an engine in it. Small numbers roll far:
 
 It replaces a floor rather than the whole of the drag, so a vehicle quick
 enough to slow faster than this still does.
+
+## Wall rides
+
+Jump at a wall fast enough and shallow enough, holding the jump key, and the
+vehicle sticks to it:
+
+```yaml
+  wall-ride: true
+```
+
+Board and rider roll right over onto the wall and sink gently down it, steering
+up and down for as long as the key is held and there is wall to ride. Letting
+go kicks you off it. There is nothing to start or stop from a command or a
+plugin — a ride begins on its own when the conditions are met and ends when the
+speed or the wall does.
+
+**Off unless you ask**, like bailing, and for the same reason: a car that
+climbed the side of a building the first time somebody clipped a wall would be
+a bug rather than a feature. It belongs to the things that are ridden rather
+than driven.
+
+A plugin can ask whether a vehicle is riding a wall right now
+(`Vehicle.wallRiding()`, see the [plugin API](/rp-engine/api)), which is what
+lets it pose the rider for it — the engine does the physics and has no opinion
+about what the person on top should look like.
 
 ## Bailing
 
