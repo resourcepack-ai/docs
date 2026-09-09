@@ -50,3 +50,23 @@ RP Engine draws whichever you ask for and has no opinion about mana.
 That "something of yours" is usually a scoreboard or menu plugin reading
 [a placeholder](/rp-engine/placeholderapi), or your own plugin calling the
 [API](/rp-engine/api).
+
+## Shader overlays from Studio
+
+Studio's **Shaders** editor builds overlays from shapes and text. Drag either
+on the canvas to position it; text rows move independently. Select an element
+in the list when another element covers it. Shape handles resize the shape.
+
+The **Anchors** panel aligns the selected element inside the canvas. Check
+several elements to move them together while preserving their spacing.
+**Where on screen** sets the whole overlay's screen anchor using nine presets.
+These follow the player's window and GUI scale. Drag the blue frame in the
+screen preview to adjust the offset, or use **Right** and **Up**.
+**Reset to action bar** restores the original position above the hotbar.
+
+Text uses Minecraft's font. A `{name}` placeholder is filled by the server;
+changing its value keeps the canvas in place. Preview placeholders show their
+names, so their displayed length can differ from a player's actual value.
+
+Push the updated pack after editing. Shader overlays use the action-bar slot;
+when several overlays are shown, the most recently shown one is visible.
