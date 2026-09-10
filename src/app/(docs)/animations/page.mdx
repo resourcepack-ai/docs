@@ -63,6 +63,18 @@ server.
   make while it's running survive.
 </Callout>
 
+An emote that includes a model uses the same bones. Before it writes the
+player's motion, the builder separates any model assembly the interaction must
+move—a barbell from its bench, for example—and then animates the player and
+that assembly on one clock. The model gains an ordinary, triggerless animation
+you can edit in its own timeline; the emote drives it automatically and keeps
+it synchronized with the player's hands.
+
+Bones belong to the model, not to the emote. A model that already has them —
+because you made them, or because an earlier emote did — keeps exactly the
+bones it has, and the emote animates those. So if you want a particular split,
+make it yourself in the model editor first and every emote will use it.
+
 ## Triggers
 
 Each animation can claim several triggers, and a model can have several

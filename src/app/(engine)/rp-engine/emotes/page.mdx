@@ -72,6 +72,15 @@ Make them in [Studio](https://studio.resourcepack.ai), then push:
 
 `/rp emotes` lists what the server is holding right now.
 
+### Models inside an emote
+
+An emote can carry a pack model as a prop. If only part of that model moves,
+Studio stores the motion as an ordinary animation on the model and names it in
+the emote manifest. RP Engine then renders the model as its normal multi-part
+rig and seeks it to the emote's playhead on every emote step. The player's bones and
+the model therefore share one clock: a lifted barbell stays in the lifter's
+hands instead of moving the whole bench or playing on an unrelated loop.
+
 ### Sharing a push
 
 A sync is one player's, so a second person testing the same pack would need a
