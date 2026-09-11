@@ -70,6 +70,26 @@ Land, water or air. The choice decides the physics:
 An air vehicle also has **Flight**: the speed it takes off at, how fast it
 climbs and dives, and how fast it sinks when it has stalled.
 
+### Crash damage
+
+The **Vehicle status** section is for servers that install the official
+`vehicle-status` RP Engine addon. Turn it on to give each placed vehicle its
+own persistent health, choose the harmless-bump threshold and damage scale,
+and optionally have a badly damaged vehicle stop answering its driver. Crash
+reactions still come from RP Engine's collision physics; the addon scales the
+resolved force rather than playing a fixed knockback.
+
+**Detachable model parts come from the model.** Named bones that RP Engine
+already builds as separate rig parts appear as checkboxes; there is no generic
+list of doors and bumpers. Only the checked bones may come off. The detach
+threshold and debris lifetime decide how severe the localized impact must be
+and how long its physical display remains before automatic cleanup.
+
+The status line is shown to every occupant and can use `{health}`,
+`{max_health}`, `{health_percent}` and `{state}`. A server without the addon
+simply ignores this section; the resource pack itself cannot run vehicle
+health logic.
+
 <Callout type="tip" title="Above about 20 blocks a second, look before you ship">
   A passenger's position is broadcast twenty times a second and their client
   fills in the gaps, which stops looking right above that. The driver holds
