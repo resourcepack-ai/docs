@@ -497,7 +497,9 @@ seats and the model are rebuilt whenever its chunk loads.
 - **Resolved impacts are available to addons.** The official `vehicle-status`
   addon uses the same closing speed, mass exchange, contact direction, impulse
   and rotation that moved both vehicles to maintain persistent health and
-  temporary detachable bodywork. Continuous resting contact is not a new
+  temporary detachable bodywork. Authors explicitly mark detachable wheel
+  bones, whose loss drops that corner and degrades speed and steering; ordinary
+  body panels stay mostly cosmetic. Continuous resting contact is not a new
   crash every tick.
 - **A vehicle passes through players and shoves mobs.** `vehicles.push-players`
   in config.yml makes it shove people too; it is off because cars nudging
