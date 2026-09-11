@@ -494,6 +494,11 @@ seats and the model are rebuilt whenever its chunk loads.
   round and a square rear-ending does not, and at a crawl it becomes pushing.
   `vehicles.collide: false` in [config.yml](/rp-engine/config#vehicles) turns
   it off.
+- **Resolved impacts are available to addons.** The official `vehicle-status`
+  addon uses the same closing speed, mass exchange, contact direction, impulse
+  and rotation that moved both vehicles to maintain persistent health and
+  temporary detachable bodywork. Continuous resting contact is not a new
+  crash every tick.
 - **A vehicle passes through players and shoves mobs.** `vehicles.push-players`
   in config.yml makes it shove people too; it is off because cars nudging
   each other's drivers about in a car park is worse than driving through
@@ -523,3 +528,7 @@ plugin's, and the [Plugin API](/rp-engine/api#vehicles) has what it needs —
 who is in what, putting people in and out of seats, switching a vehicle off
 so it coasts to a halt and stays there, capping its speed, and events for
 somebody getting in, getting out, a vehicle moving and its state changing.
+`VehicleImpactEvent` adds one server-authoritative event per resolved crash,
+with both outcomes on a vehicle-to-vehicle collision. Named rig parts can be
+queried and detached through the same handle; the engine owns their temporary
+physics host and cleanup.
