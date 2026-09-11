@@ -80,6 +80,10 @@ performance, and a destroyed vehicle stops answering its driver. Weight and the
 engine's resolved collision physics already make a lorry and a kart react
 differently, so there is no second page of damage sliders to balance.
 
+**Durability** controls structural toughness: 1 is standard, 2 halves damage
+to health, regions and parts, and 0.5 doubles it. It does not change mass or
+the physical shove from a collision.
+
 **Detachable model parts come from the model.** Named bones that RP Engine
 already builds as separate rig parts appear as checkboxes; there is no generic
 list of doors and bumpers. Only the checked bones may come off. While the detach
@@ -88,6 +92,14 @@ all geometry below a grouping bone. Mark any selected bone that is an actual
 wheel in the **Wheel** column: losing one then drops that
 corner and sharply reduces speed and steering. Wheel loss takes a harder impact
 than ordinary bodywork, and detached displays are cleaned up automatically.
+
+A direct severe hit can tear off a wheel or panel immediately; damaged
+attachments can fail on a smaller follow-up impact. Loose parts inherit the
+incoming momentum, tumble, fall under gravity and collide with the ground.
+Scrapes leave persistent grey and dark marks on the collision shell. Fit the
+hitbox closely to the model: these decals do not repaint its texture or deform
+individual cubes. Shell marks are hidden after part loss so they cannot float
+across missing bodywork.
 
 The optional status line is shown to every occupant. Leave it off for the GTA
 style, or turn it on while testing to see health above the hotbar. A server

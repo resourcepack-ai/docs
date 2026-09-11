@@ -501,6 +501,11 @@ seats and the model are rebuilt whenever its chunk loads.
   bones, whose loss drops that corner and degrades speed and steering; ordinary
   body panels stay mostly cosmetic. Continuous resting contact is not a new
   crash every tick.
+  Its `addons.vehicle-status.durability` setting defaults to 1; 2 halves health
+  and structural damage, while 0.5 doubles it. Severe localized impacts can
+  rupture a wheel mounting immediately. Loose parts retain incoming momentum
+  and tumble under gravity. Scrape decals persist on the collision shell,
+  so the hitbox should closely fit the model; they are hidden after part loss.
 - **A vehicle passes through players and shoves mobs.** `vehicles.push-players`
   in config.yml makes it shove people too; it is off because cars nudging
   each other's drivers about in a car park is worse than driving through
