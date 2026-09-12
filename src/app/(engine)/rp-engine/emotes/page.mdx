@@ -126,6 +126,32 @@ same command:
 Groups and single emotes share one list of names and one name space, so nothing
 can collide and nothing has to be told apart to be typed.
 
+### Walk cycles follow the player, not the clock
+
+A walk is not a thing that happens over a second — it happens over a stride. So
+the walk, sprint and crouch-walk members of a set are played by **how far the
+player travelled**, not by how long they took: standing still, the legs stop;
+on soul sand they slow down; under a speed potion or a raised walk-speed
+attribute they keep up. The feet stay on the ground either way.
+
+Author each cycle for Minecraft's ordinary pace and it plays exactly as you
+drew it, because that is the speed the engine divides by:
+
+| State | Author it for |
+|---|---|
+| Walk | 4.317 blocks per second |
+| Sprint | 5.612 blocks per second |
+| Crouch-walk | 1.295 blocks per second |
+
+Standing still, crouching in place and being off the ground are not gaits — an
+idle breathes at its own rate and a jump is on gravity's clock — so those three
+play at the rate they were drawn at, whatever the player is doing.
+
+Changing pace does not restart anything. The engine joins the new cycle at the
+point nearest the pose already on screen, so breaking into a run picks the run
+up mid-stride on the same leg, and eases between the two cycles rather than
+cutting.
+
 ## What stops an emote
 
 Being hit. Moving, in most cases. `/emote stop`. A plugin cancelling
