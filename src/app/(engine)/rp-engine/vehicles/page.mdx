@@ -107,6 +107,22 @@ to. Set `turn-in-place: true` for the things that really do pivot on the spot
 from a standstill. An aircraft that is off the ground steers either way, since
 a hovering helicopter is never standing still.
 
+**The weight moves as you drive, and the tyres have one budget.** Braking
+pitches the load onto the nose and takes the rear light, the throttle does the
+reverse, and whatever a tyre spends going forwards it does not have sideways.
+So a corner is something you set the car up for: touch the brake on the way in
+and the back steps out, hold the throttle and it understeers and grips. None of
+it is a setting — it falls out of `weight`, `acceleration` and `speed`, which
+is why a lorry and a go-kart behave like a lorry and a go-kart without either
+of them being told to.
+
+**Off a ramp, the steering keys still work.** A vehicle in mid-air comes round
+slowly on A and D, so a jump is something you can aim; it can start a rotation
+and never fight a bigger one, so a plugin's own spin is never cancelled by a
+rider leaning on a key. Coming down from a great height costs speed — a kerb
+or a fence costs nothing — and driving square into a wall now recoils and drops
+the nose instead of stopping dead.
+
 ## Seats
 
 **The order of the list is the order people are put in them.** The driver is
@@ -503,9 +519,19 @@ seats and the model are rebuilt whenever its chunk loads.
   crash every tick.
   Its `addons.vehicle-status.durability` setting defaults to 1; 2 halves health
   and structural damage, while 0.5 doubles it. Severe localized impacts can
-  rupture a wheel mounting immediately. Loose parts retain incoming momentum
-  and tumble under gravity. Scrape decals persist on the collision shell,
-  so the hitbox should closely fit the model; they are hidden after part loss.
+  rupture a wheel mounting immediately. Loose parts keep the momentum of the
+  crash and leave along the line from the contact out through the part, so two
+  things lost in one shunt do not fly off as a pair. A crash also throws sparks
+  and dust where it landed, a wreck smokes and eventually burns from its worst
+  corner, and the people aboard are hurt in proportion to the crash rather than
+  to what the bodywork lost. Scrape marks persist on the collision shell, so
+  the hitbox should closely fit the model; they are hidden after part loss.
+- **A vehicle that is not a hull cannot drive in water.** The engine floods and
+  it wallows to a stop, more the deeper it is, and it sinks. A ford costs
+  nothing; a lake is the end of the journey. Whether it is also *wrecked* is
+  the `vehicle-status` addon's `water-damage-per-second` — the engine has no
+  opinion about how much punishment a vehicle takes, the same way it has none
+  about its health.
 - **A vehicle passes through players and shoves mobs.** `vehicles.push-players`
   in config.yml makes it shove people too; it is off because cars nudging
   each other's drivers about in a car park is worse than driving through

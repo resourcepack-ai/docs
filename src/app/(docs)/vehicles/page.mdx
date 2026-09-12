@@ -82,7 +82,8 @@ differently, so there is no second page of damage sliders to balance.
 
 **Durability** controls structural toughness: 1 is standard, 2 halves damage
 to health, regions and parts, and 0.5 doubles it. It does not change mass or
-the physical shove from a collision.
+the physical shove from a collision — and it does not protect the passengers,
+who are hurt by the crash rather than by what the bodywork lost.
 
 **Detachable model parts come from the model.** Named bones that RP Engine
 already builds as separate rig parts appear as checkboxes; there is no generic
@@ -94,17 +95,47 @@ corner and sharply reduces speed and steering. Wheel loss takes a harder impact
 than ordinary bodywork, and detached displays are cleaned up automatically.
 
 A direct severe hit can tear off a wheel or panel immediately; damaged
-attachments can fail on a smaller follow-up impact. Loose parts inherit the
-incoming momentum, tumble, fall under gravity and collide with the ground.
-Scrapes leave persistent grey and dark marks on the collision shell. Fit the
-hitbox closely to the model: these decals do not repaint its texture or deform
-individual cubes. Shell marks are hidden after part loss so they cannot float
-across missing bodywork.
+attachments can fail on a smaller follow-up impact. Loose parts keep the
+momentum of the crash and leave along the line from the contact out through the
+part, so two things lost in one shunt do not fly off as a pair, and then they
+tumble, fall and collide with the ground.
+
+**Where a crash landed decides what it broke**, in fractions of the vehicle
+rather than in blocks — so "the front took it" means the same thing on a kart
+and on a lorry, and a hit on a lorry's nose does not reach its back axle. A
+collision with another vehicle is a real point, and a wall is a *face*: a car
+scraped along a wall damages its whole left flank rather than whatever happens
+to sit at the middle of it, because where along the wall it touched is not
+something the server can know.
+
+Scrapes leave persistent marks on the collision shell, from a light graze to a
+black gouge, and the same place hit twice deepens the mark that is there. Fit
+the hitbox closely to the model: these are shell marks rather than a repaint of
+its texture, so a hitbox that is much bigger than the bodywork leaves them
+hanging beside it. They are hidden after part loss so they cannot float across
+missing bodywork.
+
+### What a crash costs
+
+Five switches, and each is a question about your server rather than about
+physics:
+
+| | |
+|---|---|
+| **Sparks, dust and metal on impact** | At the exact point the physics resolved the hit. This is most of what makes a crash read as one |
+| **Smoke and fire from a wreck** | Steam, then smoke, then flame — out of the quarter of the body in the worst state, so a driver can see which end to be careful with |
+| **Crashes injure the people aboard** | Scaled to the crash rather than to what the bodywork lost, so a tough vehicle protects its paint and not its passengers |
+| **Water writes it off** | A vehicle that is not a boat cannot drive in water whatever this says — the engine floods and it wallows to a stop. This is whether it is being destroyed while that happens: about three seconds in deep water, and nothing in a ford |
+| **Destroyed vehicles explode** | It burns for a couple of seconds, throws everybody clear and goes up. No blocks are broken and nothing is set alight, but whoever is standing next to it gets hurt — which is why this is the one that starts off |
 
 The optional status line is shown to every occupant. Leave it off for the GTA
 style, or turn it on while testing to see health above the hotbar. A server
 without the addon simply ignores this section; the resource pack itself cannot
 run vehicle health logic.
+
+On the server, `/vehiclestatus` reads the damage on the vehicle you are in or
+nearest — health, each quarter of the body, and every part that is damaged or
+gone — and `/vehiclestatus repair` puts it right. Operators only.
 
 <Callout type="tip" title="Above about 20 blocks a second, look before you ship">
   A passenger's position is broadcast twenty times a second and their client
