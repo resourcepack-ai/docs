@@ -67,6 +67,12 @@ const GUIDES: ApiNavItem[] = [
     keywords: ["error", "code", "401", "402", "403", "404", "409", "envelope"],
   },
   {
+    title: "Provenance",
+    href: `${API_ROOT}/provenance`,
+    description: "For marketplaces: checking whether a file was generated here.",
+    keywords: ["provenance", "marketplace", "ai detection", "hash", "fingerprint", "sha256", "moderation", "resale", "builtbybit", "polymart"],
+  },
+  {
     title: "Key history",
     href: `${API_ROOT}/history`,
     description: "What each key records, and what it deliberately doesn't.",
@@ -75,9 +81,11 @@ const GUIDES: ApiNavItem[] = [
 ];
 
 // Group order is fixed rather than taken from the spec's key order: a reader
-// wants packs before the things that write into them, and jobs last because
-// nothing sends you there until something has been generated.
-const GROUP_ORDER = ["Packs", "Generating", "Jobs"];
+// wants packs before the things that write into them, and jobs after because
+// nothing sends you there until something has been generated. Provenance is
+// last because it is the one group that isn't for our own customers — a
+// marketplace arrives at it from its own guide rather than by reading down.
+const GROUP_ORDER = ["Packs", "Generating", "Jobs", "Provenance"];
 
 export const apiNav: ApiNavGroup[] = [
   { title: "Get started", items: GUIDES },

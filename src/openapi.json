@@ -113,6 +113,10 @@
       "status": 409,
       "description": "That asset's generation failed. Its job carries the reason."
     },
+    "rate_limited": {
+      "status": 429,
+      "description": "Too many requests. `message` says how long to wait; see Rate limits."
+    },
     "unavailable": {
       "status": 503,
       "description": "The feature behind this endpoint is switched off."
@@ -2515,6 +2519,307 @@
             }
           }
         }
+      }
+    },
+    "/provenance/lookup": {
+      "post": {
+        "operationId": "lookupProvenance",
+        "summary": "Check whether content was generated here",
+        "description": "**What this is for.** Marketplaces that require AI-generated work to be labelled, or refuse it outright, have no way to tell by looking, and the better generation gets the less workable a moderator's eye is as the check. This endpoint answers the question directly: hash the files in an uploaded pack, ask us, and get a definitive yes for anything that came out of ResourcePack AI. Our own terms already forbid reselling generated packs; this is how that stops being a promise we make to our users and becomes something a marketplace can enforce for itself.\n\n**Unauthenticated, on purpose.** No key, no signup, no account, no rate card. This is a check that protects your creators rather than our business, and putting a credential in front of it would be charging you to help.\n\n**A hit has no false positives.** The registry holds hashes of content this product generated and then exported, and nothing else. Work a user brought in themselves is recorded as theirs and is never registered, so a texture somebody made and edited here cannot be called ours. Content too generic to identify anyone is deliberately left out as well: a blank tile, a single-colour square, a model with no geometry of its own. There is therefore no route by which a hash in the registry legitimately belongs to somebody else's work, and a `generated` verdict means the bytes were produced here.\n\n**A miss is not a negative.** `no_record` means exactly that and nothing more: not in our registry. It may be a human's work, another generator's, or ours after somebody edited it. Never read it as proof of human authorship, and do not build a policy that assumes it.\n\n**Computing the hash.** SHA-256 over the file's *canonical content* rather than its bytes, so re-compressing a PNG, stripping its metadata or reformatting a model's JSON does not change the answer. Three forms, chosen by extension.\n\n`.png` — decode to 8-bit RGBA, then flatten every fully transparent pixel to `00 00 00 00`, because what sits in the colour channels under alpha 0 is invisible and differs between encoders. Hash `rpai/v1/png\\n`, then `<width>x<height>\\n`, then the pixel bytes: row-major, four per pixel, no padding.\n\n`.json` — parse it, sort every object's keys, keep array order untouched (in a block model the element order is the geometry), round numbers to six decimal places with `-0` folded to `0`, and serialise with no whitespace. Hash `rpai/v1/json\\n` followed by that string as UTF-8.\n\nAnything else — hash `rpai/v1/bytes\\n` followed by the file's bytes unchanged. Sounds fall here, so a re-encoded `.ogg` will miss.\n\nThe prefixes are domain separation and are part of the hashed input, not a label. The format is frozen: a change would appear as `rpai/v2/...` under a new field rather than as an edit to these.\n\nSend up to 256 hashes per call, so a pack of any ordinary size is a handful of requests. Every hash you send comes back with a result, in the order you sent it, so you can pair answers to files without matching on the hash yourself.\n\nRate limited to 60 requests a minute per address — the one part of this API counted that way, because there is no key to count instead.",
+        "tags": [
+          "Provenance"
+        ],
+        "responses": {
+          "200": {
+            "description": "One result per hash asked about.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "description": "In the order the hashes were sent.",
+                      "items": {
+                        "type": "object",
+                        "description": "One verdict.",
+                        "properties": {
+                          "hash": {
+                            "type": "string",
+                            "description": "The hash you asked about, lowercased."
+                          },
+                          "verdict": {
+                            "type": "string",
+                            "description": "`generated` if we produced this content, `no_record` if it is not in the registry.",
+                            "enum": [
+                              "generated",
+                              "no_record"
+                            ]
+                          },
+                          "form": {
+                            "type": "string",
+                            "description": "Which canonicalisation produced the hash. Absent on `no_record`.",
+                            "enum": [
+                              "png",
+                              "json",
+                              "bytes"
+                            ]
+                          },
+                          "kind": {
+                            "type": "string",
+                            "description": "What sort of asset it was. Absent on `no_record`.",
+                            "enum": [
+                              "texture",
+                              "model",
+                              "font",
+                              "sound"
+                            ]
+                          },
+                          "firstSeen": {
+                            "type": "string",
+                            "description": "ISO 8601 — when this content first left our systems. Absent on `no_record`."
+                          }
+                        },
+                        "required": [
+                          "hash",
+                          "verdict"
+                        ]
+                      }
+                    },
+                    "matched": {
+                      "type": "integer",
+                      "description": "How many of them we generated."
+                    },
+                    "note": {
+                      "type": "string",
+                      "description": "The standing caveat about `no_record`, repeated on every response."
+                    }
+                  },
+                  "required": [
+                    "results",
+                    "matched",
+                    "note"
+                  ]
+                },
+                "example": {
+                  "results": [
+                    {
+                      "hash": "9f2c1d4a7b3e5f8091a2b3c4d5e6f70819a2b3c4d5e6f70819a2b3c4d5e6f708",
+                      "verdict": "generated",
+                      "form": "png",
+                      "kind": "texture",
+                      "firstSeen": "2026-08-14T10:22:06.000Z"
+                    },
+                    {
+                      "hash": "0a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+                      "verdict": "no_record"
+                    }
+                  ],
+                  "matched": 1,
+                  "note": "A `no_record` verdict means this content is not in our registry. It is not evidence that a human made it."
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `invalid_request`, `invalid_json`, `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hashes": {
+                    "type": "array",
+                    "description": "Canonical content hashes, 64 hexadecimal characters each. Case is ignored and duplicates are collapsed.",
+                    "minItems": 1,
+                    "maxItems": 256,
+                    "items": {
+                      "type": "string",
+                      "description": "One hash."
+                    }
+                  }
+                },
+                "required": [
+                  "hashes"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/provenance/range/{prefix}": {
+      "get": {
+        "operationId": "provenanceRange",
+        "summary": "Check without telling us what you asked",
+        "description": "The same registry, queried k-anonymously. Send the first 5 characters of a hash and get back every fingerprint we hold that starts with them, then match the rest locally.\n\nUse this rather than the lookup endpoint when you would prefer not to send us the content hashes of files your users upload. We learn that somebody asked about one of roughly a million buckets and never which file it was. It is the same shape as the Have I Been Pwned range API, so a client you have written before will mostly work.\n\nHashes are computed exactly as for the lookup endpoint, and both caveats there apply unchanged: a hit is definitive, and a hash missing from a bucket is `no_record` rather than a negative.",
+        "tags": [
+          "Provenance"
+        ],
+        "responses": {
+          "200": {
+            "description": "Every fingerprint sharing that prefix.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "prefix": {
+                      "type": "string",
+                      "description": "The prefix, lowercased."
+                    },
+                    "suffixes": {
+                      "type": "array",
+                      "description": "The remainder of each matching hash. Concatenate the prefix to compare.",
+                      "items": {
+                        "type": "object",
+                        "description": "One registered fingerprint.",
+                        "properties": {
+                          "suffix": {
+                            "type": "string",
+                            "description": "The hash with the prefix removed."
+                          },
+                          "form": {
+                            "type": "string",
+                            "description": "Which canonicalisation produced it.",
+                            "enum": [
+                              "png",
+                              "json",
+                              "bytes"
+                            ]
+                          },
+                          "kind": {
+                            "type": "string",
+                            "description": "What sort of asset it was.",
+                            "enum": [
+                              "texture",
+                              "model",
+                              "font",
+                              "sound"
+                            ]
+                          },
+                          "firstSeen": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          }
+                        },
+                        "required": [
+                          "suffix",
+                          "form",
+                          "kind",
+                          "firstSeen"
+                        ]
+                      }
+                    },
+                    "note": {
+                      "type": "string",
+                      "description": "The standing caveat about a miss."
+                    }
+                  },
+                  "required": [
+                    "prefix",
+                    "suffixes",
+                    "note"
+                  ]
+                },
+                "example": {
+                  "prefix": "9f2c1",
+                  "suffixes": [
+                    {
+                      "suffix": "d4a7b3e5f8091a2b3c4d5e6f70819a2b3c4d5e6f70819a2b3c4d5e6f708",
+                      "form": "png",
+                      "kind": "texture",
+                      "firstSeen": "2026-08-14T10:22:06.000Z"
+                    }
+                  ],
+                  "note": "A hash absent from this bucket is not in our registry. That is not evidence that a human made the file."
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `invalid_request`, `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "parameters": [
+          {
+            "name": "prefix",
+            "in": "path",
+            "required": true,
+            "description": "The first characters of a canonical content hash, lowercase hexadecimal.",
+            "schema": {
+              "type": "string",
+              "description": "The first characters of a canonical content hash, lowercase hexadecimal.",
+              "example": "9f2c1"
+            }
+          }
+        ]
       }
     }
   }
