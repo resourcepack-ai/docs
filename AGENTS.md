@@ -171,6 +171,21 @@ pages beside them (`(api)/api-reference/(guides)/`) are ordinary MDX but list
 themselves in `api-nav.ts` rather than `nav.ts`. The spec is also published at
 `/docs/openapi.json`.
 
+**`src/lib/fingerprint.ts` is the one file here that is a coupling**, and it
+breaks this app's rule of having no code dependency on a sibling — not by
+importing one, but by reimplementing a format `studio` owns. It is the canonical
+content hash the provenance API looks up, run in the reader's browser so the
+"Try it" panel can hash a pack they drop in without the file leaving their
+machine. It has its own PNG decoder (not `<canvas>`, which is entitled to apply
+a colour profile and hand back different pixels) and its own zip reader (no
+library, because installs here are held for a week by the npm proxy).
+
+If it drifts from studio's, the panel prints hashes that match nothing and the
+API looks broken to the exact person we built it for. `npm run verify:provenance`
+**in `studio`** runs both over the same files and compares digests; it reads this
+file across the directory boundary, which is why that check lives there rather
+than here. Run it if you touch this file.
+
 `nav.ts` is the single source of truth for the sidebar, the ⌘K search index,
 the prev/next pager and the group label above each page title. A page that
 exists but isn't listed is reachable by URL and invisible everywhere else.
