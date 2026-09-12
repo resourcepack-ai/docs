@@ -2670,7 +2670,8 @@
                     "maxItems": 256,
                     "items": {
                       "type": "string",
-                      "description": "One hash."
+                      "description": "One hash.",
+                      "example": "9f2c1d4a7b3e5f8091a2b3c4d5e6f70819a2b3c4d5e6f70819a2b3c4d5e6f708"
                     }
                   }
                 },

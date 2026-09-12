@@ -22,7 +22,11 @@ function sampleFor(schema: SchemaNode): unknown {
     case "boolean":
       return true;
     case "array":
-      return [];
+      // One item, not an empty array. A required array field sampled as `[]`
+      // gives a sample that 400s on the shortest possible call, which is
+      // exactly the "paste it, get a 400, stop trusting the page" this file
+      // exists to prevent.
+      return schema.items ? [sampleFor(schema.items)] : [];
     case "object": {
       const nested: Record<string, unknown> = {};
       for (const [name, child] of Object.entries(schema.properties ?? {})) {
@@ -58,18 +62,25 @@ function fillPath(operation: Operation): string {
 
 export function curlFor(operation: Operation): string {
   const url = `${BASE_URL}${fillPath(operation)}`;
-  const lines = [`curl --request ${operation.method} \\`, `  --url ${url} \\`];
+  // Built WITHOUT line continuations, which are joined on at the end. Appending
+  // a trailing backslash to whichever line happened to be last broke the moment
+  // one of them became conditional: the URL line would carry the backslash it
+  // already had, plus another.
+  const lines = [`curl --request ${operation.method}`, `  --url ${url}`];
 
-  lines.push(`  --header 'Authorization: Bearer $RPAI_KEY'`);
+  // A public endpoint gets no Authorization line. Printing one on the
+  // provenance lookups would contradict the sentence above them saying no key
+  // is needed, and somebody pasting it would send `Bearer $RPAI_KEY`
+  // unexpanded and wonder why it changed nothing.
+  if (operation.authenticated) lines.push(`  --header 'Authorization: Bearer $RPAI_KEY'`);
 
   const body = operation.method === "POST" ? bodyFor(operation.bodyParams) : null;
   if (body) {
-    lines[lines.length - 1] += " \\";
-    lines.push(`  --header 'Content-Type: application/json' \\`);
+    lines.push(`  --header 'Content-Type: application/json'`);
     lines.push(`  --data '${JSON.stringify(body)}'`);
   }
 
-  return lines.join("\n");
+  return lines.join(" \\\n");
 }
 
 /** The response shown beside the sample — the first success the spec lists. */
