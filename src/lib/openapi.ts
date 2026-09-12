@@ -38,6 +38,15 @@ export interface Operation {
   group: string;
   /** False when a feature flag has this endpoint switched off (x-available). */
   available: boolean;
+  /**
+   * False for the endpoints that take no API key.
+   *
+   * OpenAPI spells that as an empty `security` on the operation, overriding the
+   * document-level bearer requirement. "Try it" reads this to decide whether to
+   * ask for a key at all — without it the provenance endpoints, which refuse to
+   * want one, would sit behind a key field nobody can fill.
+   */
+  authenticated: boolean;
   method: string;
   path: string;
   summary: string;
@@ -57,6 +66,7 @@ interface RawParameter {
 
 interface RawOperation {
   "x-available"?: boolean;
+  security?: unknown[];
   operationId: string;
   tags?: string[];
   summary: string;
@@ -125,6 +135,9 @@ function toOperation(method: string, path: string, raw: RawOperation): Operation
     group: raw.tags?.[0] ?? "Other",
     // Absent means available — only a switched-off endpoint carries the flag.
     available: raw["x-available"] !== false,
+    // Absent means the document's own requirement applies; an empty array is
+    // the explicit "none".
+    authenticated: !(Array.isArray(raw.security) && raw.security.length === 0),
     method: method.toUpperCase(),
     path,
     summary: raw.summary,

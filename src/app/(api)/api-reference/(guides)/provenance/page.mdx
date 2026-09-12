@@ -119,6 +119,22 @@ at a higher cost.
   under a new field, never as an edit to these.
 </Callout>
 
+## Try it without writing anything
+
+Both endpoint pages have a **Try it** button that takes a file: drop in a pack
+`.zip`, a `.mcpack`, or loose `.png` / `.json` / `.ogg` files, and it hashes
+them and fills in the request.
+
+**The hashing happens in your browser** — open your network tab and watch. The
+pack never leaves your machine; the only thing that goes anywhere is 64
+hexadecimal characters per file. The hasher doing it is a second, independent
+implementation of the rules above, held to the real one by a check that runs
+both over the same files and compares digests, so what you see there is what
+the registry would have stored.
+
+It's the fastest way to sanity-check the format before writing a line: hash
+something you generated with us, and confirm it comes back `generated`.
+
 ## A reference implementation
 
 Node, no dependencies beyond a PNG decoder:
