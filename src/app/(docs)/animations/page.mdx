@@ -75,6 +75,15 @@ because you made them, or because an earlier emote did — keeps exactly the
 bones it has, and the emote animates those. So if you want a particular split,
 make it yourself in the model editor first and every emote will use it.
 
+A model you add to an emote starts out **not attached**, which means it stands
+in the scene and stays put while the player moves — right for a chair, a bench
+or an anvil, which the player moves onto rather than carries. If your
+instruction describes the player holding, wearing, wielding or playing it
+instead, the run will pick it up for you: it attaches the model to a hand, the
+body or the head, places it where it would really sit, and turns it to suit the
+pose. Scenery is left exactly where you put it. You can always set **Attached
+to** yourself beforehand, and a model you have already attached is never moved.
+
 ## Triggers
 
 Each animation can claim several triggers, and a model can have several
