@@ -70,27 +70,11 @@ the same `rpai_` key the REST API takes. See
 
 ## What the agent gets
 
-One tool per endpoint in this reference, named after it, plus one that has no
-HTTP equivalent. Each name below links to the endpoint it calls, where the
-arguments are documented in full.
-
-| Tool | What it does |
-| --- | --- |
-| [`list_packs`](/api-reference/list-packs) | Every pack this key can reach, owned and shared. |
-| [`create_pack`](/api-reference/create-pack) | Start a new pack. |
-| [`get_pack`](/api-reference/get-pack) | One pack, and the oldest Minecraft version its contents load on. |
-| [`list_assets`](/api-reference/list-assets) | What a pack holds. Also how you recover a job handle from an earlier run. |
-| [`get_asset_file`](/api-reference/get-asset-file) | An asset's bytes — an image comes back as an image. |
-| [`export_pack`](/api-reference/export-pack) | Build the Java `.zip`. Confirms it built rather than returning it. |
-| [`generate_texture`](/api-reference/generate-texture) | A block texture. |
-| [`generate_model`](/api-reference/generate-model) | A 3D model. The slow one — minutes, not seconds. |
-| [`generate_item`](/api-reference/generate-item) | An item, as a flat sprite or real geometry. |
-| [`generate_gui`](/api-reference/generate-gui) | A container screen — chests, furnaces and the rest. |
-| [`generate_hud`](/api-reference/generate-hud) | The overlay drawn over the world: hearts, hunger, hotbar, crosshair. |
-| [`generate_icon`](/api-reference/generate-icon) | A bitmap glyph you can type into chat, signs and books. |
-| [`generate_sound`](/api-reference/generate-sound) | A sound effect. |
-| [`get_job`](/api-reference/get-job) | One generation's status. Usually `wait_for_job` is what you want instead. |
-| `wait_for_job` | **No HTTP equivalent.** Waits for generations to finish, so the agent doesn't poll. |
+One tool per endpoint in this reference, named after it — `list_packs`,
+`create_pack`, `generate_texture`, `generate_model`, `generate_item`,
+`generate_gui`, `generate_hud`, `generate_icon`, `generate_sound`,
+`list_assets`, `get_asset_file`, `get_job` and `export_pack` — plus one that
+has no HTTP equivalent.
 
 The tool list is generated from the same description of the API that this
 reference and the [OpenAPI document](/openapi.json) come from, so it carries the
