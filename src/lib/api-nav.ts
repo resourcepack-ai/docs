@@ -49,23 +49,6 @@ const GUIDES: ApiNavItem[] = [
     keywords: ["api", "rest", "http", "bearer", "auth", "base url", "curl"],
   },
   {
-    title: "MCP server",
-    href: `${API_ROOT}/mcp`,
-    description: "Connect an AI agent and let it build a pack by itself.",
-    keywords: [
-      "mcp",
-      "model context protocol",
-      "agent",
-      "ai agent",
-      "claude",
-      "claude code",
-      "cursor",
-      "tools",
-      "tool use",
-      "llm",
-    ],
-  },
-  {
     title: "Jobs and polling",
     href: `${API_ROOT}/jobs`,
     description: "Why generation is asynchronous, and how to wait for a result.",
@@ -94,6 +77,23 @@ const GUIDES: ApiNavItem[] = [
     href: `${API_ROOT}/history`,
     description: "What each key records, and what it deliberately doesn't.",
     keywords: ["history", "audit", "log", "usage", "credits", "revoke"],
+  },
+  {
+    title: "MCP server",
+    href: `${API_ROOT}/mcp`,
+    description: "Connect an AI agent and let it build a pack by itself.",
+    keywords: [
+      "mcp",
+      "model context protocol",
+      "agent",
+      "ai agent",
+      "claude",
+      "claude code",
+      "cursor",
+      "tools",
+      "tool use",
+      "llm",
+    ],
   },
 ];
 
