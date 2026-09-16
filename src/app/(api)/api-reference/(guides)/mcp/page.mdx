@@ -1,0 +1,144 @@
+export const metadata = {
+  title: "MCP server (API)",
+  description:
+    "Connect Claude, Cursor or any MCP client to ResourcePack AI and let it build a pack by itself.",
+};
+
+# MCP server
+
+ResourcePack AI speaks the **Model Context Protocol**, so an AI agent can build
+a pack on your behalf — create it, generate the blocks, models, items, icons and
+sounds, look at what came back, and iterate — without you clicking anything.
+
+It is the same API described in the rest of this reference, the same key and the
+same AI Credits. What changes is the shape: an agent gets a list of tools it can
+call rather than a list of URLs it has to be programmed against.
+
+<Callout type="note" title="On a paid plan">
+  The MCP server uses your ordinary API key, so it needs a paid plan and spends
+  the same AI Credits the Studio does. There is no separate MCP pricing.
+</Callout>
+
+## Connect
+
+The server lives at **`https://api.resourcepack.ai/mcp`** and authenticates with
+the API key from your [account page](https://studio.resourcepack.ai/account) —
+the same `rpai_` key the REST API takes. See
+[the overview](/api-reference) for how to create one.
+
+<Steps>
+  <Step title="Get an API key">
+    [studio.resourcepack.ai/account](https://studio.resourcepack.ai/account),
+    the **API keys** card. Copy it when it is shown — it is shown once.
+  </Step>
+  <Step title="Add the server to your client">
+    In Claude Code:
+
+    ```bash
+    claude mcp add --transport http resourcepack-ai \
+      https://api.resourcepack.ai/mcp \
+      --header "Authorization: Bearer rpai_YOUR_KEY"
+    ```
+
+    Any client that takes a JSON config wants this:
+
+    ```json
+    {
+      "mcpServers": {
+        "resourcepack-ai": {
+          "type": "http",
+          "url": "https://api.resourcepack.ai/mcp",
+          "headers": { "Authorization": "Bearer rpai_YOUR_KEY" }
+        }
+      }
+    }
+    ```
+  </Step>
+  <Step title="Ask for something">
+    "Make me a pack of overgrown temple blocks — mossy bricks, cracked stone and
+    a carved idol model." The agent will create the pack, generate into it, wait
+    for the results and show you what it made.
+  </Step>
+</Steps>
+
+<Callout type="warning" title="A key is your whole account">
+  It can read, generate into and export every pack you own or collaborate on,
+  and it spends your credits. An agent you connect it to can do all of that
+  without asking. Use a key created for the purpose so you can revoke it on its
+  own, and keep an eye on [its history](/api-reference/history).
+</Callout>
+
+## What the agent gets
+
+One tool per endpoint in this reference, named after it — `list_packs`,
+`create_pack`, `generate_texture`, `generate_model`, `generate_item`,
+`generate_gui`, `generate_hud`, `generate_icon`, `generate_sound`,
+`list_assets`, `get_asset_file`, `get_job` and `export_pack` — plus one that
+has no HTTP equivalent.
+
+The tool list is generated from the same description of the API that this
+reference and the [OpenAPI document](/openapi.json) come from, so it carries the
+same arguments, the same limits and the same enums. An endpoint switched off
+behind a feature flag is left out rather than offered and refused.
+
+Two differences from calling the endpoints yourself are worth knowing, because
+both exist to stop an agent wasting your credits.
+
+### `wait_for_job` waits, so the agent doesn't poll
+
+Every generation is [asynchronous](/api-reference/jobs): you get a job handle
+back and poll it. That is right for a program and wrong for an agent — a model
+polling every two seconds spends a whole turn per check, so one block costs
+thirty turns of "still generating".
+
+So there is a `wait_for_job` tool that does the waiting server-side. The agent
+hands over every handle it is waiting on, in one call, and gets one answer back
+when they have all finished. If the wait runs out of time it says which are
+still going and the agent calls again — nothing is lost and nothing is charged
+twice.
+
+### Files come back as files
+
+`get_asset_file` returns a generated texture, sprite or icon **as an image**, so
+the agent can actually look at what it made before telling you it is done, and
+regenerate it if it is wrong. Sounds come back as audio, models as their JSON.
+
+A pack export is the exception: `export_pack` confirms the zip built and how big
+it is, but does not hand over the bytes — a resource pack is megabytes, and
+there is nothing useful an agent can do with them. Download it over HTTP:
+
+```bash
+curl -H "Authorization: Bearer $RPAI_KEY" -o pack.zip \
+  https://api.resourcepack.ai/v1/packs/YOUR_PACK/export
+```
+
+## Limits and behaviour
+
+| | |
+| --- | --- |
+| **Transport** | Streamable HTTP. POST JSON-RPC; the server does not open a message stream, so a `GET` answers 405. |
+| **Sessions** | None. Every request carries the key and stands alone, so a dropped connection costs nothing. |
+| **Rate limits** | Shared with the REST API — [120 reads and 30 writes a minute](/api-reference/rate-limits) per key. `wait_for_job` paces its own polling to stay well inside the read budget. |
+| **Errors** | A failed call comes back as a tool error the agent can read and act on, carrying the same [stable code](/api-reference/errors) the REST API uses. |
+| **Provenance** | The two [provenance endpoints](/api-reference/provenance) are not tools. They need no key and exist for marketplaces, who are better served over HTTP. |
+
+<Callout type="tip" title="Tell it what you want, not how">
+  The server hands the agent its own briefing — what a pack is, that generating
+  costs real money, and how the asset kinds work — so you do not have to explain
+  any of it. Describe the pack you want and let it choose the calls.
+</Callout>
+
+<CardGroup cols={2}>
+  <Card title="Jobs and polling" href="/api-reference/jobs" icon="rocket">
+    What `wait_for_job` is doing on your behalf.
+  </Card>
+  <Card title="Rate limits" href="/api-reference/rate-limits" icon="gauge">
+    The budgets an agent is spending.
+  </Card>
+  <Card title="Key history" href="/api-reference/history" icon="wrench">
+    What the agent did, and what it cost.
+  </Card>
+  <Card title="Generating with AI" href="/generating" icon="brush">
+    What makes a prompt land. Applies here too.
+  </Card>
+</CardGroup>
