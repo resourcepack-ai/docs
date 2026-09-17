@@ -136,7 +136,7 @@ curl -H "Authorization: Bearer $RPAI_KEY" -o pack.zip \
 | **Sessions** | None. Every request carries the key and stands alone, so a dropped connection costs nothing. |
 | **Rate limits** | Shared with the REST API — [120 reads and 30 writes a minute](/api-reference/rate-limits) per key. `wait_for_job` paces its own polling to stay well inside the read budget. |
 | **Errors** | A failed call comes back as a tool error the agent can read and act on, carrying the same [stable code](/api-reference/errors) the REST API uses. |
-| **Provenance** | The two [provenance endpoints](/api-reference/provenance) are not tools. They need no key and exist for marketplaces, who are better served over HTTP. |
+| **Origin check** | The two [origin-check endpoints](/api-reference/origin) are not tools. They need no key and exist for marketplaces, who are better served over HTTP. |
 
 <Callout type="tip" title="Tell it what you want, not how">
   The server hands the agent its own briefing — what a pack is, that generating

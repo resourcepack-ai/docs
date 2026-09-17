@@ -80,6 +80,23 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  /**
+   * The Provenance guide became the Origin check guide, and its endpoint pages
+   * moved with it.
+   *
+   * Nobody had to look "provenance" up to use it, which is why it was renamed —
+   * but the old paths were published, linked from the spec and crawled, and a
+   * marketplace reading them is exactly the reader this section exists for. The
+   * redirects are permanent so the search authority follows.
+   */
+  async redirects() {
+    return [
+      { source: "/api-reference/provenance", destination: "/api-reference/origin", permanent: true },
+      { source: "/api-reference/lookup-provenance", destination: "/api-reference/lookup-origin", permanent: true },
+      { source: "/api-reference/provenance-range", destination: "/api-reference/origin-range", permanent: true },
+    ];
+  },
 };
 
 const withMDX = createMDX({

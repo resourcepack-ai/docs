@@ -69,7 +69,7 @@ export function curlFor(operation: Operation): string {
   const lines = [`curl --request ${operation.method}`, `  --url ${url}`];
 
   // A public endpoint gets no Authorization line. Printing one on the
-  // provenance lookups would contradict the sentence above them saying no key
+  // origin-check lookups would contradict the sentence above them saying no key
   // is needed, and somebody pasting it would send `Bearer $RPAI_KEY`
   // unexpanded and wonder why it changed nothing.
   if (operation.authenticated) lines.push(`  --header 'Authorization: Bearer $RPAI_KEY'`);
