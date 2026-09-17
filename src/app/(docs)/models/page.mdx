@@ -27,30 +27,22 @@ or start from a stone cube and build by hand. **Edit with AI** and
 **Animate with AI** take a model you already have and a sentence about what
 to change.
 
-### Blocky or Detailed
+### What a generated model looks like
 
-Two builders, and the choice is above the prompt box:
+There is one builder, and it makes models in **Minecraft's own look**: a few
+big cubes, every face painted, octagonal wheels — vehicles, furniture, props,
+anything that has to sit in the world and look like it belongs.
 
-| | Looks like | Reach for it for |
-|---|---|---|
-| **Blocky** | Minecraft's own look — a few big cubes, every face painted, octagonal wheels | Vehicles, furniture, props, anything that has to sit in the world and look like it belongs |
-| **Detailed** | More cubes and finer shapes, built up out of small pieces | Characters, creatures, statues, anything whose silhouette is the point |
+The detail goes in the TEXTURE rather than in the geometry. Each face is
+painted at one texel per unit, so a barrel is one cube with a rim painted on it
+and a plank seam is pixels rather than more cubes. A jeep built this way is a
+jeep somebody could have built in Blockbench; the same jeep with three hundred
+cubes in it reads as a model of a jeep sitting in Minecraft rather than as part
+of it.
 
-They are genuinely different engines rather than one with a slider, and the
-difference is where the detail goes. **Blocky puts it in the texture**: it
-paints each face at one texel per unit, so a barrel is one cube with a rim
-painted on it and a plank seam is pixels rather than geometry. **Detailed puts
-it in the geometry**: more cubes, smaller cubes, and a round thing built out of
-rotated slabs.
-
-That is why the advice above is about the subject rather than about quality.
-A jeep in the vanilla style is a jeep somebody could have built in Blockbench;
-the same jeep with three hundred cubes in it reads as a model of a jeep sitting
-in Minecraft rather than as part of it. A dragon is the other way round.
-
-**Editing follows the model.** A model built one way is edited by the builder
-that made it, so a Blocky model's painted faces stay painted and a Detailed
-one's geometry stays geometry — you do not have to remember which you picked.
+**Editing goes through the same builder**, whatever made the model you are
+editing — so an edit to a model you uploaded or imported repaints it into this
+look as well as changing what you asked for.
 
 <Callout type="tip" title="Generation is a starting position">
   A generated model is worth editing, not shipping. The loop that produces good
