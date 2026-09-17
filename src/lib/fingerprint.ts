@@ -2,7 +2,7 @@
  * The canonical content fingerprint, in the browser.
  *
  * This is what "Try it" runs on a file you drop into it, and it is deliberately
- * a real implementation rather than a demo: the whole promise of the provenance
+ * a real implementation rather than a demo: the whole promise of the origin-check
  * API is that anybody can reproduce these hashes from the published rules, and
  * the most convincing way to say so is to do it in the reader's own browser,
  * with the file never leaving their machine.

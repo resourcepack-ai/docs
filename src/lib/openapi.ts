@@ -43,7 +43,7 @@ export interface Operation {
    *
    * OpenAPI spells that as an empty `security` on the operation, overriding the
    * document-level bearer requirement. "Try it" reads this to decide whether to
-   * ask for a key at all — without it the provenance endpoints, which refuse to
+   * ask for a key at all — without it the origin-check endpoints, which refuse to
    * want one, would sit behind a key field nobody can fill.
    */
   authenticated: boolean;

@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
  * indefinitely on a docs site is a worse trade than retyping it tomorrow.
  *
  * **An endpoint with `authenticated: false` gets no key field and no warning
- * about credits**, because neither is true of it. The provenance lookups are
+ * about credits**, because neither is true of it. The origin-check lookups are
  * the only two, and a key input nobody can fill sitting above a public endpoint
  * is worse than useless: it reads as "you need an account for this", which is
  * the opposite of the thing being offered.
@@ -117,7 +117,7 @@ function Row({ field, onChange }: { field: FieldValue; onChange: (value: string)
 /**
  * Endpoints whose input is a content hash, and what a dropped file fills in.
  *
- * A marketplace evaluating the provenance API has a pack in front of them, not
+ * A marketplace evaluating the origin-check API has a pack in front of them, not
  * a list of SHA-256 digests, and telling them to go and write the hasher first
  * puts the whole integration behind an afternoon's work before they can see
  * whether it answers anything. So the panel hashes what they drop.
@@ -135,8 +135,8 @@ function Row({ field, onChange }: { field: FieldValue; onChange: (value: string)
  * something a hash.
  */
 const HASH_INPUT: Record<string, { field: string; multiple: boolean }> = {
-  lookupProvenance: { field: "hashes", multiple: true },
-  provenanceRange: { field: "prefix", multiple: false },
+  lookupOrigin: { field: "hashes", multiple: true },
+  originRange: { field: "prefix", multiple: false },
 };
 
 function HashDropZone({
