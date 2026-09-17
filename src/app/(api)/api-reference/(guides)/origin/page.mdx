@@ -132,11 +132,10 @@ The same rules in three languages. Each one turns a file into the 64 hexadecimal
 characters the endpoints take, and each is worth checking against **Try it**
 above on a file you generated with us before you trust it on a queue.
 
-### Node
-
-No dependencies beyond a PNG decoder:
+<CodeTabs labels={["Node", "Java", "Python"]}>
 
 ```js
+// Needs a PNG decoder; everything else is the standard library.
 import { createHash } from "node:crypto";
 import { PNG } from "pngjs";
 
@@ -181,13 +180,8 @@ export function fingerprint(fileName, bytes) {
 }
 ```
 
-### Java
-
-Gson for the JSON, `ImageIO` for the PNG. `disableHtmlEscaping` is not optional
-— Gson escapes `<`, `>` and `&` by default, and those escapes change the bytes
-being hashed:
-
 ```java
+// Needs Gson. ImageIO and the rest are the JDK.
 import com.google.gson.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -198,6 +192,8 @@ import java.util.*;
 import javax.imageio.ImageIO;
 
 public final class Fingerprint {
+  // disableHtmlEscaping is not optional: Gson escapes <, > and & by default,
+  // and those escapes change the bytes being hashed.
   private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
   public static String of(String fileName, byte[] bytes) throws Exception {
@@ -268,11 +264,8 @@ public final class Fingerprint {
 }
 ```
 
-### Python
-
-Pillow for the PNG, the standard library for everything else:
-
 ```python
+# Needs Pillow; everything else is the standard library.
 import hashlib
 import io
 import json
@@ -323,6 +316,8 @@ def fingerprint(file_name, data):
 
     return hashlib.sha256(b"rpai/v1/bytes\n" + data).hexdigest()
 ```
+
+</CodeTabs>
 
 Then walk the uploaded pack and ask about what you found:
 
