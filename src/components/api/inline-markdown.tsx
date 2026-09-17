@@ -50,11 +50,11 @@ export function InlineMarkdown({ text }: { text: string }) {
       const external = /^[a-z]+:/i.test(href);
       nodes.push(
         external ? (
-          <a key={key++} href={href} className="text-link hover:underline" target="_blank" rel="noreferrer">
+          <a key={key++} href={href} className="text-primary-ink decoration-primary/40 hover:decoration-primary underline underline-offset-[3px] transition-colors" target="_blank" rel="noreferrer">
             {label}
           </a>
         ) : (
-          <Link key={key++} href={href} className="text-link hover:underline">
+          <Link key={key++} href={href} className="text-primary-ink decoration-primary/40 hover:decoration-primary underline underline-offset-[3px] transition-colors">
             {label}
           </Link>
         ),

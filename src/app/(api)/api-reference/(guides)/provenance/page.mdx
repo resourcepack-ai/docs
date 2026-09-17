@@ -10,13 +10,9 @@ out of ResourcePack AI?**
 
 They exist for marketplaces. If you require AI-generated work to be labelled,
 or you don't accept it at all, you currently have no way to tell by looking —
-and that gets harder as generation gets better, not easier. Our terms already
-forbid reselling generated packs. This is how that stops being a promise we
-make to our users and becomes something you can check for yourself.
-
-There is no key, no signup and no account. This protects your creators rather
-than our business, so putting a credential in front of it would be charging you
-to help.
+and that gets harder as generation gets better, not easier. We don't support
+reselling generated packs. This is how that stops being a promise we make to
+our users and becomes something you can check for yourself.
 
 ## What an answer means
 
@@ -30,9 +26,7 @@ it isn't.
 
 **`no_record` means only "not in our registry".** It is not evidence that a
 human made the file. It could be somebody's own work, another generator's
-output, or ours after an edit. Every response repeats this in a `note` field
-for the same reason it's here in bold: the miss is the answer most integrations
-will act on, and it's the one that's easiest to act on wrongly.
+output, or ours after an edit.
 
 ## Why there are no false positives
 
@@ -107,10 +101,7 @@ Hash the bytes unchanged:
 "rpai/v1/bytes\n" + <the file's bytes>
 ```
 
-Sounds fall here today, which is a real limitation stated plainly: a re-encoded
-`.ogg` will miss. Decoding to PCM would survive a container rewrite but not the
-lossy re-encode that usually comes with one, so it would buy a weaker promise
-at a higher cost.
+We don't support sounds today.
 
 <Callout type="note" title="The prefixes are hashed, not labels">
   `rpai/v1/png` and friends are domain separation, and they are part of the
@@ -135,9 +126,15 @@ the registry would have stored.
 It's the fastest way to sanity-check the format before writing a line: hash
 something you generated with us, and confirm it comes back `generated`.
 
-## A reference implementation
+## Reference implementations
 
-Node, no dependencies beyond a PNG decoder:
+The same rules in three languages. Each one turns a file into the 64 hexadecimal
+characters the endpoints take, and each is worth checking against **Try it**
+above on a file you generated with us before you trust it on a queue.
+
+### Node
+
+No dependencies beyond a PNG decoder:
 
 ```js
 import { createHash } from "node:crypto";
@@ -184,6 +181,149 @@ export function fingerprint(fileName, bytes) {
 }
 ```
 
+### Java
+
+Gson for the JSON, `ImageIO` for the PNG. `disableHtmlEscaping` is not optional
+— Gson escapes `<`, `>` and `&` by default, and those escapes change the bytes
+being hashed:
+
+```java
+import com.google.gson.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.*;
+import javax.imageio.ImageIO;
+
+public final class Fingerprint {
+  private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
+
+  public static String of(String fileName, byte[] bytes) throws Exception {
+    String name = fileName.toLowerCase(Locale.ROOT);
+    MessageDigest sha = MessageDigest.getInstance("SHA-256");
+
+    if (name.endsWith(".png")) {
+      BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
+      int w = image.getWidth(), h = image.getHeight();
+      byte[] pixels = new byte[w * h * 4];
+      int i = 0;
+      for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+          int argb = image.getRGB(x, y); // non-premultiplied ARGB
+          int a = (argb >>> 24) & 0xff;
+          if (a == 0) { i += 4; continue; } // fully transparent, four zero bytes
+          pixels[i++] = (byte) ((argb >> 16) & 0xff);
+          pixels[i++] = (byte) ((argb >> 8) & 0xff);
+          pixels[i++] = (byte) (argb & 0xff);
+          pixels[i++] = (byte) a;
+        }
+      }
+      sha.update("rpai/v1/png\n".getBytes(StandardCharsets.UTF_8));
+      sha.update((w + "x" + h + "\n").getBytes(StandardCharsets.UTF_8));
+      sha.update(pixels);
+    } else if (name.endsWith(".json")) {
+      JsonElement parsed = JsonParser.parseString(new String(bytes, StandardCharsets.UTF_8));
+      sha.update("rpai/v1/json\n".getBytes(StandardCharsets.UTF_8));
+      sha.update(canonical(parsed).getBytes(StandardCharsets.UTF_8));
+    } else {
+      sha.update("rpai/v1/bytes\n".getBytes(StandardCharsets.UTF_8));
+      sha.update(bytes);
+    }
+
+    return HexFormat.of().formatHex(sha.digest());
+  }
+
+  private static String canonical(JsonElement value) {
+    if (value == null || value.isJsonNull()) return "null";
+
+    if (value.isJsonPrimitive()) {
+      JsonPrimitive p = value.getAsJsonPrimitive();
+      if (p.isBoolean()) return p.getAsBoolean() ? "true" : "false";
+      if (p.isNumber()) {
+        double d = p.getAsDouble();
+        if (!Double.isFinite(d)) return "null";
+        double r = Math.floor(d * 1e6 + 0.5) / 1e6; // six decimal places, ties up
+        if (r == 0) return "0"; // never "-0"
+        return BigDecimal.valueOf(r).stripTrailingZeros().toPlainString();
+      }
+      return GSON.toJson(p.getAsString());
+    }
+
+    if (value.isJsonArray()) {
+      StringJoiner out = new StringJoiner(",", "[", "]");
+      for (JsonElement item : value.getAsJsonArray()) out.add(canonical(item));
+      return out.toString();
+    }
+
+    List<String> keys = new ArrayList<>(value.getAsJsonObject().keySet());
+    Collections.sort(keys); // code-unit order
+    StringJoiner out = new StringJoiner(",", "{", "}");
+    for (String key : keys) {
+      out.add(GSON.toJson(key) + ":" + canonical(value.getAsJsonObject().get(key)));
+    }
+    return out.toString();
+  }
+}
+```
+
+### Python
+
+Pillow for the PNG, the standard library for everything else:
+
+```python
+import hashlib
+import io
+import json
+import math
+
+from PIL import Image
+
+
+def canonical_json(value):
+    if value is None:
+        return "null"
+    if isinstance(value, bool):  # before int — bool is one in Python
+        return "true" if value else "false"
+    if isinstance(value, (int, float)):
+        if isinstance(value, float) and not math.isfinite(value):
+            return "null"
+        r = math.floor(value * 1e6 + 0.5) / 1e6  # six decimal places, ties up
+        return str(int(r)) if r == int(r) else repr(r)
+    if isinstance(value, str):
+        return json.dumps(value, ensure_ascii=False)
+    if isinstance(value, list):
+        return "[" + ",".join(canonical_json(v) for v in value) + "]"
+    return (
+        "{"
+        + ",".join(
+            f"{json.dumps(k, ensure_ascii=False)}:{canonical_json(v)}"
+            for k, v in sorted(value.items())
+        )
+        + "}"
+    )
+
+
+def fingerprint(file_name, data):
+    name = file_name.lower()
+
+    if name.endswith(".png"):
+        image = Image.open(io.BytesIO(data)).convert("RGBA")
+        pixels = bytearray(image.tobytes())
+        for i in range(3, len(pixels), 4):
+            if pixels[i] == 0:  # fully transparent, four zero bytes
+                pixels[i - 3 : i + 1] = b"\x00\x00\x00\x00"
+        body = f"{image.width}x{image.height}\n".encode() + bytes(pixels)
+        return hashlib.sha256(b"rpai/v1/png\n" + body).hexdigest()
+
+    if name.endswith(".json"):
+        body = canonical_json(json.loads(data.decode("utf-8"))).encode()
+        return hashlib.sha256(b"rpai/v1/json\n" + body).hexdigest()
+
+    return hashlib.sha256(b"rpai/v1/bytes\n" + data).hexdigest()
+```
+
 Then walk the uploaded pack and ask about what you found:
 
 ```bash
@@ -203,14 +343,13 @@ curl -X POST https://api.resourcepack.ai/v1/provenance/lookup \
       "firstSeen": "2026-08-14T10:22:06.000Z"
     }
   ],
-  "matched": 1,
-  "note": "A `no_record` verdict means this content is not in our registry. It is not evidence that a human made it."
+  "matched": 1
 }
 ```
 
 Send up to **256 hashes per call**, so a pack of any ordinary size is a handful
-of requests. Every hash comes back with a result in the order you sent it, so
-you can pair answers to files without matching on the hash yourself.
+of requests. Each returns a result in the order you sent it, so you
+can pair answers to files without matching on the hash yourself.
 
 ## If you'd rather not tell us what you asked
 
@@ -233,19 +372,14 @@ curl https://api.resourcepack.ai/v1/provenance/range/9f2c1
       "kind": "texture",
       "firstSeen": "2026-08-14T10:22:06.000Z"
     }
-  ],
-  "note": "A hash absent from this bucket is not in our registry. That is not evidence that a human made the file."
+  ]
 }
 ```
 
-Five characters splits the space just over a million ways: small enough that a
-bucket is a short response, large enough that what you were really asking about
-is hidden among everything else sharing those characters. We learn that
-somebody asked about one of a million buckets and never which file it was.
-
-It's the same shape as the [Have I Been Pwned range
-API](https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange), so a
-client you have written before will mostly work.
+Five characters is small enough that a bucket is a short response, and large
+enough that what you were really asking about is hidden among everything else
+sharing those characters. We learn that somebody asked about one of a million
+buckets and never which file it was.
 
 ## Rate limits and caching
 
@@ -262,7 +396,7 @@ that a review queue re-checking the same upload doesn't pay for it twice.
 ## What the registry holds
 
 A hash, which of the three forms produced it, what sort of asset it was, and
-when it was first seen. That is the whole table.
+when it was first seen.
 
 **There is no pack, no user, no prompt and no asset id in it**, and that's a
 design constraint rather than an omission: the endpoint reading it is
