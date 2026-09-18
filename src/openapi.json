@@ -1291,6 +1291,11 @@
                     "description": "How closely to follow the reference. Clamped to this range rather than rejected.",
                     "minimum": 0.05,
                     "maximum": 0.95
+                  },
+                  "useStyleGuide": {
+                    "type": "boolean",
+                    "description": "Follow the pack's style guide — its palette, its notes and its reference pictures. Defaults to true, so a pack with a style guide produces assets that match it without this field. Send false for one asset that should deliberately not match. A pack with no style guide, or one switched off, ignores this either way.",
+                    "default": true
                   }
                 },
                 "required": [
@@ -1449,6 +1454,11 @@
                   "referenceId": {
                     "type": "string",
                     "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                  },
+                  "useStyleGuide": {
+                    "type": "boolean",
+                    "description": "Follow the pack's style guide — its palette, its notes and its reference pictures. Defaults to true, so a pack with a style guide produces assets that match it without this field. Send false for one asset that should deliberately not match. A pack with no style guide, or one switched off, ignores this either way.",
+                    "default": true
                   }
                 },
                 "required": [
@@ -1617,6 +1627,11 @@
                     "description": "How closely to follow the reference. Clamped to this range rather than rejected.",
                     "minimum": 0.05,
                     "maximum": 0.95
+                  },
+                  "useStyleGuide": {
+                    "type": "boolean",
+                    "description": "Follow the pack's style guide — its palette, its notes and its reference pictures. Defaults to true, so a pack with a style guide produces assets that match it without this field. Send false for one asset that should deliberately not match. A pack with no style guide, or one switched off, ignores this either way.",
+                    "default": true
                   }
                 },
                 "required": [
@@ -1973,6 +1988,11 @@
                     "description": "How closely to follow the reference. Clamped to this range rather than rejected.",
                     "minimum": 0.05,
                     "maximum": 0.95
+                  },
+                  "useStyleGuide": {
+                    "type": "boolean",
+                    "description": "Follow the pack's style guide — its palette, its notes and its reference pictures. Defaults to true, so a pack with a style guide produces assets that match it without this field. Send false for one asset that should deliberately not match. A pack with no style guide, or one switched off, ignores this either way.",
+                    "default": true
                   }
                 },
                 "required": [
@@ -2165,6 +2185,11 @@
                     "description": "How closely to follow the reference. Clamped to this range rather than rejected.",
                     "minimum": 0.05,
                     "maximum": 0.95
+                  },
+                  "useStyleGuide": {
+                    "type": "boolean",
+                    "description": "Follow the pack's style guide — its palette, its notes and its reference pictures. Defaults to true, so a pack with a style guide produces assets that match it without this field. Send false for one asset that should deliberately not match. A pack with no style guide, or one switched off, ignores this either way.",
+                    "default": true
                   }
                 },
                 "required": [
@@ -2325,6 +2350,11 @@
                     "description": "How closely to follow the reference. Clamped to this range rather than rejected.",
                     "minimum": 0.05,
                     "maximum": 0.95
+                  },
+                  "useStyleGuide": {
+                    "type": "boolean",
+                    "description": "Follow the pack's style guide — its palette, its notes and its reference pictures. Defaults to true, so a pack with a style guide produces assets that match it without this field. Send false for one asset that should deliberately not match. A pack with no style guide, or one switched off, ignores this either way.",
+                    "default": true
                   }
                 },
                 "required": [
