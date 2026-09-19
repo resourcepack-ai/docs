@@ -152,6 +152,23 @@ export const nav: NavGroup[] = [
         keywords: ["gui", "screen", "inventory", "menu", "chest", "draw-only"],
       },
       {
+        title: "Dialogs",
+        href: "/dialogs",
+        description: "Minecraft 1.21.6's dialog screens, drawn as pack art, with buttons that run commands.",
+        keywords: [
+          "dialog",
+          "dialogue",
+          "menu",
+          "button",
+          "1.21.6",
+          "notice",
+          "confirmation",
+          "form",
+          "input",
+          "prompt",
+        ],
+      },
+      {
         title: "HUD",
         href: "/hud",
         description: "The overlay drawn over the world — hearts, hunger, the hotbar, the crosshair.",

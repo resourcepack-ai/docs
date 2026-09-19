@@ -1,0 +1,121 @@
+export const metadata = {
+  title: "Dialogs",
+  description:
+    "Minecraft 1.21.6's dialog screens, drawn as pack art: how the picture and the buttons line up, what each button can run, and what the server needs to open one.",
+};
+
+# Dialogs
+
+A dialog is the screen a server opens on a player — added in Minecraft
+**1.21.6**. It is not a container: it has no slots, and its buttons are real
+buttons that run real commands.
+
+What makes it worth drawing is that a dialog is made of **text**. Its title,
+the lines in its body and every button's label are text components, and a text
+component can be a font glyph. So a pack can put a whole 256×256 picture in the
+body and a piece of drawn artwork in each button's face, and what comes back is
+a screen that looks nothing like Minecraft with buttons that still work.
+
+<Callout type="warning" title="A dialog needs a plugin, and 1.21.6">
+  The picture is in your resource pack. The dialog itself is not — it is
+  datapack data, which a resource pack cannot carry. [RP
+  Engine](/rp-engine) is what writes it on the server and opens it. On
+  anything older than 1.21.6 the game has no dialog screen at all; a
+  [GUI](/guis) is the older way to do the same job and works everywhere.
+</Callout>
+
+## Drawing one
+
+A dialog is edited in the same editor a GUI is, with one difference: instead of
+slot guides it has **button guides**, and those are the whole layout.
+
+Each dashed box is where the game will draw one of the dialog's buttons. Paint
+inside a box and that artwork becomes the button's face; leave it empty and the
+button keeps vanilla's grey widget and your words. Everything outside the boxes
+is the panel — the frame, the heading, whatever you want behind it.
+
+The boxes move when the dialog does. Add a button, change one's width, switch
+from two columns to three, and the guides move to where the game will put them.
+So set the buttons up first and paint into them second.
+
+## What a button can do
+
+One thing each, chosen in the Dialog panel beside the canvas:
+
+| Action | What happens |
+| --- | --- |
+| **Run command** | The player runs it, with their own permissions. |
+| **Suggest command** | It goes into their chat box unsent. |
+| **Open link** | The client asks before following it. |
+| **Copy text** | Onto their clipboard. |
+| **Open another dialog** | By id — `studio:<asset>` for one of yours. |
+| **Nothing** | Which, with "After a press: Close", is what an Ok button is. |
+
+A command runs **as the player**, so it obeys their permissions. A button that
+needs more than they have wants a command the server has set up for it, not a
+higher-privileged button — there is no such thing.
+
+## Inputs
+
+A dialog can ask for something: a text box, a checkbox, a list to pick from or
+a slider. Each has a **key**, and any button's command can write `$(key)` and
+get what the player put there.
+
+```
+tp @s $(destination)
+```
+
+## How many buttons is what kind of dialog
+
+Minecraft has three shapes and they differ in nothing but the count, so there
+is nothing to choose:
+
+- **one** button is a notice
+- **two** are a yes/no
+- **three or more** are a grid, laid out in the column count you set
+
+## Generating one
+
+Describe the screen and the generator decides its size, what it is made of,
+what it says and what the buttons are called. It draws **one** image — the
+panel's surface — and composes the frame, the heading, the words and every
+button face out of that one palette. Tick **Don't draw a texture** and it draws
+none at all, which is instant, free, and a perfectly good slate-grey dialog.
+
+<Callout title="It names the buttons; you wire them">
+  Nothing invents a command. A generated dialog arrives with its buttons named
+  and their actions empty, because a command is a thing with consequences on
+  your server.
+</Callout>
+
+## Getting it onto a server
+
+Pair the pack with a server running RP Engine and push it, the same way you
+[test anything else](/testing/plugin). Then:
+
+```
+/rp dialogs                     # what the server has
+/rp dialog studio:quest-board   # open one
+```
+
+The panel in the editor has the exact command for the dialog you are looking
+at.
+
+<Callout type="warning" title="A new dialog needs one reload">
+  Dialogs are datapack data, and a server reads its datapacks before its
+  plugins start. So a dialog that has just arrived opens after the next
+  `/minecraft:reload` or restart — RP Engine says so in the log and in
+  `/rp dialogs` rather than letting the command quietly do nothing. Nothing
+  reloads on its own: a data reload rebuilds every recipe on the server.
+</Callout>
+
+## If the picture sits a few pixels off
+
+Where the game puts a dialog's body relative to its buttons is layout inside
+the client, and it is not something a pack can read — so the placement here is
+worked out rather than looked up, and a Minecraft release that moves a padding
+moves every drawn dialog with it.
+
+The **Nudge** fields in the Dialog panel are the fix. Type the offset, save,
+look again. It is stored on that dialog, so it survives everything else you do
+to it.
