@@ -24,14 +24,12 @@ relative to it.
 ## Get a key
 
 <Steps>
-  <Step title="Open the Developers page">
-    [studio.resourcepack.ai/developers](https://studio.resourcepack.ai/developers),
-    then find the **API keys** card. The **MCP keys** card under it is for
-    connecting an AI agent (see [MCP](/api-reference/mcp)); the two kinds are
-    separate, and each only works on its own surface. Neither is Bring Your Own
-    Key, on your account page, which is a key *you* bring so model generations
-    bill to your OpenAI account. These are keys *we* give you so your code can
-    call us.
+  <Step title="Open your account page">
+    [studio.resourcepack.ai/account](https://studio.resourcepack.ai/account),
+    then find the **API keys** card. It sits just under Bring Your Own Key —
+    which is a different thing entirely, and worth not confusing: BYOK is a key
+    *you* bring so model generations bill to your OpenAI account. This is a key
+    *we* give you so your code can call us.
   </Step>
   <Step title="Name it and create it">
     The name is only for telling keys apart later, so use the thing it's for —
@@ -44,8 +42,7 @@ relative to it.
   </Step>
 </Steps>
 
-API keys look like `rpai_` followed by 43 random characters (MCP keys like
-`rpai_mcp_` followed by the same). The prefix is there so
+Keys look like `rpai_` followed by 43 random characters. The prefix is there so
 a key that leaks into a commit or a log is easy to search for.
 
 ## Authenticate

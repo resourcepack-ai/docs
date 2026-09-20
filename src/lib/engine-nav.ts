@@ -320,18 +320,6 @@ export const engineNav: EngineGroup[] = [
         keywords: ["modelengine", "model engine", "blueprint", "blueprints", "bbmodel", "meg",
           "migrate", "migration", "rig", "bones"],
       },
-      {
-        title: "Moving from Nexo",
-        href: "/rp-engine/nexo",
-        description: "Drop current Nexo item YAML in. What becomes an RP Engine item, and what needs re-authoring.",
-        keywords: ["nexo", "migrate", "migration", "items", "pack", "custom model data"],
-      },
-      {
-        title: "Moving from Oraxen",
-        href: "/rp-engine/oraxen",
-        description: "Drop current Oraxen item YAML in. What becomes an RP Engine item, and what needs re-authoring.",
-        keywords: ["oraxen", "migrate", "migration", "items", "pack", "custom model data"],
-      },
     ],
   },
   {
