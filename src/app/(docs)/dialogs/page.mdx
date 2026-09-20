@@ -101,15 +101,19 @@ Pair the pack with a server running RP Engine and push it, the same way you
 The panel in the editor has the exact command for the dialog you are looking
 at.
 
-<Callout type="warning" title="A new dialog needs a restart">
-  Dialogs are registry data, and a server reads its datapacks when it loads the
-  world — before its plugins start. So a dialog that has just arrived opens
-  after the next **restart**, and RP Engine says so in the log and in
-  `/rp dialogs` rather than letting the command quietly do nothing.
+<Callout title="A pushed dialog opens straight away">
+  No restart, and nothing to enable. RP Engine sends the whole dialog inside the
+  command that opens it, so a dialog you pushed a moment ago is ready the moment
+  the push lands. Push, open.
 
-  `/minecraft:reload` is not enough, however many times you run it: a reload
-  rebuilds recipes, advancements, loot and tags, and the dialog registry is
-  built with the world instead. Push, restart, open.
+  There is one thing a restart still adds. RP Engine also writes your dialogs
+  into a datapack of its own, and after the next restart each one is a real
+  `namespace:id` — which is what lets you name it from your own datapack, from a
+  command block, or from a `minecraft:show_dialog` click event you wrote by
+  hand. That half is registry data, and registry data is read when the server
+  loads its world. `/minecraft:reload` does not do it: a reload rebuilds
+  recipes, advancements, loot and tags, and this registry is built with the
+  world instead.
 </Callout>
 
 ## If the picture sits a few pixels off
