@@ -1,0 +1,55 @@
+export const metadata = {
+  title: "Moving from Oraxen",
+  description: "Load current Oraxen item YAML in RP Engine, and keep the assets it names.",
+};
+
+# Moving from Oraxen
+
+RP Engine reads Oraxen's current item YAML directly. Copy the `.yml` files from
+`plugins/Oraxen/items/<your-pack>/` into one RP Engine content pack, then copy
+the **contents** of that pack's `assets/<your-pack>/` folder into `assets/`.
+
+```
+plugins/RPEngine/content/
+  my_pack/
+    items.yml                 ← from Oraxen/items/<your-pack>/
+    assets/                   ← contents of Oraxen's assets/<your-pack>/
+      models/item/
+      textures/item/
+```
+
+No export or rewrite step is needed, and a `pack.yml` is optional. The loader
+recognises the capital `Pack:` block in Oraxen item YAML and turns each item
+into the same registry entry a hand-authored RP Engine item would create.
+
+## What comes across
+
+| Oraxen | RP Engine |
+| --- | --- |
+| item id | an [item](/rp-engine/items) under the content folder's namespace |
+| `material` | `material` |
+| `itemname`, `displayname` or `display_name` | `name` |
+| `Pack.model` | `model` |
+| `Pack.texture` | `texture` |
+
+The art is copied to the regular RP Engine `assets/` folder. RP Engine then
+generates the item-model wiring itself, so Oraxen CustomModelData numbers do
+not need to match and cannot collide.
+
+## What does not
+
+Oraxen's `Mechanics` block is intentionally reported, not guessed at. The
+item remains usable, while the startup report names each mechanic that must be
+rewritten: [blocks](/rp-engine/blocks) for custom blocks,
+[`place:`](/rp-engine/models) for furniture, and [actions](/rp-engine/actions)
+for item behaviour.
+
+Glyphs, HUDs and other Oraxen font configuration are separate formats; migrate
+them using RP Engine's [icons](/rp-engine/icons) and [HUD](/rp-engine/hud)
+formats.
+
+<Callout type="warning" title="Placed Oraxen blocks are not RP Engine blocks">
+  Oraxen's world state allocation belongs to Oraxen. A content migration gives
+  you its item definitions and assets; existing placed blocks need rebuilding
+  or a dedicated world migration.
+</Callout>
