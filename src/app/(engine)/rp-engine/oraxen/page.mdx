@@ -32,21 +32,33 @@ into the same registry entry a hand-authored RP Engine item would create.
 | `Pack.model` | `model` |
 | `Pack.texture` | `texture` |
 
+## Furniture and blocks
+
+Oraxen furniture becomes an RP Engine [`place:`](/rp-engine/models) item. A
+barrier hitbox becomes `solid: true`, a seat becomes `seat:`, and an Oraxen
+item drop becomes `drop:`. Display transforms, billboarding and culling are
+renderer-specific settings and do not transfer.
+
+`Mechanics.block` becomes an RP Engine [custom block](/rp-engine/blocks), not
+a second item with the same ID. Its model, mushroom/note-block base, hardness,
+preferred tool and placement sound transfer. RP Engine allocates its own block
+state and keeps that allocation stable.
+
 The art is copied to the regular RP Engine `assets/` folder. RP Engine then
 generates the item-model wiring itself, so Oraxen CustomModelData numbers do
 not need to match and cannot collide.
 
 ## What does not
 
-Oraxen's `Mechanics` block is intentionally reported, not guessed at. The
-item remains usable, while the startup report names each mechanic that must be
-rewritten: [blocks](/rp-engine/blocks) for custom blocks,
-[`place:`](/rp-engine/models) for furniture, and [actions](/rp-engine/actions)
-for item behaviour.
+The remaining Oraxen `Mechanics` are intentionally reported, not guessed at.
+The item or block remains usable, while the startup report names each mechanic
+that needs re-authoring, including click/script behaviour through
+[actions](/rp-engine/actions).
 
-Glyphs, HUDs and other Oraxen font configuration are separate formats; migrate
-them using RP Engine's [icons](/rp-engine/icons) and [HUD](/rp-engine/hud)
-formats.
+Recipes, glyphs, HUDs, storage containers, connected furniture and text
+entities are separate or stateful formats and are not imported yet. Migrate
+glyphs and HUDs using RP Engine's [icons](/rp-engine/icons) and
+[HUD](/rp-engine/hud) formats.
 
 <Callout type="warning" title="Placed Oraxen blocks are not RP Engine blocks">
   Oraxen's world state allocation belongs to Oraxen. A content migration gives
