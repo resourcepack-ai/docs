@@ -32,22 +32,35 @@ the capital `Pack:` block that Nexo uses; its own item format uses lowercase
 | `itemname` | `name` |
 | `Pack.model` | `model` |
 | `Pack.texture` | `texture` |
+| `Components.item_model` | `model` (for modern Nexo items that do not use `Pack:`) |
 
 An item model such as `my_pack:item/ruby` becomes RP Engine's `item/ruby` model
 source. Its texture is copied with the assets, so the engine builds its own
 item definition and does not inherit Nexo's CustomModelData allocation.
 
+## Furniture and blocks
+
+Nexo furniture becomes an RP Engine [`place:`](/rp-engine/models) item. Its
+barrier hitbox becomes `solid: true`, its seat height becomes `seat:`, and a
+Nexo/Oraxen item drop becomes an RP Engine `drop:`. The two plugins' display
+transform, billboarding and culling settings are renderer settings, so they do
+not transfer.
+
+`Mechanics.custom_block` becomes an RP Engine [custom block](/rp-engine/blocks)
+instead of a second item with the same ID. Its model, base family, hardness,
+preferred tool and placement sound transfer. Nexo's allocated variation number
+does not: RP Engine assigns and persists its own number.
+
 ## What does not
 
-`Mechanics` are Nexo plugin behaviour, not an item format shared by the two
-plugins. RP Engine loads the ordinary item and warns with its id and each
-mechanic it skipped. Re-author a custom block with [blocks](/rp-engine/blocks),
-furniture with [`place:`](/rp-engine/models), and actions with
+The remaining `Mechanics` are Nexo plugin behaviour rather than a shared item
+format. RP Engine loads the item or block and warns with its id and each
+mechanic it skipped. Re-author click/script behaviour with
 [actions](/rp-engine/actions).
 
-Font glyphs, HUDs and other Nexo font configuration are not item YAML and are
-not imported here. Move those through RP Engine's [icons](/rp-engine/icons) and
-[HUD](/rp-engine/hud) formats instead.
+Recipes, font glyphs, HUDs, storage containers, connected furniture and text
+entities are not imported yet. Move glyphs and HUDs through RP Engine's
+[icons](/rp-engine/icons) and [HUD](/rp-engine/hud) formats instead.
 
 <Callout type="warning" title="A Nexo world does not migrate">
   Existing Nexo blocks stay allocated to Nexo's own state scheme. This imports
