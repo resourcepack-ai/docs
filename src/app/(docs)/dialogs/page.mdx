@@ -65,22 +65,26 @@ get what the player put there.
 tp @s $(destination)
 ```
 
-## How many buttons is what kind of dialog
+## Layout and editing
 
-Minecraft has three shapes and they differ in nothing but the count, so there
-is nothing to choose:
+All drawn dialogs use the column count you choose, including one- and
+two-button screens. Minecraft's notice and confirmation types put buttons in a
+separate footer, so drawn dialogs use its content grid instead.
 
-- **one** button is a notice
-- **two** are a yes/no
-- **three or more** are a grid, laid out in the column count you set
+Use **Add button** in the Dialog panel, then select a button to edit its face,
+label, tooltip and action. Layout, inputs and behaviour have separate expandable
+sections. Input guides show where native controls will appear; they are not
+painted into the exported artwork. Save writes artwork and actions together.
 
 ## Generating one
 
 Describe the screen and the generator decides its size, what it is made of,
-what it says and what the buttons are called. It draws **one** image — the
-panel's surface — and composes the frame, the heading, the words and every
-button face out of that one palette. Tick **Don't draw a texture** and it draws
-none at all, which is instant, free, and a perfectly good slate-grey dialog.
+what it says and what the buttons are called. A drawn design uses **one** image
+for a material or a focal illustration, with distinct button colours and
+pixel-font text. Headings and body lines arrive as editable components, so you
+can change the wording without painting over it. Long body lines wrap to the
+panel width. Choose **Flat** for a composed panel or **None** for no backdrop;
+neither asks the image model to draw anything.
 
 <Callout title="It names the buttons; you wire them">
   Nothing invents a command. A generated dialog arrives with its buttons named
@@ -102,9 +106,11 @@ The panel in the editor has the exact command for the dialog you are looking
 at.
 
 <Callout title="A pushed dialog opens straight away">
-  No restart, and nothing to enable. RP Engine sends the whole dialog inside the
-  command that opens it, so a dialog you pushed a moment ago is ready the moment
-  the push lands. Push, open.
+  No restart for ordinary opening. On supported Mojang-mapped servers, RP Engine
+  decodes the JSON with the server's own codec and sends the dialog directly,
+  including multiline text. Other servers use the inline command path, with a
+  registered datapack entry as a last fallback for content that path cannot carry.
+  Push the updated resource pack before opening changed artwork.
 
   There is one thing a restart still adds. RP Engine also writes your dialogs
   into a datapack of its own, and after the next restart each one is a real
