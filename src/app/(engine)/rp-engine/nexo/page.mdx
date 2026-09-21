@@ -1,0 +1,55 @@
+export const metadata = {
+  title: "Moving from Nexo",
+  description: "Load current Nexo item YAML in RP Engine, and keep the assets it names.",
+};
+
+# Moving from Nexo
+
+RP Engine reads Nexo's current item YAML directly. Copy the `.yml` files from
+`plugins/Nexo/items/<your-pack>/` into one RP Engine content pack, then copy
+the **contents** of that pack's `assets/<your-pack>/` folder alongside them as
+`assets/`.
+
+```
+plugins/RPEngine/content/
+  my_pack/
+    items.yml                 ← from Nexo/items/<your-pack>/
+    assets/                   ← contents of Nexo's assets/<your-pack>/
+      models/item/
+      textures/item/
+```
+
+There is no conversion command and no `pack.yml` required. RP Engine recognises
+the capital `Pack:` block that Nexo uses; its own item format uses lowercase
+`model:` and `texture:`, so the two cannot be confused.
+
+## What comes across
+
+| Nexo | RP Engine |
+| --- | --- |
+| item id | an [item](/rp-engine/items) under the content folder's namespace |
+| `material` | `material` |
+| `itemname` | `name` |
+| `Pack.model` | `model` |
+| `Pack.texture` | `texture` |
+
+An item model such as `my_pack:item/ruby` becomes RP Engine's `item/ruby` model
+source. Its texture is copied with the assets, so the engine builds its own
+item definition and does not inherit Nexo's CustomModelData allocation.
+
+## What does not
+
+`Mechanics` are Nexo plugin behaviour, not an item format shared by the two
+plugins. RP Engine loads the ordinary item and warns with its id and each
+mechanic it skipped. Re-author a custom block with [blocks](/rp-engine/blocks),
+furniture with [`place:`](/rp-engine/models), and actions with
+[actions](/rp-engine/actions).
+
+Font glyphs, HUDs and other Nexo font configuration are not item YAML and are
+not imported here. Move those through RP Engine's [icons](/rp-engine/icons) and
+[HUD](/rp-engine/hud) formats instead.
+
+<Callout type="warning" title="A Nexo world does not migrate">
+  Existing Nexo blocks stay allocated to Nexo's own state scheme. This imports
+  the item definitions and art, not blocks already placed in a world.
+</Callout>
