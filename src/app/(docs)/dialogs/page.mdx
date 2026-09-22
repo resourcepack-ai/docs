@@ -38,9 +38,10 @@ The boxes move when the dialog does. Add a button, change one's width, switch
 from two columns to three, and the guides move to where the game will put them.
 So set the buttons up first and paint into them second.
 
-Generated button faces leave six pixels beneath their artwork so the last row
-does not cover the panel's bottom frame. The dashed guides still show the full
-native click areas. Restyling a button preserves this clearance.
+Generated button faces have equal spacing above and below, with a two-pixel
+minimum inset to keep the panel edge visible. The dashed guides show the full
+native click areas. The spacing control changes the artwork inside those areas;
+it does not move Minecraft's buttons.
 
 ## What a button can do
 
@@ -77,8 +78,16 @@ separate footer, so drawn dialogs use its content grid instead.
 
 Use **Add button** in the Dialog panel, then select a button to edit its face,
 label, tooltip and action. Layout, inputs and behaviour have separate expandable
-sections. Input guides show where native controls will appear; they are not
-painted into the exported artwork. Save writes artwork and actions together.
+sections. Input previews show the separate label and field for text inputs,
+the checkbox and its label, and the initial selection or slider value at the
+game's pixel scale. They are not painted into the exported artwork. Other
+resource packs can change the native controls' appearance. Save writes artwork
+and actions together. **Sync saves pending edits first** and stops if saving
+fails, so the game receives the layout you are looking at.
+
+After an editor update, reopening a dialog can refresh its generated button
+components. Save and sync it to send the updated artwork and layout to Minecraft;
+an already downloaded resource pack keeps its previous pixels and font metrics.
 
 ## Generating one
 
