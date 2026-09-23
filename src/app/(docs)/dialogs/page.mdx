@@ -38,6 +38,10 @@ The boxes move when the dialog does. Add a button, change one's width, switch
 from two columns to three, and the guides move to where the game will put them.
 So set the buttons up first and paint into them second.
 
+The Text tool and free-text components offer 1×, 2×, 3× and 4× lettering.
+Larger words need more room on the 256×256 sheet, so check their placement
+before syncing.
+
 Generated button faces have equal spacing above and below, with a two-pixel
 minimum inset to keep the panel edge visible. The dashed guides show the full
 native click areas. The spacing control changes the artwork inside those areas;
@@ -84,6 +88,11 @@ game's pixel scale. They are not painted into the exported artwork. Other
 resource packs can change the native controls' appearance. Save writes artwork
 and actions together. **Sync saves pending edits first** and stops if saving
 fails, so the game receives the layout you are looking at.
+
+Minecraft adds a warning button beside every dialog title. **Show warning icon**
+in Behaviour and alignment is off by default. This hides its sprite in the
+resource pack; the button remains clickable. Minecraft uses one sprite for the
+whole pack, so the choice applies to every dialog in that pack.
 
 After an editor update, reopening a dialog can refresh its generated button
 components. Save and sync it to send the updated artwork and layout to Minecraft;
