@@ -515,14 +515,14 @@ export function TryIt({ operation }: { operation: Operation }) {
               {/* "Needs your API key" was a dead end: it named the one thing
                   standing between somebody and a working request, on a site
                   that can't mint one, and left them to go and find the page
-                  themselves. It's a link now — the account page is where keys
+                  themselves. It's a link now — the Developers page is where keys
                   are created, and it opens in a new tab so a half-filled form
                   here survives the trip. The other two states stay plain text:
                   a missing field is fixed in this dialog, and the URL isn't
                   somewhere to go. */}
               {operation.authenticated && missing.length === 0 && !apiKey.trim() ? (
                 <a
-                  href="https://studio.resourcepack.ai/account"
+                  href="https://studio.resourcepack.ai/developers"
                   target="_blank"
                   rel="noreferrer"
                   className="text-brand hover:text-brand/80 min-w-0 flex-1 truncate text-[0.75rem] font-medium underline decoration-dotted underline-offset-2 transition-colors"

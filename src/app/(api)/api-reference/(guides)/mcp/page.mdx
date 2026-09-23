@@ -10,26 +10,30 @@ ResourcePack AI speaks the **Model Context Protocol**, so an AI agent can build
 a pack on your behalf — create it, generate the blocks, models, items, icons and
 sounds, look at what came back, and iterate — without you clicking anything.
 
-It is the same API described in the rest of this reference, the same key and the
-same AI Credits. What changes is the shape: an agent gets a list of tools it can
+It is the same API described in the rest of this reference and the same AI
+Credits, with a key of its own. What changes is the shape: an agent gets a list of tools it can
 call rather than a list of URLs it has to be programmed against.
 
 <Callout type="note" title="On a paid plan">
-  The MCP server uses your ordinary API key, so it needs a paid plan and spends
-  the same AI Credits the Studio does. There is no separate MCP pricing.
+  MCP keys are available on any paid plan, and the MCP server spends the same AI
+  Credits the Studio does. There is no separate MCP pricing.
 </Callout>
 
 ## Connect
 
 The server lives at **`https://api.resourcepack.ai/mcp`** and authenticates with
-the API key from your [account page](https://studio.resourcepack.ai/account) —
-the same `rpai_` key the REST API takes. See
-[the overview](/api-reference) for how to create one.
+an **MCP key** from the [Developers page](https://studio.resourcepack.ai/developers).
+MCP keys start `rpai_mcp_`, and they are separate from API keys: an MCP key only
+works on the MCP server and an API key only works on the REST API, so revoking
+the key you gave an agent never breaks your own code. A request with the wrong
+kind of key is refused with `wrong_key_kind`.
+
+Keys created before MCP keys existed (September 2026) still work in both places.
 
 <Steps>
-  <Step title="Get an API key">
-    [studio.resourcepack.ai/account](https://studio.resourcepack.ai/account),
-    the **API keys** card. Copy it when it is shown — it is shown once.
+  <Step title="Get an MCP key">
+    [studio.resourcepack.ai/developers](https://studio.resourcepack.ai/developers),
+    the **MCP keys** card. Copy it when it is shown — it is shown once.
   </Step>
   <Step title="Add the server to your client">
     In Claude Code:
@@ -37,7 +41,7 @@ the same `rpai_` key the REST API takes. See
     ```bash
     claude mcp add --transport http resourcepack-ai \
       https://api.resourcepack.ai/mcp \
-      --header "Authorization: Bearer rpai_YOUR_KEY"
+      --header "Authorization: Bearer rpai_mcp_YOUR_KEY"
     ```
 
     Any client that takes a JSON config wants this:
@@ -48,7 +52,7 @@ the same `rpai_` key the REST API takes. See
         "resourcepack-ai": {
           "type": "http",
           "url": "https://api.resourcepack.ai/mcp",
-          "headers": { "Authorization": "Bearer rpai_YOUR_KEY" }
+          "headers": { "Authorization": "Bearer rpai_mcp_YOUR_KEY" }
         }
       }
     }
