@@ -38,11 +38,17 @@ The boxes move when the dialog does. Add a button, change one's width, switch
 from two columns to three, and the guides move to where the game will put them.
 So set the buttons up first and paint into them second.
 
-Changing the window's W or H moves that boundary but does not automatically
-stretch artwork you have already painted. If a shorter dialog cuts off its
-bottom edge in game, use **Fit background to window** under Window in the
-Dialog panel, then save and sync. It resizes the background pixels to the new
-window in one undoable edit; button components still follow their guides.
+To resize the dialog, click bare sheet so nothing is selected, then drag the
+grips on its outline — the top edge, the top corners or the sides. The window
+stays centred, so both edges move together. You can also type a size under
+**Size** in the Dialog panel. Either way the background moves with it: its
+frame and the strip behind the buttons keep their exact pixels while the rest
+stretches, and the heading, words and pictures stay the same distance from
+the edge they are nearest. Buttons follow the layout. One resize is one undo.
+
+If a dialog made before this has background hanging below its last row of
+buttons, the panel offers **Pull it back in**, which moves just that bottom
+edge back inside the window.
 
 The Text tool and free-text components offer 1×, 2×, 3× and 4× lettering.
 Larger words need more room on the 256×256 sheet, so check their placement
@@ -107,11 +113,13 @@ and a scrollbar appears. That depends on each player's screen and GUI scale.
 On the Auto GUI scale, which most players use, a 1440p or 4K monitor is only
 240 GUI pixels tall and a 1080p one 270.
 
-The **In game** box at the top of the Dialog panel measures your dialog and
-says which of those screens it fits. Only rows with artwork on them count:
-transparent space above your panel costs nothing, so a shorter window — or
-artwork that starts lower on the sheet — is how to make a dialog fit. The
-darkened strip under the last row of buttons is never drawn in game.
+The **In game** box under Size measures your dialog and says which of those
+screens it fits, and the readout above the outline says the same while you
+drag. Only rows with artwork on them count: transparent space above your panel
+costs nothing, so a shorter window is how to make a dialog fit. When it does
+not fit, **Shrink to fit every screen** finds the tallest window that fits a
+240-pixel screen and resizes to it. The darkened strip under the last row of
+buttons is never drawn in game.
 
 ## Layout and editing
 
