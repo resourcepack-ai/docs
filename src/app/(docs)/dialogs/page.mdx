@@ -54,12 +54,34 @@ The Text tool and free-text components offer 1×, 2×, 3× and 4× lettering.
 Larger words need more room on the 256×256 sheet, so check their placement
 before syncing.
 
+Two components are made for the kind of screens big servers build:
+
+- **Formatted text** is a page of words written like markdown: `# Heading`,
+  `## Subheading`, `- bullet`, `> note`, `---` for a rule and `**word**` to
+  highlight. It wraps to the box you drag, in three colours you choose (body,
+  headings, and the highlights, bullets and rules). Use it for rules pages,
+  getting-started guides and patch notes.
+- **QR code** draws a link as a code players scan with their phone — a store
+  checkout, a Discord invite, a vote page. Set the link on the right. It is drawn
+  as large as its box allows in whole pixels, since a scanner cannot read
+  half-pixels. On a dialog it also becomes a clickable area that opens the same
+  link, for players without a phone to hand. Change the link later and the
+  clickable area follows.
+
 Button faces are held two pixels in from their boxes on every side, so the
 panel's edge stays visible under the last row. The dashed guides show the full
 native click areas. **Space between buttons** adds more room between the drawn
 faces, in steps of two pixels, and shows how far apart they will look; it
 changes the artwork inside the click areas, not where Minecraft puts its
 buttons.
+
+Buttons below the panel fill their box except for its outer pixel. That pixel
+is the rim of Minecraft's own button, black normally and **white when the
+pointer is over it**, so the buttons light up on hover without a shader. The
+canvas shows it: hover a button there and its rim turns white. (Hovering
+changes nothing else about a dialog button, not even the label's colour, so
+there is no way to swap a whole second picture in on hover without a core
+shader.)
 
 Minecraft draws its own grey button first and your artwork on top, so any
 transparent pixel inside a button's box shows that grey through. The canvas
@@ -198,8 +220,13 @@ an already downloaded resource pack keeps its previous pixels and font metrics.
 ## Generating one
 
 Describe the screen and the generator decides its layout, what it is made of,
-what it says and what everything is called. It picks one of three layouts from
-what the screen is for:
+what it says and what everything is called. The **Examples** in the Generate
+sheet fill in a prompt and the options for a common screen, such as daily
+rewards, settings, a perk tree, warps, a store checkout, server rules or a
+purchase confirmation. Change anything before you generate.
+
+Set **Layout** to choose one of the four layouts yourself, or leave it on
+**Decide for me** and the generator picks from what the screen is for:
 
 - **Tiles** — a grid of clickable tiles, each with an item icon, a word above
   and a number below, and a state you can read at a glance: claimed tiles dim
@@ -211,6 +238,15 @@ what the screen is for:
   come out this way.
 - **Buttons** — words and a stack of buttons, optionally under a focal
   illustration, for notices, confirmations and forms.
+- **Guide** — a page to read, set as a Formatted text component with headings,
+  bullets and highlights. Rules, guides and changelogs come out this way.
+
+**Buttons** chooses where they go: below the panel (one or two), in the panel,
+or left to the generator. Under **Extras**, **Progress bar** guarantees a bar
+for a streak, tier or goal, and **QR code** puts a code of the link you type
+under everything else, clickable too. The QR code is the one thing on a
+generated dialog that arrives wired, because the link is yours rather than the
+generator's.
 
 Every tile and row arrives as a clickable area with a tooltip written like a
 server's item lore — the reward, the cost, the requirement and a status line —
