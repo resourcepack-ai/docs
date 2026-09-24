@@ -48,10 +48,18 @@ The Text tool and free-text components offer 1×, 2×, 3× and 4× lettering.
 Larger words need more room on the 256×256 sheet, so check their placement
 before syncing.
 
-Generated button faces have equal spacing above and below, with a two-pixel
-minimum inset to keep the panel edge visible. The dashed guides show the full
-native click areas. The spacing control changes the artwork inside those areas;
-it does not move Minecraft's buttons.
+Button faces are held two pixels in from their boxes on every side, so the
+panel's edge stays visible under the last row. The dashed guides show the full
+native click areas. **Space between buttons** adds more room between the drawn
+faces, in steps of two pixels, and shows how far apart they will look; it
+changes the artwork inside the click areas, not where Minecraft puts its
+buttons.
+
+Minecraft draws its own grey button first and your artwork on top, so any
+transparent pixel inside a button's box shows that grey through. The canvas
+shows the grey button underneath for exactly that reason — if you see grey
+round a rounded corner, so will your players. With **Drawn faces** off, the
+canvas shows the game's buttons with their fallback words instead.
 
 ## What a button can do
 
@@ -63,12 +71,23 @@ One thing each, chosen in the Dialog panel beside the canvas:
 | **Suggest command** | It goes into their chat box unsent. |
 | **Open link** | The client asks before following it. |
 | **Copy text** | Onto their clipboard. |
-| **Open another dialog** | By id — `studio:<asset>` for one of yours. |
+| **Open another dialog** | Pick one of the pack's dialogs from the list — it opens straight away. |
 | **Nothing** | Which, with "After a press: Close", is what an Ok button is. |
 
 A command runs **as the player**, so it obeys their permissions. A button that
 needs more than they have wants a command the server has set up for it, not a
 higher-privileged button — there is no such thing.
+
+Minecraft reads a whole dialog at once, and one action it cannot accept stops
+the entire dialog opening. So a button whose action would be refused — a link
+that does not start with `http://` or `https://`, an id that is not a valid
+dialog id, an empty command — is sent with no action at all (it just closes
+the dialog), and the editor marks it with a warning until it is fixed.
+
+A button that opens another dialog from the same pack carries that dialog with
+it, so it opens without a server restart. "Another id…" in the same list takes
+any other dialog id, which the server has to know already — one of
+Minecraft's, or one from a datapack.
 
 ## Inputs
 
@@ -80,6 +99,20 @@ get what the player put there.
 tp @s $(destination)
 ```
 
+## Fitting on the screen
+
+Minecraft gives a dialog the screen's height less a 38-pixel header and footer,
+and anything taller **scrolls**: the buttons start below the edge of the screen
+and a scrollbar appears. That depends on each player's screen and GUI scale.
+On the Auto GUI scale, which most players use, a 1440p or 4K monitor is only
+240 GUI pixels tall and a 1080p one 270.
+
+The **In game** box at the top of the Dialog panel measures your dialog and
+says which of those screens it fits. Only rows with artwork on them count:
+transparent space above your panel costs nothing, so a shorter window — or
+artwork that starts lower on the sheet — is how to make a dialog fit. The
+darkened strip under the last row of buttons is never drawn in game.
+
 ## Layout and editing
 
 All drawn dialogs use the column count you choose, including one- and
@@ -87,7 +120,9 @@ two-button screens. Minecraft's notice and confirmation types put buttons in a
 separate footer, so drawn dialogs use its content grid instead.
 
 Use **Add button** in the Dialog panel, then select a button to edit its face,
-label, tooltip and action. Layout, inputs and behaviour have separate expandable
+label, tooltip and action. Undo covers these too — adding, removing and
+reordering buttons, their widths, columns and inputs — alongside everything
+you paint. Layout, inputs and behaviour have separate expandable
 sections. Input previews show the separate label and field for text inputs,
 the checkbox and its label, and the initial selection or slider value at the
 game's pixel scale. They are not painted into the exported artwork. Other
