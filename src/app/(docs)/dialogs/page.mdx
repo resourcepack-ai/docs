@@ -95,6 +95,48 @@ it, so it opens without a server restart. "Another id…" in the same list takes
 any other dialog id, which the server has to know already — one of
 Minecraft's, or one from a datapack.
 
+## Clickable areas
+
+Buttons are not the only thing a player can click. Any part of the picture — a
+reward tile, a shop card, a row in a settings list, an icon — can be a
+**clickable area** with its own action and its own tooltip, and it needs no
+button behind it. It is how the richest server menus are built: a week of
+reward days, each one clickable, each one explaining itself on hover.
+
+Pick the **Areas** tool (A) from the rail and drag a box over the picture. With
+the box selected, the panel beside the canvas sets what a click does (the same
+choices a button has) and its tooltip. Drag a box to move it, pull its grips to
+resize it, and press Delete to remove it. Areas on a piece move with it when
+you drag the piece or resize the dialog.
+
+Tooltips are written as plain lines and coloured the way server menus colour
+theirs:
+
+```
+Tuesday - Free
+
+Reward
+∙ 250 Coins
+
+Click to claim!
+```
+
+The first line is the title. A line above a list of `∙` items is that list's
+heading, a line starting ✔ is green, one starting ⌀ or ✘ is red, and one
+starting "Click" is yellow. The panel shows a preview, and hovering an area on
+the canvas shows exactly what a player will see.
+
+<Callout title="Clickable in whole lines">
+  The game finds a click by the line of text it lands on, and a dialog's lines
+  are 9 pixels tall — so an area is clickable on every line its box crosses,
+  across its exact width. The Areas tool shades the real clickable shape. The
+  topmost line of a dialog holds the picture itself and cannot be clicked, so
+  an area needs a little room above it; the dialog grows by a line if it has to.
+</Callout>
+
+One difference from a button: `$(key)` from an input is filled in for buttons
+only. A click on the picture runs its command exactly as written.
+
 ## Inputs
 
 A dialog can ask for something: a text box, a checkbox, a list to pick from or
@@ -149,18 +191,36 @@ an already downloaded resource pack keeps its previous pixels and font metrics.
 
 ## Generating one
 
-Describe the screen and the generator decides its size, what it is made of,
-what it says and what the buttons are called. A drawn design uses **one** image
-for a material or a focal illustration, with distinct button colours and
-pixel-font text. Headings and body lines arrive as editable components, so you
-can change the wording without painting over it. Long body lines wrap to the
-panel width. Choose **Flat** for a composed panel or **None** for no backdrop;
-neither asks the image model to draw anything.
+Describe the screen and the generator decides its layout, what it is made of,
+what it says and what everything is called. It picks one of three layouts from
+what the screen is for:
+
+- **Tiles** — a grid of clickable tiles, each with an item icon, a word above
+  and a number below, and a state you can read at a glance: claimed tiles dim
+  and get a tick, locked ones darken and get a padlock, and the one you can take
+  now gets a gold rim. Daily rewards, shops, kits, crates and perks come out
+  this way.
+- **Rows** — a list of clickable rows, each with an icon, a label and a value
+  chip that is green when on and red when off. Settings, toggles and warp menus
+  come out this way.
+- **Buttons** — words and a stack of buttons, optionally under a focal
+  illustration, for notices, confirmations and forms.
+
+Every tile and row arrives as a clickable area with a tooltip written like a
+server's item lore — the reward, the cost, the requirement and a status line —
+and a streak or tier can come with a progress bar. The window is sized to
+exactly what is on it, so a generated dialog fits a 240-pixel screen.
+
+A drawn design uses **one** image for its material or its illustration.
+Headings and body lines arrive as editable components, and tiles or rows as one
+layer, so you can move and restyle them without painting over anything. Choose
+**Flat** for a composed panel or **None** for no backdrop; neither asks the
+image model to draw anything.
 
 <Callout title="It names the buttons; you wire them">
-  Nothing invents a command. A generated dialog arrives with its buttons named
-  and their actions empty, because a command is a thing with consequences on
-  your server.
+  Nothing invents a command. A generated dialog arrives with its buttons and
+  clickable areas named and described, and their actions empty, because a
+  command is a thing with consequences on your server.
 </Callout>
 
 ## Getting it onto a server
