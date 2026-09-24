@@ -165,9 +165,15 @@ buttons is never drawn in game.
 
 ## Layout and editing
 
-All drawn dialogs use the column count you choose, including one- and
-two-button screens. Minecraft's notice and confirmation types put buttons in a
-separate footer, so drawn dialogs use its content grid instead.
+**Buttons** go either **in the panel** or **below the panel**. In the panel
+they are a grid at the bottom of your art, in as many columns as you choose —
+and because Minecraft stops drawing a dialog at its last row of buttons, a
+button there always sits right on the panel's bottom edge. Below the panel,
+Minecraft draws one or two buttons under the dialog instead (the footer), so
+your art keeps a frame and a margin all the way round; this is how most server
+menus do their Close. The canvas draws footer buttons just under the window,
+where they sit on a small screen — on a taller one they are further down.
+Generated dialogs with one or two buttons put them below the panel.
 
 Use **Add button** in the Dialog panel, then select a button to edit its face,
 label, tooltip and action. Undo covers these too — adding, removing and
