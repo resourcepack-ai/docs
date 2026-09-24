@@ -195,7 +195,7 @@ Minecraft draws one or two buttons under the dialog instead (the footer), so
 your art keeps a frame and a margin all the way round; this is how most server
 menus do their Close. The canvas draws footer buttons just under the window,
 where they sit on a small screen — on a taller one they are further down.
-Generated dialogs with one or two buttons put them below the panel.
+Generated dialogs always put them in the panel.
 
 Use **Add button** in the Dialog panel, then select a button to edit its face,
 label, tooltip and action. Undo covers these too — adding, removing and
@@ -219,45 +219,60 @@ an already downloaded resource pack keeps its previous pixels and font metrics.
 
 ## Generating one
 
-Describe the screen and the generator decides its layout, what it is made of,
-what it says and what everything is called. The **Examples** in the Generate
-sheet fill in a prompt and the options for a common screen, such as daily
-rewards, settings, a perk tree, warps, a store checkout, server rules or a
-purchase confirmation. Change anything before you generate.
+Describe the screen and the generator decides its layout, what it says, what
+everything is called and how wide the window is. It builds the screen out of
+rows and columns — a header, a list of categories down the left, three things
+side by side — and a layout engine works out where every piece goes, so
+nothing overlaps and nothing runs off the window.
 
-Set **Layout** to choose one of the four layouts yourself, or leave it on
-**Decide for me** and the generator picks from what the screen is for:
+Set **Layout** to choose one yourself, or leave it on **Decide for me** and the
+generator picks from what the screen is for. Choosing one shows an example of
+it under the picker:
 
+- **Sidebar** — categories down the left, with the one you are in highlighted,
+  and its content on the right. Stores, profiles and menus with sections come
+  out this way.
+- **Columns** — two to four things side by side to compare, each with an icon,
+  a price or a value, a button and what it includes. Ranks, kits, crates and
+  plans come out this way.
 - **Tiles** — a grid of clickable tiles, each with an item icon, a word above
   and a number below, and a state you can read at a glance: claimed tiles dim
   and get a tick, locked ones darken and get a padlock, and the one you can take
-  now gets a gold rim. Daily rewards, shops, kits, crates and perks come out
-  this way.
+  now gets a gold rim. Daily rewards, shops and perks come out this way.
 - **Rows** — a list of clickable rows, each with an icon, a label and a value
   chip that is green when on and red when off. Settings, toggles and warp menus
   come out this way.
-- **Buttons** — words and a stack of buttons, optionally under a focal
-  illustration, for notices, confirmations and forms.
 - **Guide** — a page to read, set as a Formatted text component with headings,
-  bullets and highlights. Rules, guides and changelogs come out this way.
+  bullets and highlights, with its contents down the left. Rules, guides and
+  changelogs come out this way.
+- **Simple** — a few words and one or two buttons, for notices and
+  confirmations.
 
-**Buttons** chooses where they go: below the panel (one or two), in the panel,
-or left to the generator. Under **Extras**, **Progress bar** guarantees a bar
-for a streak, tier or goal, and **QR code** puts a code of the link you type
-under everything else, clickable too. The QR code is the one thing on a
-generated dialog that arrives wired, because the link is yours rather than the
-generator's.
+A generated dialog always has its own buttons **in the panel** — usually just a
+Close, or a pair for a confirmation. Everything else you click on it is a
+clickable area of the picture: category buttons, tiles, rows and anything else
+that has a tooltip. Under **Extras**, **Progress bar** guarantees a bar for a
+streak, tier or goal, and **QR code** puts a code of the link you type on the
+screen, clickable too. The QR code is the one thing on a generated dialog that
+arrives wired, because the link is yours rather than the generator's.
 
-Every tile and row arrives as a clickable area with a tooltip written like a
-server's item lore — the reward, the cost, the requirement and a status line —
-and a streak or tier can come with a progress bar. The window is sized to
-exactly what is on it, so a generated dialog fits a 240-pixel screen.
+Every clickable area arrives with a tooltip written like a server's item lore —
+the reward, the cost, the requirement and a status line. Numbers on the screen,
+such as a balance or a key count, are sample values for you to change. The
+window is sized to exactly what is on it and fitted to a 240-pixel screen: if a
+design is too tall, the generator tightens the spacing, shrinks large icons and
+drops small print before it gives up.
 
-A drawn design uses **one** image for its material or its illustration.
-Headings and body lines arrive as editable components, and tiles or rows as one
-layer, so you can move and restyle them without painting over anything. Choose
-**Flat** for a composed panel or **None** for no backdrop; neither asks the
-image model to draw anything.
+**Background** decides the look. **None** is the clean look of the big servers'
+menus: no panel, the content floating over the game, and the title in the
+game's own header above the dialog. **Flat** puts it on a composed panel with a
+frame and a title plaque. **Drawn** does the same with a material the image
+model draws, or on a Simple screen spends that one image on a picture instead.
+Neither None nor Flat asks the image model for anything.
+
+Headings, pages and QR codes arrive as editable components, and each section of
+the layout as its own layer, so you can move and restyle them without painting
+over anything.
 
 <Callout title="It names the buttons; you wire them">
   Nothing invents a command. A generated dialog arrives with its buttons and
