@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Dialogs",
   description:
-    "Minecraft 1.21.6's dialog screens, drawn as pack art: how the picture and the buttons line up, what each button can run, and what the server needs to open one.",
+    "Minecraft 1.21.6's dialog screens, in two styles — drawn menus, or Minecraft's own look with scrolling pages: how each is made, what a click can run, and what the server needs to open one.",
 };
 
 # Dialogs
@@ -15,6 +15,24 @@ the lines in its body and every button's label are text components, and a text
 component can be a font glyph. So a pack can put a whole 256×256 picture in the
 body and a piece of drawn artwork in each button's face, and what comes back is
 a screen that looks nothing like Minecraft with buttons that still work.
+
+## Two styles
+
+When you make a dialog you choose its **Style**, in both the Generate and the
+Draw door:
+
+- **UI** is a drawn menu: a 256×256 picture with our own buttons, cards and a
+  panel if you want one, fitted to a single screen. Everything from
+  [Drawing one](#drawing-one) to [Generating one](#generating-one) below is
+  about this style.
+- **Dialog** is **Minecraft's own look** — the way the big servers' store,
+  checkout and guide screens look. The game's font and grey buttons laid
+  straight over the blurred world, the title in the game's own header, a Close
+  button in the game's own footer, and a body that **scrolls with the game's
+  scrollbar** when it is taller than the screen. See
+  [The Dialog style](#the-dialog-style).
+
+The style is chosen when a dialog is made and stays with it.
 
 <Callout type="warning" title="A dialog needs a plugin, and 1.21.6">
   The picture is in your resource pack. The dialog itself is not — it is
@@ -263,7 +281,7 @@ window is sized to exactly what is on it and fitted to a 240-pixel screen: if a
 design is too tall, the generator tightens the spacing, shrinks large icons and
 drops small print before it gives up.
 
-**Background** decides the look. **None** is the clean look of the big servers'
+For the UI style, **Background** decides the look. **None** is the clean look of the big servers'
 menus: no panel, the content floating over the game, and the title in the
 game's own header above the dialog. **Flat** puts it on a composed panel with a
 frame and a title plaque. **Drawn** does the same with a material the image
@@ -279,6 +297,74 @@ over anything.
   clickable areas named and described, and their actions empty, because a
   command is a thing with consequences on your server.
 </Callout>
+
+## The Dialog style
+
+A Dialog-style dialog looks like a screen Minecraft itself made. Nothing is
+painted behind it: the words, buttons and icons sit straight on the darkened,
+blurred world, in the game's own font with its shadow. The title is the one the
+game draws in its header, with the game's warning button beside it, and the
+button at the bottom is the game's own, in its footer. When there is more on
+the screen than fits, the game scrolls it and shows its own scrollbar on the
+right — so a guide can be as long as it needs to be.
+
+It can be up to **388 pixels wide** (nearly the whole width of a small screen)
+and about **1,000 pixels tall**, and it is built out of the same rows, columns
+and grids as a generated UI dialog, with these pieces:
+
+| Piece | What it is |
+| --- | --- |
+| **Button** | The game's grey 20-pixel button. **Selected** makes it gold, the way a store marks the category you are in; **Greyed out** is the game's disabled button; the label can have its own colour, and a sidebar's buttons can read from the left. A button colour tints the same button, bevels and all. |
+| **Link** | A line of clickable words, for a guide's contents. The current page is white and underlined, and sub-pages can be indented. |
+| **Text** | Words in the game's own colours. Titles are twice the size, headings bold. |
+| **Chip** | A dark, see-through box for a balance, a count or a rank tag. |
+| **Setting row** | A full-width button with a value on the right, green when on and red when off. |
+| **Tile** | A dark card with a word, an icon and a caption, and a state: ready (gold), claimed (dimmed, ticked) or locked (padlocked). |
+| **Check line** | A ✔ or a ✘ in front of a word, for what a rank includes. |
+| **Label and value** | A label on the left and a value on the right, for receipts and stats. |
+| **Page of text** | Markdown-lite: `# Title` twice the size, `## Heading` in bold, `### Heading` in gold, `- bullets`, `> notes`, `**words**` in gold, `---` a rule. |
+| **Progress bar**, **QR code**, **Icon**, **Divider**, **Space** | As they sound. A QR code carries its own link and opens it when clicked. |
+
+Anything with a tooltip is clickable, and so is every button, link, tile and
+setting row. Tooltips are written the same way as for [clickable
+areas](#clickable-areas).
+
+### Editing one
+
+A Dialog-style dialog opens in its own editor, because there is no picture to
+paint — the screen is drawn from its layout every time. In the middle is the
+game's screen at the size a real monitor gives it (426×240 is a 1440p or 4K
+monitor on the Auto GUI scale, 480×270 a 1080p one), and it behaves like the
+game: the mouse wheel scrolls it, hovering a clickable thing shows its tooltip,
+and **Clickable areas** shades where a click will land.
+
+Click anything in the preview, or pick it from the **Outline** on the left, and
+the panel on the right edits it: its words, style, colours, icon and width, its
+tooltip, and under **When clicked** what it runs — the same choices a button
+has. **Add after** (or **Add inside**, on a row or column) adds a piece, and the
+arrows, **Duplicate** and **Delete** rearrange them. Click the empty space around
+the content, or press Escape, to get back to the dialog's own settings: its
+title, its width, its footer (one button, or a yes/no pair) and how it behaves.
+Click the footer button itself to set its words and what it runs. **JSON** shows
+the whole layout as the tree the generator writes, if you would rather edit
+that. Changes save on their own; Undo and Redo cover everything.
+
+### Clickable in whole lines
+
+The game finds a click by the 9-pixel line of text it lands on, so a clickable
+thing is clickable on every line it covers at least half of. Two buttons
+stacked with a few pixels between them split the line they share by which
+covers more of it. **Clickable areas** in the editor shows the real shape.
+
+### Generating one
+
+Choose **Style: Dialog** in the Generate sheet. **Layout** and **Extras** work
+as they do for the UI style, and the example under the picker shows each layout
+in the game's look; **Size** and **Background** are not asked, because a
+Dialog-style dialog is as wide as its content and has nothing behind it. It
+never uses the image model. The generator writes Title Case rather than
+capitals, puts a store's categories in their own colours with the current one
+gold, and lets a guide's page run long, since the game will scroll it.
 
 ## Getting it onto a server
 
