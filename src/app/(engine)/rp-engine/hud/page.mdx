@@ -84,8 +84,10 @@ Studio's **Shaders** editor makes overlays with far more in them than one
 picture: freehand paint, smooth shapes, and labels, player heads and progress
 bars that update live. The [Shaders](/shaders) page covers making one.
 
-On the server they are ordinary overlays with the id `studio:<id>`: `/rp hud
-studio:<id>` shows one, rules set in Studio show it with no command, and a
+On the server they are overlays with the id `studio:<id>`, with commands of
+their own: `/rp shaders` lists them and `/rp shader studio:<id>` shows one
+(`/rp hud` still draws one too, and is the command before 0.1.57). Rules set
+in Studio show one with no command, and a
 plugin shows, hides and feeds it through the [API](/rp-engine/api#hud-overlays).
 They are only drawn for players holding the pack they came from.
 
