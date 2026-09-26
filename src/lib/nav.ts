@@ -188,6 +188,23 @@ export const nav: NavGroup[] = [
         ],
       },
       {
+        title: "Shaders",
+        href: "/shaders",
+        description: "Custom HUD overlays you draw and place anywhere, with values that update live.",
+        keywords: [
+          "shader",
+          "overlay",
+          "hud",
+          "paint",
+          "progress bar",
+          "health bar",
+          "placeholder",
+          "action bar",
+          "boss bar",
+          "player head",
+        ],
+      },
+      {
         title: "Icons",
         href: "/icons",
         description: "Bitmap glyphs for chat, signs and books.",

@@ -1,0 +1,190 @@
+export const metadata = {
+  title: "Shaders",
+  description:
+    "Custom HUD overlays you draw and place anywhere on screen: freehand paint, smooth shapes, and labels, player heads and progress bars that update live in game.",
+};
+
+# Shaders
+
+A shader object is a piece of HUD you design yourself: a health bar in the
+corner, a nameplate at the top of the screen, a badge beside the hotbar. You
+draw it, place it anywhere on screen, and it stays put at every window size and
+GUI scale.
+
+Some of it can **change while people play**. A label can read `{health}`, a bar
+can fill as a value rises and falls, and a player head shows the face of
+whoever is looking at it.
+
+<Callout type="warning" title="A shader object needs RP Engine">
+  The art is in your resource pack, but something on the server has to put it
+  on a player's screen and fill in the live values. That is [RP
+  Engine](/rp-engine). Without it the pack loads and nothing appears.
+</Callout>
+
+## How it works
+
+A server can't draw a picture on somebody's screen. What it can do is send a
+line of text to the **action bar** or the **boss bar**, and a resource pack can
+make a character in a font look like anything.
+
+So your object ships as special characters in the pack's font. RP Engine sends
+them to the action bar or boss bar, and a custom text shader in the pack spots
+them by their exact colour and moves them to wherever you placed the object.
+Everything else the game draws as text is left alone.
+
+That is also where the limits come from, and they are covered in
+[Limits](#limits) below.
+
+## Making one
+
+Open a pack, press **Add asset** and pick the **Shader** tab.
+
+- **Blank** gives you an empty object to build yourself.
+- **Generate** lays one out from a description, such as "health, hunger and
+  level in the bottom left". What comes back is ordinary elements you can keep
+  editing, not a flat picture.
+
+## The editor
+
+It is laid out like the GUI editor: tools down the left, the **Elements** list
+beside them, the canvas in the middle, and settings on the right.
+
+### What an object is made of
+
+Everything sits in the Elements list under **Canvas**, and the top of the list
+is drawn on top. There are three kinds of thing, and the game always draws them
+in the same order:
+
+1. **Components**, on top: labels, player heads, progress bars and pictures.
+   These are placed and edited as objects, and the first three can change live.
+2. **Paint**, in the middle: freehand pixels on layers, drawn with the tools on
+   the left.
+3. **Shapes**, at the bottom: rectangles, circles, triangles and polygons,
+   drawn as smooth maths so they stay crisp at any GUI scale.
+
+Use the arrows on a row to move it up or down. Each kind moves within its own
+group: components among components, paint layers among paint layers, shapes
+among shapes. An arrow at the edge of a group is greyed out, because the game
+always draws shapes, then paint, then components.
+
+### Painting
+
+Pick a brush on the left (pencil, eraser, fill, colour picker, line,
+rectangle, ellipse or pixel text) and draw on the canvas. It draws on the paint
+layer selected in the list, and if there are none, picking a brush makes one.
+
+Paint layers can be hidden, renamed (double-click), reordered, duplicated,
+merged down, cleared or deleted. With the **Select** tool, dragging on paint
+picks up that layer and moves it.
+
+Pixel text stamped with the brush is just pixels. For text that changes in
+game, add a **Label** instead.
+
+### Components
+
+Add them with the **+** button beside Elements.
+
+- **Label**: a line of Minecraft text. It can contain
+  [placeholders](#live-values) like `{player}` or `{health}`.
+- **Player head**: the face of the player looking at it. In the editor, and in
+  any exported or distributed pack, it is Steve. A pack sent with **Sync** bakes
+  in the real faces of the players it is sent to.
+- **Progress bar**: fills from a live value, either solid or in segments, and
+  can change colour as the value passes thresholds you set.
+- **Picture**: an image you upload or have drawn, placed and sized like
+  everything else. Pictures are shared across the pack, so one upload can be
+  used by any number of objects.
+
+Drag components on the canvas to move them, or nudge the selected one with the
+arrow keys (hold Shift for 10 pixels).
+
+### Shapes
+
+**Rectangle**, **Circle**, **Triangle** and **Polygon**. A rectangle's
+**Corners** setting rounds it, and a circle's **Outline** setting turns it into
+a ring. Drag the handles on the canvas to resize.
+
+Shapes combine with each other. **Add** draws on top, **Cut** removes a shape
+from what is beneath it, **Keep overlap** keeps only where both exist, and
+**Blend** joins two shapes with a smooth curve. Because a Cut removes what is
+*beneath* it, moving a shape up or down changes what gets cut.
+
+### The canvas
+
+Select **Canvas** in the list to set the object's size, where it goes on screen
+and what shows it.
+
+- **Size**: up to 1024 by 1024, in steps of 8. Paint and shapes are clipped to
+  the canvas; labels, heads and bars are not, and can sit outside it. Shrinking
+  the canvas hides paint outside it rather than deleting it.
+- **Where on screen**: snap it to a corner, an edge or the middle, then nudge it
+  by pixels. Snapping follows the player's window and GUI scale, so a corner
+  stays a corner on every screen. **Reposition on screen** lets you drag it
+  around a full game screen instead.
+- **Action bar or boss bar**: which of the two the object is sent through. The
+  action bar fades after a few seconds, so RP Engine keeps re-sending it. The
+  boss bar stays until it is hidden, and shows and hides instantly.
+
+**Preview**, in the header, shows the object on a game screen at the size it
+will really be.
+
+## Live values
+
+A label or a progress bar can read a value that changes per player. Write it in
+curly braces, like `{health}`.
+
+| Placeholder | What it is |
+|---|---|
+| `{player}` | Their name |
+| `{displayname}` | Their name with any prefix a plugin gave it |
+| `{health}`, `{health_max}`, `{health_percent}` | Health |
+| `{food}` | Hunger, out of 20 |
+| `{level}`, `{xp}` | Experience level, and progress to the next as a percentage |
+| `{air}` | Seconds of breath left underwater |
+| `{ping}` | Latency in milliseconds |
+| `{world}`, `{x}`, `{y}`, `{z}`, `{direction}` | Where they are |
+| `{time}`, `{day}` | The world's clock, and how many days it has run |
+| `{gamemode}` | Survival, Creative and so on |
+| `{online}`, `{max_online}` | Players online, and the server's cap |
+| `{uuid}` | Their account UUID |
+
+A progress bar fills from a value and a maximum: `{health}` out of
+`{health_max}`, `{food}` out of 20, `{xp}` out of 100, `{air}` out of 15.
+
+**A plugin can publish any value it likes** under any name, and a label or bar
+can read it the same way. See [the RP Engine API](/rp-engine) for
+`overlays().set(player, "stamina", "40")`.
+
+## Showing it in game
+
+An object does nothing until something shows it. There are three ways.
+
+- **A rule**, set on the Canvas. **Always** keeps it on screen while the player
+  is online, **On join** shows it once as they join, **While crouching** and
+  **While holding** an item show it only while that is true. Any rule can also
+  require a permission.
+- **A command**: `/rp hud studio:<id> [player]` shows it, and `/rp hud clear`
+  takes it off. Newer versions of RP Engine also have `/rp shader` and
+  `/rp shaders`, which do the same for shader objects only. The id is on the
+  object's card on the pack page.
+- **A plugin**: `overlays().show(player, "studio:<id>")` and
+  `overlays().hide(...)`.
+
+When you're testing, **Sync** in the editor pushes the pack to you and puts the
+object on your screen straight away.
+
+## Limits
+
+- **32 pieces per object.** Each label, player head and picture takes one. A
+  progress bar takes two, plus one for each colour threshold. Paint takes one
+  per 256-pixel tile of drawing, so a small drawing is one. The status bar at
+  the bottom of the editor counts them, and anything past 32 isn't drawn.
+- **Paint is pixel art.** It is drawn one pixel per GUI pixel, so it looks
+  blocky if the canvas is large, where shapes stay smooth.
+- **Only players who have your pack see it.** RP Engine only sends an object to
+  players holding the pack it came from, so nobody else gets a row of
+  missing-character boxes.
+- **Minecraft 1.19.4 to 26.2.** The text shader is rebuilt for each version the
+  pack might be loaded on.
+- **Not in the ItemsAdder export.** That format has to leave the pack's font to
+  ItemsAdder, and a shader object is drawn through it.
