@@ -224,7 +224,7 @@ Minecraft draws one or two buttons under the dialog instead (the footer), so
 your art keeps a frame and a margin all the way round; this is how most server
 menus do their Close. The canvas draws footer buttons just under the window,
 where they sit on a small screen — on a taller one they are further down.
-Generated dialogs always put them in the panel.
+Generated dialogs put one or two buttons below the panel.
 
 Use **Add button** in the Dialog panel, then select a button to edit its face,
 label, tooltip and action. Undo covers these too — adding, removing and
@@ -275,8 +275,10 @@ The generator picks one of these layouts from what the screen is for:
 - **Simple** — a few words and one or two buttons, for notices and
   confirmations.
 
-A generated dialog always has its own buttons **in the panel** — usually just a
-Close, or a pair for a confirmation. Everything else you click on it is a
+A generated dialog puts its own buttons **below the panel** — usually just a
+Close, or a pair for a confirmation — so the panel keeps its frame and margin
+all the way round. With three or more buttons, or any inputs, they stay in the
+panel instead. Everything else you click on it is a
 clickable area of the picture: category buttons, tiles, rows and anything else
 that has a tooltip. Under **Extras**, **Progress bar** guarantees a bar for a
 streak, tier or goal, and **QR code** puts a code of the link you type on the
