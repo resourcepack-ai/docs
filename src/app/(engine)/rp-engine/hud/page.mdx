@@ -80,37 +80,14 @@ gap reads as "no value yet", where a brace reads as a broken pack.
 
 ## Shader overlays from Studio
 
-Studio's **Shaders** editor builds overlays out of shapes, text, player heads
-and progress bars. It has three tabs, and they answer three different questions.
+Studio's **Shaders** editor makes overlays with far more in them than one
+picture: freehand paint, smooth shapes, and labels, player heads and progress
+bars that update live. The [Shaders](/shaders) page covers making one.
 
-**Design** is the elements. The list on the left is everything in the object;
-the panel on the right is whatever you picked out of it. Drag anything on the
-stage, select something and press <kbd>Delete</kbd> to remove it, or
-<kbd>Esc</kbd> to deselect.
+On the server they are ordinary overlays with the id `studio:<id>`: `/rp hud
+studio:<id>` shows one, rules set in Studio show it with no command, and a
+plugin shows, hides and feeds it through the [API](/rp-engine/api#hud-overlays).
+They are only drawn for players holding the pack they came from.
 
-- **Canvas** — the drawing area you see behind the elements. Shapes are clipped
-  to it; labels, heads and bars are not, so they may sit outside it and the
-  editor keeps a margin around it so you can still see them.
-- **Player head** draws Steve in the editor and, on a pack you **Sync** to
-  somebody, their own face: the push bakes one head per person it goes to. An
-  exported pack has nobody in particular in it, so its heads are Steve's.
-- **Progress bar** fills from a live value. Pick what fills it and what full
-  means — both are placeholder names, and *full at* also takes a plain number
-  for a bar out of a ceiling you chose.
-
-**Canvas** is the object itself, and it is a tab rather than four more sections
-under whatever you had selected: the canvas size, which slot it draws on, where
-on the screen it sits, and what shows it are not about the circle you are
-dragging.
-
-**Preview** is what it looks like in game, at the size it will really be,
-against a hotbar.
-
-A bar is the one element besides a label that a live value can drive, and it is
-built out of text for that reason: a shape's geometry is compiled into the pack
-and cannot move, so the bar is a run of small rectangles the server sizes each
-tick. That costs nothing you can see — the ends land on exact pixels — but it is
-why a bar has a colour and a length rather than a corner radius.
-
-Push the updated pack after editing. When several overlays are shown at once,
-the most recently shown one is the one you see.
+When several overlays are shown at once, the most recently shown one is the one
+you see.
