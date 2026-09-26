@@ -163,10 +163,10 @@ An object does nothing until something shows it. There are three ways.
   is online, **On join** shows it once as they join, **While crouching** and
   **While holding** an item show it only while that is true. Any rule can also
   require a permission.
-- **A command**: `/rp hud studio:<id> [player]` shows it, and `/rp hud clear`
-  takes it off. Newer versions of RP Engine also have `/rp shader` and
-  `/rp shaders`, which do the same for shader objects only. The id is on the
-  object's card on the pack page.
+- **A command**: `/rp shader studio:<id> [player]` shows it, and
+  `/rp shader clear` takes them all off. `/rp shaders` lists every shader on the
+  server. The id is on the object's card on the pack page. These arrived in RP
+  Engine 0.1.57; on an older version, `/rp hud studio:<id>` does the same.
 - **A plugin**: `overlays().show(player, "studio:<id>")` and
   `overlays().hide(...)`. See [the RP Engine API](/rp-engine/api#hud-overlays).
 
