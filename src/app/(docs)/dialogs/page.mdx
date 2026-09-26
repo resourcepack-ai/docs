@@ -114,7 +114,7 @@ One thing each, chosen in the Dialog panel beside the canvas:
 | Action | What happens |
 | --- | --- |
 | **Run command** | The player runs it, with their own permissions. |
-| **Suggest command** | It goes into their chat box unsent. |
+| **Suggest command** | A small box opens with the command typed in; they finish it and press **Run**. |
 | **Open link** | The client asks before following it. |
 | **Copy text** | Onto their clipboard. |
 | **Open another dialog** | Pick one of the pack's dialogs from the list — it opens straight away. |
@@ -123,6 +123,12 @@ One thing each, chosen in the Dialog panel beside the canvas:
 A command runs **as the player**, so it obeys their permissions. A button that
 needs more than they have wants a command the server has set up for it, not a
 higher-privileged button — there is no such thing.
+
+**Suggest command** can't fill in the chat box, because Minecraft doesn't allow
+it from a dialog a server opens: the game quietly drops the command. So the
+suggestion opens in a small dialog of its own instead, with the command in a
+text box and a **Run** button. A command that has to be signed, like `/msg`,
+is caught by the game, which then offers to put it in the chat box.
 
 Minecraft reads a whole dialog at once, and one action it cannot accept stops
 the entire dialog opening. So a button whose action would be refused — a link
@@ -346,8 +352,17 @@ and **Clickable areas** shades where a click will land.
 Click anything in the preview, or pick it from the **Outline** on the left, and
 the panel on the right edits it: its words, style, colours, icon and width, its
 tooltip, and under **When clicked** what it runs — the same choices a button
-has. **Add after** (or **Add inside**, on a row or column) adds a piece, and the
-arrows, **Duplicate** and **Delete** rearrange them. Click the empty space around
+has. **Add after** (or **Add inside**, on a row or column) adds a piece, and
+**Duplicate** and **Delete** do what they say.
+
+To move a piece, **drag it**. In the preview, a yellow bar shows where it will
+land, and it can go into a different row or column, not only up and down its
+own. To carry a whole row or column, select it first (in the outline is
+easiest), then drag from anywhere inside it. The dialog scrolls if you hold the
+piece near the top or bottom. In the **Outline**, drop onto the top or bottom
+edge of a row to put the piece before or after it, or onto the middle of a row,
+column or grid to put it inside. The arrows in the panel, or **Alt** with the
+arrow keys, move the selection one place at a time. Click the empty space around
 the content, or press Escape, to get back to the dialog's own settings: its
 title, its width, its footer (one button, or a yes/no pair) and how it behaves.
 Click the footer button itself to set its words and what it runs. **JSON** shows
