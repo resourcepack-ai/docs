@@ -152,8 +152,8 @@ A progress bar fills from a value and a maximum: `{health}` out of
 `{health_max}`, `{food}` out of 20, `{xp}` out of 100, `{air}` out of 15.
 
 **A plugin can publish any value it likes** under any name, and a label or bar
-can read it the same way. See [the RP Engine API](/rp-engine) for
-`overlays().set(player, "stamina", "40")`.
+can read it the same way. See [the RP Engine API](/rp-engine/api#hud-overlays)
+for `overlays().set(player, "stamina", "40")`.
 
 ## Showing it in game
 
@@ -168,7 +168,7 @@ An object does nothing until something shows it. There are three ways.
   `/rp shaders`, which do the same for shader objects only. The id is on the
   object's card on the pack page.
 - **A plugin**: `overlays().show(player, "studio:<id>")` and
-  `overlays().hide(...)`.
+  `overlays().hide(...)`. See [the RP Engine API](/rp-engine/api#hud-overlays).
 
 When you're testing, **Sync** in the editor pushes the pack to you and puts the
 object on your screen straight away.
