@@ -27,6 +27,7 @@ engine.emotes();     // emotes and movement sets
 engine.vehicles();   // vehicles, and the ones standing in your worlds
 engine.sounds();     // custom sounds
 engine.icons();      // icons, and putting one into text
+engine.overlays();   // HUD overlays: show one, hide one, feed it values
 engine.registry();   // everything this server holds, by id
 ```
 
@@ -39,6 +40,7 @@ engine.emotes()     // emotes and movement sets
 engine.vehicles()   // vehicles, and the ones standing in your worlds
 engine.sounds()     // custom sounds
 engine.icons()      // icons, and putting one into text
+engine.overlays()   // HUD overlays: show one, hide one, feed it values
 engine.registry()   // everything this server holds, by id
 ```
 
@@ -177,6 +179,77 @@ you replace volume and pitch. `playFrom` is the moving-source form for engines,
 creatures and anything else where a fixed coordinate would leave the sound
 behind. Playing methods are main thread only; `ids()` and `info()` are safe
 from any thread.
+
+## HUD overlays
+
+An overlay is a picture kept on a player's screen: a stat block, a health bar,
+a crouch indicator. [Shader objects](/shaders) made in Studio are overlays, and
+so are the ones in a [`huds/` folder](/rp-engine/hud). Server owners draw them;
+your plugin decides who sees one and what numbers are in it.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.overlays().show(player, "studio:health");  // stays until hidden
+engine.overlays().hide(player, "studio:health");
+engine.overlays().hideAll(player);
+engine.overlays().showing(player);                // what they have on
+```
+
+```kotlin
+engine.overlays().show(player, "studio:health")  // stays until hidden
+engine.overlays().hide(player, "studio:health")
+engine.overlays().hideAll(player)
+engine.overlays().showing(player)                // what they have on
+```
+
+</CodeTabs>
+
+An overlay made in Studio has the id `studio:<id>`, where `<id>` is the one on
+its card on the pack page.
+
+There is a `hide` rather than a duration. To show one for five seconds,
+schedule the hide; to show one until a fight ends, hide it when the fight ends.
+
+### Feeding it values
+
+An overlay's labels and progress bars can print `{name}` placeholders. **Any
+name works, and yours wins.**
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.overlays().set(player, "stamina", "40");
+engine.overlays().set(player, "stamina", null);   // remove it
+engine.overlays().value(player, "stamina");       // what you last set
+```
+
+```kotlin
+engine.overlays().set(player, "stamina", "40")
+engine.overlays().set(player, "stamina", null)   // remove it
+engine.overlays().value(player, "stamina")       // what you last set
+```
+
+</CodeTabs>
+
+A placeholder is looked up in three places, and the first answer wins:
+
+1. **Whatever you set.** A plugin that publishes a number means that number, so
+   it is never overruled by a built-in with the same name.
+2. **The built-ins**, such as `{health}`, `{food}` and `{level}`. The full list
+   is on the [HUD overlays](/rp-engine/hud) page.
+3. **PlaceholderAPI**, if the server has it.
+
+A name none of them knows draws as nothing rather than as `{name}`.
+
+Values are **per player**, not per overlay: `stamina` means the same thing to
+every overlay on that player's screen. A **progress bar** reads the same names,
+so a stamina bar out of 100 needs only the one `set` call above.
+
+**`set` and `value` are safe from any thread.** They only record the value, and
+the next redraw (within about a second and a half) picks it up, so setting six
+values in a row costs one redraw. `show`, `hide` and `hideAll` draw, so they are
+main thread only.
 
 ## Vehicles
 
