@@ -128,6 +128,36 @@ and what shows it.
 **Preview**, in the header, shows the object on a game screen at the size it
 will really be.
 
+### Full screen
+
+A canvas has a fixed size, but a player's screen doesn't: at the default GUI
+scale a 1080p monitor is 480 by 270 GUI pixels, and at GUI scale 1 it is 1920
+by 1080. For something that should cover the whole screen, like a tint, a
+vignette, a frame around the edges or a HUD with a piece in every corner, tick
+**Fill the whole screen** on the Canvas row.
+
+The object then covers every player's screen at any size, and each element is
+**pinned** to one of nine points of it: a corner, the middle of an edge, or the
+centre. Its X and Y are measured from that point to the same point of the
+element, so a bar pinned bottom-right at −4, −4 always sits four pixels in from
+the bottom-right corner. Pick the point in the element's **On the screen**
+settings.
+
+- **Labels** line up on their point to match: pinned right, the words end
+  there and grow leftward as the value changes; pinned to the middle, they
+  centre on it.
+- **Shapes** can also **Stretch with the screen**. A stretched shape is sized on
+  a 640 by 360 screen and scales with the real one, so a rectangle as wide as
+  that is as wide as any screen. Round shapes scale by the shorter side and stay
+  round.
+- **Paint** keeps a box of its own, set under **Paint area**, and is placed on
+  the screen the way the whole canvas used to be.
+
+The buttons above the canvas show the object on four common screen sizes, so
+you can check that everything keeps its place.
+
+Unticking it turns the object back into a canvas, with everything where it was.
+
 ## Live values
 
 A label or a progress bar can read a value that changes per player. Write it in
@@ -181,6 +211,12 @@ object on your screen straight away.
   the bottom of the editor counts them, and anything past 32 isn't drawn.
 - **Paint is pixel art.** It is drawn one pixel per GUI pixel, so it looks
   blocky if the canvas is large, where shapes stay smooth.
+- **A full-screen object draws over the hotbar and crosshair**, and under chat
+  and titles, whichever bar it is sent through. A tint over the whole screen
+  tints the hotbar too. Its shapes are worked out for every pixel of the screen,
+  every frame, so a handful is fine and fifty is worth thinking twice about.
+- **Right- and centre-pinned labels need a current RP Engine.** On 0.1.57 or
+  older they start at their point instead of ending or centring on it.
 - **Only players who have your pack see it.** RP Engine only sends an object to
   players holding the pack it came from, so nobody else gets a row of
   missing-character boxes.
