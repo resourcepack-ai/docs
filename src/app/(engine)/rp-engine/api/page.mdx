@@ -156,6 +156,44 @@ every tick, fed from a placement's `playhead()`, poses the rig at that moment
 of its emote. That is how a vehicle keeps a paddler's arms on the paddle
 across a loop wrap.
 
+### Carrying a rig on a seat of your own
+
+A worn rig follows its wearer by being teleported every tick, which the client
+glides toward — for a rider moving fast on something of yours, a rig that
+trails its seat. Mount the rig's displays on the seat instead and the client
+draws them wherever the seat is:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+int[] ids = engine.emotes().passengerEntityIds(rider);   // bones, carried models, hands
+double lift = engine.emotes().rigOriginOffset();         // blocks above the feet
+```
+
+```kotlin
+val ids = engine.emotes().passengerEntityIds(rider)      // bones, carried models, hands
+val lift = engine.emotes().rigOriginOffset()             // blocks above the feet
+```
+
+</CodeTabs>
+
+Every one of those displays hangs off one point, `rigOriginOffset()` above the
+rider's feet, so put your seat's passenger position there. Read the number
+rather than copying it: it follows the size the engine draws a player at.
+
+<Callout type="warning" title="Mount with a packet, not addPassenger">
+  The engine keeps teleporting every display every tick, and a Bukkit teleport
+  of a passenger dismounts it. A client-side passengers packet is unaffected.
+  That packet is the vehicle's **whole** list: include whoever really sits
+  there, and send it again when the server sends its own and to anybody who
+  starts seeing the seat.
+</Callout>
+
+The ids change — putting a rig on spawns every display, and a swap to an emote
+carrying different models spawns those again. `EmoteRigSpawnEvent` fires each
+time with the new list, so mount there rather than once. It fires for every
+rig, so check the player is yours.
+
 ## Sounds
 
 <CodeTabs labels={["Java", "Kotlin"]}>
@@ -546,6 +584,7 @@ All cancellable unless the row says otherwise.
 | `PlayerLiquidEvent` | Somebody went into one of your liquids, or came out of one. Fires on the crossing, not every second. Not cancellable |
 | `EmoteStartEvent` | An emote is about to start |
 | `EmoteEndEvent` | An emote ended. Carries why — finished, stopped, moved, damaged, quit, shutdown |
+| `EmoteRigSpawnEvent` | A rig's displays were spawned — it was put on, or a swap replaced its carried models. Carries the new entity ids, for re-mounting them. Not cancellable |
 
 **The engine decides whether something can physically happen, never whether it
 is allowed to.** Region protection, plot ownership, an event world where
