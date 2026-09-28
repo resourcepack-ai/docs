@@ -66,3 +66,52 @@ game and neither can substitute for the other.
 
 An item with `armor:` and no `model:` is a vanilla-looking item that draws
 custom armour, which is a perfectly ordinary thing to want.
+
+## 3D armour from Studio
+
+Everything above is flat: the game draws worn armour as two layers on its own
+body shape, and nothing in a resource pack changes that shape. A
+[3D armour set from Studio](/armor#3d-armour) is built from cubes instead, and
+the engine is what puts it on a body. Sync the pack and it is there:
+
+```
+/rp armor wear studio:hazmat_suit      # put the whole set on
+/rp armor give studio:hazmat_suit      # or hand over the four pieces
+```
+
+The four pieces are ordinary items. Wear them however you wear armour —
+shift-click, drag into a slot, a dispenser — and take them off the same way.
+
+### How it is drawn
+
+- **The helmet is drawn by the game.** Any item in the head slot is rendered on
+  the head from its own model, and the helmet's model is built for exactly that.
+  It turns with the head frame for frame, on every client, and nobody ever sees
+  their own helmet in first person.
+- **Everything else is display entities**, one per piece of a limb, posed every
+  other tick onto where the game is drawing that limb. The walk cycle, the body
+  turning after the head, crouching, riding, the swing when you hit something,
+  and an arm raised for an item, a bow or a shield are all worked out the way
+  the client works them out, from the same movement.
+
+A few things follow from that, and they are worth knowing before a player finds
+them:
+
+- **Swimming, crawling, gliding and sleeping put the body pieces away** and
+  bring them back when you stand up. The game turns the whole body for those,
+  and chasing it would be a second renderer for moments nobody stands still in.
+- **You don't see your own body pieces by default.** In first person the game
+  draws none of your body, so all you would get is a torso of armour hanging
+  under the camera. `/rp armor self` shows them to you, in F5 and in first
+  person, until you turn it off or leave.
+- **Anyone who can't see you can't see your armour either** — a vanished
+  moderator stays vanished, and so does somebody an emote has swapped for a rig.
+- **A set is a handful of entities per player** wearing one — roughly ten to
+  forty depending on how it was built. They are never saved and never
+  collide with anything.
+
+<Callout type="warning" title="Needs 1.21.4, and a Studio push for now">
+  A set's art is named by a string `custom_model_data`, which arrived in 1.21.4;
+  below that `/rp armor` says so and nothing is drawn. Sets come from a Studio
+  push today — a hand-written 3D set in your content folder isn't supported yet.
+</Callout>
