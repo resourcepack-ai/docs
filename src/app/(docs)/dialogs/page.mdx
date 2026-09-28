@@ -64,6 +64,16 @@ frame and the strip behind the buttons keep their exact pixels while the rest
 stretches, and the heading, words and pictures stay the same distance from
 the edge they are nearest. Buttons follow the layout. One resize is one undo.
 
+**A button anywhere: Fake button.** The game decides where a dialog's real
+buttons go. For one somewhere else — on a card, in a corner, beside a picture —
+choose **Fake button** in **+**, then drag a box where it should be (or just
+click, for the game's own 150×20). It is drawn in the game's own button and
+font, so it looks exactly like a real one, and its label, icon and colour are
+edited like any other button's. What it does is set right there in its panel,
+under **When clicked**, with its tooltip: it is clickable wherever you move or
+resize it, without drawing a clickable area yourself. Any button piece can take
+the same look with the **Game** style.
+
 If a dialog made before this has background hanging below its last row of
 buttons, the panel offers **Pull it back in**, which moves just that bottom
 edge back inside the window.
@@ -376,8 +386,9 @@ picture of exactly what arrives:
 - **Basics** are the single pieces in the table above.
 - **Layout** is rows, columns and grids, the three GUI surfaces, two columns
   side by side and a sidebar beside its content.
-- **Anywhere** is pieces that are not in a row or a column at all — a
-  **button** exactly like the game's own (150 by 20, its words and its icon),
+- **Anywhere** (the first tab) is pieces that are not in a row or a column at
+  all — a **Fake button** exactly like the game's own (150 by 20, its words and
+  its icon),
   an icon button, text, an item or a head in a slot, and a small note panel.
   They go wherever you click and sit on top of everything else.
 - **Screens** are whole dialogs to start from — a punish menu, a store, a
