@@ -10,12 +10,13 @@ Armour is the art Minecraft draws **on a player's body** when they wear a
 helmet, chestplate, leggings or boots. A pack reskins one of the vanilla sets,
 and every piece of that set in the world changes with it.
 
-<Callout type="note" title="This is not a 3D model">
+<Callout type="note" title="This is not a 3D model — unless you ask for one">
   Armour is drawn as a flat texture on the game's own body shape. There is no
-  way to give worn armour real geometry from a Resource Pack — not with
+  way to give worn armour real geometry from a Resource Pack alone — not with
   OptiFine either, which never offered it. What *can* have depth is a helmet:
   any item worn in the head slot renders its own [model](/models), which is how
-  crowns and masks are made.
+  crowns and masks are made. For armour with real depth all over, see
+  [3D armour](#3d-armour) below, which is worn through RP Engine.
 </Callout>
 
 ## The sets
@@ -196,6 +197,51 @@ keep its own colour — studs, straps, buckles, metal — goes on the overlay.
 
 The dye picker in the editor is a preview only. The colour lives on the
 player's item, not in your pack.
+
+## 3D armour
+
+Pick **3D** on the Armour tab's shape switch and describe the set:
+
+> an orange chemical suit with a big face window, a breathing tank on the back
+> and green gloves
+
+What comes back isn't a reskin of a vanilla set. It's a new set built from
+cubes — a helmet, a chestplate, leggings and boots, each shaped round the body
+and painted — so a hazmat hood can be a hood, a spacesuit can carry its oxygen
+tank, and a knight's pauldrons can stand proud of the shoulders. It has a name
+of its own, and a pack can hold as many as you like.
+
+A set takes between fifteen and twenty-five minutes and is charged for what it
+actually cost, like a model. The page lets you orbit it, walk it and raise its
+arms, which is where a pauldron that's too deep or a chestplate that's too wide
+shows.
+
+### Wearing one in game
+
+Minecraft can't draw a 3D chestplate on its own — worn armour is always the
+flat layers above — so a 3D set is worn through
+[RP Engine](/rp-engine/armour#3d-armour-from-studio):
+
+- **The helmet is drawn by the game** as a head item, so it follows your head
+  exactly, on every client.
+- **Everything below the neck is fitted to your limbs by the plugin** — it
+  follows your walk, your crouch, your swing and what you're holding.
+
+**Sync** the pack and press **Give in-game** on the set's page, and the whole
+set is put on you. Everyone else sees all of it. You see the helmet in F5;
+run `/rp armor self` to see the rest of it on yourself too — it's off by
+default, because in first person a chestplate floating under the camera is the
+only thing you'd get.
+
+<Callout type="warning" title="Needs Minecraft 1.21.4 and RP Engine">
+  The pieces are named the way 1.21.4 names item art, so older servers can't
+  wear one. Without the plugin, the helmet still works on its own — any server
+  that can give it to you will draw it — but the rest of the set needs RP Engine
+  to put it on a body.
+</Callout>
+
+**Export** gives the set as a Blockbench `.bbmodel` instead, with its bones
+named the way MythicArmors expects, if that's what your server runs.
 
 ## Older Minecraft versions
 
