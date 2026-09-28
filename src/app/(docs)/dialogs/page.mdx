@@ -327,48 +327,96 @@ and grids as a generated UI dialog, with these pieces:
 | --- | --- |
 | **Button** | The game's grey 20-pixel button. **Selected** makes it gold, the way a store marks the category you are in; **Greyed out** is the game's disabled button; the label can have its own colour, and a sidebar's buttons can read from the left. A button colour tints the same button, bevels and all. |
 | **Link** | A line of clickable words, for a guide's contents. The current page is white and underlined, and sub-pages can be indented. |
-| **Text** | Words in the game's own colours. Titles are twice the size, headings bold. |
+| **Text** | Words in the game's own colours. Titles are twice the size, headings bold. Colour codes change colour mid-line, the way chat plugins write them: `Ping: &a42` (`&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` grey, `&l` bold, `&r` back to normal, `&#55ff55` any colour). |
+| **Panel button** | The light button of a menu built like an inventory screen: a white rim and a shaded bottom edge, 20 pixels tall. Made for sitting on a dark panel. |
 | **Chip** | A dark, see-through box for a balance, a count or a rank tag. |
 | **Setting row** | A full-width button with a value on the right, green when on and red when off. |
 | **Tile** | A dark card with a word, an icon and a caption, and a state: ready (gold), claimed (dimmed, ticked) or locked (padlocked). |
 | **Check line** | A ✔ or a ✘ in front of a word, for what a rank includes. |
 | **Label and value** | A label on the left and a value on the right, for receipts and stats. |
 | **Page of text** | Markdown-lite: `# Title` twice the size, `## Heading` in bold, `### Heading` in gold, `- bullets`, `> notes`, `**words**` in gold, `---` a rule. |
-| **Progress bar**, **QR code**, **Icon**, **Divider**, **Space** | As they sound. A QR code carries its own link and opens it when clicked. |
+| **Icon** | Any vanilla item, a player's head, one of your pack's own item sprites or textures, or one of the editor's drawn icons — at 16, 24, 32, 48 or 64 pixels, bare or **in a slot** (the dark well an item sits in). A head is that player's skin as it was when the dialog was saved. |
+| **Progress bar**, **QR code**, **Divider**, **Space** | As they sound. A QR code carries its own link and opens it when clicked. |
+
+Any row, column or grid can also sit on one of the GUI's own surfaces:
+
+| Surface | What it is |
+| --- | --- |
+| **Panel** | A light, raised card — a white rim and a thick bottom edge. The card in a list of kits, warps or punishment reasons. |
+| **Dark panel** | A dark section, for a group of controls: a heading and a stack of panel buttons. |
+| **Slot** | The dark well an item sits in, around anything. |
+
+Their frames are added to the box's padding for you, so a 32-pixel item in a
+slot on a panel padded 3 comes out as the 52-pixel card you would expect. (The
+older **Shade**, **Deep shade** and **Gold** are see-through, over the world.)
 
 Anything with a tooltip is clickable, and so is every button, link, tile and
-setting row. Tooltips are written the same way as for [clickable
-areas](#clickable-areas).
+setting row. A whole row or column can be one button too — tick **Clicking** in
+its panel, which is what makes a card clickable anywhere on it. Tooltips are
+written the same way as for [clickable areas](#clickable-areas).
 
 ### Editing one
 
-A Dialog-style dialog opens in its own editor, because there is no picture to
-paint — the screen is drawn from its layout every time. In the middle is the
-game's screen at the size a real monitor gives it (426×240 is a 1440p or 4K
-monitor on the Auto GUI scale, 480×270 a 1080p one), and it behaves like the
-game: the mouse wheel scrolls it, hovering a clickable thing shows its tooltip,
-and **Clickable areas** shades where a click will land.
+A Dialog-style dialog opens in a builder laid out like the GUI editor: tools
+down the left, the **Components** panel beside them, the screen in the middle
+and the selected piece's settings on the right. The screen is the game's, at the
+size a real monitor gives it (426×240 is a 1440p or 4K monitor on the Auto GUI
+scale, 480×270 a 1080p one), and it behaves like the game: the mouse wheel
+scrolls it, hovering a clickable thing shows its tooltip, and **Clickable
+areas** (`A`) shades where a click will land.
 
-Click anything in the preview, or pick it from the **Outline** on the left, and
-the panel on the right edits it: its words, style, colours, icon and width, its
-tooltip, and under **When clicked** what it runs — the same choices a button
-has. **Add after** (or **Add inside**, on a row or column) adds a piece, and
-**Duplicate** and **Delete** do what they say.
+**Adding.** The **+** (or `N`) opens **Add component**, where every part is a
+picture of exactly what arrives:
 
-To move a piece, **drag it**. In the preview, a yellow bar shows where it will
-land, and it can go into a different row or column, not only up and down its
-own. To carry a whole row or column, select it first (in the outline is
-easiest), then drag from anywhere inside it. The dialog scrolls if you hold the
-piece near the top or bottom. In the **Outline**, drop onto the top or bottom
-edge of a row to put the piece before or after it, or onto the middle of a row,
-column or grid to put it inside. The arrows in the panel, or **Alt** with the
-arrow keys, move the selection one place at a time. Click the empty space around
-the content, or press Escape, to get back to the dialog's own settings: its
-title, its width, its footer (one button, or a yes/no pair) and how it behaves.
-Click the footer button itself to set its words and what it runs. **JSON** shows
-the whole layout as the tree the generator writes, if you would rather edit
-that. Changes save on their own; `Ctrl+Z` undoes and `Ctrl+Shift+Z` (or
-`Ctrl+Y`) redoes, and they cover everything.
+- **Blocks** are ready-made groups — a **card** (an item in a slot, a name and a
+  line in gold, on a panel), a **card list** and a **card grid**, a **profile
+  card** with a player's head, a **control panel** of buttons, a **sidebar
+  menu**, a **tab bar**, a **stats panel**, a **yes or no**, a row of reward
+  tiles and a header bar.
+- **Basics** are the single pieces in the table above.
+- **Layout** is rows, columns and grids, the three GUI surfaces, two columns
+  side by side and a sidebar beside its content.
+- **Screens** are whole dialogs to start from — a punish menu, a store, a
+  guide, a checkout and more. A screen replaces what is there, title and footer
+  included; `Ctrl+Z` brings the old one back.
+
+Pick one and it follows the pointer: a yellow bar shows where it will land —
+between two pieces, inside a row or column, at the end — and a click puts it
+there. Hold **Shift** to keep placing the same thing, press **Enter** to put it
+after whatever is selected, or **Escape** to put it down. **Add inside** (on a
+box) or **Add after** (on anything else) in the settings panel adds straight to
+the selection instead.
+
+**Selecting and changing.** Click anything in the preview or its row in
+**Components**. The panel on the right edits it: its words, style, colours,
+icon, surface and size, its tooltip, and under **When clicked** what it runs —
+the same choices a button has. A selected piece has blue **grips**: drag the
+right edge to set its width, the bottom edge to set a box's height, the corner
+for both (an icon's corner steps through its sizes). Double-click a grip to go
+back to fitting the content.
+
+**Moving.** Drag a piece in the preview and the yellow bar shows where it will
+land, in any row or column. To carry a whole row or column, select it first
+(in **Components** is easiest), then drag from anywhere inside it. The dialog
+scrolls if you hold the piece near the top or bottom. In **Components**, drop
+onto the top or bottom edge of a row to put the piece before or after it, or
+onto the middle of a box to put it inside. **Alt** with the arrow keys moves
+the selection one place; the plain arrow keys walk through the pieces.
+
+**Components** shows every piece with its kind; boxes open and close, and a
+double-click renames one (only you see the name). Right-click a piece there or
+in the preview for **Copy**, **Cut**, **Paste**, **Duplicate**, **Group in a
+column**, **Put on a panel**, **Ungroup** and **Delete** — or use `Ctrl+C`,
+`Ctrl+X`, `Ctrl+V`, `Ctrl+D`, `Ctrl+G` and `Ctrl+Shift+G`. Copied pieces paste
+into your other dialogs too.
+
+Click the empty space around the screen, or press Escape, to get back to the
+dialog's own settings: its title, its width, its footer (one button, or a
+yes/no pair) and how it behaves. Click the footer button itself to set its words
+and what it runs. **JSON** shows the whole layout as the tree the generator
+writes, and **Export** downloads the screen as a picture. Changes save on their
+own; `Ctrl+Z` undoes and `Ctrl+Shift+Z` (or `Ctrl+Y`) redoes, and they cover
+everything.
 
 ### Clickable in whole lines
 
@@ -401,6 +449,27 @@ Pair the pack with a server running RP Engine and push it, the same way you
 
 The panel in the editor has the exact command for the dialog you are looking
 at.
+
+### A dialog about somebody
+
+A punish menu is about the player being punished, so its title is "Punish
+Steve" and every reason runs `mute Steve 1h`. Write that as a placeholder —
+`{target}`, or any name — in the title, a tooltip, a footer button or the
+command a click runs, and say what it is when you open the dialog:
+
+```
+/rp dialog studio:punish Admin target=Steve   # open it for Admin, about Steve
+/rp dialog studio:punish target=Steve         # open it for yourself
+```
+
+A name the command does not give is filled the way RP Engine's HUD
+placeholders are: `{player}`, `{ping}`, `{world}` and the other built-ins
+describe the player the dialog is shown to, and PlaceholderAPI answers the
+rest when it is installed. A name nothing knows is left as written. Plugins
+pass the values through RP Engine's API instead.
+
+Words drawn inside the dialog's picture — a name on a profile card, say — are
+part of the picture, so they stay as you typed them.
 
 <Callout title="A pushed dialog opens straight away">
   No restart for ordinary opening. On supported Mojang-mapped servers, RP Engine
