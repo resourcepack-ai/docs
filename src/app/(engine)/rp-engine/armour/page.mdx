@@ -103,7 +103,10 @@ them:
 - **You don't see your own body pieces by default.** In first person the game
   draws none of your body, so all you would get is a torso of armour hanging
   under the camera. `/rp armor self` shows them to you, in F5 and in first
-  person, until you turn it off or leave.
+  person, until you turn it off or leave. Your copy is placed ahead of you by
+  your own ping, because your client draws your body before the server has
+  heard where it went; it catches up for a moment whenever you start, stop or
+  turn sharply.
 - **Anyone who can't see you can't see your armour either** — a vanished
   moderator stays vanished, and so does somebody an emote has swapped for a rig.
 - **A set is a handful of entities per player** wearing one — roughly ten to
