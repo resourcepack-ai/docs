@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Dialogs",
   description:
-    "Minecraft 1.21.6's dialog screens in the game's own look — settings screens, stores, guides and menus with scrolling pages: how one is made and edited, what a click can run, and what the server needs to open one.",
+    "Minecraft 1.21.6's dialog screens, in two styles — drawn menus, or Minecraft's own look with scrolling pages: how each is made, what a click can run, and what the server needs to open one.",
 };
 
 # Dialogs
@@ -10,11 +10,30 @@ A dialog is the screen a server opens on a player — added in Minecraft
 **1.21.6**. It is not a container: it has no slots, and its buttons are real
 buttons that run real commands.
 
-What makes it worth building is that a dialog is made of **text**. Its title,
+What makes it worth drawing is that a dialog is made of **text**. Its title,
 the lines in its body and every button's label are text components, and a text
-component can be a font glyph. So a pack can put a whole screen of cards,
-controls and icons in the body, drawn as glyphs, with every button on it still
-clickable — and what comes back is a screen that looks like Minecraft made it.
+component can be a font glyph. So a pack can put a whole 256×256 picture in the
+body and a piece of drawn artwork in each button's face, and what comes back is
+a screen that looks nothing like Minecraft with buttons that still work.
+
+## Two styles
+
+When you make a dialog you choose its **Style**, in both the Generate and the
+Draw door:
+
+- **UI** is a drawn menu: a 256×256 picture with our own buttons, cards and a
+  panel if you want one, fitted to a single screen. Everything from
+  [Drawing one](#drawing-one) to [Generating one](#generating-one) below is
+  about this style.
+- **Dialog** is **Minecraft's own look** — the way the big servers' settings,
+  store, checkout and guide screens look. The game's font over the blurred
+  world, themed cards and controls or the game's own grey buttons, the title in
+  the game's own header, a Close button in the game's own footer, and a body
+  that **scrolls with the game's scrollbar** when it is taller than the screen.
+  It is the one the Generate sheet starts on. See
+  [The Dialog style](#the-dialog-style).
+
+The style is chosen when a dialog is made and stays with it.
 
 <Callout type="warning" title="A dialog needs a plugin, and 1.21.6">
   The picture is in your resource pack. The dialog itself is not — it is
@@ -24,35 +43,297 @@ clickable — and what comes back is a screen that looks like Minecraft made it.
   [GUI](/guis) is the older way to do the same job and works everywhere.
 </Callout>
 
-## Making one
+## Drawing one
 
-Dialogs are made under **Add asset**, through either door:
+A dialog is edited in the same editor a GUI is, with one difference: instead of
+slot guides it has **button guides**, and those are the whole layout.
 
-- **Generate** — say what the screen is for and it is designed for you. See
-  [Generating one](#generating-one).
-- **Draw** — a dialog starts with its title, a line of words and two buttons
-  that are **placed anywhere**, so you can drag them wherever you want them,
-  plus the game's own **Close** button in its footer. Build the rest in the
-  editor. See [Editing one](#editing-one).
+Each dashed box is where the game will draw one of the dialog's buttons. Paint
+inside a box and that artwork becomes the button's face; leave it empty and the
+button keeps vanilla's grey widget and your words. Everything outside the boxes
+is the panel — the frame, the heading, whatever you want behind it.
 
-Either way it looks like a screen Minecraft itself made. Nothing is painted
-behind it: the words, buttons and icons sit straight on the darkened, blurred
-world, in the game's own font with its shadow. The title is the one the game
-draws in its header, with the game's warning button beside it, and the button
-at the bottom is the game's own, in its footer. When there is more on the
-screen than fits, the game scrolls it and shows its own scrollbar on the right
-— so a guide can be as long as it needs to be.
+The boxes move when the dialog does. Add a button, change one's width, switch
+from two columns to three, and the guides move to where the game will put them.
+So set the buttons up first and paint into them second.
 
-Dialogs made before 30 September 2026 may be in the older **UI style**, a
-drawn 256×256 menu. Those still open, edit and sync as they always did — see
-[Older UI-style dialogs](#older-ui-style-dialogs) — but a new dialog is not
-made that way any more.
+To resize the dialog, click bare sheet so nothing is selected, then drag the
+grips on its outline — the top edge, the top corners or the sides. The window
+stays centred, so both edges move together. You can also type a size under
+**Size** in the Dialog panel. Either way the background moves with it: its
+frame and the strip behind the buttons keep their exact pixels while the rest
+stretches, and the heading, words and pictures stay the same distance from
+the edge they are nearest. Buttons follow the layout. One resize is one undo.
 
-## What it is made of
+**Buttons go anywhere.** Choose **Button** in **+** and drag a box where it
+should be — on a card, in a corner, beside a picture — or just click for the
+game's own 150×20. It is drawn in the game's own button and font, so it looks
+exactly like one of the game's, and its label, icon and colour are edited like
+any piece's. What it does is set in its panel, under **When clicked**, with its
+tooltip: it is clickable wherever you move or resize it, without drawing a
+clickable area yourself. Tick **Force to real button** and the same button
+becomes the game's own widget instead, placed by the game with the dialog's
+other real buttons (the dashed guides); untick it and it is drawn again where
+it was, ready to drag. Its words, click and tooltip carry across either way.
 
-A dialog can be up to **388 pixels wide** (nearly the whole width of a small
-screen) and about **1,000 pixels tall**, and it is built out of rows, columns
-and grids of these pieces:
+If a dialog made before this has background hanging below its last row of
+buttons, the panel offers **Pull it back in**, which moves just that bottom
+edge back inside the window.
+
+The Text tool and free-text components offer 1×, 2×, 3× and 4× lettering.
+Larger words need more room on the 256×256 sheet, so check their placement
+before syncing.
+
+Two components are made for the kind of screens big servers build:
+
+- **Formatted text** is a page of words written like markdown: `# Heading`,
+  `## Subheading`, `- bullet`, `> note`, `---` for a rule and `**word**` to
+  highlight. It wraps to the box you drag, in three colours you choose (body,
+  headings, and the highlights, bullets and rules). Use it for rules pages,
+  getting-started guides and patch notes.
+- **QR code** draws a link as a code players scan with their phone — a store
+  checkout, a Discord invite, a vote page. Set the link on the right. It is drawn
+  as large as its box allows in whole pixels, since a scanner cannot read
+  half-pixels. On a dialog it also becomes a clickable area that opens the same
+  link, for players without a phone to hand. Change the link later and the
+  clickable area follows.
+
+Button faces are held two pixels in from their boxes on every side, so the
+panel's edge stays visible under the last row. The dashed guides show the full
+native click areas. **Space between buttons** adds more room between the drawn
+faces, in steps of two pixels, and shows how far apart they will look; it
+changes the artwork inside the click areas, not where Minecraft puts its
+buttons.
+
+Buttons below the panel fill their box except for its outer pixel. That pixel
+is the rim of Minecraft's own button, black normally and **white when the
+pointer is over it**, so the buttons light up on hover without a shader. The
+canvas shows it: hover a button there and its rim turns white. (Hovering
+changes nothing else about a dialog button, not even the label's colour, so
+there is no way to swap a whole second picture in on hover without a core
+shader.)
+
+Minecraft draws its own grey button first and your artwork on top, so any
+transparent pixel inside a button's box shows that grey through. The canvas
+shows the grey button underneath for exactly that reason — if you see grey
+round a rounded corner, so will your players. With **Drawn faces** off, the
+canvas shows the game's buttons with their fallback words instead.
+
+## What a button can do
+
+One thing each, chosen in the Dialog panel beside the canvas:
+
+| Action | What happens |
+| --- | --- |
+| **Run command** | The player runs it, with their own permissions. |
+| **Suggest command** | A small box opens with the command typed in; they finish it and press **Run**. |
+| **Open link** | The client asks before following it. |
+| **Copy text** | Onto their clipboard. |
+| **Open another dialog** | Pick one of the pack's dialogs from the list — it opens straight away. |
+| **Nothing** | Which, with "After a press: Close", is what an Ok button is. |
+
+A command runs **as the player**, so it obeys their permissions. A button that
+needs more than they have wants a command the server has set up for it, not a
+higher-privileged button — there is no such thing.
+
+**Suggest command** can't fill in the chat box, because Minecraft doesn't allow
+it from a dialog a server opens: the game quietly drops the command. So the
+suggestion opens in a small dialog of its own instead, with the command in a
+text box and a **Run** button. A command that has to be signed, like `/msg`,
+is caught by the game, which then offers to put it in the chat box.
+
+Minecraft reads a whole dialog at once, and one action it cannot accept stops
+the entire dialog opening. So a button whose action would be refused — a link
+that does not start with `http://` or `https://`, an id that is not a valid
+dialog id, an empty command — is sent with no action at all (it just closes
+the dialog), and the editor marks it with a warning until it is fixed.
+
+A button that opens another dialog from the same pack carries that dialog with
+it, so it opens without a server restart. "Another id…" in the same list takes
+any other dialog id, which the server has to know already — one of
+Minecraft's, or one from a datapack.
+
+## Clickable areas
+
+Buttons are not the only thing a player can click. Any part of the picture — a
+reward tile, a shop card, a row in a settings list, an icon — can be a
+**clickable area** with its own action and its own tooltip, and it needs no
+button behind it. It is how the richest server menus are built: a week of
+reward days, each one clickable, each one explaining itself on hover.
+
+Pick the **Areas** tool (A) from the rail and drag a box over the picture. With
+the box selected, the panel beside the canvas sets what a click does (the same
+choices a button has) and its tooltip. Drag a box to move it, pull its grips to
+resize it, and press Delete to remove it. Areas on a piece move with it when
+you drag the piece or resize the dialog.
+
+Tooltips are written as plain lines and coloured the way server menus colour
+theirs:
+
+```
+Tuesday - Free
+
+Reward
+∙ 250 Coins
+
+Click to claim!
+```
+
+The first line is the title. A line above a list of `∙` items is that list's
+heading, a line starting ✔ is green, one starting ⌀ or ✘ is red, and one
+starting "Click" is yellow. The panel shows a preview, and hovering an area on
+the canvas shows exactly what a player will see.
+
+<Callout title="Clickable in whole lines">
+  The game finds a click by the line of text it lands on, and a dialog's lines
+  are 9 pixels tall — so an area is clickable on every line its box crosses,
+  across its exact width. The Areas tool shades the real clickable shape. The
+  topmost line of a dialog holds the picture itself and cannot be clicked, so
+  an area needs a little room above it; the dialog grows by a line if it has to.
+
+  A dialog saved before 26 September 2026 only answers clicks and tooltips on
+  its first clickable line in Minecraft 1.21.9 and newer. Open it in the
+  editor, save, and Sync again to fix that. A Dialog-style dialog rebuilds
+  itself when you open it.
+</Callout>
+
+One difference from a button: `$(key)` from an input is filled in for buttons
+only. A click on the picture runs its command exactly as written.
+
+## Inputs
+
+A dialog can ask for something: a text box, a checkbox, a list to pick from or
+a slider. Each has a **key**, and any button's command can write `$(key)` and
+get what the player put there.
+
+```
+tp @s $(destination)
+```
+
+## Fitting on the screen
+
+Minecraft gives a dialog the screen's height less a 38-pixel header and footer,
+and anything taller **scrolls**: the buttons start below the edge of the screen
+and a scrollbar appears. That depends on each player's screen and GUI scale.
+On the Auto GUI scale, which most players use, a 1440p or 4K monitor is only
+240 GUI pixels tall and a 1080p one 270.
+
+The **In game** box under Size measures your dialog and says which of those
+screens it fits, and the readout above the outline says the same while you
+drag. Only rows with artwork on them count: transparent space above your panel
+costs nothing, so a shorter window is how to make a dialog fit. When it does
+not fit, **Shrink to fit every screen** finds the tallest window that fits a
+240-pixel screen and resizes to it. The darkened strip under the last row of
+buttons is never drawn in game.
+
+## Layout and editing
+
+**Buttons** go either **in the panel** or **below the panel**. In the panel
+they are a grid at the bottom of your art, in as many columns as you choose —
+and because Minecraft stops drawing a dialog at its last row of buttons, a
+button there always sits right on the panel's bottom edge. Below the panel,
+Minecraft draws one or two buttons under the dialog instead (the footer), so
+your art keeps a frame and a margin all the way round; this is how most server
+menus do their Close. The canvas draws footer buttons just under the window,
+where they sit on a small screen — on a taller one they are further down.
+Generated dialogs put one or two buttons below the panel.
+
+Use **Add button** in the Dialog panel, then select a button to edit its face,
+label, tooltip and action. Undo covers these too — adding, removing and
+reordering buttons, their widths, columns and inputs — alongside everything
+you paint. Layout, inputs and behaviour have separate expandable
+sections. Input previews show the separate label and field for text inputs,
+the checkbox and its label, and the initial selection or slider value at the
+game's pixel scale. They are not painted into the exported artwork. Other
+resource packs can change the native controls' appearance. Save writes artwork
+and actions together. **Sync saves pending edits first** and stops if saving
+fails, so the game receives the layout you are looking at.
+
+Minecraft adds a warning button beside every dialog title. **Show warning icon**
+in Behaviour and alignment is off by default. This hides its sprite in the
+resource pack; the button remains clickable. Minecraft uses one sprite for the
+whole pack, so the choice applies to every dialog in that pack.
+
+After an editor update, reopening a dialog can refresh its generated button
+components. Save and sync it to send the updated artwork and layout to Minecraft;
+an already downloaded resource pack keeps its previous pixels and font metrics.
+
+## Generating one
+
+Describe the screen and the generator decides its layout, what it says, what
+everything is called and how wide the window is. It builds the screen out of
+rows and columns — a header, a list of categories down the left, three things
+side by side — and a layout engine works out where every piece goes, so
+nothing overlaps and nothing runs off the window.
+
+The generator picks one of these layouts from what the screen is for:
+
+- **Sidebar** — categories down the left, with the one you are in highlighted,
+  and its content on the right. Stores, profiles and menus with sections come
+  out this way.
+- **Columns** — two to four things side by side to compare, each with an icon,
+  a price or a value, a button and what it includes. Ranks, kits, crates and
+  plans come out this way.
+- **Tiles** — a grid of clickable tiles, each with an item icon, a word above
+  and a number below, and a state you can read at a glance: claimed tiles dim
+  and get a tick, locked ones darken and get a padlock, and the one you can take
+  now gets a gold rim. Daily rewards, shops and perks come out this way.
+- **Rows** — a list of clickable rows, each with an icon, a label and a value
+  chip that is green when on and red when off. Settings, toggles and warp menus
+  come out this way.
+- **Guide** — a page to read, set as a Formatted text component with headings,
+  bullets and highlights, with its contents down the left. Rules, guides and
+  changelogs come out this way.
+- **Simple** — a few words and one or two buttons, for notices and
+  confirmations.
+
+A generated dialog puts its own buttons **below the panel** — usually just a
+Close, or a pair for a confirmation — so the panel keeps its frame and margin
+all the way round. With three or more buttons, or any inputs, they stay in the
+panel instead. Everything else you click on it is a
+clickable area of the picture: category buttons, tiles, rows and anything else
+that has a tooltip. Under **Extras**, **Progress bar** guarantees a bar for a
+streak, tier or goal, and **QR code** puts a code of the link you type on the
+screen, clickable too. The QR code is the one thing on a generated dialog that
+arrives wired, because the link is yours rather than the generator's.
+
+Every clickable area arrives with a tooltip written like a server's item lore —
+the reward, the cost, the requirement and a status line. Numbers on the screen,
+such as a balance or a key count, are sample values for you to change. The
+window is sized to exactly what is on it and fitted to a 240-pixel screen: if a
+design is too tall, the generator tightens the spacing, shrinks large icons and
+drops small print before it gives up.
+
+For the UI style, **Background** decides the look. **None** is the clean look of the big servers'
+menus: no panel, the content floating over the game, and the title in the
+game's own header above the dialog. **Flat** puts it on a composed panel with a
+frame and a title plaque. **Drawn** does the same with a material the image
+model draws, or on a Simple screen spends that one image on a picture instead.
+Neither None nor Flat asks the image model for anything.
+
+Headings, pages and QR codes arrive as editable components, and each section of
+the layout as its own layer, so you can move and restyle them without painting
+over anything.
+
+<Callout title="It names the buttons; you wire them">
+  Nothing invents a command. A generated dialog arrives with its buttons and
+  clickable areas named and described, and their actions empty, because a
+  command is a thing with consequences on your server.
+</Callout>
+
+## The Dialog style
+
+A Dialog-style dialog looks like a screen Minecraft itself made. Nothing is
+painted behind it: the words, buttons and icons sit straight on the darkened,
+blurred world, in the game's own font with its shadow. The title is the one the
+game draws in its header, with the game's warning button beside it, and the
+button at the bottom is the game's own, in its footer. When there is more on
+the screen than fits, the game scrolls it and shows its own scrollbar on the
+right — so a guide can be as long as it needs to be.
+
+It can be up to **388 pixels wide** (nearly the whole width of a small screen)
+and about **1,000 pixels tall**, and it is built out of the same rows, columns
+and grids as a generated UI dialog, with these pieces:
 
 | Piece | What it is |
 | --- | --- |
@@ -84,17 +365,17 @@ older **Shade**, **Deep shade** and **Gold** are see-through, over the world.)
 Anything with a tooltip is clickable, and so is every button, link, tile and
 setting row. A whole row or column can be one button too — tick **Clicking** in
 its panel, which is what makes a card clickable anywhere on it. Tooltips are
-written as described in [Tooltips](#tooltips).
+written the same way as for [clickable areas](#clickable-areas).
 
 ### Settings screens: cards, controls and themes
 
-The pieces above make the big servers' stores and guides. A dialog can also be
-built the way a polished **settings screen** is: a sidebar of buttons under a
-search box, and beside it **cards** — each with a heading in heavy capitals, a
-small square button in its corner and a line under the heading — holding
-**rows** of a small icon, a name, one line of description and a **control** on
-the right. The same parts make a profile, a leaderboard, a quest log, a
-moderation menu or a shop that looks designed rather than typed.
+The pieces above make the big servers' stores and guides. A Dialog-style dialog
+can also be built the way a polished **settings screen** is: a sidebar of
+buttons under a search box, and beside it **cards** — each with a heading in
+heavy capitals, a small square button in its corner and a line under the
+heading — holding **rows** of a small icon, a name, one line of description and
+a **control** on the right. The same parts make a profile, a leaderboard, a
+quest log, a moderation menu or a shop that looks designed rather than typed.
 
 **Every dialog has a theme.** Cards, sidebar buttons, switches, sliders and
 highlights are drawn in it, and words on a card take its colours by themselves
@@ -121,7 +402,7 @@ existed looks exactly as it did.
 | **Search box**, **Text box** | A sunk field with a magnifier (or any icon) and grey words, or words that were typed. |
 | **Sidebar button** | A light button with a small icon, lit in the accent when it is the page you are on, with an optional badge ("3", "NEW"). |
 | **Icon button** | A small square button: reset, refresh, info. |
-| **Theme button** | The theme's 16-pixel button with an icon — a **Clear**, a **Buy**, a **Claim**. Selected lights it in the accent, and a **Button colour** paints it in any colour, its edges and words worked out to match. |
+| **Theme button** | The theme's 16-pixel button with an icon — a **Clear**, a **Buy**, a **Claim**. Selected lights it in the accent. |
 | **List option** | One row of a list to pick from, the chosen one lit. |
 | **Badge** | A small solid tag: NEW, -20%, a count. |
 | **Display text** | The heavy capitals a card's heading is set in, for big numbers too. |
@@ -151,40 +432,25 @@ PlaceholderAPI. Inside a dialog, `{show_sidebar}` is its value like any other
 placeholder. A player can only set a setting some dialog on the server shows,
 and only to one of the values it offers.
 
-<Callout type="warning" title="Needs RP Engine 0.1.62 or newer">
+<Callout type="warning" title="Needs RP Engine 0.1.61 or newer">
   An older RP Engine opens the dialog with every state of a bound control
   drawn in the same place, the default on top, and a click on it only gets an unknown-command reply.
   Update the plugin on the server.
 </Callout>
 
-## Editing one
+### Editing one
 
-A dialog opens in a builder laid out like the GUI editor: tools down the left,
-the **Components** panel beside them, the screen in the middle and the selected
-piece's settings on the right. The screen is the game's, at the size a real
-monitor gives it (426×240 is a 1440p or 4K monitor on the Auto GUI scale,
-480×270 a 1080p one), and it behaves like the game: the mouse wheel scrolls it,
-hovering a clickable thing shows its tooltip, and **Clickable areas** (`A`)
-shades where a click will land.
+A Dialog-style dialog opens in a builder laid out like the GUI editor: tools
+down the left, the **Components** panel beside them, the screen in the middle
+and the selected piece's settings on the right. The screen is the game's, at the
+size a real monitor gives it (426×240 is a 1440p or 4K monitor on the Auto GUI
+scale, 480×270 a 1080p one), and it behaves like the game: the mouse wheel
+scrolls it, hovering a clickable thing shows its tooltip, and **Clickable
+areas** (`A`) shades where a click will land.
 
-**Words, in place.** Double-click any words on the screen — a button's label, a
-heading, a line of text, a sidebar button, the title in the game's header or a
-footer button — and type straight onto it. **Enter** puts them there
-(**Shift+Enter** starts a new line in a text or a page), **Escape** leaves them
-as they were, and clicking anywhere else keeps what you typed. With a piece
-selected, **Enter** or **F2** does the same, and so does **Edit words** in its
-right-click menu.
+**Adding.** The **+** (or `N`) opens **Add component**, where every part is a
+picture of exactly what arrives:
 
-**Adding.** The **+** (or `N`) opens **Add component**. Pick a shelf across
-the top, or type in its search box to look across every shelf at once
-(**Enter** takes the first match). Hover a component to see a picture of
-exactly what arrives, drawn in the dialog's own theme.
-
-- **Anywhere** (the first shelf) is pieces that are not in a row or a column at
-  all — a **Button** exactly like the game's own (150 by 20, its words and its
-  icon), an icon button, text, an item or a head in a slot, and a small note
-  panel. They go wherever you click and sit on top of everything else. The
-  button under **+** on the rail (`B`) picks up that **Button** in one click.
 - **Blocks** are ready-made groups — a **settings card**, a setting row for
   each control, a **sidebar** under a search box, a **results header**, a
   **product grid**, **stat cards**, a **leaderboard** and a **quest** row, and
@@ -199,136 +465,66 @@ exactly what arrives, drawn in the dialog's own theme.
 - **Layout** is rows, columns and grids, the theme's **Card**, **Plain card**,
   **Well** and **Highlight band**, the three GUI surfaces, two columns side by
   side and a sidebar beside its content.
+- **Anywhere** (the first tab) is pieces that are not in a row or a column at
+  all — a **Button** exactly like the game's own (150 by 20, its words and its
+  icon),
+  an icon button, text, an item or a head in a slot, and a small note panel.
+  They go wherever you click and sit on top of everything else.
+- **Screens** are whole dialogs to start from — every screen the generator
+  learns from: settings, search results, a store, kits, a reward calendar, a
+  guide, a confirmation, a profile, a leaderboard, quests, a moderation menu,
+  warps and a checkout, each in its own theme. A screen replaces what is there,
+  title, theme and footer included; `Ctrl+Z` brings the old one back.
 
-Pick one and it follows the pointer. A piece from **Anywhere** is dropped where
-you click. Anything else shows a yellow bar where it will land — between two
-pieces, inside a row or column, at the end — and a click puts it there. Hold
-**Shift** to keep placing the same thing, press **Enter** to put it after
-whatever is selected, or **Escape** to put it down. **Add inside** (on a box) or
-**Add after** (on anything else) in the settings panel adds straight to the
-selection instead.
+Pick one and it follows the pointer: a yellow bar shows where it will land —
+between two pieces, inside a row or column, at the end — and a click puts it
+there. Hold **Shift** to keep placing the same thing, press **Enter** to put it
+after whatever is selected, or **Escape** to put it down. **Add inside** (on a
+box) or **Add after** (on anything else) in the settings panel adds straight to
+the selection instead.
 
 **Selecting and changing.** Click anything in the preview or its row in
-**Components**. The panel on the right edits it, in the order you usually want:
-its words first, then — for anything a player clicks — what clicking it does
-(**When clicked**, the same choices a footer button has) and its tooltip, then
-how it looks: style, colours, icon, surface and size. A selected piece has blue
-**grips**: drag the right edge to set its width, the bottom edge to set a box's
-height, the corner for both (an icon's corner steps through its sizes).
-Double-click a grip to go back to fitting the content.
-
-The bar under the screen shows where the selection sits — **Screen › Card › Row
-› Button** — and clicking any step selects it, which is the quickest way from a
-word to the card it is on. The pointer turns into a cross of arrows over
-anything you can pick up and drag.
+**Components**. The panel on the right edits it: its words, style, colours,
+icon, surface and size, its tooltip, and under **When clicked** what it runs —
+the same choices a button has. A selected piece has blue **grips**: drag the
+right edge to set its width, the bottom edge to set a box's height, the corner
+for both (an icon's corner steps through its sizes). Double-click a grip to go
+back to fitting the content.
 
 **Moving.** Drag a piece in the preview and the yellow bar shows where it will
 land, in any row or column. To carry a whole row or column, select it first
-(the bar under the screen is easiest), then drag from anywhere inside it. The
-dialog scrolls if you hold the piece near the top or bottom. In
-**Components**, drop onto the top or bottom edge of a row to put the piece
-before or after it, or onto the middle of a box to put it inside. **Alt** with
-the arrow keys moves the selection one place; the plain arrow keys walk
-through the pieces.
+(in **Components** is easiest), then drag from anywhere inside it. The dialog
+scrolls if you hold the piece near the top or bottom. In **Components**, drop
+onto the top or bottom edge of a row to put the piece before or after it, or
+onto the middle of a box to put it inside. **Alt** with the arrow keys moves
+the selection one place; the plain arrow keys walk through the pieces.
 
-**Placing anywhere.** A free piece — from **Anywhere**, or a drawn dialog's two
-starting buttons — is dragged to any spot, pixel for pixel. It snaps to the
-middle and edges of the dialog, to other free pieces and to the edges of the
-words and cards in the layout (hold **Alt** not to); the arrow keys nudge it a
-pixel at a time (**Shift** for ten), and its panel has its exact **X** and
-**Y**, measured from the dialog's top-left corner. The game draws a dialog only
-inside its content — as wide as its **Content width**, centred on the screen —
-so take a piece past a side and the dialog **widens to make room**, up to 388
-pixels, while everything else stays where it is on screen; a dashed outline
-shows the dialog's edge while you drag. Nothing can go above the top: that is
-the game's title bar. Any piece already in the layout can join them: hold **Shift** while you
-drag it and it comes out of its row or column, drawn where it will land, and
-stays wherever you let go — or use **Place anywhere** in its panel or its
-right-click menu to lift it out exactly where it is. **Back into the layout**
-returns it to the end of the screen. A free button is clickable and has its
-tooltip like any other, and where it lies over a card, a click lands on the
-button. Components marks free pieces with a small cross of arrows.
+**Placing anywhere.** A piece from **Anywhere** is dragged to any spot, pixel
+for pixel: it snaps to the middle and edges of the screen and to other free
+pieces (hold **Alt** not to), the arrow keys nudge it a pixel at a time
+(**Shift** for ten), and its panel has its exact **X** and **Y**. Any piece
+already in the layout can join them — **Place anywhere** in its panel or its
+right-click menu lifts it out exactly where it is — and **Back into the
+layout** returns it to the end of the screen. A free button is clickable and
+has its tooltip like any other, and where it lies over a card, a click lands on
+the button. Components marks free pieces with a small cross of arrows.
 
 **Components** shows every piece with its kind; boxes open and close, and a
 double-click renames one (only you see the name). Right-click a piece there or
-in the preview for **Edit words**, **Copy**, **Cut**, **Paste**, **Duplicate**,
-**Group in a column**, **Put on a panel**, **Ungroup** and **Delete** — or use
-`Ctrl+C`, `Ctrl+X`, `Ctrl+V`, `Ctrl+D`, `Ctrl+G` and `Ctrl+Shift+G`. Copied
-pieces paste into your other dialogs too.
+in the preview for **Copy**, **Cut**, **Paste**, **Duplicate**, **Group in a
+column**, **Put on a panel**, **Ungroup** and **Delete** — or use `Ctrl+C`,
+`Ctrl+X`, `Ctrl+V`, `Ctrl+D`, `Ctrl+G` and `Ctrl+Shift+G`. Copied pieces paste
+into your other dialogs too.
 
 Click the empty space around the screen, or press Escape, to get back to the
 dialog's own settings: its title, its width, its theme, its footer (one button,
-or a yes/no pair) and how it behaves. Click the footer button itself to set its
-words and what it runs. **JSON** shows the whole layout as the tree the
-generator writes, and **Export** downloads the screen as a picture. Changes save
-on their own; `Ctrl+Z` undoes and `Ctrl+Shift+Z` (or `Ctrl+Y`) redoes, and they
-cover everything.
+or a yes/no pair) and how it behaves. Click the footer button itself to set its words
+and what it runs. **JSON** shows the whole layout as the tree the generator
+writes, and **Export** downloads the screen as a picture. Changes save on their
+own; `Ctrl+Z` undoes and `Ctrl+Shift+Z` (or `Ctrl+Y`) redoes, and they cover
+everything.
 
-## Tooltips
-
-Every clickable thing can explain itself on hover. Tooltips are written as
-plain lines and coloured the way server menus colour theirs:
-
-```
-Tuesday - Free
-
-Reward
-∙ 250 Coins
-
-Click to claim!
-```
-
-The first line is the title. A line above a list of `∙` items is that list's
-heading, a line starting ✔ is green, one starting ⌀ or ✘ is red, and one
-starting "Click" is yellow. The panel shows a preview, and hovering the piece
-on the screen shows exactly what a player will see.
-
-## What a button can do
-
-One thing each, chosen under **When clicked** in a piece's panel, or in a
-footer button's:
-
-| Action | What happens |
-| --- | --- |
-| **Run command** | The player runs it, with their own permissions. |
-| **Suggest command** | A small box opens with the command typed in; they finish it and press **Run**. |
-| **Open link** | The client asks before following it. |
-| **Copy text** | Onto their clipboard. |
-| **Open another dialog** | Pick one of the pack's dialogs from the list — it opens straight away. |
-| **Nothing** | Which, with "After a click: Close", is what an Ok button is. |
-
-A command runs **as the player**, so it obeys their permissions. A button that
-needs more than they have wants a command the server has set up for it, not a
-higher-privileged button — there is no such thing.
-
-**Suggest command** can't fill in the chat box, because Minecraft doesn't allow
-it from a dialog a server opens: the game quietly drops the command. So the
-suggestion opens in a small dialog of its own instead, with the command in a
-text box and a **Run** button. A command that has to be signed, like `/msg`,
-is caught by the game, which then offers to put it in the chat box.
-
-Minecraft reads a whole dialog at once, and one action it cannot accept stops
-the entire dialog opening. So a button whose action would be refused — a link
-that does not start with `http://` or `https://`, an id that is not a valid
-dialog id, an empty command — is sent with no action at all (it just closes
-the dialog), and the editor marks it with a warning until it is fixed.
-
-A button that opens another dialog from the same pack carries that dialog with
-it, so it opens without a server restart. "Another id…" in the same list takes
-any other dialog id, which the server has to know already — one of
-Minecraft's, or one from a datapack.
-
-## Inputs
-
-A dialog can ask for something: a text box, a checkbox, a list to pick from or
-a slider. Each has a **key**, and a button's command can write `$(key)` and get
-what the player put there.
-
-```
-tp @s $(destination)
-```
-
-## Clickable in whole lines
+### Clickable in whole lines
 
 The game finds a click by the 9-pixel line of text it lands on, so a clickable
 thing is clickable on every line it covers at least half of. Two buttons
@@ -337,42 +533,30 @@ covers more of it. A link in a contents list is clickable across its whole row
 and halfway into the gaps above and below it, so the list has no dead spots.
 **Clickable areas** in the editor shows the real shape.
 
-## Generating one
+### Generating one
 
-Say what the screen is for — "a settings menu with video, audio and chat", "a
-pet menu where you can rename and summon your pet", "a crate menu for a prison
-server" — and the generator designs it out of the pieces above: a sidebar when
-there are categories to move between, cards with headings, setting rows with
-the right control for each setting, grids of product wells, stat cards,
-highlighted rows, small icons on every label and item pictures where a thing is
-an item.
-
-It chooses the **colours** from the subject, the way a designer would — a
-theme whose mood fits it, or a card and accent colour of its own (a classroom
-might come back chalkboard green with chalk-yellow highlights) — so different
-screens come back in different colours. Name colours in the request and it
-uses yours. If your pack has a **style guide** with a palette, the theme is
-built from its colours instead.
+**Dialog** is the style the Generate sheet starts on. Say what the screen is
+for — "a settings menu with video, audio and chat", "a pet menu where you can
+rename and summon your pet", "a crate menu for a prison server" — and the
+generator designs it out of the pieces above: a sidebar when there are
+categories to move between, cards with headings, setting rows with the right
+control for each setting, grids of product wells, stat cards, highlighted rows,
+small icons on every label and item pictures where a thing is an item. It picks
+a **theme** that suits the subject; when the request names no colours it
+varies them, so two menus do not come out the same grey. If your pack has a
+**style guide** with a palette, the theme is built from its colours instead.
 
 Before the dialog is saved, the generator takes **a second look** at what it
 drew: labels cut off, a card too narrow for what is in it, a screen too tall for
 a 1080p monitor, a missing icon. It fixes what it finds, and keeps the fix only
 if it is really better. That takes a little longer and costs no more.
 
-Under **Extras**, **Progress bar** guarantees a bar for a streak, tier or goal,
-and **QR code** puts a code of the link you type on the screen — clickable too,
-and the one thing on a generated dialog that arrives wired, because the link is
-yours. A dialog is as wide as its content and has nothing behind it, so there
-is no size or background to choose, and it never uses the image model. Every
-number on it — a balance, a price, a player count — is a believable sample for
-you to change.
-
-<Callout title="It names the buttons; you wire them">
-  Nothing invents a command. A generated dialog arrives with its buttons named
-  and described and their actions empty, because a command is a thing with
-  consequences on your server — unless a control is bound to a
-  [player setting](#player-settings), whose clicks are wired for you.
-</Callout>
+**Extras** work as they do for the UI style. **Size** and **Background** are not
+asked, because a Dialog-style dialog is as wide as its content and has nothing
+behind it. It never uses the image model. Every number on it — a balance, a
+price, a player count — is a believable sample for you to change, and nothing
+is wired to a command until you wire it (or bind a control to a
+[player setting](#player-settings)).
 
 ## Getting it onto a server
 
@@ -425,87 +609,13 @@ part of the picture, so they stay as you typed them.
   world instead.
 </Callout>
 
-## Older UI-style dialogs
+## If the picture sits a few pixels off
 
-Until 30 September 2026 a dialog could also be made in the **UI style**: a
-256×256 picture with our own buttons, cards and a panel if you wanted one,
-fitted to a single screen and edited in the same editor a GUI is. New dialogs
-are not made that way any more. The ones that exist keep working exactly as
-they did — they open, save, sync and open in game as before — and this is how
-they are edited.
+Where the game puts a dialog's body relative to its buttons is layout inside
+the client, and it is not something a pack can read — so the placement here is
+worked out rather than looked up, and a Minecraft release that moves a padding
+moves every drawn dialog with it.
 
-### Button guides
-
-Instead of slot guides a UI-style dialog has **button guides**, and those are
-the whole layout. Each dashed box is where the game will draw one of the
-dialog's buttons. Paint inside a box and that artwork becomes the button's
-face; leave it empty and the button keeps vanilla's grey widget and your words.
-Everything outside the boxes is the panel. The boxes move when the dialog does
-— add a button, change one's width, switch from two columns to three — so set
-the buttons up first and paint into them second.
-
-**Buttons go anywhere.** Choose **Button** in **+** and drag a box where it
-should be, or just click for the game's own 150×20. It is drawn in the game's
-own button and font, and what it does is set in its panel, under **When
-clicked**, with its tooltip. Tick **Force to real button** and the same button
-becomes the game's own widget instead, placed by the game with the dialog's
-other real buttons (the dashed guides); untick it and it is drawn again where
-it was.
-
-To resize the dialog, click bare sheet so nothing is selected, then drag the
-grips on its outline, or type a size under **Size** in the Dialog panel. The
-background's frame and the strip behind the buttons keep their exact pixels
-while the rest stretches. If a dialog has background hanging below its last
-row of buttons, the panel offers **Pull it back in**.
-
-Minecraft draws its own grey button first and your artwork on top, so any
-transparent pixel inside a button's box shows that grey through; the canvas
-shows the grey button underneath for exactly that reason. Buttons below the
-panel keep the game's own outer pixel, which turns **white when the pointer is
-over it**, so they light up on hover without a shader.
-
-### Clickable areas
-
-Any part of a UI-style dialog's picture — a reward tile, a shop card, a row in
-a settings list — can be a **clickable area** with its own action and its own
-[tooltip](#tooltips). Pick the **Areas** tool (A) from the rail and drag a box
-over the picture; with the box selected, the panel sets what a click does and
-its tooltip. Drag a box to move it, pull its grips to resize it, and press
-Delete to remove it. Areas on a piece move with it when you drag the piece or
-resize the dialog.
-
-An area is clickable on every 9-pixel line its box crosses, across its exact
-width, and the Areas tool shades the real clickable shape. The topmost line of
-a UI-style dialog holds the picture itself and cannot be clicked. One
-difference from a button: `$(key)` from an input is filled in for buttons only.
-
-<Callout title="Saved before 26 September 2026?">
-  A UI-style dialog saved before then only answers clicks and tooltips on its
-  first clickable line in Minecraft 1.21.9 and newer. Open it in the editor,
-  save, and Sync again to fix that.
-</Callout>
-
-### Fitting on the screen
-
-Minecraft gives a dialog the screen's height less a 38-pixel header and footer,
-and a UI-style dialog taller than that **scrolls**: its buttons start below the
-edge of the screen. On the Auto GUI scale a 1440p or 4K monitor is only 240 GUI
-pixels tall and a 1080p one 270. The **In game** box under Size says which of
-those screens the dialog fits; only rows with artwork on them count, and
-**Shrink to fit every screen** finds the tallest window that fits a 240-pixel
-screen.
-
-**Buttons** go either **in the panel** — a grid at the bottom of your art, in
-as many columns as you choose, always right on the panel's bottom edge — or
-**below the panel**, where Minecraft draws one or two under the dialog so your
-art keeps a frame all the way round. **Sync saves pending edits first** and
-stops if saving fails, so the game receives the layout you are looking at.
-
-### If the picture sits a few pixels off
-
-Where the game puts a UI-style dialog's body relative to its buttons is layout
-inside the client, and it is not something a pack can read — so the placement
-is worked out rather than looked up, and a Minecraft release that moves a
-padding moves every drawn dialog with it. The **Nudge** fields in the Dialog
-panel are the fix. Type the offset, save, look again. It is stored on that
-dialog, so it survives everything else you do to it.
+The **Nudge** fields in the Dialog panel are the fix. Type the offset, save,
+look again. It is stored on that dialog, so it survives everything else you do
+to it.
