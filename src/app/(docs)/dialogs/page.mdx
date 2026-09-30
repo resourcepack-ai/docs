@@ -25,11 +25,12 @@ Draw door:
   panel if you want one, fitted to a single screen. Everything from
   [Drawing one](#drawing-one) to [Generating one](#generating-one) below is
   about this style.
-- **Dialog** is **Minecraft's own look** — the way the big servers' store,
-  checkout and guide screens look. The game's font and grey buttons laid
-  straight over the blurred world, the title in the game's own header, a Close
-  button in the game's own footer, and a body that **scrolls with the game's
-  scrollbar** when it is taller than the screen. See
+- **Dialog** is **Minecraft's own look** — the way the big servers' settings,
+  store, checkout and guide screens look. The game's font over the blurred
+  world, themed cards and controls or the game's own grey buttons, the title in
+  the game's own header, a Close button in the game's own footer, and a body
+  that **scrolls with the game's scrollbar** when it is taller than the screen.
+  It is the one the Generate sheet starts on. See
   [The Dialog style](#the-dialog-style).
 
 The style is chosen when a dialog is made and stays with it.
@@ -366,6 +367,77 @@ setting row. A whole row or column can be one button too — tick **Clicking** i
 its panel, which is what makes a card clickable anywhere on it. Tooltips are
 written the same way as for [clickable areas](#clickable-areas).
 
+### Settings screens: cards, controls and themes
+
+The pieces above make the big servers' stores and guides. A Dialog-style dialog
+can also be built the way a polished **settings screen** is: a sidebar of
+buttons under a search box, and beside it **cards** — each with a heading in
+heavy capitals, a small square button in its corner and a line under the
+heading — holding **rows** of a small icon, a name, one line of description and
+a **control** on the right. The same parts make a profile, a leaderboard, a
+quest log, a moderation menu or a shop that looks designed rather than typed.
+
+**Every dialog has a theme.** Cards, sidebar buttons, switches, sliders and
+highlights are drawn in it, and words on a card take its colours by themselves
+— a name in the card's label colour, a description in its quieter one. Pick one
+of fourteen under **Theme** in the dialog's settings — Stone, Slate,
+Deepslate, Nether, Ocean, Jungle, End, Royal, Oak, Parchment, Ice, Cherry,
+Redstone and Sand — or choose any **Card** and **Accent** colour and the rims,
+shadows and wells are worked out from those two. A dialog made before themes
+existed looks exactly as it did.
+
+| Surface | What it is |
+| --- | --- |
+| **Card** | The theme's card, its corners cut at 45°. The **Card** in Layout adds one with a heading, a reset button and a divider already on it. |
+| **Well** | A darker box sunk into a card: a product in a shop, a balance, a stat. |
+| **Band** | A strip of highlight behind one row — your place on a leaderboard, a search match, the quest that is ready. |
+
+| Control | What it is |
+| --- | --- |
+| **Switch** | On or off, with the word beside it if you want one. |
+| **Segmented** | Two to four choices side by side, the chosen one lit. Each choice is its own click. |
+| **Slider** | A value with arrow buttons either side and a track with tick marks. Each arrow is its own click. |
+| **Dropdown** | The chosen one of a list, with a caret. |
+| **Checkbox**, **Stepper** | A box with a tick; minus, a number and plus. |
+| **Search box**, **Text box** | A sunk field with a magnifier (or any icon) and grey words, or words that were typed. |
+| **Sidebar button** | A light button with a small icon, lit in the accent when it is the page you are on, with an optional badge ("3", "NEW"). |
+| **Icon button** | A small square button: reset, refresh, info. |
+| **Theme button** | The theme's 16-pixel button with an icon — a **Clear**, a **Buy**, a **Claim**. Selected lights it in the accent. |
+| **List option** | One row of a list to pick from, the chosen one lit. |
+| **Badge** | A small solid tag: NEW, -20%, a count. |
+| **Display text** | The heavy capitals a card's heading is set in, for big numbers too. |
+
+**Small icons.** Nearly every label on a settings screen has a nine-pixel icon
+in front of it, the height of a line of words. The icon picker's **Small** shelf
+has more than a hundred of them — interface marks, settings categories, game
+things and flags — and any text can carry one before its words. Items and heads
+are still there for the bigger pictures: a product, a reward, a player.
+
+### Player settings
+
+A dialog is a picture, drawn when it is saved — so a switch on it is a picture
+of a switch, on for everybody. A switch, segmented control, slider, stepper,
+checkbox or dropdown can instead show **each player's own setting**: type a name
+under **Player setting** in its panel (lower-case, like `show_sidebar`).
+
+Every state of the control is then drawn, and the game shows each player the
+one their setting names. Clicking it changes their setting — a switch flips, a
+segment picks its own value, an arrow moves the slider one step — and the
+dialog opens again, straight away, showing the new state. Nothing else on the
+server is needed for that; the clicks are wired for you, and settings are kept
+per player, across restarts.
+
+Your other plugins read a setting as `%rpengine_var_show_sidebar%` through
+PlaceholderAPI. Inside a dialog, `{show_sidebar}` is its value like any other
+placeholder. A player can only set a setting some dialog on the server shows,
+and only to one of the values it offers.
+
+<Callout type="warning" title="Needs RP Engine 0.1.61 or newer">
+  An older RP Engine opens the dialog with every state of a bound control
+  drawn in the same place, the default on top, and a click on it only gets an unknown-command reply.
+  Update the plugin on the server.
+</Callout>
+
 ### Editing one
 
 A Dialog-style dialog opens in a builder laid out like the GUI editor: tools
@@ -379,22 +451,30 @@ areas** (`A`) shades where a click will land.
 **Adding.** The **+** (or `N`) opens **Add component**, where every part is a
 picture of exactly what arrives:
 
-- **Blocks** are ready-made groups — a **card** (an item in a slot, a name and a
-  line in gold, on a panel), a **card list** and a **card grid**, a **profile
-  card** with a player's head, a **control panel** of buttons, a **sidebar
-  menu**, a **tab bar**, a **stats panel**, a **yes or no**, a row of reward
-  tiles and a header bar.
-- **Basics** are the single pieces in the table above.
-- **Layout** is rows, columns and grids, the three GUI surfaces, two columns
-  side by side and a sidebar beside its content.
+- **Blocks** are ready-made groups — a **settings card**, a setting row for
+  each control, a **sidebar** under a search box, a **results header**, a
+  **product grid**, **stat cards**, a **leaderboard** and a **quest** row, and
+  the older ones: a **card** (an item in a slot, a name and a line in gold, on
+  a panel), a **card list** and a **card grid**, a **profile card** with a
+  player's head, a **control panel** of buttons, a **sidebar menu**, a **tab
+  bar**, a **stats panel**, a **yes or no**, a row of reward tiles and a
+  header bar. They are drawn in the dialog's own theme.
+- **Controls** are the settings screen's switches, choices, sliders, fields and
+  small buttons, each in the dialog's theme.
+- **Basics** are the single pieces in the first table above.
+- **Layout** is rows, columns and grids, the theme's **Card**, **Plain card**,
+  **Well** and **Highlight band**, the three GUI surfaces, two columns side by
+  side and a sidebar beside its content.
 - **Anywhere** (the first tab) is pieces that are not in a row or a column at
   all — a **Button** exactly like the game's own (150 by 20, its words and its
   icon),
   an icon button, text, an item or a head in a slot, and a small note panel.
   They go wherever you click and sit on top of everything else.
-- **Screens** are whole dialogs to start from — a punish menu, a store, a
-  guide, a checkout and more. A screen replaces what is there, title and footer
-  included; `Ctrl+Z` brings the old one back.
+- **Screens** are whole dialogs to start from — every screen the generator
+  learns from: settings, search results, a store, kits, a reward calendar, a
+  guide, a confirmation, a profile, a leaderboard, quests, a moderation menu,
+  warps and a checkout, each in its own theme. A screen replaces what is there,
+  title, theme and footer included; `Ctrl+Z` brings the old one back.
 
 Pick one and it follows the pointer: a yellow bar shows where it will land —
 between two pieces, inside a row or column, at the end — and a click puts it
@@ -437,8 +517,8 @@ column**, **Put on a panel**, **Ungroup** and **Delete** — or use `Ctrl+C`,
 into your other dialogs too.
 
 Click the empty space around the screen, or press Escape, to get back to the
-dialog's own settings: its title, its width, its footer (one button, or a
-yes/no pair) and how it behaves. Click the footer button itself to set its words
+dialog's own settings: its title, its width, its theme, its footer (one button,
+or a yes/no pair) and how it behaves. Click the footer button itself to set its words
 and what it runs. **JSON** shows the whole layout as the tree the generator
 writes, and **Export** downloads the screen as a picture. Changes save on their
 own; `Ctrl+Z` undoes and `Ctrl+Shift+Z` (or `Ctrl+Y`) redoes, and they cover
@@ -455,13 +535,28 @@ and halfway into the gaps above and below it, so the list has no dead spots.
 
 ### Generating one
 
-Choose **Style: Dialog** in the Generate sheet. **Extras** work as they do for
-the UI style, and the generator picks the layout the same way, in the game's
-look; **Size** and **Background** are not asked, because a
-Dialog-style dialog is as wide as its content and has nothing behind it. It
-never uses the image model. The generator writes Title Case rather than
-capitals, puts a store's categories in their own colours with the current one
-gold, and lets a guide's page run long, since the game will scroll it.
+**Dialog** is the style the Generate sheet starts on. Say what the screen is
+for — "a settings menu with video, audio and chat", "a pet menu where you can
+rename and summon your pet", "a crate menu for a prison server" — and the
+generator designs it out of the pieces above: a sidebar when there are
+categories to move between, cards with headings, setting rows with the right
+control for each setting, grids of product wells, stat cards, highlighted rows,
+small icons on every label and item pictures where a thing is an item. It picks
+a **theme** that suits the subject; when the request names no colours it
+varies them, so two menus do not come out the same grey. If your pack has a
+**style guide** with a palette, the theme is built from its colours instead.
+
+Before the dialog is saved, the generator takes **a second look** at what it
+drew: labels cut off, a card too narrow for what is in it, a screen too tall for
+a 1080p monitor, a missing icon. It fixes what it finds, and keeps the fix only
+if it is really better. That takes a little longer and costs no more.
+
+**Extras** work as they do for the UI style. **Size** and **Background** are not
+asked, because a Dialog-style dialog is as wide as its content and has nothing
+behind it. It never uses the image model. Every number on it — a balance, a
+price, a player count — is a believable sample for you to change, and nothing
+is wired to a command until you wire it (or bind a control to a
+[player setting](#player-settings)).
 
 ## Getting it onto a server
 
