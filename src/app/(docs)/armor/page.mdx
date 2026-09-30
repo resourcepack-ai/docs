@@ -285,6 +285,17 @@ care: the pack stores one copy and [export](/exporting) writes whichever path
 the version you picked reads. The only thing you lose going back is a set that
 didn't exist yet.
 
+## On Bedrock
+
+Flat armour converts. Bedrock draws armour from the same 64×32 layout, so the
+`.mcpack` carries your sheets under Bedrock's names for each set (`chain` for
+chainmail, `leather` for leather) and a reskinned set looks the same on both
+editions.
+
+3D armour doesn't. Java players see it because the plugin builds it out of
+display entities or the pack's own shader, and Geyser shows Bedrock players
+neither, so a Bedrock player wearing a 3D set looks unarmoured.
+
 ## Seeing it in game
 
 There's no give command for armour, because there's no custom item involved —
