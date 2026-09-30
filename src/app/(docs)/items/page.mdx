@@ -102,11 +102,8 @@ nothing until something hands out a tagged item.
 
 ## On Bedrock
 
-Sprites convert. Each one lands in the `.mcpack` under the name Bedrock uses
-for that item, so a reskin works on Bedrock the same way it does on Java. Most
-names are the same in both editions; where they differ (`golden_apple` is
-`apple_golden` on Bedrock, `wooden_sword` is `wood_sword`) the export renames
-it for you.
+Sprites convert. Each one lands at `textures/items/<name>.png` in the
+`.mcpack`, so a reskin works on Bedrock the same way it does on Java.
 
 Variants don't: the tag mechanism is Java's, and Bedrock has no equivalent to
 dispatch on. A custom item's sprite comes across as its model's icon.

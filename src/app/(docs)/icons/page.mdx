@@ -107,15 +107,5 @@ glyph for.
 
 ## On Bedrock
 
-Icons convert. Bedrock keeps its custom characters in glyph sheets of 256
-each, so the `.mcpack` draws every icon into the sheet for its character, and
-the same `` you put in chat shows the same picture on Bedrock.
-
-Two differences to know about:
-
-- **Size is per sheet, not per icon.** Every icon on one sheet is drawn at the
-  same height, roughly a line of text, whatever height you gave it on Java.
-- **A sheet replaces Bedrock's own.** Bedrock keeps a few of its own button
-  prompts in the same character range, and a pack that ships a sheet replaces
-  it whole. On a server that shows custom icons this is normal, but it is why a
-  controller prompt can go blank for a Bedrock player.
+Glyphs don't convert. Bedrock's font handling isn't Java's provider format, so
+an icon is a Java-only asset.
