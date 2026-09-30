@@ -218,26 +218,33 @@ shows.
 
 ### Wearing one in game
 
-Minecraft can't draw a 3D chestplate on its own — worn armour is always the
-flat layers above — so a 3D set is worn through
-[RP Engine](/rp-engine/armour#3d-armour-from-studio):
+How a set gets onto a body depends on the player's Minecraft version.
+
+**On 26.1 and 26.2 the game draws the whole set itself.** The pack carries it
+as equipment, drawn back into cubes on the player's own limbs by the pack's
+shaders, so it moves with the body exactly, never lags and needs no plugin.
+The set's page lists four vanilla `/give` commands, one per piece, for a server
+with nothing installed.
+
+**On 1.21.4 to 1.21.11 it is worn through
+[RP Engine](/rp-engine/armour#3d-armour-from-studio):**
 
 - **The helmet is drawn by the game** as a head item, so it follows your head
   exactly, on every client.
-- **Everything below the neck is fitted to your limbs by the plugin** — it
+- **Everything below the neck is fitted to your limbs by the plugin.** It
   follows your walk, your crouch, your swing and what you're holding.
 
-**Sync** the pack and press **Give in-game** on the set's page, and the whole
-set is put on you. Everyone else sees all of it. You see the helmet in F5;
-run `/rp armor self` to see the rest of it on yourself too — it's off by
-default, because in first person a chestplate floating under the camera is the
-only thing you'd get.
+On a server running RP Engine you don't have to choose: **Sync** the pack and
+press **Give in-game** on the set's page, and the whole set is put on you. Each
+player sees it the way their own client can draw it. With the plugin drawing
+it, you see the helmet in F5; run `/rp armor self` to see the rest of it on
+yourself too. It's off by default, because in first person a chestplate
+floating under the camera is the only thing you'd get.
 
-<Callout type="warning" title="Needs Minecraft 1.21.4 and RP Engine">
-  The pieces are named the way 1.21.4 names item art, so older servers can't
-  wear one. Without the plugin, the helmet still works on its own — any server
-  that can give it to you will draw it — but the rest of the set needs RP Engine
-  to put it on a body.
+<Callout type="warning" title="Needs Minecraft 1.21.4, and RP Engine 0.1.61 below 26.1">
+  The pieces are named the way 1.21.4 names item art, so older versions can't
+  wear one. Between 1.21.4 and 1.21.11 the helmet works on its own, but the
+  rest of the set needs RP Engine 0.1.61 or newer to put it on a body.
 </Callout>
 
 **Export** gives the set as a Blockbench `.bbmodel` instead, with its bones
