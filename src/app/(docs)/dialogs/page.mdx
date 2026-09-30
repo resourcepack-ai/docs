@@ -236,10 +236,15 @@ through the pieces.
 
 **Placing anywhere.** A free piece — from **Anywhere**, or a drawn dialog's two
 starting buttons — is dragged to any spot, pixel for pixel. It snaps to the
-middle and edges of the screen, to other free pieces and to the edges of the
+middle and edges of the dialog, to other free pieces and to the edges of the
 words and cards in the layout (hold **Alt** not to); the arrow keys nudge it a
 pixel at a time (**Shift** for ten), and its panel has its exact **X** and
-**Y**. Any piece already in the layout can join them: hold **Shift** while you
+**Y**, measured from the dialog's top-left corner. The game draws a dialog only
+inside its content — as wide as its **Content width**, centred on the screen —
+so take a piece past a side and the dialog **widens to make room**, up to 388
+pixels, while everything else stays where it is on screen; a dashed outline
+shows the dialog's edge while you drag. Nothing can go above the top: that is
+the game's title bar. Any piece already in the layout can join them: hold **Shift** while you
 drag it and it comes out of its row or column, drawn where it will land, and
 stays wherever you let go — or use **Place anywhere** in its panel or its
 right-click menu to lift it out exactly where it is. **Back into the layout**
