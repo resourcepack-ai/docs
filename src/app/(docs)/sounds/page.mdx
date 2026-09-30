@@ -137,19 +137,6 @@ noises. Nothing extra to switch on.
 
 ## On Bedrock
 
-Sounds are included. The `.mcpack` carries your audio and a
-`sound_definitions.json` that names each sound exactly as you named its event,
-so `/sound @p custom.laser` plays the same file on both editions on a server
-running Geyser. Bedrock reads the category from the pack, so yours is carried
-over (`master` and `voice`, which Bedrock doesn't have, become `neutral` and
-`player`).
-
-<Callout type="note" title="Replacing a vanilla sound needs the plugin">
-  A sound named after a vanilla event, like `entity.creeper.primed`, replaces
-  that sound on Java. Geyser plays vanilla sounds under Bedrock's own names, so
-  on a server running [RP Engine](/rp-engine) the plugin adds your replacement
-  under that name too, and Bedrock players hear it. A `.mcpack` installed by
-  hand, with no server involved, can't know the Bedrock name, and there the
-  replacement is Java-only. A few vanilla sounds are played by Bedrock itself
-  rather than by name and can't be replaced on Bedrock at all.
-</Callout>
+Sounds are **not** included in the Bedrock `.mcpack`. Bedrock uses a different
+sound format (`sound_definitions.json`), and the Java pack's audio is skipped
+rather than half-converted.
