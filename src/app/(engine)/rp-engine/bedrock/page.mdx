@@ -16,7 +16,7 @@ Bedrock player as they join. There is nothing to configure; it is detected and
 used. The console says what went into it:
 
 ```
-[RPEngine] Bedrock pack built: 12 items, 4 sounds, 6 icons, 2 armour pieces.
+[RPEngine] Bedrock pack built: 12 items, 3 models, 4 sounds, 6 icons, 2 armour pieces.
 ```
 
 It is built from your default bundle (`default-bundle` in `config.yml`), since
@@ -30,35 +30,28 @@ that is the one every player is given. It lands beside the Java zip in
   has a sprite at its `texture:` path, which Bedrock uses as its icon: Bedrock
   cannot draw a Java model in a hand.
 - **Armour** on those items, on the body, from the same equipment texture.
+- **Placed models.** Each piece is drawn for Bedrock players as a native
+  entity, at its size and facing, with its animations playing on their own
+  client. A model that paints with the game's own textures gets them baked in:
+  the engine downloads them once, in the background, so the very first build
+  can show a checkerboard for a few seconds.
 - **Sounds.** A sound plays on Bedrock under the same id it plays under on
-  Java, so actions and commands that play `mypack:laser` work for everyone.
+  Java, so actions and commands that play `mypack:laser` work for everyone. A
+  file in `overrides/` that replaces a vanilla sound is added under the name
+  Geyser plays that sound by, so it is heard on Bedrock too.
 - **Icons**, in chat and anywhere else text goes. Every icon is drawn about a
   line of text tall on Bedrock, whatever its height on Java.
 
 ## What does not
 
-**Placed models from your content folder.** Geyser does not draw the display
-entities a placed model is made of, so a Bedrock player sees the hitbox and
-nothing else.
-
-<Callout type="note" title="Models from Studio are the exception">
-  A model pushed or distributed from Studio carries a Bedrock copy of itself,
-  and the engine draws it for Bedrock players as a native entity, animations
-  included. See [Studio models on Bedrock](#studio-models-on-bedrock).
-</Callout>
-
-**Emotes and vehicles**, for the same reason: both are rigs of display
-entities.
+**Emotes and vehicles.** Both are rigs of display entities the server moves,
+and Geyser does not draw display entities.
 
 **Custom screens, HUD overlays and dialogs.** All three are drawn through the
 Java font or the Java dialog system, and Bedrock has neither.
 
-**3D armour.** It is drawn by display entities or by a Java shader, and
-Bedrock players see neither.
-
-**Replacing a vanilla sound.** A file in `overrides/` that replaces a vanilla
-sound changes it on Java only: Geyser turns vanilla sounds into Bedrock's own
-before the pack is asked.
+**A handful of vanilla sounds** that Bedrock plays itself rather than by name.
+Most vanilla sounds can be replaced on both editions.
 
 ## New items need a restart
 
@@ -82,12 +75,16 @@ when a player comes within 48 blocks and removed when they leave. Their
 animations play on the player's own client from the pack's keyframes, started
 by the same triggers as on Java.
 
+[3D armour](/rp-engine/armour#3d-armour-from-studio) from Studio is drawn on
+Bedrock players' bodies too, as long as the pieces were handed out by this
+version of the engine.
+
 ## Designing for both
 
 The rule that works: **make the item carry the meaning, and the model carry the
-delight.** A key that is obviously a key on Bedrock is fine if it is also a
-beautiful 3D key on Java; a puzzle whose only clue is a placed model is a
-puzzle Bedrock players cannot see.
+delight.** Bedrock draws most of what Java does now, but not screens, the HUD,
+dialogs, emotes or vehicles, so a menu that only exists as a custom screen is a
+menu Bedrock players never see.
 
 If your server is Java-first and Bedrock is a bonus, none of this matters much.
 If Bedrock is a real part of your player base, it is worth knowing which of
