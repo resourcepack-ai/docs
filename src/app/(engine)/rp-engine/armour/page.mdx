@@ -84,6 +84,12 @@ shift-click, drag into a slot, a dispenser — and take them off the same way.
 
 ### How it is drawn
 
+On Minecraft 26.1 and 26.2 the pack draws the whole set for itself, as part of
+the player's body, and the engine leaves those players alone: it asks each
+viewer's version (through ViaVersion when it is installed) and spawns nothing
+for a client that already draws the armour. Everyone else gets the set the way
+below.
+
 - **The helmet is drawn by the game.** Any item in the head slot is rendered on
   the head from its own model, and the helmet's model is built for exactly that.
   It turns with the head frame for frame, on every client, and nobody ever sees
@@ -113,8 +119,9 @@ them:
   forty depending on how it was built. They are never saved and never
   collide with anything.
 
-<Callout type="warning" title="Needs 1.21.4, and a Studio push for now">
-  A set's art is named by a string `custom_model_data`, which arrived in 1.21.4;
-  below that `/rp armor` says so and nothing is drawn. Sets come from a Studio
-  push today — a hand-written 3D set in your content folder isn't supported yet.
+<Callout type="warning" title="Needs RP Engine 0.1.61, 1.21.4, and a Studio push for now">
+  `/rp armor` arrived in RP Engine 0.1.61. A set's art is named by a string
+  `custom_model_data`, which arrived in 1.21.4; below that `/rp armor` says so
+  and nothing is drawn. Sets come from a Studio push today — a hand-written 3D
+  set in your content folder isn't supported yet.
 </Callout>
