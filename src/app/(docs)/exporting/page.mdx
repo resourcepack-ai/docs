@@ -20,7 +20,7 @@ resource packs.
 | Export | File | When you'd pick it |
 | --- | --- | --- |
 | **Java pack** | `.zip` | The ordinary Resource Pack. Goes in `resourcepacks`, or to a server host |
-| **Bedrock pack** | `.mcpack` | The same assets converted for Bedrock. Double-click to install |
+| **Bedrock pack** | `.mcpack` | Everything with a Bedrock equivalent, converted. Double-click to install. See [On Bedrock](#on-bedrock) |
 
 **Plugin Support** — not resource packs. On a server running one of these, the
 plugin builds the pack, and what you're downloading is the content it builds
@@ -44,6 +44,25 @@ build step to remember and nothing to re-upload between edits.
   keyframe animation and they convert into the real thing. See
   [Animations](/animations).
 </Callout>
+
+## On Bedrock
+
+Bedrock is a different game with a different pack format, so the `.mcpack` is
+a conversion rather than a copy. What converts:
+
+| Asset | On Bedrock |
+| --- | --- |
+| Models | A Bedrock entity with your geometry, animations as native keyframes |
+| Block and item reskins | Under Bedrock's own texture names |
+| Custom items | Their sprite, or the model's icon, as the item's icon |
+| Sounds | With your event names, so custom sounds play |
+| Armour | The same sheets, under Bedrock's armour names |
+| Icons | Drawn into Bedrock's glyph sheets |
+| Pack icon | Yes |
+
+What doesn't, because Bedrock has no way to draw it: GUI screens, the HUD,
+shaders, dialogs, emotes, 3D armour, per-face block splits and item variants.
+Each asset's own page says more under **On Bedrock**.
 
 ## ItemsAdder
 
