@@ -250,6 +250,34 @@ floating under the camera is the only thing you'd get.
 **Export** gives the set as a Blockbench `.bbmodel` instead, with its bones
 named the way MythicArmors expects, if that's what your server runs.
 
+### Bringing one in from Blockbench
+
+Drop a `.bbmodel` on the Armour tab's **Upload** door and it becomes a 3D set.
+A picture dropped there still makes a 2D set, as above. Importing is free,
+and it's how a set you exported and finished by hand in Blockbench comes back.
+
+What decides which piece a cube belongs to is the **group it sits in**. Name
+your groups after the body part they're worn on:
+
+| Group | Piece |
+| --- | --- |
+| `head` | Helmet |
+| `body`, `right_arm`, `left_arm` | Chestplate |
+| `waist`, `right_leg`, `left_leg` | Leggings |
+| `right_foot`, `left_foot` | Boots |
+
+Blockbench's own spellings work too (`RightArm`, `Right Arm`), and a cube
+nested deeper counts as part of the nearest body-part group above it. A cube
+in no body-part group has nowhere to be worn and is left out, as are meshes,
+since a set is made of cubes. The file's row says which pieces it found and
+how many cubes were left out before you import anything.
+
+Build the set around a player standing on the origin: feet at 0, facing
+south (+Z), with the wearer's right arm on the −X side. That's the layout
+Export writes and Blockbench's player template uses. A set drawn somewhere
+else lands just as far off the body. Textures must be embedded in the file,
+which is what Blockbench does when you save with them included.
+
 ## Older Minecraft versions
 
 Minecraft moved where armour textures live in **1.21.2**. You don't have to
