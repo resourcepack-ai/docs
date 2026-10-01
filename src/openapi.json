@@ -2205,6 +2205,167 @@
         }
       }
     },
+    "/packs/{pack}/dialogs": {
+      "post": {
+        "operationId": "generateDialog",
+        "summary": "Generate a dialog",
+        "description": "Produces a `texture` named `gui:<name>` — a dialog, the screen a server opens over the game with `/dialog` (Minecraft 1.21.6 and newer), drawn in Minecraft's own look: themed cards, switches, sliders and real clickable buttons.\n\n**The prompt is the whole brief.** A director decides what the screen is — its title, its sections, its controls and its colours (from the pack's style guide when it has one) — and the layout is drawn from that. `layout` narrows which kind of screen it builds; omit it and the director picks.\n\nOne charge per dialog, the same as a GUI sheet. Edit the result afterwards in the Studio's dialog editor.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's name within the pack."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Which store the generated asset lands in.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
+                "example": {
+                  "id": "keep_settings",
+                  "kind": "texture",
+                  "job": "medieval-keep:texture:gui:keep_settings",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What the screen is for, and what it should feel like.",
+                    "example": "a server settings menu for a cosy farming server"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label. Absent uses the title the director gives it."
+                  },
+                  "layout": {
+                    "type": "string",
+                    "description": "Which kind of screen to build. Omit for the director's choice.\n\n- `sidebar`: Categories down the left, the chosen one on the right: stores, profiles, menus with sections.\n- `columns`: Two to four things side by side to compare: ranks, kits, crates, plans.\n- `tiles`: A grid of clickable cards with a state you can read at a glance: rewards, shops, perks.\n- `rows`: A list of clickable rows with a value chip: settings, toggles, warps.\n- `guide`: A page to read, with its contents down the left: rules, getting started, patch notes.\n- `simple`: A few words and one or two buttons: notices, confirmations.",
+                    "enum": [
+                      "sidebar",
+                      "columns",
+                      "tiles",
+                      "rows",
+                      "guide",
+                      "simple"
+                    ]
+                  },
+                  "progress": {
+                    "type": "boolean",
+                    "description": "Give the screen a progress bar.",
+                    "default": false
+                  },
+                  "qrUrl": {
+                    "type": "string",
+                    "description": "A link to draw as a QR code on the screen, which also opens when the code is clicked. http(s), at most 300 characters.",
+                    "maxLength": 300
+                  },
+                  "useStyleGuide": {
+                    "type": "boolean",
+                    "description": "Follow the pack's style guide — its palette, its notes and its reference pictures. Defaults to true, so a pack with a style guide produces assets that match it without this field. Send false for one asset that should deliberately not match. A pack with no style guide, or one switched off, ignores this either way.",
+                    "default": true
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/packs/{pack}/icons": {
       "post": {
         "operationId": "generateIcon",
