@@ -2209,7 +2209,7 @@
       "post": {
         "operationId": "generateDialog",
         "summary": "Generate a dialog",
-        "description": "Produces a `texture` named `gui:<name>` — a dialog, the screen a server opens over the game with `/dialog` (Minecraft 1.21.6 and newer), drawn in Minecraft's own look: themed cards, switches, sliders and real clickable buttons.\n\n**The prompt is the whole brief.** A director decides what the screen is — its title, its sections, its controls and its colours (from the pack's style guide when it has one) — and the layout is drawn from that. `layout` narrows which kind of screen it builds; omit it and the director picks.\n\nOne charge per dialog, the same as a GUI sheet. Edit the result afterwards in the Studio's dialog editor.",
+        "description": "Produces a `texture` named `gui:<name>` — a dialog, the screen a server opens over the game with `/dialog` (Minecraft 1.21.6 and newer), drawn in Minecraft's own look: themed cards, switches, sliders and real clickable buttons.\n\n**The prompt is the whole brief.** A director decides what the screen is — its title, its sections, its controls and its colours (from the pack's style guide when it has one) — and the layout is drawn from that. `layout` narrows which kind of screen it builds; omit it and the director picks.\n\nOne flat charge per dialog, refunded in full if it fails. Edit the result afterwards in the Studio's dialog editor.",
         "tags": [
           "Generating"
         ],
