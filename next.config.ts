@@ -2,6 +2,8 @@ import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // No floating "N" badge in dev: it sits over the bottom-left of every page.
+  devIndicators: false,
   // This app serves at resourcepack.ai/docs, not on its own domain — a
   // subdirectory so its search authority accrues to the domain that sells
   // something, instead of pooling on a hostname that never will. It's still
