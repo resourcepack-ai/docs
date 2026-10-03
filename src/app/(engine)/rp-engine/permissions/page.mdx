@@ -23,6 +23,13 @@ Everything defaults to `op`, except:
 | `rpengine.emote.cast` | op | Naming a cast. They are still asked |
 | `rpengine.emote.force` | op | Naming one **without** asking |
 | `rpengine.chat.icons` | everyone | Typing `:wave:` in chat |
+| `rpengine.var` | everyone | Changing your own dialog settings — what a click on a dialog's switch or slider runs |
+| `rpengine.page` | everyone | Turning a dialog to another of its pages — what a click on a paged dialog's sidebar runs |
+
+`rpengine.var` and `rpengine.page` are everyone's because a click inside a
+dialog runs them as the player who clicked. Neither can do more than that
+click: a setting must be one some dialog offers, and a page one the dialog the
+player was shown links to. Taking them away breaks those clicks, not a back door.
 
 `rpengine.emote.force` is deliberately not a child of `rpengine.emote.cast`.
 Holding one is being allowed to ask; holding the other is being allowed to skip
