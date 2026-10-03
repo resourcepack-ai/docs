@@ -37,24 +37,6 @@ checking.
 
 Start with `height: 8, ascent: 7` to sit an icon in a line of chat, then adjust.
 
-## A sheet of icons
-
-A PNG of pictures in equal cells can be shared by several icons, each naming
-its cell:
-
-```yaml
-smile:
-  file: emotes                            # assets/textures/font/emotes.png
-  grid: { rows: 2, columns: 4, cell: 3 }  # cells count from 1, left to right, then down
-  height: 8
-  ascent: 7
-```
-
-Nothing is cropped: the sheet ships once and the game's own font cuts it, so a
-cell is exactly what was drawn. `height` and `ascent` are the cell's, not the
-sheet's. The PNG's width has to divide by the columns and its height by the
-rows.
-
 ## Store the ID, never the character
 
 <Callout type="warning" title="Codepoints move">

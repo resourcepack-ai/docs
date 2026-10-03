@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Exporting",
   description:
-    "The seven exports, what lands in the file, and how to install it.",
+    "The six exports, what lands in the file, and how to install it.",
 };
 
 # Exporting
@@ -30,11 +30,10 @@ from:
 | --- | --- | --- |
 | **Model Engine** | `.zip` | `.bbmodel` blueprints for a server running [Model Engine](https://git.mythiccraft.io/mythiccraft/model-engine-4) |
 | **ItemsAdder** | `.zip` | A `contents` folder for a server already running [ItemsAdder](https://wiki.itemsadder.com/) |
-| **Nexo** | `.zip` | Items, furniture, custom blocks and glyphs for a server already running [Nexo](https://docs.nexomc.com/). See [below](#nexo-and-oraxen) |
-| **Oraxen** | `.zip` | Items, furniture, custom blocks and glyphs for a server already running [Oraxen](https://docs.oraxen.com/). See [below](#nexo-and-oraxen) |
-| **CraftEngine** | `.zip` | Items, furniture, real custom blocks, images and chat emoji for a server already running [CraftEngine](https://modrinth.com/plugin/craftengine). See [below](#craftengine) |
+| **Nexo** | `.zip` | Item YAML plus a pack folder for a server already running [Nexo](https://docs.nexomc.com/) |
+| **Oraxen** | `.zip` | Item YAML plus a pack folder for a server already running [Oraxen](https://docs.oraxen.com/) |
 
-All seven are built on demand from what's currently in the editor. There's no
+All six are built on demand from what's currently in the editor. There's no
 build step to remember and nothing to re-upload between edits.
 
 <Callout type="warning" title="Animations don't survive a Java export">
@@ -272,171 +271,6 @@ Model Engine and has to be installed first.
 click, on range are our plugin's concept and mean nothing to Model Engine. The
 `README.txt` lists each model's animation names as exported, which is what
 MythicMobs wants typed.
-
-## Nexo and Oraxen
-
-Nexo and Oraxen build and serve the resource pack themselves, the same as
-ItemsAdder, so these two exports are your pack as ready-made content for them:
-item and glyph YAML written for you, plus a pack folder the plugin merges into
-its own. They are one section here because they are one export with two
-spellings.
-
-```
-Nexo/                                      Oraxen/
-  items/<your-pack>/items.yml                items/<your-pack>/items.yml
-  glyphs/<your-pack>/glyphs.yml              glyphs/<your-pack>/glyphs.yml
-  pack/external_packs/<your-pack>/           pack/uploads/<your-pack>/
-datapacks/<your-pack>_dialogs/             datapacks/<your-pack>_dialogs/
-```
-
-The zip already contains the plugin's folder, so unzip it straight into
-`plugins/`. Then on the server:
-
-```
-/nexo reload all                    /oraxen reload all
-/nexo give <player> <item>          /oraxen give <player> <item>
-```
-
-The item ids are the keys in `items.yml`, and the `README.txt` lists every one,
-along with everything else the export contains.
-
-| In your pack | Becomes |
-| --- | --- |
-| 3D model | furniture: hold it, or right-click a block to place it, with a hitbox measured from the model |
-| Vehicle | furniture with the vehicle's seats, so players can sit in it |
-| Custom block | the plugin's own custom block (a note block), mined and dropped like theirs |
-| 2D custom item, 3D item | an item, keeping its name and the vanilla item a variant is built on |
-| Vanilla item in 3D | the vanilla item itself, reskinned |
-| Icon | a glyph: `<glyph:<pack>_<icon>>` in the plugin's text, `:icon:` in chat |
-| GUI overlay | a glyph plus the title string that positions it |
-| Pause-menu buttons | the redrawn buttons, as in the Java pack |
-| Sounds | merged into the pack's sounds under the event names you gave them |
-| Block, item, armour or GUI reskin | a vanilla file replacement |
-| Dialog | a datapack folder |
-
-<Callout title="Why this doesn't collide with your existing content">
-  Both plugins merge fonts, `sounds.json` and language files instead of
-  replacing them, so what this export adds sits beside what the server already
-  has. The files they *do* own outright, the item wiring and the note-block
-  states, are left to them: the export sets no `CustomModelData` and picks no
-  block state, and the plugin writes the numbers it chose back into
-  `items.yml`.
-</Callout>
-
-**Icons keep their character.** Unlike ItemsAdder, which starts in the same
-place we do, Nexo and Oraxen hand out characters from U+A410 upward, so ours
-can stay put. That matters because the pause-menu text and the GUI titles
-already use those characters; `glyphs.yml` pins each one with `char:`.
-
-**GUI overlays come with a title string.** The plugin draws a GUI as a glyph in
-an inventory title, so the `README.txt` gives each one in the plugin's tags:
-
-```
-<shift:-48><glyph:my_pack_gui_shop>
-```
-
-Give that to whatever opens the menu: DeluxeMenus, ChestCommands, your own
-plugin. As with ItemsAdder, re-export after editing a GUI rather than reusing
-an old title.
-
-**Dialogs travel as a datapack**, because neither plugin installs vanilla
-dialogs. Move `datapacks/<your-pack>_dialogs/` into your world's `datapacks/`
-folder, restart, and open one with `/dialog show <player> studio:<id>`. That
-needs Minecraft 1.21.6 or newer.
-
-**Oraxen gets its current spelling.** Its sections are lowercase now
-(`pack:`, `mechanics:`), and it rewrites a file that uses the old capitalised
-form, so the Oraxen export writes the new one. Nexo keeps `Pack:` and
-`Mechanics:`, which is still what it reads.
-
-**The vanilla replacements apply to everyone.** Reskinned blocks, items and GUI
-screens are under the pack folder's `assets/minecraft/`; delete any you don't
-want and reload.
-
-Some things are drawn by [RP Engine](/rp-engine) while the game runs, and no
-plugin config can express them. The `README.txt` names each one your pack has:
-
-- **Shader objects**: RP Engine sends the text they draw on.
-- **3D armour**: RP Engine poses the pieces on the wearer.
-- **Animation**: models place as still furniture.
-- **Driving**: vehicles place as furniture you can sit in, not drive.
-- **Dialog switches and sliders bound to player settings**: they open, but
-  remembering a choice needs RP Engine.
-
-Models that hadn't finished generating are left out and listed the same way.
-
-## CraftEngine
-
-CraftEngine builds and serves the resource pack itself too, from one folder per
-pack. This export is that folder, with the YAML written for you.
-
-```
-CraftEngine/resources/<your-pack>/
-  pack.yml
-  configuration/items.yml          items, furniture and blocks
-  configuration/images.yml         icons, GUI overlays and chat emoji
-  configuration/categories.yml     a category in the item browser
-  resourcepack/                    your models, textures, sounds and replacements
-datapacks/<your-pack>_dialogs/
-```
-
-<Callout type="warning" title="Run CraftEngine once before you unzip">
-  CraftEngine only installs its own packs into an empty `resources/` folder,
-  and custom blocks need one of them. Unzip this into a server that has
-  already started with CraftEngine, not into a fresh one.
-</Callout>
-
-Unzip it straight into `plugins/`, then on the server:
-
-```
-/ce reload all                       rebuilds and resends the pack
-/ce item get <your-pack>:<item>      gives you one
-/ce                                  the item browser, with your pack as a category
-```
-
-The ids are the keys in `items.yml`, and the `README.txt` lists every one.
-
-| In your pack | Becomes |
-| --- | --- |
-| 3D model | furniture: right-click a block to place it, sneak-click with an empty hand to turn it, with a hitbox measured from the model |
-| Vehicle | furniture with the vehicle's seats, so players can sit in it |
-| Custom block | a real CraftEngine block, with its own hardness, sounds and drop |
-| 2D custom item, 3D item | an item, keeping its name and the vanilla item a variant is built on |
-| Vanilla item in 3D | the vanilla item itself, reskinned |
-| Icon | an image, `<image:<pack>:<icon>>` in CraftEngine's text, and an emoji typed as `:icon:` in chat, books, signs and anvils |
-| GUI overlay | an image plus the title string that positions it |
-| Pause-menu buttons | the redrawn buttons, as in the Java pack |
-| Sounds | merged into the pack's sounds under the event names you gave them |
-| Block, item, armour or GUI reskin | a vanilla file replacement |
-| Dialog | a datapack folder |
-
-**Custom blocks are real blocks.** CraftEngine draws one with a vanilla block
-state it sets aside (`auto_state: solid`) while the server knows it as your
-block, so it keeps its own hardness and drops itself when mined. Nothing here
-picks the state; CraftEngine does.
-
-**Icons keep their character, and so does everything else.** CraftEngine hands
-out characters from U+E000, the same place we start, so `images.yml` pins each
-icon with `char:`. A pinned character always wins, and CraftEngine moves its
-own emoji out of the way. The characters your pack uses for spacing and dialog
-art are not images, so CraftEngine cannot see them; `images.yml` holds them
-with one invisible image, `<your-pack>:reserved`. Leave it in, or another
-pack's emoji can land on one of those characters and draw as a gap.
-
-**GUI overlays come with a title string**, in CraftEngine's tags:
-
-```
-<shift:-48><image:my_pack:gui_shop>
-```
-
-**Dialogs travel as a datapack**, as for Nexo and Oraxen: move
-`datapacks/<your-pack>_dialogs/` into your world's `datapacks/` folder and
-restart.
-
-Nothing in the export uses CraftEngine's bundled templates, so it still loads
-if you have removed `default_templates`. The same things RP Engine draws are
-left out as for [Nexo and Oraxen](#nexo-and-oraxen), and the `README.txt`
-names each one.
 
 ## Installing it
 

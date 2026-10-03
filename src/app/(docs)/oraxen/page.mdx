@@ -1,0 +1,59 @@
+export const metadata = {
+  title: "Oraxen export",
+  description: "Install models and custom items from ResourcePack AI in Oraxen.",
+};
+
+# Oraxen export
+
+The Oraxen export is content for a server already running
+[Oraxen](https://docs.oraxen.com/). It gives Oraxen the item YAML and resource
+pack assets it needs to generate and send one combined pack to players.
+
+## Install it
+
+1. In Export, choose **Plugin Support → Oraxen**.
+2. Unzip the download directly into your server's `plugins/` folder.
+3. Run `/oraxen reload all`, then rejoin or run `/oraxen pack send <player>`.
+
+The download deliberately has this shape:
+
+```
+plugins/
+  Oraxen/
+    items/<your-pack>/items.yml
+    pack/uploads/<your-pack>/assets/
+```
+
+Oraxen merges folders in `pack/uploads` while it generates its resource pack.
+Item ids are the keys in `items.yml`; give one with
+`/oraxen give <player> <item-id>`.
+
+## What comes across
+
+| In your pack | In Oraxen |
+| --- | --- |
+| 3D model | an Oraxen item that points at its exported model |
+| Custom 2D item | an Oraxen item that points at its exported texture |
+| Block/item reskin | a vanilla-file replacement in Oraxen's generated pack |
+| Vanilla GUI screen replacement | a vanilla-file replacement in Oraxen's generated pack |
+
+Oraxen supplies the item model / CustomModelData wiring, so the export does
+not pin a number that could collide with another pack. Change an item's
+`material` in `items.yml` if it should retain vanilla behaviour rather than
+using the safe default `PAPER`.
+
+## Limits
+
+3D models export as static items. Animations need an animation runtime such as
+[Model Engine](/exporting#model-engine) or RP Engine.
+
+Icons, font-based GUI overlays, HUDs and shader canvases are not exported. The
+font provider is a whole Minecraft file and Oraxen owns its generated copy;
+writing ours into it could remove the server's existing glyphs. Use the Java
+export for those assets, or configure them through Oraxen's glyph tooling.
+
+<Callout type="warning" title="Vanilla replacements are server-wide">
+  Reskinned blocks, items and vanilla GUI screens apply to everyone sent
+  Oraxen's pack. Delete the corresponding asset from `pack/uploads` if you do
+  not want that replacement.
+</Callout>

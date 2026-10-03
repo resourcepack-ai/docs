@@ -296,7 +296,7 @@ export const nav: NavGroup[] = [
       {
         title: "Exporting",
         href: "/exporting",
-        description: "The seven exports, what lands in the file, and how to install it.",
+        description: "The six exports, what lands in the file, and how to install it.",
         keywords: [
           "export",
           "download",
@@ -307,14 +307,22 @@ export const nav: NavGroup[] = [
           "modelengine",
           "nexo",
           "oraxen",
-          "craftengine",
-          "emoji",
-          "furniture",
-          "glyphs",
           "bbmodel",
           "blueprint",
           "plugin",
         ],
+      },
+      {
+        title: "Nexo",
+        href: "/nexo",
+        description: "Install a ResourcePack AI export into Nexo without hand-writing item or pack files.",
+        keywords: ["nexo", "custom items", "external packs", "custom model data"],
+      },
+      {
+        title: "Oraxen",
+        href: "/oraxen",
+        description: "Install a ResourcePack AI export into Oraxen without hand-writing item or pack files.",
+        keywords: ["oraxen", "custom items", "uploads", "custom model data"],
       },
       {
         title: "Moving assets between packs",
