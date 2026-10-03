@@ -58,7 +58,9 @@ Its **text** is a different matter — see below.
 Any `{name}` in an overlay's text is filled per player, one tick before the line
 is sent. Three things are asked, in this order, and the first that answers wins:
 
-1. Whatever a plugin published with `overlays().set(player, name, value)`.
+1. Whatever a plugin published with `overlays().set(player, name, value)` — or
+   with `dialogs().set`, which is the same set of values: a
+   [dialog](/dialogs#live-values) prints them too.
 2. The built-ins below.
 3. PlaceholderAPI, if the server has it — `{vault_eco_balance}` is
    `%vault_eco_balance%` in braces. Nothing to install on our side.
