@@ -179,6 +179,16 @@ the dialog opens on. **+** adds a page — a copy of the one you are on, ready t
 change — and the buttons at the right of the strip move, duplicate or delete the
 page you are on.
 
+**Edit with AI**, at the right of the strip, changes the page you are on. Say
+what it should hold — "sound settings: master volume, music, ambient sounds" —
+and that page is redrawn. On a page that shares its frame with the others it
+asks first what may change: **this page's own part**, inside the green outline,
+which leaves the sidebar and everything shared exactly as it is; or **the whole
+screen**, where a change outside the outline lands on every page. A page made
+from a sidebar button starts as a copy of the page it was made from, and this is
+the quick way to give it content of its own — the window offers to write it for
+the page's name. Ctrl+Z takes an edit back, and each one costs 15 AI Credits.
+
 Once a dialog has pages:
 
 - **Edit anything outside the outlined box** — rename a sidebar button, change
@@ -430,8 +440,15 @@ drew: labels cut off, a card too narrow for what is in it, a screen too tall for
 a 1080p monitor, a missing icon. It fixes what it finds, and keeps the fix only
 if it is really better. That takes a little longer and costs no more.
 
+Tick **Multi page** and it comes back with [pages](#pages): a sidebar or a row
+of tabs, a page for each, and every page written for its name — a settings
+menu's General, Chat and Sounds each with cards of their own. Name the pages in
+the request if you have some in mind (up to ten). It costs 30 AI Credits for the
+first page and 15 for each page after it, and takes a little longer, since the
+pages after the first are written once the first is done.
+
 A dialog is as wide as its content and has nothing behind it, so there is
-nothing to choose but what you type, and it never uses the image model. Want a
+nothing else to choose but what you type, and it never uses the image model. Want a
 progress bar — a streak, a tier, a goal? Say so in the request. A QR code is
 added afterwards from the editor's **+**, where its link is yours to set. Every
 number on a generated dialog — a balance, a price, a player count — is a
@@ -441,7 +458,8 @@ believable sample for you to change.
   Nothing invents a command. A generated dialog arrives with its buttons named
   and described and their actions empty, because a command is a thing with
   consequences on your server — unless a control is bound to a
-  [player setting](#player-settings), whose clicks are wired for you.
+  [player setting](#player-settings), or a button turns to one of the dialog's
+  [pages](#pages), whose clicks are wired for you.
 </Callout>
 
 ## Getting it onto a server
