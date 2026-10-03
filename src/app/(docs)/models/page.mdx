@@ -313,5 +313,15 @@ name, which is why moving a model between packs carries its textures too.
 
 Geometry converts: the `.mcpack` carries a real Bedrock entity with your model
 as its geometry, and animations come across as native Bedrock keyframes rather
-than being dropped. Carriers and give commands don't, since both are Java
-mechanisms.
+than being dropped. Turns past the five angles a Java model allows come across
+exactly, since a Bedrock cube can hold any turn.
+
+Something has to put that entity in the world, and on a server it is
+[RP Engine](/rp-engine/bedrock), which draws every placed model for Bedrock
+players near it. A `.mcpack` installed on its own has the models defined and
+nothing to place them.
+
+Two things stay Java-side. A model placed as a **block** (a note block wearing
+your model) shows to Bedrock players as the plain vanilla block. And the item a
+model's give command hands out shows with the model's icon on Bedrock only on
+Minecraft 1.21.4 and newer, where the item can say which model it is.
