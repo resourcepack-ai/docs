@@ -1,14 +1,15 @@
 export const metadata = {
   title: "Plugin API",
   description:
-    "Drive items, models, emotes, vehicles, icons and sounds from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
+    "Drive items, models, emotes, vehicles, icons, sounds, HUD overlays and dialogs from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
 };
 
 # Plugin API
 
 Your own Spigot or Paper plugin can give a custom item, place a model, play an
-emote, park a vehicle and switch it off, put an icon in a message, and cancel
-any of those when your rules say no. Every snippet here is in Java and Kotlin — pick one and the whole of the
+emote, park a vehicle and switch it off, put an icon in a message, open a
+dialog with your own values on it, and cancel any of those when your rules say
+no. Every snippet here is in Java and Kotlin — pick one and the whole of the
 docs follows you.
 
 ## Getting in
@@ -28,6 +29,7 @@ engine.vehicles();   // vehicles, and the ones standing in your worlds
 engine.sounds();     // custom sounds
 engine.icons();      // icons, and putting one into text
 engine.overlays();   // HUD overlays: show one, hide one, feed it values
+engine.dialogs();    // dialogs: open one, feed it values, read player settings
 engine.registry();   // everything this server holds, by id
 ```
 
@@ -41,6 +43,7 @@ engine.vehicles()   // vehicles, and the ones standing in your worlds
 engine.sounds()     // custom sounds
 engine.icons()      // icons, and putting one into text
 engine.overlays()   // HUD overlays: show one, hide one, feed it values
+engine.dialogs()    // dialogs: open one, feed it values, read player settings
 engine.registry()   // everything this server holds, by id
 ```
 
@@ -282,12 +285,164 @@ A name none of them knows draws as nothing rather than as `{name}`.
 
 Values are **per player**, not per overlay: `stamina` means the same thing to
 every overlay on that player's screen. A **progress bar** reads the same names,
-so a stamina bar out of 100 needs only the one `set` call above.
+so a stamina bar out of 100 needs only the one `set` call above. They are the
+same values [dialogs](#dialogs) print, so a number you publish for a HUD is
+already on every dialog that asks for it.
 
 **`set` and `value` are safe from any thread.** They only record the value, and
 the next redraw (within about a second and a half) picks it up, so setting six
 values in a row costs one redraw. `show`, `hide` and `hideAll` draw, so they are
 main thread only.
+
+## Dialogs
+
+A [dialog](/dialogs) is a screen of its own, such as a store, a settings menu
+or a punish menu, on Minecraft 1.21.6 and newer. Server owners draw them in
+Studio, and your plugin decides when one opens and what values are on it.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.dialogs().show(player, "studio:shop");
+engine.dialogs().close(player);
+engine.dialogs().ids();                        // what this server has
+engine.dialogs().supported();                  // false before 1.21.6
+engine.dialogs().canShow(player, id);          // would show get as far as the client?
+```
+
+```kotlin
+engine.dialogs().show(player, "studio:shop")
+engine.dialogs().close(player)
+engine.dialogs().ids()                         // what this server has
+engine.dialogs().supported()                   // false before 1.21.6
+engine.dialogs().canShow(player, id)           // would show get as far as the client?
+```
+
+</CodeTabs>
+
+A dialog made in Studio has the id `studio:<id>`, where `<id>` is the one in its
+editor, and each page after the first is `studio:<id>.<page>`.
+
+`show` returns false rather than throwing: the server is older than 1.21.6, there
+is no such dialog, the player is offline, or they are not holding the pack the
+dialog's picture is in. `canShow` checks all of that before you try.
+
+### Values on it
+
+A dialog's words can print `{name}` placeholders, on its screen as well as in
+its title, tooltips, buttons and commands. See [Live values](/dialogs#live-values).
+Hand values over as you open it:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.dialogs().show(staff, "studio:punish", Map.of("target", suspect.getName()));
+// "Punish {target}" opens as "Punish Steve", the name on its card is Steve's,
+// and a reason that runs "mute {target} 1h" runs "mute Steve 1h".
+```
+
+```kotlin
+engine.dialogs().show(staff, "studio:punish", mapOf("target" to suspect.name))
+// "Punish {target}" opens as "Punish Steve", the name on its card is Steve's,
+// and a reason that runs "mute {target} 1h" runs "mute Steve 1h".
+```
+
+</CodeTabs>
+
+Or publish a value once, for every dialog and HUD that prints it:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.dialogs().set(player, "coins", String.valueOf(balance));
+engine.dialogs().set(player, "coins", null);    // remove it
+engine.dialogs().value(player, "coins");        // what you last set
+```
+
+```kotlin
+engine.dialogs().set(player, "coins", balance.toString())
+engine.dialogs().set(player, "coins", null)     // remove it
+engine.dialogs().value(player, "coins")         // what you last set
+```
+
+</CodeTabs>
+
+**These are the same values `overlays().set` publishes.** There is one set per
+player, so `coins` means the same thing on a HUD and in a store.
+
+A placeholder is looked up in five places, and the first answer wins:
+
+1. **What you handed to `show`.**
+2. **The player's own settings**, which is what a bound switch or slider shows.
+   See [Player settings](#player-settings) below.
+3. **What you published with `set`.**
+4. **The built-ins**, the same ones a HUD has: `{player}`, `{health}`, `{world}`
+   and the rest, all about the player the dialog is shown to.
+5. **PlaceholderAPI**, if the server has it.
+
+A name none of them knows is left as written, so a dialog that happens to say
+`{VIP}` is not rewritten. Formatting codes are taken out of a value. On the
+screen, a value is kept to the characters the game's small font draws (anything
+else becomes `?`) and is cut short with "…" when it would not fit its line.
+
+**A dialog is drawn once, as it opens.** A value that changes while it is on
+screen shows the next time it opens, and `reopen` opens it again on purpose,
+with the values it was opened with, after a click on it changed something:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+// A Buy button on the store runs /buy sword. In your command:
+economy.withdraw(player, price);
+engine.dialogs().set(player, "coins", String.valueOf(economy.getBalance(player)));
+engine.dialogs().reopen(player);   // the store again, with the new balance on it
+```
+
+```kotlin
+// A Buy button on the store runs /buy sword. In your command:
+economy.withdraw(player, price)
+engine.dialogs().set(player, "coins", economy.getBalance(player).toString())
+engine.dialogs().reopen(player)    // the store again, with the new balance on it
+```
+
+</CodeTabs>
+
+The server is not told when a player closes a dialog, so `reopen` opens it
+whether it is still on their screen or not. Call it in answer to a click, not
+on a timer.
+
+### Player settings
+
+A switch, slider or choice on a Studio dialog can be bound to a [player
+setting](/dialogs#player-settings): every player has their own value, the
+control shows it, and clicking it changes it. Read or change one from your
+plugin:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.dialogs().setting(player, "show_sidebar");            // Optional: "on" or "off"
+engine.dialogs().setSetting(player, "show_sidebar", "off");  // as if they clicked it
+engine.dialogs().setSetting(player, "show_sidebar", null);   // back to the default
+```
+
+```kotlin
+engine.dialogs().setting(player, "show_sidebar")             // Optional: "on" or "off"
+engine.dialogs().setSetting(player, "show_sidebar", "off")   // as if they clicked it
+engine.dialogs().setSetting(player, "show_sidebar", null)    // back to the default
+```
+
+</CodeTabs>
+
+Settings are kept on the player, across restarts, and PlaceholderAPI reads the
+same value as `%rpengine_var_show_sidebar%`. A name is lower-case letters,
+digits and `_`, up to 32 characters, and a value is letters, digits, `_`, `.`
+and `-`. A player keeps at most 64 settings, and `setSetting` returns false for
+anything outside that. Your plugin may set any name, not only one a dialog
+shows. Nothing reopens on its own, so call `reopen` if they are looking at it.
+
+**`set` and `value` are safe from any thread.** Everything else here touches a
+player and is main thread only.
 
 ## Vehicles
 

@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Dialogs",
   description:
-    "Minecraft 1.21.6's dialog screens in the game's own look — settings screens, stores, guides and menus, with pages a click turns between: how one is made and edited, what a click can run, and what the server needs to open one.",
+    "Minecraft 1.21.6's dialog screens in the game's own look — settings screens, stores, guides and menus, with pages a click turns between and live values like {player} filled in for each player: how one is made and edited, what a click can run, and what the server needs to open one.",
 };
 
 # Dialogs
@@ -58,7 +58,7 @@ and grids of these pieces:
 | --- | --- |
 | **Button** | The game's grey 20-pixel button. **Selected** makes it gold, the way a store marks the category you are in; **Greyed out** is the game's disabled button; the label can have its own colour, and a sidebar's buttons can read from the left. A button colour tints the same button, bevels and all. |
 | **Link** | A line of clickable words, for a guide's contents. The current page is white and underlined, and sub-pages can be indented. |
-| **Text** | Words in the game's own colours. Titles are twice the size, headings bold. Colour codes change colour mid-line, the way chat plugins write them: `Ping: &a42` (`&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` grey, `&l` bold, `&r` back to normal, `&#55ff55` any colour). |
+| **Text** | Words in the game's own colours. Titles are twice the size, headings bold. Colour codes change colour mid-line, the way chat plugins write them: `Ping: &a42` (`&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` grey, `&l` bold, `&r` back to normal, `&#55ff55` any colour). A [live value](#live-values) such as `Ping: &a{ping}` is filled in for each player. |
 | **Panel button** | The light button of a menu built like an inventory screen: a white rim and a shaded bottom edge, 20 pixels tall. Made for sitting on a dark panel. |
 | **Chip** | A dark, see-through box for a balance, a count or a rank tag. |
 | **Setting row** | A full-width button with a value on the right, green when on and red when off. |
@@ -147,14 +147,93 @@ server is needed for that; the clicks are wired for you, and settings are kept
 per player, across restarts.
 
 Your other plugins read a setting as `%rpengine_var_show_sidebar%` through
-PlaceholderAPI. Inside a dialog, `{show_sidebar}` is its value like any other
-placeholder. A player can only set a setting some dialog on the server shows,
-and only to one of the values it offers.
+PlaceholderAPI, or with `dialogs().setting(...)` in [RP Engine's
+API](/rp-engine/api#player-settings), which can also change one. Inside a
+dialog, `{show_sidebar}` is its value like any other [live
+value](#live-values). A player can only set a setting some dialog on the server
+shows, and only to one of the values it offers.
 
 <Callout type="warning" title="Needs RP Engine 0.1.62 or newer">
   An older RP Engine opens the dialog with every state of a bound control
   drawn in the same place, the default on top, and a click on it only gets an unknown-command reply.
   Update the plugin on the server.
+</Callout>
+
+## Live values
+
+Words on a dialog can show a value that is filled in for each player as the
+dialog opens. Write it in curly braces, like `{player}`. A profile card that
+says `{player}` shows the name of whoever opened it, a store whose header says
+`Coins: {coins}` shows their balance, and a punish menu titled `Punish {target}`
+names the player it is about.
+
+They work wherever a dialog has words: on the screen, in the title, in a tooltip,
+on a footer button and in the command a click runs. On the screen, a **Text**, a
+**Label and value** (either half) and a **Chip** can each hold one. Select one
+and open **Insert a live value** under its words to pick a value from the list.
+The **Live values** list in the dialog's own settings shows every placeholder
+the dialog uses, on every page, and where each one's value comes from.
+
+| Placeholder | What it is |
+|---|---|
+| `{player}` | Their name |
+| `{displayname}` | Their name with any prefix a plugin gave it |
+| `{health}`, `{health_max}`, `{health_percent}` | Health |
+| `{food}` | Hunger, out of 20 |
+| `{level}`, `{xp}` | Experience level, and progress to the next as a percentage |
+| `{air}` | Seconds of breath left underwater |
+| `{ping}` | Latency in milliseconds |
+| `{world}`, `{x}`, `{y}`, `{z}`, `{direction}` | Where they are |
+| `{time}`, `{day}` | The world's clock, and how many days it has run |
+| `{gamemode}` | Survival, Creative and so on |
+| `{online}`, `{max_online}` | Players online, and the server's cap |
+| `{uuid}` | Their account UUID |
+
+**Any name at all works.** Each value is looked up in this order, and the first
+answer wins:
+
+1. **What the dialog was opened with**: `name=value` on `/rp dialog`, or the
+   values a plugin passes when it opens one. See [A dialog about
+   somebody](#a-dialog-about-somebody).
+2. **The player's own [settings](#player-settings)**, which is what a bound
+   switch or slider shows.
+3. **What a plugin published for the player** with `dialogs().set(...)`. These
+   are the same values a [shader object's](/shaders#live-values) labels print,
+   so one number serves both a HUD and a dialog. See [the Plugin
+   API](/rp-engine/api#dialogs).
+4. **The list above.**
+5. **PlaceholderAPI**, if the server has it. `{vault_eco_balance}` asks it for
+   `%vault_eco_balance%`.
+
+A name nothing answers is shown exactly as written, so a dialog that happens to
+say `{VIP}` keeps saying it. A placeholder can also choose:
+`{show_sidebar?on:Shown|off:Hidden}` shows *Hidden* while the player's
+`show_sidebar` setting is `off`, and the last choice when it has none of the
+values.
+
+**On the screen, words with a live value are drawn by the game**, not into the
+dialog's picture, which is what lets them say something different to every
+player. Three things follow from that:
+
+- **They stay on one line.** Where a line breaks depends on what the value turns
+  out to be, so these words never wrap. Press Enter in them to start a new line.
+- **A value too long for its line is cut short** and ends in "…". A character
+  Minecraft's own small font cannot draw, such as Chinese, Japanese or an emoji,
+  shows as "?", the same as it would in the picture.
+- **The heavy display capitals cannot hold one.** That face is drawn into the
+  picture, so placeholders in it stay exactly as typed. Use any other style for
+  a live value.
+
+In the editor, live words show their placeholders as written, such as `{player}`,
+in the place the game will draw the value, and at twice the size they are spaced
+the way the game spaces big text.
+
+<Callout type="warning" title="Needs RP Engine 0.1.67 or newer">
+  An older RP Engine still fills placeholders on the screen, and a value that
+  fits its line looks the same. What it cannot do is keep a long value, or a
+  character its font cannot measure, inside the line, and then the picture below
+  can shift. A dialog shown without RP Engine, such as one in a datapack of your
+  own, shows its placeholders as written.
 </Callout>
 
 ## Pages
@@ -478,23 +557,23 @@ at.
 ### A dialog about somebody
 
 A punish menu is about the player being punished, so its title is "Punish
-Steve" and every reason runs `mute Steve 1h`. Write that as a placeholder —
-`{target}`, or any name — in the title, a tooltip, a footer button or the
-command a click runs, and say what it is when you open the dialog:
+Steve", the name on its profile card is Steve's, and every reason runs `mute
+Steve 1h`. Write that as a placeholder, `{target}` or any name, in the title,
+the words on the screen, a tooltip, a footer button or the command a click
+runs, and say what it is when you open the dialog:
 
 ```
 /rp dialog studio:punish Admin target=Steve   # open it for Admin, about Steve
 /rp dialog studio:punish target=Steve         # open it for yourself
 ```
 
-A name the command does not give is filled the way RP Engine's HUD
-placeholders are: `{player}`, `{ping}`, `{world}` and the other built-ins
-describe the player the dialog is shown to, and PlaceholderAPI answers the
-rest when it is installed. A name nothing knows is left as written. Plugins
-pass the values through RP Engine's API instead.
-
-Words drawn inside the dialog's picture — a name on a profile card, say — are
-part of the picture, so they stay as you typed them.
+A name the command does not give is filled from the other places [live
+values](#live-values) come from: the player's settings, what a plugin
+published, the built-ins such as `{player}`, `{ping}` and `{world}` (all about
+the player the dialog is shown to), and then PlaceholderAPI. A name nothing
+knows is left as written. Plugins pass the values through [RP Engine's
+API](/rp-engine/api#dialogs) instead. A page turned to keeps the values the
+first page was opened with.
 
 <Callout title="A pushed dialog opens straight away">
   No restart for ordinary opening. On supported Mojang-mapped servers, RP Engine
