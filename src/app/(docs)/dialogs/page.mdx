@@ -236,6 +236,26 @@ the way the game spaces big text.
   own, shows its placeholders as written.
 </Callout>
 
+### A player's face
+
+A **Player head** can be live too. In its icon picker, choose **Whoever opens
+it** (`head:{player}`) or **Who it is about** (`head:{target}`), or type any live
+value in braces. The game then draws that player's own face, from their skin,
+as the dialog opens: the head on a profile card, or one beside each name on a
+leaderboard. The **Profile card** block starts with one. A head given a username
+instead is part of the picture — the skin that player had when the dialog was
+saved, the same for everybody.
+
+In the editor a live head shows Steve, at the size and place the game draws the
+real face.
+
+<Callout type="warning" title="Needs Minecraft 1.21.9 and RP Engine 0.1.67 or newer">
+  On an older server, or with a value that is not a player's name, the slot is
+  left empty and the rest of the dialog works as usual. The face is sized by the
+  pack's text shader, so a player with another resource pack above yours that
+  changes how text is drawn sees it small, in the slot's top-left corner.
+</Callout>
+
 ## Pages
 
 A settings screen with a sidebar is really several screens that look alike: the
