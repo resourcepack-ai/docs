@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Dialogs",
   description:
-    "Minecraft 1.21.6's dialog screens in the game's own look — settings screens, stores, guides and menus with scrolling pages: how one is made and edited, what a click can run, and what the server needs to open one.",
+    "Minecraft 1.21.6's dialog screens in the game's own look — settings screens, stores, guides and menus, with pages a click turns between: how one is made and edited, what a click can run, and what the server needs to open one.",
 };
 
 # Dialogs
@@ -157,6 +157,63 @@ and only to one of the values it offers.
   Update the plugin on the server.
 </Callout>
 
+## Pages
+
+A settings screen with a sidebar is really several screens that look alike: the
+same sidebar with a different button lit, and different cards beside it. A
+dialog can be exactly that — up to **ten pages**, with a click turning between
+them. A store's categories, a guide's chapters and a tab bar work the same way.
+
+**The quickest way is from the sidebar.** Click any of its buttons and press
+**Make a page for each button** in its panel. Every button gets a page of its
+own, named after it, and goes there when clicked; the page you were on keeps the
+button that was lit. The box beside the buttons becomes **the part that changes
+from page to page** — outlined in green on the screen — and everything outside
+it, the sidebar included, stays the same on every page.
+
+The **Pages** strip above the screen has a tab for each page. Click one to edit
+it, and double-click to rename it. The first tab, with the house, is the page
+the dialog opens on. **+** adds a page — a copy of the one you are on, ready to
+change — and the buttons at the right of the strip move, duplicate or delete the
+page you are on.
+
+Once a dialog has pages:
+
+- **Edit anything outside the outlined box** — rename a sidebar button, change
+  a heading above it, move a button placed anywhere — and every page changes
+  with it.
+- **Edit inside it** and only this page changes.
+- **The lit button looks after itself.** A button, sidebar button, link, list
+  option or segment that goes to a page is lit on that page and on no other, so
+  a sidebar shared by six pages lights the right one on each. Its **Selected**
+  switch is replaced by a line saying which page lights it.
+- **The theme is the dialog's**, so changing it changes every page.
+
+Anything clickable can go to a page: set **When clicked** to **Go to page** and
+pick one — or pick **New page** to make one for it there and then, a copy of
+this page named after the button. A footer button can turn the page too, to give
+every page a way back to the first.
+
+To share a different part, select that box and tick **Changes from page to
+page** in its panel. Everything outside it then becomes what this page has, on
+every page, so the editor asks first. Untick it and every page is its own whole
+screen; they no longer follow each other's edits.
+
+**In game, each page is a dialog of its own.** The first is the dialog's own id
+as always, `studio:settings`, and the rest add the page's: `studio:settings.audio`.
+`/rp dialogs` lists them all, and `/rp dialog` opens any of them. A click that
+goes to a page runs `/rp page studio:settings.audio`, which RP Engine answers by
+opening that page straight away — no restart — with the same `{placeholders}`
+the first page was opened with, so a punish menu about Steve is still about
+Steve on its second page. Every player may run `/rp page`, because the click is
+theirs, but it only opens a page the dialog they are looking at links to.
+
+<Callout type="warning" title="Needs RP Engine 0.1.66 or newer">
+  An older RP Engine opens every page with `/rp dialog`, but a click that
+  should turn the page only gets an unknown-command reply. Update the plugin on
+  the server.
+</Callout>
+
 ## Editing one
 
 A dialog opens in a builder laid out like the GUI editor: tools down the left,
@@ -294,6 +351,7 @@ footer button's:
 | **Suggest command** | A small box opens with the command typed in; they finish it and press **Run**. |
 | **Open link** | The client asks before following it. |
 | **Copy text** | Onto their clipboard. |
+| **Go to page** | Turn to another of this dialog's [pages](#pages), or make a new one for it. |
 | **Open another dialog** | Pick one of the pack's dialogs from the list — it opens straight away. |
 | **Nothing** | Which, with "After a click: Close", is what an Ok button is. |
 
