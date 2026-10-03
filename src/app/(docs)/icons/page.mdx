@@ -76,8 +76,8 @@ world at all. On [our test server](/testing/test-server), `/sidebar`, `/title`,
 A plugin sends one the same way it sends any other message:
 
 ```java
-// The character is copied from the icon's page in the Studio.
-player.sendMessage(Component.text(" Quest complete"));
+// \uE012 is the icon's character; its page in the Studio shows yours.
+player.sendMessage(Component.text("\uE012 Quest complete"));
 ```
 
 ## Exporting
@@ -109,7 +109,7 @@ glyph for.
 
 Icons convert. Bedrock keeps its custom characters in glyph sheets of 256
 each, so the `.mcpack` draws every icon into the sheet for its character, and
-the same `` you put in chat shows the same picture on Bedrock.
+the same character you put in chat shows the same picture on Bedrock.
 
 Two differences to know about:
 

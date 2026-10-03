@@ -30,11 +30,12 @@ that is the one every player is given. It lands beside the Java zip in
   has a sprite at its `texture:` path, which Bedrock uses as its icon: Bedrock
   cannot draw a Java model in a hand.
 - **Armour** on those items, on the body, from the same equipment texture.
-- **Placed models.** Each piece is drawn for Bedrock players as a native
-  entity, at its size and facing, with its animations playing on their own
-  client. A model that paints with the game's own textures gets them baked in:
-  the engine downloads them once, in the background, so the very first build
-  can show a checkerboard for a few seconds.
+- **Placed models.** Each piece is drawn for Bedrock players within 48 blocks
+  as a native entity, at its size and facing, with its animations playing on
+  their own client. A model that paints with the game's own textures gets them
+  baked in: the engine downloads them once, in the background, and builds the
+  pack again when they arrive, so a Bedrock player who joined in those first
+  seconds sees a checkerboard on that model until they next join.
 - **Sounds.** A sound plays on Bedrock under the same id it plays under on
   Java, so actions and commands that play `mypack:laser` work for everyone. A
   file in `overrides/` that replaces a vanilla sound is added under the name
@@ -46,6 +47,13 @@ that is the one every player is given. It lands beside the Java zip in
 
 **Emotes and vehicles.** Both are rigs of display entities the server moves,
 and Geyser does not draw display entities.
+
+**Custom blocks.** A [custom block](/rp-engine/blocks) is a vanilla block in a
+state nothing else uses, and Bedrock players see that vanilla block.
+
+**Custom entities.** An [entity](/rp-engine/entities) is a mob made invisible
+with a display entity riding it, so a Bedrock player sees neither. It can still
+be hit where it stands.
 
 **Custom screens, HUD overlays and dialogs.** All three are drawn through the
 Java font or the Java dialog system, and Bedrock has neither.
@@ -63,28 +71,28 @@ it happens.
 
 ## Studio models on Bedrock
 
-A pack pushed from Studio with `/rp sync`, or served through Studio's
-distribution, includes a Bedrock build when any player receiving it is on
-Bedrock. The engine hands that build to them the only way Bedrock allows: a
+A pack pushed from Studio with `/rp sync` includes a Bedrock build whenever a
+player receiving it is on Bedrock, and a pack served through Studio's
+distribution always has one when anything in it can cross. The engine hands that build to them the only way Bedrock allows: a
 Bedrock client takes packs only while joining, so it is transferred back to the
 same server and served the pack on the way in. It takes a few seconds and the
 sync survives it.
 
 Placed Studio models then show up for Bedrock players as native entities, drawn
-when a player comes within 48 blocks and removed when they leave. Their
+when a player comes within 48 blocks and taken away when they move off. Their
 animations play on the player's own client from the pack's keyframes, started
 by the same triggers as on Java.
 
 [3D armour](/rp-engine/armour#3d-armour-from-studio) from Studio is drawn on
-Bedrock players' bodies too, as long as the pieces were handed out by this
-version of the engine.
+the body for Bedrock players too, as long as the pieces were handed out with
+`/rp armor give` or `/rp armor wear` by this version of the engine.
 
 ## Designing for both
 
 The rule that works: **make the item carry the meaning, and the model carry the
 delight.** Bedrock draws most of what Java does now, but not screens, the HUD,
-dialogs, emotes or vehicles, so a menu that only exists as a custom screen is a
-menu Bedrock players never see.
+dialogs, emotes, vehicles, custom blocks or custom entities, so a menu that only
+exists as a custom screen is a menu Bedrock players never see.
 
 If your server is Java-first and Bedrock is a bonus, none of this matters much.
 If Bedrock is a real part of your player base, it is worth knowing which of
