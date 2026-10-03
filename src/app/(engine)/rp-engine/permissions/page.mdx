@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Permissions",
   description:
-    "One node per command, what defaults to what, and the three nodes that gate something other than a command.",
+    "One node per command, a second node for pointing one at somebody else, what defaults to what, and the three nodes that gate something other than a command.",
 };
 
 # Permissions
@@ -13,6 +13,9 @@ bucket is a guess about that which is wrong on some server.
 
 `rpengine.admin` is a parent granting all of them, for a server that does not
 want to think about it. Nothing checks it directly.
+
+A command that can name another player has a **second node for doing that**:
+see [Pointing a command at somebody else](#pointing-a-command-at-somebody-else).
 
 Everything defaults to `op`, except:
 
@@ -50,6 +53,37 @@ right default; it is granting it to a wider group that deserves a moment.
 
 Individual content can carry its own node too — `permission:` on an item or a
 model — which is checked when it is used or placed rather than when it is held.
+
+## Pointing a command at somebody else
+
+Nine commands can name another player. Naming yourself, or nobody, needs only
+the command's own node; naming **somebody else** also needs
+`rpengine.<command>.others`:
+
+| Node | Default | What it allows |
+|---|---|---|
+| `rpengine.sound.others` | op | Playing a custom sound to somebody else |
+| `rpengine.screen.others` | op | Opening a custom screen on somebody else |
+| `rpengine.hud.others` | op | Drawing or clearing a HUD overlay on somebody else |
+| `rpengine.shader.others` | op | Showing or clearing a shader object on somebody else |
+| `rpengine.dialog.others` | op | Opening a dialog on somebody else's screen |
+| `rpengine.var.others` | op | Changing somebody else's dialog settings |
+| `rpengine.armor.others` | op | Dressing somebody else in 3D armour, or handing them a set |
+| `rpengine.bind.others` | op | Putting a model on another player. A mob needs only `rpengine.bind` |
+| `rpengine.unbind.others` | op | Taking a bound model off another player |
+
+So a server can let every player open its menus for themselves
+(`rpengine.dialog`) without letting any of them push a menu onto everybody
+else's screen. A player without the node is told which one to ask for, and tab
+completion offers them only their own name.
+
+**The console and command blocks are never refused.** They have no self to act
+on, and they are how a server runs these commands for its players. A command run
+through `execute as <player>` is judged by whoever ran it, not by the player it
+runs as. `rpengine.admin` grants every `.others` node along with the rest.
+
+A cast is the one exception, because it already has its own pair:
+`rpengine.emote.cast` and `rpengine.emote.force`, above.
 
 ## Granting them
 

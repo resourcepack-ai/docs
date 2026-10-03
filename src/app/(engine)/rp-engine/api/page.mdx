@@ -337,13 +337,13 @@ Hand values over as you open it:
 
 ```java
 engine.dialogs().show(staff, "studio:punish", Map.of("target", suspect.getName()));
-// "Punish {target}" opens as "Punish Steve", the name on its card is Steve's,
+// "Punish {target}" opens as "Punish Steve", the name and the face on its card are Steve's,
 // and a reason that runs "mute {target} 1h" runs "mute Steve 1h".
 ```
 
 ```kotlin
 engine.dialogs().show(staff, "studio:punish", mapOf("target" to suspect.name))
-// "Punish {target}" opens as "Punish Steve", the name on its card is Steve's,
+// "Punish {target}" opens as "Punish Steve", the name and the face on its card are Steve's,
 // and a reason that runs "mute {target} 1h" runs "mute Steve 1h".
 ```
 
