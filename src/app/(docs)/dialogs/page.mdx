@@ -67,7 +67,6 @@ and grids of these pieces:
 | **Label and value** | A label on the left and a value on the right, for receipts and stats. |
 | **Page of text** | Markdown-lite: `# Title` twice the size, `## Heading` in bold, `### Heading` in gold, `- bullets`, `> notes`, `**words**` in gold, `---` a rule. |
 | **Icon** | Any vanilla item, a player's head, one of your pack's own item sprites or textures, or one of the editor's drawn icons — at 16, 24, 32, 48 or 64 pixels, bare or **in a slot** (the dark well an item sits in). A head is that player's skin as it was when the dialog was saved. |
-| **Image** | A picture of your own: a logo, a banner, a screenshot, a drawing. Import a PNG, JPG, GIF (its first frame) or WebP up to 512 pixels a side — from **Image** in **Add component**, or by dropping the file onto the screen — then click where it goes. It is drawn at its own size, shrinks to fit a narrower box, and keeps its proportions when you give it only a width; give it a height too and it stretches. An imported picture is kept with the pack, so any of its dialogs can use it again, and it travels with a dialog that is copied or moved to another pack. |
 | **Progress bar**, **QR code**, **Divider**, **Space** | As they sound. A QR code carries its own link and opens it when clicked. |
 
 Any row, column or grid can also sit on one of the GUI's own surfaces:
@@ -229,32 +228,12 @@ In the editor, live words show their placeholders as written, such as `{player}`
 in the place the game will draw the value, and at twice the size they are spaced
 the way the game spaces big text.
 
-<Callout type="warning" title="Needs RP Engine 0.1.69 or newer">
+<Callout type="warning" title="Needs RP Engine 0.1.67 or newer">
   An older RP Engine still fills placeholders on the screen, and a value that
   fits its line looks the same. What it cannot do is keep a long value, or a
   character its font cannot measure, inside the line, and then the picture below
   can shift. A dialog shown without RP Engine, such as one in a datapack of your
   own, shows its placeholders as written.
-</Callout>
-
-### A player's face
-
-A **Player head** can be live too. In its icon picker, choose **Whoever opens
-it** (`head:{player}`) or **Who it is about** (`head:{target}`), or type any live
-value in braces. The game then draws that player's own face, from their skin,
-as the dialog opens: the head on a profile card, or one beside each name on a
-leaderboard. The **Profile card** block starts with one. A head given a username
-instead is part of the picture — the skin that player had when the dialog was
-saved, the same for everybody.
-
-In the editor a live head shows Steve, at the size and place the game draws the
-real face.
-
-<Callout type="warning" title="Needs Minecraft 1.21.9 and RP Engine 0.1.69 or newer">
-  On an older server, or with a value that is not a player's name, the slot is
-  left empty and the rest of the dialog works as usual. The face is sized by the
-  pack's text shader, so a player with another resource pack above yours that
-  changes how text is drawn sees it small, in the slot's top-left corner.
 </Callout>
 
 ## Pages
@@ -327,25 +306,6 @@ closes it (through RP Engine, `/rp page close`), and so does Escape; a click
 that runs a command leaves it open, so a store can sell several things in a
 row.
 
-**After a restart, pages turn instantly.** Turning a page normally goes to the
-server and back, which is a short wait on a server far away. But a server also
-gives every player its dialogs as it starts, and a page the player already has
-can open on the spot, without asking. So once the server has restarted since
-you last synced, RP Engine sends each page's links that way and pages turn the
-moment you click. Two things keep a page on the slower route, and both are on
-purpose:
-
-- **It was synced again since the last restart.** The copy the player was given
-  at the start is an older one, so the engine asks the server until the next
-  restart.
-- **It shows something per player**, such as a `{placeholder}` or a player
-  setting. Only the server can fill those in as it opens, so turning *to* that
-  page still asks the server. Turning away from it is still instant.
-
-`/rp dialogs` says beside each dialog whether its pages turn instantly or wait
-for the server. This needs RP Engine 0.1.70 or newer; with an older one every
-page turn asks the server, as before.
-
 <Callout type="warning" title="Needs RP Engine 0.1.66 or newer">
   An older RP Engine opens every page with `/rp dialog`, but a click that
   should turn the page only gets an unknown-command reply. Update the plugin on
@@ -356,20 +316,11 @@ page turn asks the server, as before.
 
 A dialog opens in a builder laid out like the GUI editor: tools down the left,
 the **Components** panel beside them, the screen in the middle and the selected
-piece's settings on the right. The screen is the game's, and it behaves like
-the game: the mouse wheel scrolls it, hovering a clickable thing shows its
-tooltip, and **Clickable areas** (`A`) shades where a click will land.
-
-**It is the size your game makes it.** The bar over the screen has the two
-settings that decide how big a dialog is in Minecraft: the **Monitor** (the one
-you are on, or 1080p, 1440p or 4K) and the **GUI scale**, Auto or a number, the
-same as *Options › Video Settings › GUI Scale*. Pick yours and the screen is
-worked out the way the game does it: a 1080p monitor on Auto is 480×270, and at
-GUI scale 3 it is 640×360. So the dialog fills the same share of the screen,
-and scrolls or fits, exactly as it will for you. The editor remembers your
-choice. To see it at its real size, press **Game size** (the monitor at the
-bottom of the tools on the left), which draws every pixel as big as the game
-does. That is your whole monitor, so scroll round it.
+piece's settings on the right. The screen is the game's, at the size a real
+monitor gives it (426×240 is a 1440p or 4K monitor on the Auto GUI scale,
+480×270 a 1080p one), and it behaves like the game: the mouse wheel scrolls it,
+hovering a clickable thing shows its tooltip, and **Clickable areas** (`A`)
+shades where a click will land.
 
 **Words, in place.** Double-click any words on the screen — a button's label, a
 heading, a line of text, a sidebar button, the title in the game's header or a
@@ -459,23 +410,6 @@ in the preview for **Edit words**, **Copy**, **Cut**, **Paste**, **Duplicate**,
 **Group in a column**, **Put on a panel**, **Ungroup** and **Delete** — or use
 `Ctrl+C`, `Ctrl+X`, `Ctrl+V`, `Ctrl+D`, `Ctrl+G` and `Ctrl+Shift+G`. Copied
 pieces paste into your other dialogs too.
-
-**Export as PNG** (in the right-click menu, and under a piece's settings) saves
-one piece as pictures you can use in another dialog plugin, one that builds its
-screens out of images. A button, a sidebar entry, a card or any other piece with
-art under its words comes out as:
-
-- `name.png`: the art with no words on it, so your plugin can set its own text
-  over it;
-- `name_selected.png`: the same art lit, for buttons and sidebar entries;
-- `name.png.slice`: two numbers, the columns that stay fixed at the left and
-  right ends. Everything between them can be repeated, so the art stretches to
-  any width;
-- `name_preview.png`: the piece as it looks in your dialog, words and all.
-
-A piece that is only words, such as a heading in the heavy capitals, comes out as
-one picture. Each is drawn on its own, at the size it has in your dialog, over a
-transparent background. With the whole screen selected it saves the screen.
 
 Click the empty space around the screen, or press Escape, to get back to the
 dialog's own settings: its title, its width, its theme, its footer (one button,
@@ -629,13 +563,9 @@ the words on the screen, a tooltip, a footer button or the command a click
 runs, and say what it is when you open the dialog:
 
 ```
+/rp dialog studio:punish Admin target=Steve   # open it for Admin, about Steve
 /rp dialog studio:punish target=Steve         # open it for yourself
-/rp dialog studio:punish target=Steve Admin   # open it for Admin, about Steve
 ```
-
-The player to open it for goes last, and needs `rpengine.dialog.others` when it
-is anybody but you. (RP Engine before 0.1.71 wanted it straight after the id,
-and that order still works.)
 
 A name the command does not give is filled from the other places [live
 values](#live-values) come from: the player's settings, what a plugin
