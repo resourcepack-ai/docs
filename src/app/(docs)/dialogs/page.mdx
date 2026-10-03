@@ -164,12 +164,14 @@ same sidebar with a different button lit, and different cards beside it. A
 dialog can be exactly that — up to **ten pages**, with a click turning between
 them. A store's categories, a guide's chapters and a tab bar work the same way.
 
-**The quickest way is from the sidebar.** Click any of its buttons and press
-**Make a page for each button** in its panel. Every button gets a page of its
-own, named after it, and goes there when clicked; the page you were on keeps the
-button that was lit. The box beside the buttons becomes **the part that changes
-from page to page** — outlined in green on the screen — and everything outside
-it, the sidebar included, stays the same on every page.
+**The quickest way is from the sidebar.** Click any of its buttons, and its
+panel shows **A page for every button**: each button with the page it will open
+— *this page* for the one that is lit, *new page* for the rest. **Create pages**
+makes them. Every button gets a page of its own, named after it, and goes there
+when clicked. The box beside the buttons becomes **the part that changes from
+page to page** — outlined in green on the screen — and everything outside it,
+the sidebar included, stays the same on every page. Click a button in that list
+later to open its page.
 
 The **Pages** strip above the screen has a tab for each page. Click one to edit
 it, and double-click to rename it. The first tab, with the house, is the page
@@ -207,6 +209,13 @@ opening that page straight away — no restart — with the same `{placeholders}
 the first page was opened with, so a punish menu about Steve is still about
 Steve on its second page. Every player may run `/rp page`, because the click is
 theirs, but it only opens a page the dialog they are looking at links to.
+
+**A dialog with pages stays open when it is clicked.** The page you are on
+stays on screen until the next one replaces it, so turning a page never flashes
+the world or throws your cursor back to the middle. Its footer button still
+closes it (through RP Engine, `/rp page close`), and so does Escape; a click
+that runs a command leaves it open, so a store can sell several things in a
+row.
 
 <Callout type="warning" title="Needs RP Engine 0.1.66 or newer">
   An older RP Engine opens every page with `/rp dialog`, but a click that
