@@ -316,13 +316,13 @@ export const nav: NavGroup[] = [
         title: "Nexo",
         href: "/nexo",
         description: "Install a ResourcePack AI export into Nexo without hand-writing item or pack files.",
-        keywords: ["nexo", "custom items", "external packs", "custom model data"],
+        keywords: ["nexo", "custom items", "furniture", "custom blocks", "glyphs", "external packs", "custom model data"],
       },
       {
         title: "Oraxen",
         href: "/oraxen",
         description: "Install a ResourcePack AI export into Oraxen without hand-writing item or pack files.",
-        keywords: ["oraxen", "custom items", "uploads", "custom model data"],
+        keywords: ["oraxen", "custom items", "furniture", "custom blocks", "glyphs", "uploads", "custom model data"],
       },
       {
         title: "Moving assets between packs",
