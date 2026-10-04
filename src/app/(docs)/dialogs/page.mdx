@@ -327,6 +327,25 @@ closes it (through RP Engine, `/rp page close`), and so does Escape; a click
 that runs a command leaves it open, so a store can sell several things in a
 row.
 
+**After a restart, pages turn instantly.** Turning a page normally goes to the
+server and back, which is a short wait on a server far away. But a server also
+gives every player its dialogs as it starts, and a page the player already has
+can open on the spot, without asking. So once the server has restarted since
+you last synced, RP Engine sends each page's links that way and pages turn the
+moment you click. Two things keep a page on the slower route, and both are on
+purpose:
+
+- **It was synced again since the last restart.** The copy the player was given
+  at the start is an older one, so the engine asks the server until the next
+  restart.
+- **It shows something per player**, such as a `{placeholder}` or a player
+  setting. Only the server can fill those in as it opens, so turning *to* that
+  page still asks the server. Turning away from it is still instant.
+
+`/rp dialogs` says beside each dialog whether its pages turn instantly or wait
+for the server. This needs RP Engine 0.1.70 or newer; with an older one every
+page turn asks the server, as before.
+
 <Callout type="warning" title="Needs RP Engine 0.1.66 or newer">
   An older RP Engine opens every page with `/rp dialog`, but a click that
   should turn the page only gets an unknown-command reply. Update the plugin on
