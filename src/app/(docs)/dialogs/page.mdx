@@ -612,9 +612,13 @@ the words on the screen, a tooltip, a footer button or the command a click
 runs, and say what it is when you open the dialog:
 
 ```
-/rp dialog studio:punish Admin target=Steve   # open it for Admin, about Steve
 /rp dialog studio:punish target=Steve         # open it for yourself
+/rp dialog studio:punish target=Steve Admin   # open it for Admin, about Steve
 ```
+
+The player to open it for goes last, and needs `rpengine.dialog.others` when it
+is anybody but you. (RP Engine before 0.1.71 wanted it straight after the id,
+and that order still works.)
 
 A name the command does not give is filled from the other places [live
 values](#live-values) come from: the player's settings, what a plugin
