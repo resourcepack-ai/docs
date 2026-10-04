@@ -296,7 +296,7 @@ export const nav: NavGroup[] = [
       {
         title: "Exporting",
         href: "/exporting",
-        description: "The six exports, what lands in the file, and how to install it.",
+        description: "The seven exports, what lands in the file, and how to install it.",
         keywords: [
           "export",
           "download",
@@ -307,6 +307,8 @@ export const nav: NavGroup[] = [
           "modelengine",
           "nexo",
           "oraxen",
+          "craftengine",
+          "emoji",
           "furniture",
           "glyphs",
           "bbmodel",
