@@ -1,0 +1,139 @@
+export const metadata = {
+  title: "Moving from CraftEngine",
+  description:
+    "Drop a CraftEngine pack folder into RP Engine and it loads: items, furniture, blocks, images, emoji, sounds and recipes, templates resolved, and what does not come across.",
+};
+
+# Moving from CraftEngine
+
+RP Engine reads CraftEngine pack folders as they are. Copy a pack out of
+`plugins/CraftEngine/resources/` into `plugins/RPEngine/content/` and start the
+server.
+
+```
+plugins/RPEngine/content/
+  default/                 ← a CraftEngine pack folder, renamed to its namespace
+    pack.yml
+    configuration/         ← items, blocks, furniture, images, recipes...
+    resourcepack/          ← its art, in any namespace, minecraft: included
+  default_templates/       ← CraftEngine's templates, if the pack uses them
+```
+
+There is nothing to turn on. A folder with a `pack.yml` and a `configuration/`
+folder is read as CraftEngine's, and so is a single CraftEngine file inside a
+pack of yours: one with an `items:`, `blocks:`, `furniture:`, `images:` or
+another of CraftEngine's sections holding namespaced ids. That is the useful
+shape for moving over a piece at a time. CraftEngine 26.9 is what it was built
+against.
+
+<Callout type="warning" title="The folder is the namespace">
+  An RP Engine pack's namespace is its folder name, not the `namespace:` in
+  `pack.yml`. CraftEngine's own `default_assets` declares `namespace: default`,
+  so as it stands it loads as `default_assets:topaz`. Rename the folder to
+  `default` and the ids match. The load warns once per namespace that differs.
+</Callout>
+
+## Templates and version keys
+
+CraftEngine packs lean on **templates**, and RP Engine applies them:
+`template:` (one or a list) with `arguments`, `overrides` and `merges`,
+`${arg}` and `${arg:-default}` placeholders, and the typed arguments
+(conditions, lists, maps, self-increasing numbers, arithmetic expressions).
+Templates are shared across every loaded pack, as in CraftEngine. Most packs
+use CraftEngine's bundled `default:` templates, so copy its `default_templates`
+folder in beside them; a template that cannot be found is a warning naming it.
+
+**Version keys** such as `$$>=1.21.2:`, `$$<=1.21.1:`, `$$1.20.5~1.21.4:` and
+`$$fallback:` are resolved for the server's version, and `a::b:` deep keys are
+nested, so a pack written for several versions loads the part meant for yours.
+A pack's `subpacks:` are chosen the same way.
+
+## What comes across
+
+| CraftEngine | RP Engine |
+|---|---|
+| item | an [item](/rp-engine/items) |
+| `material`, `lore`, `unbreakable`, `enchantments` | the same |
+| `item_name`, `custom_name` | `name`, with MiniMessage colours turned into colour codes and `<lang:...>` keys resolved to their English text |
+| `attribute_modifiers` | [`attributes`](/rp-engine/stats) |
+| `food`, `max_damage`, `max_stack_size`, `enchantment_glint_override` | `food`, `durability`, `stack`, `glow` |
+| `model:` as a path, a `minecraft:model` definition or an inline model | `model`, read from the pack's `resourcepack/` where it already is |
+| `model:` with `select`, `condition` or `range_dispatch` | its default model |
+| `texture:` / `textures:` | the item's art; tools get a handheld model, several textures become layers |
+| `equippable` and `equipments:` | [`armor`](/rp-engine/armour), drawn from the equipment texture it names |
+| `block_item` with a block of the same id | a [custom block](/rp-engine/blocks) carrying the item's name |
+| block `state` with `auto_state: solid` or a mushroom group | the block, on note blocks or mushroom stems |
+| block `textures` (1 to 6) or `model` | its model; textures become a cube, column, top-bottom or six-sided model |
+| block `hardness`, `correct_tools`, place sound | `hardness`, `tool`, `sound` |
+| block `loot` | `drop`: the item the table drops when mined normally |
+| furniture, inline under `furniture_item` or on its own | [`place:`](/rp-engine/models) |
+| ground, wall and ceiling variants | `surface` |
+| `rotation: any`, `four`, `eight` | `facing`: free, 4 ways, 8 ways |
+| interaction hitbox | `width` and `height` |
+| shulker hitbox | `solid: true` |
+| seat | `seat` |
+| `glowing_furniture` light | `light` |
+| furniture loot | `drop` |
+| image | an [icon](/rp-engine/icons), with its height and ascent |
+| image grid (`grid_size`, or `chars` as rows) | one icon per cell, `<id>_<row>_<column>` from 0, the way `<image:id:row:column>` counts |
+| emoji with a `:word:` keyword | an icon called `word`, so `:word:` works in chat with [chat icons](/rp-engine/config#icons-in-chat) on |
+| shaped, shapeless, smelting, blasting, smoking, campfire and stonecutting recipes | [recipes](/rp-engine/recipes), with vanilla and pack ingredients |
+| sound | a [sound](/rp-engine/sounds), with volume, pitch, stream and subtitle |
+| `resourcepack/` | copied into the pack RP Engine builds, as written |
+
+Art stays where CraftEngine keeps it. A pack that references
+`minecraft:item/custom/ruby` from `resourcepack/assets/minecraft/` resolves
+with no file moved, and so does a model CraftEngine would generate from
+textures: it is written inline instead.
+
+## What does not
+
+Each of these is a **warning naming the ID** when the pack loads, never a
+silence: a migration that quietly drops a third of somebody's pack is worse
+than one that refuses out loud.
+
+<Callout type="warning" title="A world of blocks and furniture does not come across">
+  Block and furniture *definitions* translate. The ones already placed in a
+  world do not: CraftEngine stores its blocks and furniture its own way, and
+  the vanilla state each block hides in was its choice. A pack migrates; a
+  world has to be rebuilt.
+</Callout>
+
+**Behaviour rather than properties**: item and block behaviours other than
+placing a block or furniture, `events`, block properties beyond the first
+appearance, item settings such as fuel or repair items, and furniture
+interactions. The item still loads, and [actions](/rp-engine/actions) cover
+much of what an event did.
+
+**Shapes RP Engine does not have**: tripwire, leaves, sapling, cactus and the
+other non-cube state groups come across as a full cube, and a seed that plants
+a crop stays a plain item.
+
+**More than one of something**: extra furniture elements, hitboxes, seats and
+lights, and the extra states of an item model. The first comes across and the
+warning names the rest.
+
+**Pinned characters**: an image's `char` is ignored, because RP Engine hands out
+its own. Write the icon as `:<namespace>:<id>:` rather than the character.
+
+**Smithing, brewing and transform recipes**, and any recipe with a tag or a
+choice of ingredients. Those are skipped whole and named, rather than loaded
+with an ingredient missing.
+
+**Sounds that replace a vanilla one**: put those in
+`resourcepack/assets/minecraft/sounds.json`.
+
+**Sections with no RP Engine equivalent**: categories, jukebox songs, loot
+tables for vanilla blocks and mobs, entities, paintings, advancements, world
+features and the rest. Each is one line in the load, with a count.
+
+## Two things worth knowing
+
+**Seats are worth a look in game.** CraftEngine measures a seat from the
+entity it mounts the rider on and RP Engine from where they sit, so seats are
+converted and the load says so. If a chair sits people slightly wrong, adjust
+its `seat:`.
+
+**English is what comes across.** Names and lore that read a `lang:` key are
+resolved to their English text once, at load. A pack's other languages are
+noted in one warning.
