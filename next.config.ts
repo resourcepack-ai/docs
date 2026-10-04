@@ -97,6 +97,10 @@ const nextConfig: NextConfig = {
       { source: "/api-reference/provenance", destination: "/api-reference/origin", permanent: true },
       { source: "/api-reference/lookup-provenance", destination: "/api-reference/lookup-origin", permanent: true },
       { source: "/api-reference/provenance-range", destination: "/api-reference/origin-range", permanent: true },
+      // Nexo and Oraxen had pages of their own for two weeks; they are a section
+      // of Exporting now, beside ItemsAdder and Model Engine.
+      { source: "/nexo", destination: "/exporting#nexo-and-oraxen", permanent: true },
+      { source: "/oraxen", destination: "/exporting#nexo-and-oraxen", permanent: true },
     ];
   },
 };
