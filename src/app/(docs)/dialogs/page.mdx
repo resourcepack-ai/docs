@@ -460,6 +460,23 @@ in the preview for **Edit words**, **Copy**, **Cut**, **Paste**, **Duplicate**,
 `Ctrl+C`, `Ctrl+X`, `Ctrl+V`, `Ctrl+D`, `Ctrl+G` and `Ctrl+Shift+G`. Copied
 pieces paste into your other dialogs too.
 
+**Export as PNG** (in the right-click menu, and under a piece's settings) saves
+one piece as pictures you can use in another dialog plugin, one that builds its
+screens out of images. A button, a sidebar entry, a card or any other piece with
+art under its words comes out as:
+
+- `name.png`: the art with no words on it, so your plugin can set its own text
+  over it;
+- `name_selected.png`: the same art lit, for buttons and sidebar entries;
+- `name.png.slice`: two numbers, the columns that stay fixed at the left and
+  right ends. Everything between them can be repeated, so the art stretches to
+  any width;
+- `name_preview.png`: the piece as it looks in your dialog, words and all.
+
+A piece that is only words, such as a heading in the heavy capitals, comes out as
+one picture. Each is drawn on its own, at the size it has in your dialog, over a
+transparent background. With the whole screen selected it saves the screen.
+
 Click the empty space around the screen, or press Escape, to get back to the
 dialog's own settings: its title, its width, its theme, its footer (one button,
 or a yes/no pair) and how it behaves. Click the footer button itself to set its
