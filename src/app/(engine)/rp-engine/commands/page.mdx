@@ -56,7 +56,7 @@ underlines.
 | Command | What it does | Permission |
 |---|---|---|
 | `/rp dialogs` | Every [dialog](/dialogs), and whether you hold its pack | `rpengine.dialogs` |
-| `/rp dialog <id> [player] [name=value...]` | Open one, filling its `{placeholders}` with the values given | `rpengine.dialog` |
+| `/rp dialog <id> [name=value...] [player]` | Open one, filling its `{placeholders}` with the values given. The player goes last (the old place, straight after the id, still works) | `rpengine.dialog` |
 | `/rp var <name> <value>` | Change one of your own dialog settings and see the dialog again | `rpengine.var` — everyone |
 | `/rp page <id>` | Turn the dialog you are looking at to another of its pages | `rpengine.page` — everyone |
 | `/rp page close` | Close the dialog you are looking at — a paged dialog's footer button | `rpengine.page` — everyone |
