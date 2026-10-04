@@ -101,6 +101,8 @@ const nextConfig: NextConfig = {
       // of Exporting now, beside ItemsAdder and Model Engine.
       { source: "/nexo", destination: "/exporting#nexo-and-oraxen", permanent: true },
       { source: "/oraxen", destination: "/exporting#nexo-and-oraxen", permanent: true },
+      { source: "/rp-engine/nexo", destination: "/rp-engine/nexo-oraxen", permanent: true },
+      { source: "/rp-engine/oraxen", destination: "/rp-engine/nexo-oraxen", permanent: true },
     ];
   },
 };
