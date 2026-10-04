@@ -327,6 +327,13 @@ export const engineNav: EngineGroup[] = [
         keywords: ["nexo", "oraxen", "migrate", "migration", "import", "items", "furniture", "glyphs",
           "sounds", "recipes", "custom model data"],
       },
+      {
+        title: "Moving from CraftEngine",
+        href: "/rp-engine/craftengine",
+        description: "Drop a CraftEngine pack in: items, furniture, blocks, images, emoji, sounds and recipes, templates resolved.",
+        keywords: ["craftengine", "craft engine", "migrate", "migration", "import", "templates", "furniture",
+          "images", "emoji", "recipes"],
+      },
     ],
   },
   {
