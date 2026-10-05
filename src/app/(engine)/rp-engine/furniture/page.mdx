@@ -1,0 +1,307 @@
+export const metadata = {
+  title: "Working furniture",
+  description:
+    "Placed models that do something: cabinets and crates you can fill, jukeboxes, lamps, doors and screens a click switches, sofas that join up, and pieces that grow over time.",
+};
+
+# Working furniture
+
+Five more things a `place:` block can say, each of them something a piece
+**does** rather than how it sits:
+
+```yaml
+cabinet:
+  material: PAPER
+  model: cabinet
+  place:
+    storage: true        # a container. Right-click to open it
+    jukebox: true        # plays music discs
+    states: [...]        # looks a click cycles through: a lamp, a door, a TV
+    connects: true       # joins its neighbours, like a sofa
+    grow: { ... }        # turns into another piece over time
+```
+
+All of them are written on the item, beside the rest of
+[`place:`](/rp-engine/models), and what they hold (a container's contents, a
+disc, a state, how long it has been growing) is kept on the piece itself, in
+the world. Nothing is written to a file or a database, so it survives a
+restart, moves with a copied region and goes back with a rolled-back one.
+
+## Storage
+
+A cabinet, a wardrobe, a bin, a crate:
+
+```yaml
+cabinet:
+  material: PAPER
+  model: cabinet
+  name: "&6Oak Cabinet"
+  place:
+    storage:
+      type: chest        # chest | personal | enderchest | disposal | shulker
+      rows: 3            # 1-6
+      title: "Cabinet"   # & colour codes. Default: the item's name, else "Storage"
+      open-sound: minecraft:block.chest.open
+      close-sound: minecraft:block.chest.close
+```
+
+`storage: true` is a three-row chest, and `storage: personal` is that type with
+everything else left alone. Right-click to open it.
+
+| Type | Whose contents | When it is broken |
+|---|---|---|
+| `chest` | The piece's. Everybody who opens it sees the same inventory, live | Spills on the ground |
+| `personal` | Each player's own, shared by every piece of that kind: every wardrobe opens the same wardrobe for the same person, and nobody else ever sees in | Nothing to spill: it was never the piece's |
+| `enderchest` | The player's own vanilla ender chest | Nothing |
+| `disposal` | Nobody's. **What goes in is deleted when it closes** | Nothing |
+| `shulker` | The piece's, like a chest | Gives back the item **with the contents inside it**. Put it down again and they are back |
+
+<Callout type="note" title="Two players in one chest see each other's moves">
+  There is only ever one inventory for a piece while anybody has it open. That
+  is the guard against the duplication bug every chest plugin has had once, and
+  it is why opening a storage piece is never two copies racing to be saved.
+</Callout>
+
+**Breaking one with somebody looking in closes their screen first**, and only
+then spills what was inside. A break another plugin cancels spills nothing. A
+creative-mode break, which does not give the piece back, still spills the
+contents, as breaking a chest does.
+
+A shulker-style piece always gives back itself, so it ignores `drop:`. Empty,
+it is the same item as a new one and stacks with them.
+
+`personal` is keyed by the item's ID. Rename `mypack:wardrobe` and everybody's
+wardrobe is a new, empty one. The old contents are still on the player, under
+the old ID, if you change it back.
+
+`rows:` can be changed after people have filled things. A cabinet made smaller
+opens big enough for what is already in it, and shrinks once the extra rows are
+emptied, rather than deleting them.
+
+A piece that is a seat and a container opens on a plain click and **sits on a
+sneaking one**. The piece's own [`interact`](/rp-engine/actions#the-thing-in-the-world)
+actions run before either, and a `cancel` in them stops it opening.
+
+[Custom blocks](/rp-engine/blocks#what-else-a-block-does) take the same
+`storage:` block.
+
+## A jukebox
+
+A gramophone, a radio, a boombox:
+
+```yaml
+gramophone:
+  material: PAPER
+  model: gramophone
+  place:
+    jukebox:
+      volume: 1.0                       # 1 is a vanilla jukebox, heard ~64 blocks away
+      pitch: 1.0                        # 0.5-2
+      permission: mypack.jukebox.use    # leave out and anybody may
+      playing-model: mypack:gramophone_on   # what it looks like while a disc is in it
+```
+
+`jukebox: true` is one with every default. Right-click it holding a music disc
+to put the disc in (it leaves your hand, unless you are in creative) and the
+record plays at the piece. Right-click again and the disc pops out of the top
+and the music stops for everybody who could hear it. Breaking the piece does
+the same: **a disc is never broken with its jukebox.**
+
+Every vanilla disc works on every version. From Minecraft 1.21, so does any item
+a datapack made playable, with one catch: the server is not told which sound a
+datapack's song plays, so such a disc goes in and plays nothing unless this
+server has a [sound](/rp-engine/sounds) with **the song's own ID**, in which
+case it plays that. The console says so once per song.
+
+`playing-model` is an item ID whose model the piece wears while a disc is in it
+(or a model ID with no item of its own), and it goes back to its own model when
+the disc comes out. It does nothing on an [animated](/rp-engine/animation)
+piece, whose look is its moving parts, and the load says so.
+
+A click with no disc in the piece and none in hand is not a jukebox click, so a
+gramophone that is also a seat is still sat on. Sneaking on one that is a seat
+always sits.
+
+<Callout type="note" title="Late arrivals hear nothing">
+  The record is sent once, when it goes in, as vanilla's is. Somebody who walks
+  up halfway through hears nothing until the next disc, and a restart does not
+  resume it. The disc is still in the piece either way.
+</Callout>
+
+## States: lamps, doors and screens
+
+A click can change a piece. Each entry under `states:` is one more look a click
+cycles into, after the piece as you defined it. One entry is a switch; three
+are a television with three channels.
+
+```yaml
+lamp:
+  material: PAPER
+  model: lamp
+  place:
+    light: 0                    # dark as placed
+    states:
+      - model: mypack:lamp_on   # an item whose model to wear. Leave out to keep it
+        light: 15               # light in this state. Leave out for the piece's own
+        sound: minecraft:block.lever.click   # played on arriving in this state
+
+door:
+  material: PAPER
+  model: door
+  place:
+    solid: true
+    base-sound: minecraft:block.wooden_door.close   # played on going back to the start
+    reset-after: 5s             # shuts itself 5 seconds after the last click
+    states:
+      - turn: 90                # degrees added to the way it faces
+        offset: [-0.4, 0, 0.4]  # blocks it moves: right, up, forward
+        solid: false
+        sound: minecraft:block.wooden_door.open
+```
+
+Right-click goes to the next state, and after the last one back to the start.
+**Anything a state leaves out is the piece as defined**: a state that only says
+`light: 15` keeps its model, its collision and its angle.
+
+| Key | In a state |
+|---|---|
+| `model` | An item whose model it wears (or a model ID with no item of its own) |
+| `light` | 0-15. `0` is dark |
+| `solid` | Whether a barrier stands in it, as the piece's own `solid:` |
+| `turn` | Degrees added to the way it faces. A hinged door |
+| `offset` | `[right, up, forward]` in blocks, the same directions as a [seat's](/rp-engine/placement-options#sitting) `x`, `y` and `z`, so it moves along the piece however it was put down. A sliding door |
+| `sound` | Played on arriving in this state |
+
+Beside `states:`, `reset-after:` takes the piece back to the start that long
+after the last click (`10t` ticks, `10s` seconds, `2m` minutes; a bare number is
+ticks), and `base-sound:` is what going back sounds like, by click or by timer.
+
+A piece **turns about its own centre and then moves**, so a door hinged at one
+edge is a quarter `turn` plus an `offset` that puts that edge back where it was.
+It swings over a quarter of a second rather than jumping. Its hitbox stays where
+it was put, and so does what a vehicle drives into.
+
+The state is kept on the piece, so a lamp left on is still on after a restart. A
+piece that resets itself and was left open when its chunk unloaded starts its
+countdown again when the chunk comes back.
+
+<Callout type="warning" title="Light and collision follow the piece's own rules">
+  A solid state gives no light, because the barrier and the light would have
+  to be the same block. And **only a block the piece put there is ever
+  changed**: if somebody has put a block of their own in the space a model
+  stands in, the model leaves it alone and goes without being solid or lit in
+  that state.
+</Callout>
+
+On an [animated](/rp-engine/animation) piece, `light`, `solid` and `sound`
+work, and `model`, `turn` and `offset` do not: its parts are posed by its
+animation, and the load says so. Give it a right-click animation as well and
+both happen on a click: the state changes and the animation plays.
+
+## Joining up: sofas and counters
+
+Pieces of the same kind put side by side can join into one run, the way a
+sofa or a kitchen counter does:
+
+```yaml
+sofa:
+  material: PAPER
+  model: sofa
+  place:
+    connects: true      # or name any of them: { straight: ..., left: ..., right: ..., inner: ..., outer: ... }
+```
+
+| Look | Where the piece is |
+|---|---|
+| `straight` | The middle of a row, with one of its kind either side |
+| `left` | The end with one only on its right |
+| `right` | The other end, with one only on its left |
+| `inner` | A corner its back touches |
+| `outer` | A corner its front touches |
+
+Each is an item (or a model) to wear, and `connects: true` names them after
+the piece: `sofa_straight`, `sofa_left`, and so on. A piece standing alone
+wears its own model. A joining piece faces one of four ways, and joins only
+pieces of its own kind.
+
+Corners follow **the game's own rule for stairs**: a piece whose back touches
+one of its kind turned a quarter is an inner corner, and its front an outer
+one. The corner model is turned the way the game turns its own corner stairs,
+so a corner drawn like the game's inner and outer stairs turns the right way.
+Putting a piece down or taking one away re-reads the row around it.
+
+## Which click does what
+
+A piece can be several of these at once, so a click goes to the first that
+wants it:
+
+1. The piece's own `interact` actions run first, and a `cancel` in them stops
+   the rest.
+2. **Sneaking** on a piece that is also a seat sits, and nothing below runs.
+3. A **container** takes every other click.
+4. A **jukebox** takes the clicks that put a disc in or take one out.
+5. **States** take the next one, and a right-click animation plays with them.
+6. A right-click animation, then a seat, take whatever is left.
+
+## Growing
+
+A piece can turn into another piece over time: a sapling into a tree, a crop
+through its stages.
+
+```yaml
+rose:
+  material: PAPER
+  model: rose
+  place:
+    grow:
+      into: mypack:rose_stage2   # the item whose placed piece replaces this one
+      after: 10s                 # the least time it stands first. t, s, m; bare = ticks
+      chance: 0.5                # the chance per check once that has passed. Default 1
+      light: 9                   # the least light at its block. Leave out for any
+
+rose_stage2:
+  material: PAPER
+  model: rose2
+  place:
+    grow:
+      into: mypack:rose_stage3
+      after: 2m
+
+rose_stage3:
+  material: PAPER
+  model: rose3
+  place: {}                      # the last stage stays
+```
+
+Each piece is checked about once a second. Once it has stood for `after`, each
+check has `chance` of growing it, so `after: 10s` with `chance: 0.5` grows a
+couple of seconds after the ten, on average, and not all at once across a
+field. The new piece goes in the same block, facing the same way, and starts
+its own clock.
+
+`into` has to be an item with a `place:` block. If it is not, the load says so
+and the piece never grows, because a piece that grew into nothing would just
+vanish.
+
+**Growing is not breaking and planting**: no break or place event, no `remove`
+or `place` actions, and nothing given back for the piece itself. What it was
+holding is different, because that was never the piece's to lose: a disc, or a
+container's contents, lands on the ground.
+
+A piece is only checked while its chunk is loaded. The time keeps counting
+while nobody is there, so one that has been left long enough grows at the first
+check after somebody comes back, by one stage, because the next starts its own
+clock then. The time is the game's tick count, not the time of day, so
+`/time set` and a frozen daylight cycle do not stop anything growing.
+
+A [custom block](/rp-engine/blocks#growing) grows differently, through stages
+of one block rather than into another piece; that is the answer for a crop you
+want to farm in rows.
+
+## From your own plugin
+
+`ModelInfo` says what a piece's `place:` block declared: `storage()`,
+`jukebox()`, `states()` and `grow()`. The engine handles every click itself,
+and a `ModelInteractEvent` cancelled before that leaves the piece as it was.
+Growing fires neither `ModelBreakEvent` nor `ModelPlaceEvent`, because nobody
+broke or placed anything. See [the plugin API](/rp-engine/api).
