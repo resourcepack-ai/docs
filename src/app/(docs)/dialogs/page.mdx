@@ -466,8 +466,9 @@ screens out of images. A button, a sidebar entry, a card or any other piece with
 art under its words comes out as:
 
 - `name.png`: the art with no words on it, so your plugin can set its own text
-  over it;
-- `name_selected.png`: the same art lit, for buttons and sidebar entries;
+  over it — always unlit, even when the piece is the lit one in your dialog;
+- `name_selected.png`: the same art lit, for buttons, sidebar entries and list
+  options;
 - `name.png.slice`: two numbers, the columns that stay fixed at the left and
   right ends. Everything between them can be repeated, so the art stretches to
   any width;
