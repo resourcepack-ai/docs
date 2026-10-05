@@ -65,16 +65,7 @@ A pack's `subpacks:` are chosen the same way.
 | block `state` with `auto_state: solid` or a mushroom group | the block, on note blocks or mushroom stems |
 | block `textures` (1 to 6) or `model` | its model; textures become a cube, column, top-bottom or six-sided model |
 | block `hardness`, `correct_tools`, place sound | `hardness`, `tool`, `sound` |
-| block `luminance` | `light` |
 | block `loot` | `drop`: the item the table drops when mined normally |
-| block `states`: `properties`, `appearances` and `variants` | [`properties`](/rp-engine/blocks#turning-and-states) and `appearances`, state for state, each appearance's turn (`x`, `y`, `uvlock`) kept |
-| an appearance with several models | `random:`, a look picked as each is placed |
-| a block whose appearances are a stair's, slab's, door's or trapdoor's `state:` (`stairs_block`, `slab_block`, `door_block`, `trapdoor_block`) | that [`shape:`](/rp-engine/blocks#stairs-slabs-doors-and-other-shapes), on **the same vanilla block** the pack took, so the ones already in a world stay. A grate or bulb hidden in a vanilla grate or bulb does the same |
-| `auto_state` `tripwire`, `sugar_cane`, `sapling` and the like, or a plant behaviour | a [plant](/rp-engine/blocks#plants), on cut tripwire |
-| `leaves_block`, or a leaves `auto_state` | `shape: grate`, the see-through full block |
-| `crop_block`, `stem_block`, `sapling_block` (`grow_speed`, `light_requirement`, bone meal) | [`grow:`](/rp-engine/blocks#growing) on `age` or `stage` |
-| `falling_block` · `strippable_block` (`stripped`) · `simple_storage_block` · `lamp_block` | `falls` · `strip` · `storage` · `shape: bulb` |
-| a right-click `cycle_block_property`, or `toggleable_lamp_block` | `click:`, so a lamp or a safe switches its look |
 | furniture, inline under `furniture_item` or on its own | [`place:`](/rp-engine/models) |
 | ground, wall and ceiling variants | `surface` |
 | `rotation: any`, `four`, `eight` | `facing`: free, 4 ways, 8 ways |
@@ -83,14 +74,10 @@ A pack's `subpacks:` are chosen the same way.
 | seat | `seat` |
 | `glowing_furniture` light | `light` |
 | furniture loot | `drop` |
-| item, block and furniture `events` | [actions](/rp-engine/actions), with `particle` as a [`particle`](/rp-engine/actions#steps) step: see below |
 | image | an [icon](/rp-engine/icons), with its height and ascent |
 | image grid (`grid_size`, or `chars` as rows) | one icon per cell, `<id>_<row>_<column>` from 0, the way `<image:id:row:column>` counts |
 | emoji with a `:word:` keyword | an icon called `word`, so `:word:` works in chat with [chat icons](/rp-engine/config#icons-in-chat) on |
 | shaped, shapeless, smelting, blasting, smoking, campfire and stonecutting recipes | [recipes](/rp-engine/recipes), with vanilla and pack ingredients |
-| `smithing_transform` and `smithing_trim` recipes | `smithing` and `smithing_trim` recipes; `merge_components: false` turns off `copy-data` |
-| `brewing` recipes | `brewing` recipes, which need Paper |
-| `shaped_transform` and `shapeless_transform` recipes | ordinary shaped and shapeless recipes, with a warning: the result is made fresh rather than inheriting the source ingredient's data |
 | sound | a [sound](/rp-engine/sounds), with volume, pitch, stream and subtitle |
 | `resourcepack/` | copied into the pack RP Engine builds, as written |
 
@@ -105,71 +92,40 @@ Each of these is a **warning naming the ID** when the pack loads, never a
 silence: a migration that quietly drops a third of somebody's pack is worse
 than one that refuses out loud.
 
-<Callout type="warning" title="Most of a world does not come across">
-  Block and furniture *definitions* translate. Most of what is already placed
-  in a world does not: CraftEngine stores its furniture its own way, and a
-  block hidden in a note block, a tripwire or a mushroom took a vanilla state
-  CraftEngine chose, where RP Engine hands out a spare state of its own. Those
-  have to be rebuilt, and the load names each block it applies to.
-
-  **Shapes are the exception.** A stair, slab, door or trapdoor keeps the very
-  vanilla block the pack took, so the ones already standing in a world are
-  still those blocks after the move.
+<Callout type="warning" title="A world of blocks and furniture does not come across">
+  Block and furniture *definitions* translate. The ones already placed in a
+  world do not: CraftEngine stores its blocks and furniture its own way, and
+  the vanilla state each block hides in was its choice. A pack migrates; a
+  world has to be rebuilt.
 </Callout>
 
-**Block behaviours with no equivalent**, each named with its reason: fences
-and fence gates, buttons and pressure plates (RP Engine has none of those to
-take over), spreading like grass, drawers and items shown on a block
-(`storage:` is the nearest), seats on blocks (a [placed model's
-seat](/rp-engine/placement-options#sitting) is the answer here), bouncing,
-particles from a standing block, chimes, budding, decaying, stacking, snowy
-variants, placement rules, dropped experience and biome tints. Also what a
-sapling or stem becomes when it has finished growing (a tree, a fruit), and
-`entity_renderer`. The block still loads.
+**Behaviour rather than properties**: item and block behaviours other than
+placing a block or furniture, `events`, block properties beyond the first
+appearance, item settings such as fuel or repair items, and furniture
+interactions. The item still loads, and [actions](/rp-engine/actions) cover
+much of what an event did.
 
-**Some of a block's states**: a state's own settings (a different light or
-hardness per state), since an RP Engine block's states share one set; property
-values RP Engine blocks cannot have, which are drawn at their default; a block
-with more states than a note block's pool holds, whose extra states are placed
-as its first; and leaves' decay properties, which are the game's own rules. A
-`toggleable_lamp_block` switches its look on a click but gives no light;
-`shape: bulb` is the block whose light redstone switches.
-
-**Item settings and furniture interactions**: fuel, repair items and the
-like, and furniture interactions. The item still loads.
-
-**Events and functions with nothing to land on**: `step` and `fall`, a left
-click on a block or a piece (that is mining or breaking it here); functions
-such as titles, teleports and anything that switches a furniture variant or a
-block state other than by a right-click; a `run` with a delay; anything behind
-a condition other than a permission; and a function aimed at other players.
+**Shapes RP Engine does not have**: tripwire, leaves, sapling, cactus and the
+other non-cube state groups come across as a full cube, and a seed that plants
+a crop stays a plain item.
 
 **More than one of something**: extra furniture elements, hitboxes, seats and
-lights, and the extra models of an item model definition. The first comes
-across and the warning names the rest.
+lights, and the extra states of an item model. The first comes across and the
+warning names the rest.
 
 **Pinned characters**: an image's `char` is ignored, because RP Engine hands out
 its own. Write the icon as `:<namespace>:<id>:` rather than the character.
 
-**Dye recipes**, **smithing recipes without a template or an addition** (RP
-Engine's smithing table takes all three), and any recipe with a tag or a choice
-of ingredients. Those are skipped whole and named, rather than loaded with an
-ingredient missing.
+**Smithing, brewing and transform recipes**, and any recipe with a tag or a
+choice of ingredients. Those are skipped whole and named, rather than loaded
+with an ingredient missing.
 
 **Sounds that replace a vanilla one**: put those in
 `resourcepack/assets/minecraft/sounds.json`.
 
 **Sections with no RP Engine equivalent**: categories, jukebox songs, loot
-tables for vanilla blocks and mobs, paintings, advancements, world features and
-the rest. Each is one line in the load, with a count.
-
-**Entities**: CraftEngine's `entities:` section is not a mob of its own. Each
-entry names an existing entity type (a vanilla mob, or one another plugin such
-as MythicMobs spawns) and gives every one of them attribute values and tags for
-CraftEngine's damage rules; there is no model, name or spawn in it. An RP
-Engine [entity](/rp-engine/entities) is a new mob wearing a model, so there is
-nothing for one to take, and the load says so. To put a model on mobs that
-already exist, [bind one](/rp-engine/mobs).
+tables for vanilla blocks and mobs, entities, paintings, advancements, world
+features and the rest. Each is one line in the load, with a count.
 
 ## Two things worth knowing
 

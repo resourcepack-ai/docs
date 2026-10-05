@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Moving from Nexo or Oraxen",
   description:
-    "Drop Nexo or Oraxen YAML into RP Engine and it loads: items, furniture that stores, plays and opens, blocks in their own shapes, animated glyphs, sounds and recipes, and what does not come across.",
+    "Drop Nexo or Oraxen YAML into RP Engine and it loads: items, furniture, blocks, glyphs, sounds and recipes, and what does not come across.",
 };
 
 # Moving from Nexo or Oraxen
@@ -47,16 +47,7 @@ for moving over a piece at a time. Both plugins' current formats are read
 | `max_stack_size` | `stack` |
 | `food` | `food` |
 | `enchantment_glint_override: true` | `glow` |
-| custom armour: `equippable`, `trim_pattern`, or an id like `ruby_helmet` | [`armor`](/rp-engine/armour), worn with the set's layer art |
-| `Pack.CustomArmor` layers, or `ruby_armor_layer_1.png` / `_2.png` anywhere in the pack | the layer art, found the way the plugins find it |
-| `equippable` on the head with no `asset_id` / `model` | `hat`, so a 3D helmet shows its model |
-| `ItemFlags` | [`flags`](/rp-engine/stats) |
-| `Mechanics.commands` | [actions](/rp-engine/actions) on either click (on eating, for food), with its cooldown, permission and `one_usage` |
-| `Mechanics.custom` | actions, for its `CLICK`, `DROP`, `PICKUP` and `BREAK` events |
-| furniture or block `clickActions`, Oraxen's `events` | the piece's own [`interact`](/rp-engine/actions#the-thing-in-the-world) |
-| Oraxen's legacy `food`, `consumable`, `consumable_potion_effects` | `food`, and `consume` / `right_click` actions |
-| `soulbound` | `keep-on-death` |
-| Oraxen's `hat` | `hat` |
+| `equippable.slot` | [`armor`](/rp-engine/armour) |
 | `Mechanics.furniture` | [`place:`](/rp-engine/models) |
 | furniture barriers | `solid: true` |
 | furniture interaction hitbox | `width` and `height` |
@@ -66,72 +57,16 @@ for moving over a piece at a time. Both plugins' current formats are read
 | `limited_placing` | `surface` |
 | a uniform `scale` | `scale` |
 | a `nexo_item` / `oraxen_item` drop | `drop` |
-| furniture `storage` | [`storage`](/rp-engine/furniture#storage): the same five kinds, rows, title and sounds |
-| furniture `jukebox` | [`jukebox`](/rp-engine/furniture#a-jukebox), with its volume, pitch and permission; Oraxen's `active_model` is `playing-model` |
-| furniture `door` | [a second state](/rp-engine/furniture#states-lamps-doors-and-screens): turned a quarter (or only slid, for `is_sliding`) and moved by its `open_properties` translation, not solid when open if `toggle_hitbox_on_open` says so, with its open and close sounds, and `automatic_close_delay` as `reset-after` |
-| Nexo's furniture `states` | one state each, wearing its item model, light, barrier and translation, with `reset_after` |
-| a switched light: `lights.toggleable`, Oraxen's `toggle_light` | dark as placed (or Oraxen's base level), lit as a state, wearing `toggled_model` / `toggled_item_model` |
-| `rotatable` | states that each turn the piece one step further: a quarter on four facings, an eighth on eight |
-| `evolution` (`next_stage`, `delay`, `probability`) | [`grow`](/rp-engine/furniture#growing): `into`, `after`, `chance` |
-| Nexo's `connectable` (`straight`, `left`, `right`, `inner`, `outer`, or a `default` they are named after) | [`connects`](/rp-engine/furniture#joining-up-sofas-and-counters), facing one of four ways |
-| `custom_block` (Nexo), `block` (Oraxen), the old `noteblock` | a [custom block](/rp-engine/blocks), with its model, hardness, tool, drop, light and place sound. Its shape is [below](#blocks-in-their-own-shapes) |
-| a block drawn by a model the plugin generates from `parent_model` and textures | the same model, generated here and written inline |
+| `custom_block` (Nexo), `block` (Oraxen), the old `noteblock` | a [custom block](/rp-engine/blocks), with its model, hardness, tool, drop and place sound |
 | Oraxen `breaking` rules | the first rule's hardness, tool and drop |
 | static glyph | an [icon](/rp-engine/icons), with its height and ascent |
 | glyph grid (`rows`, `columns`) | one icon per cell, `<id>_1` onwards, numbered the way `<glyph:id:N>` numbers them |
-| reference glyph (`reference`, `index`) | an icon drawing that cell of the sheet it names, in the same file |
-| Oraxen `animation: {frames, fps, loop}` | an [animated icon](/rp-engine/icons#animated-icons), the whole strip |
-| Nexo `gif`, `frame_count` | an animated icon drawn from the GIF, `frame_count` as its frames |
-| glyph `placeholders`, Oraxen `chat.placeholders` | the icon's chat [`aliases`](/rp-engine/icons#more-ways-to-type-one-and-who-may) |
-| glyph `permission`, Oraxen `chat.permission` | the icon's `permission` |
 | `sounds.yml` entry | a [sound](/rp-engine/sounds), with its file, category, subtitle, volume, pitch and stream |
 | shaped, shapeless, furnace, blasting, smoking, campfire and stonecutting recipes | [recipes](/rp-engine/recipes), with vanilla, Nexo and Oraxen ingredients |
-| smithing recipes, Nexo's `trim_pattern` and `copy_components` included | `smithing` and `smithing_trim` recipes |
-| Nexo brewing recipes | `brewing` recipes, which need Paper |
-| anvil recipes: Oraxen's `base`, `addition` and `experience_cost`, Nexo's `input`, `material`, `cost` and `repair` | `anvil` recipes, a repair where there is no result |
 
 An item model such as `my_pack:item/ruby` becomes RP Engine's `item/ruby`. RP
 Engine builds its own item definitions from that, so nothing depends on the
 plugin's CustomModelData allocation.
-
-## Blocks in their own shapes
-
-Both plugins hide a block in a spare state of a vanilla one, and which vanilla
-block is the block's `type`. Each has its own equivalent here:
-
-| Nexo / Oraxen `type` | RP Engine |
-|---|---|
-| `NOTEBLOCK` / `FULL` | a note block, as an ordinary [custom block](/rp-engine/blocks) |
-| `STRINGBLOCK` / `STRING`, the old `stringblock` | a [plant](/rp-engine/blocks#plants), on cut tripwire |
-| `CHORUSBLOCK` / `CHORUS`, the old `chorusblock` | `shape: grate`, the see-through full block |
-| a mushroom type | `base: mushroom_stem` |
-| Oraxen's `STAIR`, `SLAB`, `DOOR`, `TRAPDOOR`, `GRATE`, `BULB` | that [`shape:`](/rp-engine/blocks#stairs-slabs-doors-and-other-shapes), made from the block's textures (a door's `[bottom, top]`, a bulb's `[off, on]`), on **the same waxed copper Oraxen used**: `custom_variation` 1 to 4 is fresh, exposed, weathered, oxidized |
-
-A chorus block becomes a grate rather than chorus because chorus would need
-Paper to stop it updating, and would repaint the End's own chorus plants; a
-grate needs neither.
-
-What a block does comes across where there is an equivalent:
-
-| Nexo / Oraxen | RP Engine |
-|---|---|
-| `directional` `LOG` · `FURNACE` · `DROPPER` / `BARREL` | `rotate: axis` · `horizontal` · `all`. Where the set names a block per direction (`y_block`, `north_block`, ...), each direction wears that block's model, and those blocks are not placed as blocks of their own |
-| `storage` | `storage`, the same kinds |
-| `is_falling` | `falls` |
-| `blast_resistant` | `blast-resistant` |
-| `log_strip` (`stripped_log`, `drop`) | `strip` |
-| `light` | `light` |
-
-## Click commands and other behaviour
-
-A click action's `[console]`, `[player]`, `[message]`, `[actionbar]` and
-`[sound]` (with its volume and pitch) become `console`, `run`, `message`,
-`actionbar` and `sound` steps, and `<player>` and `%p%` become `{player}`.
-Oraxen's newer `events` read the same way, `executor: console` or `player`. A
-condition that only checks a permission (`#player.hasPermission("x")`) becomes a
-`permission` step; any other condition is a branch, which actions do not have,
-so what sits behind it is skipped and named. A `commands` cooldown comes across
-in Nexo's units (`5s`, `10t`) or Oraxen's milliseconds.
 
 ## What does not
 
@@ -139,81 +74,47 @@ Each of these is a **warning naming the ID** when the pack loads, never a
 silence: a migration that quietly drops a third of somebody's pack is worse
 than one that refuses out loud.
 
-<Callout type="warning" title="Most of a world does not come across">
-  Block and furniture *definitions* translate. Most of what is already placed
-  in a world does not: the vanilla state a note-block or string block hides in
-  was allocated by the plugin against its own numbering, and placed furniture
-  is the plugin's own entities. Those have to be rebuilt or remapped by hand.
+<Callout type="warning" title="A world of blocks and furniture does not come across">
+  Block and furniture *definitions* translate. The ones already placed in a
+  world do not: the vanilla state each block hides in was allocated by the
+  plugin against its own numbering, and placed furniture is the plugin's own
+  entities. A pack migrates; a world has to be rebuilt or remapped by hand.
 
-  **Oraxen's shapes are the exception.** Its stairs, slabs, doors, trapdoors,
-  grates and bulbs keep the very waxed copper Oraxen put them on, so the ones
-  already standing in a world are still those blocks after the move.
-
-  The note-block pool here is also [smaller](/rp-engine/blocks), 49 per base,
-  because the instrument cannot be part of a block's identity. A pack with
-  hundreds of blocks will not fit as it stands.
+  The block pool here is also [smaller](/rp-engine/blocks), 49 per note-block
+  base, because the instrument cannot be part of a block's identity. A pack
+  with hundreds of blocks will not fit as it stands.
 </Callout>
 
-**Furniture behaviour with nothing to land on**: beds (the game only lets a
-player sleep in a bed block, and wakes anybody lying anywhere else), a
-`connectable` that picks its look from one item model reading the connection
-off the item (name the five looks and it joins), text floating over a piece, a `modelengine_id` (import the `.bbmodel` and give the item that
-model instead), a farmland requirement, BlockLocker protection, a left-click
-event on a placed piece (a left click breaks it here), `opped_player`
-commands, `armor_effects`, backpacks and the rest of `Mechanics`. Each is
-named with the reason. The item still loads.
+**Plugin behaviour rather than item properties**: click commands, storage,
+jukeboxes, connectable furniture, beds, doors, evolution and the rest of
+`Mechanics`. The item still loads, and [actions](/rp-engine/actions) cover most
+of what a click command did.
 
-**One list of states per piece.** A door, Nexo's states, a switched light and
-`rotatable` all become the piece's states, and a piece has one list of them,
-so where a piece has several the first in that order wins and the others say
-so. Of a door, its `open_properties` rotation is not carried (an open hinged
-door turns a quarter here) and nor is `delay_hitbox_toggle`. Of Nexo's states,
-ModelEngine and CustomModelData states, `conditions` and `next_after` are not
-carried. Of `evolution`, `light_boost`, `rain_boost` and bone meal are
-dropped: a piece here grows at one steady chance.
-
-**Block behaviour with nothing to land on**: of a string block, `sapling`
-(growing into a pasted schematic; [`grow:`](/rp-engine/blocks#growing) steps a
-plant through its own stages instead), `is_tall` (only the lower block is the
-plant), `random_place`, `stackable`, `requires_supporting` and
-`placeable_on_water`; `directional` on anything but a full block; and
-`beacon_base_block`, `farmblock`, `limited_placing` and `placeable`, each with
-its reason.
+**Shapes RP Engine does not have**: string, chorus, stair, slab, door,
+trapdoor, grate and bulb blocks come across as a full cube.
 
 **More than one of something**: extra seats, extra lights and extra hitboxes.
 The first (or the one at the anchor) comes across, and the warning counts the
 rest.
 
-**Some of a glyph**: tab completion, a fixed `char`, a font of its own and
-`is_emoji`, because an RP Engine icon goes into the default font and is given
-its character by ID; a GIF's `offset` (use `ascent`); and placeholders on a
-multi-bitmap glyph, which became several icons a placeholder cannot type all
-of. **Animated glyphs move where RP Engine's icons move, and are their first
-frame in chat**: see [why](/rp-engine/icons#where-it-moves-and-where-it-does-not).
+**Animated glyphs**: a GIF glyph is skipped, and an Oraxen `animation:` comes
+across as its first frame.
 
-**Cauldron, grindstone, crafter, transmute and predicate recipes**, and any
-recipe with an ingredient that is a tag or another plugin's item. Those are
-skipped whole and named, rather than loaded with an ingredient missing. A
-recipe's `permission` is not carried across either: RP Engine recipes are open
-to everyone.
+**Smithing, brewing, anvil, cauldron and grindstone recipes**, and any recipe
+with an ingredient that is a tag or another plugin's item. Those are skipped
+whole and named, rather than loaded with an ingredient missing.
 
 **Sounds that replace a vanilla one** (`minecraft:` ids and `replace: true`):
 put those in `overrides/sounds.json` instead.
 
-## Three things worth knowing
+## Two things worth knowing
 
-**Armour art stays where it is.** Both plugins pair a set's art with its
-pieces by name, `ruby_armor_layer_1.png` for the body and boots and `_2.png` for
-the leggings of the `ruby` set, and RP Engine does the same: it finds those files
-wherever they are in the pack and serves them on
-[vanilla's equipment path](/rp-engine/armour). Component, trim and the old
-shader armour all use the same art, so all three come across. It is drawn from
-Minecraft 1.21.4; on an older server the armour is still worn but with vanilla
-art, and the build names every piece that will. An elytra's wings are not
-carried, because RP Engine draws worn items on a player's body only.
-
-**Some art has to move.** RP Engine reads icons from `assets/textures/font/`,
-and Nexo and Oraxen keep them elsewhere. The load warns with the exact path.
+**Some art has to move.** RP Engine reads icons from `assets/textures/font/`
+and armour from vanilla's equipment path
+(`assets/textures/entity/equipment/humanoid/<id>.png`, or `humanoid_leggings/`
+for legs), and Nexo and Oraxen keep both elsewhere. A block whose model the
+plugin generated from `parent_model` and textures needs that model written as
+`assets/models/<id>.json`. The load warns with the exact path in each case.
 
 **Seats are worth a look in game.** Oraxen measures a seat from where its
 armour stand stands and RP Engine from where the rider sits, so Oraxen seats

@@ -42,39 +42,10 @@ needs its own `-`.
 | `block_break` | Used to break a block |
 | `shoot` | Shot, for a bow or crossbow |
 | `break` | Ran out of durability |
-| `place` | Put down, as a [placed model](/rp-engine/models) or a [custom block](/rp-engine/blocks) |
-| `interact` | Right-clicked where it stands, as a placed model or a custom block |
-| `remove` | Punched out or mined by a player, as a placed model or a custom block |
 
 `break` fires after the item is already gone and cannot be cancelled — that is
 vanilla's shape, not ours. It is still worth having for the sound and the
 message.
-
-## The thing in the world
-
-The last three are about the piece standing in the world rather than the stack
-in somebody's hand, which is what a furniture click command is in every other
-content plugin:
-
-```yaml
-doorbell:
-  material: PAPER
-  model: doorbell
-  place: { surface: wall }
-  actions:
-    interact:
-      - cooldown: 2
-      - sound: minecraft:block.bell.use
-      - console: "say {player} is at the door"
-```
-
-A custom block takes the same `actions:` in its own definition, since its id is
-the item that places it. On `interact`, `cancel` stops what the click would
-otherwise do: a seat is not sat on, and nothing is placed against the block.
-`place` and `remove` run once it is down or gone and cannot be cancelled. A
-`take` in any of the three does nothing, because the click is on the piece and
-not on whatever the player is holding. Written on an item with no `place:`
-block, they are a load warning, since they can never fire.
 
 There is deliberately no `wear`/`unwear`: Spigot has no equip event, and the
 alternatives are a Paper dependency or polling everybody's armour every tick.
@@ -90,7 +61,6 @@ alternatives are a Paper dependency or polling everybody's armour every tick.
 | `run` | Runs a command as the user, with their own permissions |
 | `sound` | `mypack:chime`, or a vanilla key. Optional volume and pitch |
 | `effect` | `SPEED 10 2` — type, seconds, level. Level is 1-based |
-| `particle` | `flame 12 0.3` — type, count, spread. At the block or piece the action is about, or at the user for a held item |
 | `give` | `mypack:ruby 3`. What will not fit drops on the floor |
 | `take` | Takes this many off the stack |
 | `cancel` | Cancels the vanilla use of the item |
@@ -113,12 +83,6 @@ refusal says something:
 
 **`cancel` is what stops the vanilla use.** A wand built on a bucket fills with
 water without it.
-
-**`particle` takes the game's own names**, `flame` or `happy_villager`, and
-the older spellings from before Minecraft 1.20.5 renamed most of them work too,
-on either side of that change. Count defaults to 8 and spread to 0.3 blocks. A
-particle that needs something more (a colour, a block to be made of) draws
-nothing.
 
 A step that cannot run is skipped and the rest still run — a misspelled potion
 costs that line, not the command after it.

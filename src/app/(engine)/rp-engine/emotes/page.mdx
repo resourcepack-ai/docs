@@ -163,43 +163,8 @@ cannot be used to extend a potion.
 
 ## Hand-authored emotes
 
-A pack can carry emotes of its own in an `emotes/` folder, one file holding as
-many as you like, keyed by name:
-
-```json
-{
-  "wave": {
-    "name": "Wave",
-    "length": 1.2,
-    "loop": false,
-    "animators": {
-      "rightArm": { "rotation": [
-        { "time": 0,   "value": [0, 0, 0] },
-        { "time": 0.3, "value": [-160, 0, -20], "interpolation": "smooth" },
-        { "time": 1.2, "value": [0, 0, 0] }
-      ] }
-    }
-  }
-}
-```
-
-This is exactly what Studio's emote editor exports and a push carries, so the
-easy way to write one is to make it there and paste the entry. Hand-written is
-fine too, and YAML works as well as JSON. The bones are `head`, `body`,
-`rightArm`, `leftArm`, `rightLeg`, `leftLeg`, `rightForearm`, `leftForearm`,
-`rightShin` and `leftShin`; `root` moves the whole figure about the hip.
-Channels are `rotation` (degrees), `position` (pixels) and `scale`, and times
-are in seconds.
-
-**Emote names are shared across the whole server**, not per pack, because
-`/emote wave` names an emote by its bare name. Two packs both defining `wave`
-is an error rather than two emotes, so prefix yours (`mypack_wave`) if other
-people will install your pack beside theirs.
-
-**BetterModel's player animations load as emotes too.** Drop its plugin folder
-in and every animation in `players/` becomes one, with its bones mapped onto
-these. See [Moving from BetterModel](/rp-engine/bettermodel) for the two places
-its rig differs.
-
-A hand-authored emote plays on the rigs the engine bakes itself, which needs
-Minecraft 1.21.4 or newer. On an older server it loads, and plays on nobody.
+Emote animations are authored in Studio today and arrive by push. There is no
+`emotes/` folder in the content format — deliberately, because a folder that
+loaded and then did nothing would be an afternoon's work with no error to
+explain it. When keyframes can be hand-written, that folder appears, and
+nothing about the commands or the API changes.

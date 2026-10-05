@@ -12,15 +12,11 @@ Copy your `blueprints/` folder into a pack and start the server. Every
 ```
 plugins/RPEngine/content/
   mypack/
+    pack.yml
     blueprints/          ← straight out of Model Engine
       golem.bbmodel
       bosses/dragon.bbmodel
 ```
-
-**No `pack.yml` is needed.** A folder holding nothing but Blockbench files is
-plainly Model Engine's (or [BetterModel's](/rp-engine/bettermodel)), so it
-loads as a pack named after the folder. Add a `pack.yml` when you want to say
-which [bundles](/rp-engine/bundles) it goes into, or anything else one says.
 
 ```
 /rp give mypack:golem       the item that wears it
@@ -28,11 +24,10 @@ which [bundles](/rp-engine/bundles) it goes into, or anything else one says.
 /rp spawn mypack:guard      a mob of your own wearing one
 ```
 
-**The file name is the ID.** `golem.bbmodel` is `mypack:golem`. A blueprint in
-a subfolder is found where it is, and the subfolder organises without reaching
-the ID, the same rule as every other category: `bosses/dragon.bbmodel` is
-`mypack:dragon`. Uppercase or spaces in a file name are refused rather than
-folded, and the load says which file.
+**The file name is the ID.** `golem.bbmodel` is `mypack:golem`, and a subfolder
+organises without reaching the ID — the same rule as every other category.
+Uppercase or spaces in a file name are refused rather than folded, and the load
+says which file.
 
 ## Why there is nothing to convert
 
@@ -67,8 +62,7 @@ own right, spawned with `/meg`; in RP Engine every model belongs to an
 a thing you [place](/rp-engine/models) and a thing a
 [mob wears](/rp-engine/mobs). Dropping a blueprints folder in creates that item
 for you — a plain one, on paper. Write your own under the same ID in `items/`
-if you want more than that, and yours wins; the load still mentions the clash,
-so a blueprint shadowed by accident does not go unnoticed.
+if you want more than that, and yours wins.
 
 **MythicMobs mechanics have different names.** Theirs are `model`, `state` and
 `unmodel`; ours are `rpmodel`, `rpanimate` and `rpunmodel` — see

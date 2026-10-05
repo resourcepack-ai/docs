@@ -89,22 +89,6 @@ sitting, which is wrong by the same amount for every chair you own.
 Sit on something, decide it is a hand's width out, put the number here and
 `/rp reload`. Positive is higher. Most servers never touch it.
 
-## Plants
-
-```yaml
-blocks:
-  tripwire-frozen: auto
-```
-
-How many [plants](/rp-engine/blocks#plants) fit depends on whether Paper has
-frozen tripwire updates (`block-updates.disable-tripwire-updates` in
-`config/paper-global.yml`): thirty-two if it has, two if not. `auto` reads
-Paper's setting. `true` or `false` says it outright, for a server whose Paper
-config lives somewhere else.
-
-Saying `true` when tripwire is not frozen makes neighbouring plants turn into
-each other, so only say it when you know.
-
 ## Vehicles
 
 ```yaml

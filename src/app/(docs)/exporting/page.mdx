@@ -84,9 +84,8 @@ contents/<your-pack>/
   configs/items.yml            models, 2D items and custom blocks
   configs/font_images.yml      icons
   resourcepack/assets/
-    <your-pack>/               your items' models, textures, icons and sounds
+    <your-pack>/               your items' models, textures and icons
     minecraft/                 the vanilla files your pack replaces
-datapacks/<your-pack>_dialogs/ your dialogs, if the pack has any
 ```
 
 Everything goes wherever ItemsAdder expects that kind of thing:
@@ -95,14 +94,13 @@ Everything goes wherever ItemsAdder expects that kind of thing:
 | --- | --- |
 | 3D model | an item with a custom model |
 | Custom block | an ItemsAdder block (`REAL_NOTE`) that drops itself when mined |
-| Vehicle | furniture you can sit in, with a hitbox measured from the model |
 | 2D custom item | an item — ItemsAdder builds the model from the sprite |
 | Icon / glyph | a `font_image` — ItemsAdder gives it a new character |
 | Block or item reskin | a vanilla file replacement |
 | GUI screen that replaces a vanilla file | a vanilla file replacement |
 | GUI overlay | a `font_image` plus the title string that positions it |
-| Sound | a sound in your pack's namespace, and a replaced vanilla sound stays replaced |
-| Dialog | a datapack folder, its pictures in a font of the pack's own |
+
+Sounds aren't included.
 
 The zip already contains `contents/`, so merge it into `plugins/ItemsAdder/`
 — dropping it *inside* the existing `contents/` gives you
@@ -135,13 +133,6 @@ drops itself; change any of that under `behaviours: block:` in `items.yml`. A
 directional block turns to face whoever placed it, like a furnace. As with
 every note-block block, it is a solid cube with no see-through pixels.
 
-**Vehicles are furniture you can sit in, not drive.** ItemsAdder has no way to
-drive one of our models, so a vehicle places like a chair: right-click the
-ground with it, then right-click it to get in. ItemsAdder furniture has one
-seat, over the middle, so the rider sits at the height of the driver's seat
-and any other seats are left out; the `README.txt` says which. To drive it,
-use [RP Engine](/rp-engine).
-
 Items ride on `PAPER` because it has no vanilla behaviour to inherit. Change
 `material` per item in `items.yml` if you'd rather one behaved like the item
 it looks like. Models that use a *vanilla* texture keep pointing at
@@ -153,26 +144,6 @@ Both it and we assign characters from Unicode's private-use range, and both
 start at the same place, so keeping ours would land on top of an emoji you
 already have and you'd see that instead. Reference the icons by their
 ItemsAdder placeholder.
-
-**Sounds play under your pack's namespace**, the way ItemsAdder's own packs
-keep theirs: a sound you named `custom.laser` is `my_pack:custom.laser` on an
-ItemsAdder server, ready for any ItemsAdder sound setting or
-`/iaplaysound my_pack:custom.laser <player>`. A sound that replaces a vanilla
-one, like `entity.creeper.primed`, also keeps its vanilla name so the game
-plays it instead of its own. That goes in `resourcepack/assets/minecraft/sounds.json`,
-which ItemsAdder merges with its own `sounds.json` rather than letting one
-replace the other. It has done that since December 2023; on an older
-ItemsAdder, delete that file or the custom block sounds go quiet. The
-`README.txt` lists every sound under the name it plays as.
-
-**Dialogs travel as a datapack**, because ItemsAdder doesn't install vanilla
-dialogs. Move `datapacks/<your-pack>_dialogs/` into your world's `datapacks/`
-folder, restart, and open one with `/dialog show <player> studio:<id>`; the
-`README.txt` lists every id. That needs Minecraft 1.21.6 or newer. A dialog's
-picture is drawn in a font of its own in your pack's folder rather than in the
-default font, which belongs to ItemsAdder and hands out the same characters, so
-run `/iazip` before anybody opens one. Switches and sliders bound to player
-settings, and words filled in for each player, need [RP Engine](/rp-engine).
 
 **The vanilla replacements apply to everyone.** Reskinned blocks, item sprites
 and GUI screens change how the game looks for every player on the server, which
@@ -229,11 +200,6 @@ Copy the `.bbmodel` files into `plugins/ModelEngine/blueprints/`, then:
   Model Engine's command names have moved between releases — `/meg spawn` does
   not exist on R4. Run `/meg` on its own for the list your server actually has.
 </Callout>
-
-**The same files work in BetterModel.** It reads Blockbench "free" models with
-Model Engine's bone names, which is exactly what this export writes, so drop
-the `.bbmodel` files into `plugins/BetterModel/models/` instead and reload
-BetterModel. There is no separate export for it.
 
 <Callout type="warning" title="Model Engine's textures need serving, and it won't do it for you">
   `/meg reload` writes a resource pack to `plugins/ModelEngine/resource pack/`

@@ -123,13 +123,6 @@ export const engineNav: EngineGroup[] = [
             keywords: ["seat", "sit", "chair", "light", "lamp", "surface", "wall", "ceiling"],
           },
           {
-            title: "Working furniture",
-            href: "/rp-engine/furniture",
-            description: "Containers, jukeboxes, lamps and doors a click switches, sofas that join, and pieces that grow.",
-            keywords: ["storage", "container", "chest", "cabinet", "wardrobe", "shulker", "jukebox", "music disc",
-              "state", "lamp", "door", "toggle", "sofa", "connect", "grow", "crop", "sapling", "evolution"],
-          },
-          {
             title: "Animation",
             href: "/rp-engine/animation",
             description: "Keyframes read straight out of a Blockbench save file.",
@@ -164,10 +157,9 @@ export const engineNav: EngineGroup[] = [
       {
         title: "Custom blocks",
         href: "/rp-engine/blocks",
-        description: "A block you can place, mine and stand on: states, plants, crops, stairs, slabs and doors.",
+        description: "A block you can place, mine and stand on. Finite, and worth knowing why.",
         keywords: ["block", "blocks", "ore", "note block", "mushroom", "mine", "hardness",
-          "blockstate", "custom block", "light", "rotate", "state", "plant", "tripwire", "crop", "grow",
-          "stairs", "slab", "door", "trapdoor", "grate", "bulb", "copper", "strip", "storage"],
+          "blockstate", "custom block"],
       },
       {
         title: "Items",
@@ -191,7 +183,7 @@ export const engineNav: EngineGroup[] = [
             title: "Actions",
             href: "/rp-engine/actions",
             description: "Triggers and a closed list of verbs.",
-            keywords: ["action", "trigger", "right click", "cooldown", "command", "effect", "particle", "wand"],
+            keywords: ["action", "trigger", "right click", "cooldown", "command", "effect", "wand"],
           },
         ],
       },
@@ -223,8 +215,7 @@ export const engineNav: EngineGroup[] = [
         title: "Icons",
         href: "/rp-engine/icons",
         description: "Pictures that behave like letters, anywhere text renders.",
-        keywords: ["icon", "font", "glyph", "emoji", "codepoint", "ascent", "shortcode", "animated", "gif",
-          "alias", "permission"],
+        keywords: ["icon", "font", "glyph", "emoji", "codepoint", "ascent", "shortcode"],
       },
       {
         title: "Recipes",
@@ -330,18 +321,11 @@ export const engineNav: EngineGroup[] = [
           "migrate", "migration", "rig", "bones"],
       },
       {
-        title: "Moving from BetterModel",
-        href: "/rp-engine/bettermodel",
-        description: "Drop its plugin folder in: models become items, player animations become emotes.",
-        keywords: ["bettermodel", "better model", "bbmodel", "blueprint", "player animation", "emote",
-          "migrate", "migration", "rig", "bones"],
-      },
-      {
         title: "Moving from Nexo or Oraxen",
         href: "/rp-engine/nexo-oraxen",
         description: "Drop Nexo or Oraxen YAML in: items, furniture, blocks, glyphs, sounds and recipes.",
         keywords: ["nexo", "oraxen", "migrate", "migration", "import", "items", "furniture", "glyphs",
-          "sounds", "recipes", "custom model data", "storage", "jukebox", "door", "stairs", "gif"],
+          "sounds", "recipes", "custom model data"],
       },
       {
         title: "Moving from CraftEngine",
