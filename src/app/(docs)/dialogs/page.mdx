@@ -268,10 +268,10 @@ A dialog can show items the way an inventory does: in the game's grey slots,
 each with its picture and its stack count, and with **the game's own tooltip**
 when you hover one — the item's name in its rarity's colour, its lore, the
 enchanted look. A backpack, a shop's stock, what a kit gives you, the rewards on
-a quest: the **Items** shelf in **Add component** has a single slot, a row, a
-grid, a **Backpack** (a titled panel with a big grid and your inventory under
-it), a **Kit preview**, the player's own **inventory** and **hotbar**, and an
-**Ender chest** whose items the player can move to and from their inventory.
+a quest: the **Items** shelf in **Add component** has a single **Item slot**, a
+**Grid of slots** and **Your inventory**. What a grid shows — items you choose,
+the player's inventory, hotbar or ender chest, or a container — and whether items
+move in it are set in its panel, under **What is in it**.
 
 **Putting items in.** Select a grid of slots and its panel shows a small copy of
 it. Pick a slot there, or click it on the screen, then pick an item: search
@@ -335,8 +335,8 @@ up** — its slot lights up — **then click another slot to put it there**. A s
 with the same item takes as much as fits and the rest stays where it was; a
 slot with a different item swaps with it; clicking the lit slot again puts the
 stack back. Moves work between any two grids in the dialog that allow them, so
-an **Ender chest** over the player's inventory (on the Items shelf) is a working
-ender chest.
+a grid set to the player's **ender chest** over one of their inventory, both
+movable, is a working ender chest.
 
 Each click goes to the server, which moves the items itself — it looks at what
 is really in both slots at that moment, never at the picture, so an
@@ -366,8 +366,8 @@ container**, at whatever size you give it — up to 13 by 8:
   the action `dialog:` with this dialog's id, and right-clicking it opens the
   dialog with **that item's own contents** in this grid. What is put in is kept
   on the item, the way a shulker box keeps its contents, so it goes wherever the
-  item goes — dropped, traded, put in a chest. The **Working backpack** on the
-  Items shelf is one, over the player's inventory.
+  item goes — dropped, traded, put in a chest. Put a grid of the player's own
+  inventory under it, both movable, and it works like a real backpack.
 
   ```yaml
   # items/backpack.yml, on the server
@@ -386,8 +386,9 @@ container**, at whatever size you give it — up to 13 by 8:
   is open.
 - **Kept on the player.** Storage of each player's own, by a name you choose,
   across restarts: a **vault**, a second ender chest. Every grid that names the
-  same storage shows the same items. The **Vault** on the Items shelf is one;
-  open it with `/rp dialog <id>` or from any item's `dialog:` action.
+  same storage shows the same items. Open a dialog holding one with its
+  [own command](#a-command-of-its-own), `/rp dialog <id>` or any item's
+  `dialog:` action.
 - **From a plugin.** A container another plugin on your server registers with
   RP Engine under a name — a bank, a quiver, a guild chest. Until a plugin
   registers that name, the grid's slots stay empty.
@@ -526,31 +527,26 @@ the top, or type in its search box to look across every shelf at once
 (**Enter** takes the first match). Hover a component to see a picture of
 exactly what arrives, drawn in the dialog's own theme.
 
-- **Anywhere** (the first shelf) is pieces that are not in a row or a column at
-  all — a **Button** exactly like the game's own (150 by 20, its words and its
-  icon), an icon button, text, an item or a head in a slot, and a small note
-  panel. They go wherever you click and sit on top of everything else. The
-  button under **+** on the rail (`B`) picks up that **Button** in one click.
-- **Blocks** are ready-made groups — a **settings card**, a setting row for
-  each control, a **sidebar** under a search box, a **results header**, a
-  **product grid**, **stat cards**, a **leaderboard** and a **quest** row, and
-  the older ones: a **card** (an item in a slot, a name and a line in gold, on
-  a panel), a **card list** and a **card grid**, a **profile card** with a
-  player's head, a **control panel** of buttons, a **sidebar menu**, a **tab
-  bar**, a **stats panel**, a **yes or no**, a row of reward tiles and a
-  header bar. They are drawn in the dialog's own theme.
-- **Items** are slots with items in them — one, a row, a grid, a backpack, a
-  kit preview — and the player's own inventory and hotbar. See [Items and
-  inventories](#items-and-inventories).
+- **Blocks** are ready-made groups — a **settings card**, a **setting row**, a
+  **sidebar** (plain, of cards or of buttons), a **tab bar**, a **button stack**, a **card list**, a **profile
+  card** with a player's head, **stat cards**, a **product grid**, a **yes or
+  no** and a **header bar**. They are drawn in the dialog's own theme.
+- **Items** are an **item slot**, a **grid of slots** and **your inventory**.
+  See [Items and inventories](#items-and-inventories).
 - **Controls** are the settings screen's switches, choices, sliders, fields and
   small buttons, each in the dialog's theme.
-- **Basics** are the single pieces in the first table above.
-- **Layout** is rows, columns and grids, the theme's **Card**, **Plain card**,
-  **Well** and **Highlight band**, the three GUI surfaces, two columns side by
-  side and a sidebar beside its content.
+- **Basics** are single pieces: text, a heading, a big title, a button, a link,
+  an icon, a player head, a chip, a label and value, a check line, a progress
+  bar, a page of text, a QR code, a divider, space, and an image of your own.
+- **Layout** is rows, columns and grids, and the theme's **Card**, **Plain
+  card** and **Well**.
 
-Pick one and it follows the pointer. A piece from **Anywhere** is dropped where
-you click. Anything else shows a yellow bar where it will land — between two
+Each is a starting point rather than the only way it can look: a button's panel
+makes it the game's, the theme's or the GUI's light one, a text's panel sets
+its style and an icon before it, a setting row's control can be any control,
+and a grid's panel says what is in it.
+
+Pick one and it follows the pointer. It shows a yellow bar where it will land — between two
 pieces, inside a row or column, at the end — and a click puts it there. Hold
 **Shift** to keep placing the same thing, press **Enter** to put it after
 whatever is selected, or **Escape** to put it down. **Add inside** (on a box) or
@@ -580,8 +576,9 @@ before or after it, or onto the middle of a box to put it inside. **Alt** with
 the arrow keys moves the selection one place; the plain arrow keys walk
 through the pieces.
 
-**Placing anywhere.** A free piece — from **Anywhere**, or a drawn dialog's two
-starting buttons — is dragged to any spot, pixel for pixel. It snaps to the
+**Placing anywhere.** A free piece — a button dropped with `B` (the button under
+**+** on the rail), a drawn dialog's two starting buttons, or anything lifted out
+of the layout — is dragged to any spot, pixel for pixel. It snaps to the
 middle and edges of the dialog, to other free pieces and to the edges of the
 words and cards in the layout (hold **Alt** not to); the arrow keys nudge it a
 pixel at a time (**Shift** for ten), and its panel has its exact **X** and
