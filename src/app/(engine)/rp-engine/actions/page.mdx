@@ -42,10 +42,39 @@ needs its own `-`.
 | `block_break` | Used to break a block |
 | `shoot` | Shot, for a bow or crossbow |
 | `break` | Ran out of durability |
+| `place` | Put down, as a [placed model](/rp-engine/models) or a [custom block](/rp-engine/blocks) |
+| `interact` | Right-clicked where it stands, as a placed model or a custom block |
+| `remove` | Punched out or mined by a player, as a placed model or a custom block |
 
 `break` fires after the item is already gone and cannot be cancelled — that is
 vanilla's shape, not ours. It is still worth having for the sound and the
 message.
+
+## The thing in the world
+
+The last three are about the piece standing in the world rather than the stack
+in somebody's hand, which is what a furniture click command is in every other
+content plugin:
+
+```yaml
+doorbell:
+  material: PAPER
+  model: doorbell
+  place: { surface: wall }
+  actions:
+    interact:
+      - cooldown: 2
+      - sound: minecraft:block.bell.use
+      - console: "say {player} is at the door"
+```
+
+A custom block takes the same `actions:` in its own definition, since its id is
+the item that places it. On `interact`, `cancel` stops what the click would
+otherwise do: a seat is not sat on, and nothing is placed against the block.
+`place` and `remove` run once it is down or gone and cannot be cancelled. A
+`take` in any of the three does nothing, because the click is on the piece and
+not on whatever the player is holding. Written on an item with no `place:`
+block, they are a load warning, since they can never fire.
 
 There is deliberately no `wear`/`unwear`: Spigot has no equip event, and the
 alternatives are a Paper dependency or polling everybody's armour every tick.
