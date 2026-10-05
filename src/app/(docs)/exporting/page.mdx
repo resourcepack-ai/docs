@@ -86,6 +86,7 @@ contents/<your-pack>/
   resourcepack/assets/
     <your-pack>/               your items' models, textures, icons and sounds
     minecraft/                 the vanilla files your pack replaces
+datapacks/<your-pack>_dialogs/ your dialogs, if the pack has any
 ```
 
 Everything goes wherever ItemsAdder expects that kind of thing:
@@ -101,6 +102,7 @@ Everything goes wherever ItemsAdder expects that kind of thing:
 | GUI screen that replaces a vanilla file | a vanilla file replacement |
 | GUI overlay | a `font_image` plus the title string that positions it |
 | Sound | a sound in your pack's namespace, and a replaced vanilla sound stays replaced |
+| Dialog | a datapack folder, its pictures in a font of the pack's own |
 
 The zip already contains `contents/`, so merge it into `plugins/ItemsAdder/`
 — dropping it *inside* the existing `contents/` gives you
@@ -162,6 +164,15 @@ which ItemsAdder merges with its own `sounds.json` rather than letting one
 replace the other. It has done that since December 2023; on an older
 ItemsAdder, delete that file or the custom block sounds go quiet. The
 `README.txt` lists every sound under the name it plays as.
+
+**Dialogs travel as a datapack**, because ItemsAdder doesn't install vanilla
+dialogs. Move `datapacks/<your-pack>_dialogs/` into your world's `datapacks/`
+folder, restart, and open one with `/dialog show <player> studio:<id>`; the
+`README.txt` lists every id. That needs Minecraft 1.21.6 or newer. A dialog's
+picture is drawn in a font of its own in your pack's folder rather than in the
+default font, which belongs to ItemsAdder and hands out the same characters, so
+run `/iazip` before anybody opens one. Switches and sliders bound to player
+settings, and words filled in for each player, need [RP Engine](/rp-engine).
 
 **The vanilla replacements apply to everyone.** Reskinned blocks, item sprites
 and GUI screens change how the game looks for every player on the server, which
