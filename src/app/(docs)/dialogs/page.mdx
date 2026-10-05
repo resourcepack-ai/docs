@@ -69,7 +69,7 @@ and grids of these pieces:
 | **Label and value** | A label on the left and a value on the right, for receipts and stats. |
 | **Page of text** | Markdown-lite: `# Title` twice the size, `## Heading` in bold, `### Heading` in gold, `- bullets`, `> notes`, `**words**` in gold, `---` a rule. |
 | **Icon** | Any vanilla item, a player's head, one of your pack's own item sprites or textures, or one of the editor's drawn icons — at 16, 24, 32, 48 or 64 pixels, bare or **in a slot** (the dark well an item sits in). A head is that player's skin as it was when the dialog was saved. |
-| **Item slots** | A grid of the inventory's own slots — one, a row, a chest, a backpack up to 13 wide and 8 tall — with an item in any of them. Hovering one shows the game's own tooltip for that item, and a slot can run something when clicked. Or the **player's own inventory**, filled in as the dialog opens. See [Items and inventories](#items-and-inventories). |
+| **Item slots** | A grid of the inventory's own slots — one, a row, a chest, a backpack up to 13 wide and 8 tall — with an item in any of them. Hovering one shows the game's own tooltip for that item, and a slot can run something when clicked. Or the **player's own inventory** or **ender chest**, filled in as the dialog opens — and they can move items in it, a click to pick up and a click to put down. See [Items and inventories](#items-and-inventories). |
 | **Image** | A picture of your own: a logo, a banner, a screenshot, a drawing. Import a PNG, JPG, GIF (its first frame) or WebP up to 512 pixels a side — from **Image** in **Add component**, or by dropping the file onto the screen — then click where it goes. It is drawn at its own size, shrinks to fit a narrower box, and keeps its proportions when you give it only a width; give it a height too and it stretches. An imported picture is kept with the pack, so any of its dialogs can use it again, and it travels with a dialog that is copied or moved to another pack. |
 | **Progress bar**, **QR code**, **Divider**, **Space** | As they sound. A QR code carries its own link and opens it when clicked. |
 
@@ -268,7 +268,8 @@ when you hover one — the item's name in its rarity's colour, its lore, the
 enchanted look. A backpack, a shop's stock, what a kit gives you, the rewards on
 a quest: the **Items** shelf in **Add component** has a single slot, a row, a
 grid, a **Backpack** (a titled panel with a big grid and your inventory under
-it), a **Kit preview** and the player's own **inventory** and **hotbar**.
+it), a **Kit preview**, the player's own **inventory** and **hotbar**, and an
+**Ender chest** whose items the player can move to and from their inventory.
 
 **Putting items in.** Select a grid of slots and its panel shows a small copy of
 it. Pick a slot there, or click it on the screen, then pick an item: search
@@ -299,7 +300,7 @@ or **Right**; to put one anywhere at all, drag it with Shift held or use
 Set a grid to **The player's inventory** (or add **Your inventory** from the
 Items shelf) and it shows **the inventory of whoever opens the dialog**: the 27
 slots above the hotbar, a small gap, then the hotbar, as the inventory screen
-draws them — or the hotbar alone, or the 27 alone. It is drawn empty in the
+draws them — or the hotbar alone, the 27 alone, or **their ender chest**. It is drawn empty in the
 editor; in game, RP Engine puts each of the player's items in its slot as the
 dialog opens, with its picture, its count and its own tooltip, exactly as their
 inventory shows it — a renamed sword with its enchantments, a written book, a
@@ -308,9 +309,8 @@ shulker box and what is in it.
 A few things to know:
 
 - **It is what they held when it opened.** A dialog does not change while it is
-  open; one opened again shows the inventory as it is then.
-- **It is to look at.** A dialog is not a container, so items cannot be taken
-  out or moved, and clicking a slot of the player's inventory does nothing.
+  open; one opened again shows the inventory as it is then — unless items can be
+  moved in it, below.
 - **An item with a model of its own** — a custom sword from a plugin, one of
   your pack's items — is drawn as a question mark, because its picture is not
   among Minecraft's. Its tooltip is still its own.
@@ -320,10 +320,41 @@ A few things to know:
 - **A page that shows the inventory asks the server every time it opens**, like
   any page with something per player on it, so it is never an out-of-date copy.
 
+### Moving items
+
+Tick **Players can move items** on a grid of the player's inventory, hotbar or
+ender chest, and they can rearrange what is in it: **click a stack to pick it
+up** — its slot lights up — **then click another slot to put it there**. A slot
+with the same item takes as much as fits and the rest stays where it was; a
+slot with a different item swaps with it; clicking the lit slot again puts the
+stack back. Moves work between any two grids in the dialog that allow them, so
+an **Ender chest** over the player's inventory (on the Items shelf) is a working
+ender chest.
+
+Each click goes to the server, which moves the items itself — it looks at what
+is really in both slots at that moment, never at the picture, so an
+out-of-date screen cannot duplicate anything — and sends the dialog again with
+the items where they now are. The dialog stays on the screen while that happens.
+What it cannot do, because a dialog only ever tells the server "this was
+clicked":
+
+- **No dragging, no shift-click and no right-click.** A dialog reports a plain
+  click and nothing else, so splitting a stack or moving one in a single click
+  is not something it can be asked for.
+- **The stack does not follow the mouse.** It stays in its slot, lit, until the
+  second click.
+- **Every click is a round trip to the server**, so on a slow connection there
+  is a moment between the click and the change.
+- **Keep it short enough not to scroll.** A dialog sent again starts at its top.
+
+A plugin can refuse a move — an item that may not go in the ender chest, say:
+see `DialogSlotMoveEvent` in RP Engine's API.
+
 <Callout type="warning" title="Needs RP Engine 0.1.74 or newer">
   An older RP Engine opens the dialog with the player's inventory empty and
-  everything else as usual. A grid of items you chose works with any version,
-  because its tooltips are already in the dialog.
+  everything else as usual, and clicking a slot does nothing. A grid of items
+  you chose works with any version, because its tooltips are already in the
+  dialog.
 </Callout>
 
 ## Pages
