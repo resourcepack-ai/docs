@@ -30,6 +30,25 @@ That is why a slot asks for exactly one texture: declaring both layers would
 name a file your pack has no reason to ship, and shipping the wrong one is a
 mistake you only see on a player.
 
+## Art kept somewhere else
+
+If the picture lives elsewhere in your pack, name it with `armor-art` and the
+build serves it at the right path for you. It takes the same reference as
+`texture:`, a path under `assets/textures/`:
+
+```yaml
+ruby_leggings:
+  material: PAPER
+  armor: legs
+  armor-art: armour/ruby_layer_2    # assets/textures/armour/ruby_layer_2.png
+```
+
+An old-style armour layer sheet is exactly the picture the game wants: layer 1
+(body and boots) for every slot but legs, layer 2 for legs. A file you put at
+the equipment path yourself wins. This is how armour from
+[ItemsAdder](/rp-engine/itemsadder) and [Nexo or Oraxen](/rp-engine/nexo-oraxen)
+is worn without moving a file.
+
 ## This replaces the old tricks
 
 <Callout type="note" title="Vanilla's own equipment path, since 1.21.4">
@@ -54,7 +73,8 @@ mistake you only see on a player.
     artwork.
 
   The item still works either way — it is the picture on the body that is
-  missing. See [Minecraft versions](/rp-engine/versions).
+  missing, and each build names the armour that will draw with vanilla art.
+  See [Minecraft versions](/rp-engine/versions).
 </Callout>
 
 ## The model and the armour are separate

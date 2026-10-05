@@ -36,7 +36,9 @@ a pack of yours, which is the useful shape for moving over a piece at a time.
 | `enchants`, `attribute_modifiers.mainhand` | `enchantments`, [`attributes`](/rp-engine/stats) |
 | `durability.max_durability`, `unbreakable` | `durability`, `unbreakable` |
 | `max_stack_size` | `stack` |
-| `specific_properties.armor.slot` | [`armor`](/rp-engine/armour) |
+| `equipment.id` or `specific_properties.armor.custom_armor` | [`armor`](/rp-engine/armour), worn with that set's layer art |
+| `equipments`, `armors_rendering`, `legacy_armor_renderings` | the layer art, read from any file in the pack |
+| `equipment` with no `id`, on the head | `hat`, so a 3D helmet shows its model |
 | `behaviours.liquid_bucket` | [`liquid`](/rp-engine/liquids) |
 | `behaviours.furniture` | [`place:`](/rp-engine/models), with its light, solidity and seat |
 | `blocks.<id>` | a [custom block](/rp-engine/blocks), with its model, hardness, light and tool |
@@ -79,9 +81,15 @@ their `textures/item/ruby.png` and `models/lamp.json` need no moving — but if
 you are writing new content beside it, `assets/` is the documented home and is
 what the [content folder](/rp-engine/content) page assumes.
 
-**Armour art is the one file you do have to move.** ItemsAdder draws armour its
-own way; RP Engine uses [vanilla's equipment path](/rp-engine/armour), which
-arrived in 1.21.4 and is a different picture in a different place. Put yours at
-`assets/textures/entity/equipment/humanoid/<id>.png` (or
-`humanoid_leggings/` for legs) and the item is otherwise unchanged. The build
-warns with the exact path when it is missing.
+**Armour art stays where it is.** A set's `layer_1` and `layer_2` are exactly
+the two pictures [vanilla's equipment path](/rp-engine/armour) draws, body and
+leggings, so the build serves them there for you. That needs Minecraft 1.21.4;
+on an older server the armour is still worn but draws with vanilla art, and the
+build names every piece that will.
+
+What does not come across from a set, each a warning naming the item: an
+**animated** layer, which is a strip of frames a worn layer cannot play (save one
+frame as `assets/textures/entity/equipment/humanoid/<id>.png`, or
+`humanoid_leggings/` for legs); a `use_color` **tint** and **emissive** layers,
+which needed ItemsAdder's shaders; and **colour-only** armour, which has no art
+and is worn as plain leather.
