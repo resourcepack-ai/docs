@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Recipes",
   description:
-    "Crafting, cooking, stonecutting, smithing, brewing and anvil recipes for your own items, with exact-match ingredients.",
+    "Crafting, cooking and stonecutting your own items, with exact-match ingredients.",
 };
 
 # Recipes
@@ -27,10 +27,6 @@ ruby_block:
 | `smelting` | A furnace |
 | `blasting` · `smoking` · `campfire` | The three other cookers |
 | `stonecutting` | One in, several out |
-| `smithing` | A template, a base and an addition make the result |
-| `smithing_trim` | A template, a base and an addition trim the base |
-| `brewing` | A base in the bottle slots and an ingredient on top. Needs Paper |
-| `anvil` | A base and an optional addition make a result, or repair the base |
 
 ```yaml
 sapphire_from_lapis:
@@ -59,80 +55,6 @@ dust:
 
 That asymmetry is the useful one. Your custom items are safe from being crafted
 around, and vanilla ingredients still behave like vanilla.
-
-A **vanilla potion** is the material, a slash and the potion type:
-`potion/awkward`, `splash_potion/healing`. `minecraft:diamond` means the
-material, the same as `DIAMOND`.
-
-## Smithing
-
-```yaml
-ruby_sword:
-  type: smithing
-  template: NETHERITE_UPGRADE_SMITHING_TEMPLATE
-  base: mypack:obsidian_sword
-  addition: mypack:ruby
-  result: mypack:ruby_sword
-  copy-data: true        # the default
-
-ruby_trim:
-  type: smithing_trim    # no result: the base comes out trimmed
-  template: mypack:ruby_template
-  base: mypack:ruby_chestplate
-  addition: AMETHYST_SHARD
-  pattern: minecraft:silence
-```
-
-The base of an upgrade is usually something that has been used, so a worn or
-enchanted `mypack:obsidian_sword` still counts. The result is always your item,
-and with `copy-data` on it keeps the base's enchantments, wear and trim, the
-way a netherite upgrade does.
-
-<Callout type="note" title="Versions">
-  Before 1.20 the smithing table has two slots, so the template is not asked
-  for and trim recipes do nothing. A trim recipe needs its `pattern` from
-  1.21.5, unless its template is a vanilla trim template, which stands for its
-  own. Before 1.21.5 the pattern comes from the template, so only a vanilla
-  trim template trims anything.
-</Callout>
-
-## Brewing
-
-```yaml
-ruby_tonic:
-  type: brewing
-  base: potion/awkward   # the bottle slots
-  ingredient: mypack:ruby_dust
-  result: mypack:ruby_tonic
-```
-
-Brewing recipes **need Paper**: they are added to the game's own brewing table,
-so they brew exactly as vanilla potions do. On Spigot, which has no way to add
-one, the load says how many were left out.
-
-## Anvils
-
-```yaml
-sharpen:
-  type: anvil
-  base: mypack:dull_blade
-  addition: mypack:whetstone  # optional: without it, the right slot must be empty
-  addition-amount: 1
-  result: mypack:sharp_blade
-  cost: 3                # levels; 1 if left out
-
-mend_ruby_sword:
-  type: anvil
-  base: mypack:ruby_sword
-  addition: mypack:ruby
-  repair: 25%            # per ruby, or a number of durability points
-```
-
-The game has no anvil recipes, so RP Engine runs these itself. One of the base
-is used each time. A repair uses as many of the addition as it takes to mend
-the base, the way repairing with a material does in vanilla. The anvil wears
-down as it does with any other use. Take the result with the mouse: the number
-keys and dropping do nothing for an anvil recipe.
 
 ## Naming
 

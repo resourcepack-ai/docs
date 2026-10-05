@@ -125,18 +125,6 @@ engine.models().at(entity)           // is this entity part of a model?
 A `Placement` is a handle on a model standing in a world: ask it what it is,
 tell it to play an animation, remove it.
 
-What a pack's `place:` block said is a `ModelInfo`, read-only. Beside the
-facing, scale, seat, light and the rest, `storage()` is the container the piece
-is, as a `StorageSpec` (type, rows, title, sounds), or empty; `jukebox()` the
-disc player it is (volume, pitch, permission, the model it wears while
-playing); and `states()` the looks a click cycles it through, with `nextState`,
-`lightIn` and `solidIn` answering what each index means; and `connects()` the
-look it takes at each place in a row of its kind. The engine handles the clicks
-itself; a `ModelInteractEvent` cancelled before that leaves
-the piece as it was. `grow()` is what it turns into over time, and growing
-fires neither `ModelBreakEvent` nor `ModelPlaceEvent`, because nobody broke or
-placed anything. See [Working furniture](/rp-engine/furniture).
-
 ## Emotes
 
 <CodeTabs labels={["Java", "Kotlin"]}>
@@ -725,39 +713,6 @@ val line = engine.icons().format(config.getString("welcome"))
 
 Every `:namespace:id:` becomes its picture. An ID naming nothing is left
 exactly as written, so text never silently loses a chunk of itself.
-
-**An animated icon is animated by you redrawing it.** Each frame is a character
-of its own, and the engine does not run a shader that flips between them, so
-`format` and `character` give the **first** frame: right for anything you send
-once, and stable, so a saved message keeps its picture. For text you send again
-and again, ask for the frame that is showing now:
-
-<CodeTabs labels={["Java", "Kotlin"]}>
-
-```java
-// Once a tick, or as often as your scoreboard redraws.
-sidebar.setLine(0, engine.icons().formatNow(":mypack:loading: Loading"));
-engine.icons().characterNow(id).ifPresent(frame -> bar.setTitle(frame + " Boss"));
-```
-
-```kotlin
-// Once a tick, or as often as your scoreboard redraws.
-sidebar.setLine(0, engine.icons().formatNow(":mypack:loading: Loading"))
-engine.icons().characterNow(id).ifPresent { frame -> bar.setTitle("$frame Boss") }
-```
-
-</CodeTabs>
-
-`IconInfo` says what an icon is: `frames()` (1 for a still picture),
-`animated()`, `fps()`, `loops()`, `frameAt(elapsedMillis)` for the arithmetic,
-and `character(frame)` / `codepoint(frame)` for one frame (from 0, each the
-codepoint after the last). A frame lasts `1000 / fps` milliseconds, so redrawing
-once a tick shows every frame of anything up to 20 fps. A looping icon is timed
-from the epoch and a one-shot from server start.
-
-`IconInfo.aliases()` and `permission()` are what the pack said about typing the
-icon in chat. The engine's own chat handling honours both; `format` does not,
-because a config file is not somebody typing.
 
 ## Events
 

@@ -50,26 +50,17 @@ claim about somebody who is not there to have an answer.
 
 ## Asking a question
 
-Three take an argument:
+Two take an argument:
 
 | Placeholder | What it answers |
 |---|---|
 | `%rpengine_holds_<bundle>%` | Whether this player holds that bundle |
 | `%rpengine_has_<namespace>:<id>%` | Whether this server has that content |
-| `%rpengine_icon_<namespace>:<id>%` | That [icon](/rp-engine/icons), as the character to print. An animated one is the frame showing **now** |
 
 ```
 %rpengine_holds_dungeon%
 %rpengine_has_mypack:ruby%
-%rpengine_icon_mypack:dance%
 ```
-
-**The icon placeholder is where an animated icon animates.** A scoreboard, a
-tab list or a hologram asks again every time it redraws, and each answer is the
-next frame, so the icon moves as fast as that plugin refreshes. It answers for
-the console and offline players too, since it is about the icon rather than
-anybody. See [Animated icons](/rp-engine/icons#animated-icons) for where an
-icon does not move, and why.
 
 ## They answer and never act
 

@@ -19,7 +19,7 @@ plugins/RPEngine/content/
 ```
 
 There is nothing to turn on. A file is recognised by its own shape — an
-`info:` block beside `items:`, `font_images:` or `recipes:` — which nothing of ours looks
+`info:` block beside `items:` or `font_images:` — which nothing of ours looks
 like, since our top-level keys are IDs. One of their files also works **inside**
 a pack of yours, which is the useful shape for moving over a piece at a time.
 
@@ -36,53 +36,12 @@ a pack of yours, which is the useful shape for moving over a piece at a time.
 | `enchants`, `attribute_modifiers.mainhand` | `enchantments`, [`attributes`](/rp-engine/stats) |
 | `durability.max_durability`, `unbreakable` | `durability`, `unbreakable` |
 | `max_stack_size` | `stack` |
-| `equipment.id` or `specific_properties.armor.custom_armor` | [`armor`](/rp-engine/armour), worn with that set's layer art |
-| `equipments`, `armors_rendering`, `legacy_armor_renderings` | the layer art, read from any file in the pack |
-| `equipment` with no `id`, on the head | `hat`, so a 3D helmet shows its model |
+| `specific_properties.armor.slot` | [`armor`](/rp-engine/armour) |
 | `behaviours.liquid_bucket` | [`liquid`](/rp-engine/liquids) |
 | `behaviours.furniture` | [`place:`](/rp-engine/models), with its light, solidity and seat |
 | `blocks.<id>` | a [custom block](/rp-engine/blocks), with its model, hardness, light and tool |
-| `behaviours.block` (or `specific_properties.block`) on an item | a [custom block](/rp-engine/blocks), with its name, lore, model (or the cube generated from its textures), hardness, tool, `light_level` and place sound |
-| `placed_model.type` `REAL_NOTE` · `REAL` · `REAL_WIRE` · `REAL_TRANSPARENT` | a note block · `base: mushroom_stem` · a [plant](/rp-engine/blocks#plants) on cut tripwire · `shape: grate`, the see-through full block |
-| `directional_mode` `LOG` · `FURNACE` · `DROPPER` / `ALL` | [`rotate:`](/rp-engine/blocks#turning-and-states) `axis` · `horizontal` · `all`. Its `<id>_<face>` items are each direction's look, and are not placed as blocks of their own |
-| `custom_variants`, with `weight` | [`random:`](/rp-engine/blocks#turning-and-states), a look picked as each is placed |
-| `no_explosion` | `blast-resistant` |
-| a placed block's `interact` event with `replace_block` (`to`) | [`click-into`](/rp-engine/blocks#what-else-a-block-does), so on/off pairs switch |
-| `loots.blocks.<name>`, in any file | the block's `drop`, when the table's first item is the pack's own and certain |
-| `item_flags` | [`flags`](/rp-engine/stats) |
-| `events` | [actions](/rp-engine/actions), below |
 | `font_images.<id>` | an [icon](/rp-engine/icons) |
-| `sounds.<id>`, with its subtitle, volume, pitch and stream | a [sound](/rp-engine/sounds), the subtitle looked up in your `minecraft_lang_overwrite` when it is a key |
-| a `sounds.json` in `resourcepack/assets/<namespace>/`, from before 4.0.12 | a [sound](/rp-engine/sounds) per entry |
-| `recipes.crafting_table`, `cooking`, `campfire_cooking`, `stonecutter` | [recipes](/rp-engine/recipes): shaped, the cookers (one each for a recipe with several `machines`), campfire and stonecutting |
-| `recipes.smithing` | a `smithing` recipe |
-| `recipes.anvil_repair` | an `anvil` repair, a quarter of full durability per ingredient, as theirs |
-| `recipes.brewing` (from the ItemsAdderAdditions add-on) | a `brewing` recipe, which needs Paper; `minecraft:awkward_potion` is `potion/awkward` |
 | `enabled: false` | skipped, as it is there |
-
-A recipe's bare lowercase ID (`base: my_sword`) is the file's own namespace, as
-ItemsAdder reads it. A recipe's `permission` is not carried across: RP Engine
-recipes are open to everyone.
-
-## Events become actions
-
-| ItemsAdder event | RP Engine trigger |
-|---|---|
-| `interact.right`, `interact.left` (a bare `interact` is both) | `right_click`, `left_click` |
-| `attack`, `drop`, `pickup`, `block_break` | the same |
-| `eat`, `drink` | `consume` |
-| `item_break` | `break` |
-| `bow_shot` | `shoot` |
-| `placed_block` / `placed_furniture`: `interact`, `break`, `place` | the block's or furniture's own [`interact`, `remove`, `place`](/rp-engine/actions#the-thing-in-the-world) |
-
-Inside an event, `play_sound`, `execute_commands` (`as_console: true` runs as
-the console, otherwise as the player), `potion_effect`, `give_item`,
-`decrement_amount`, `cancel`, and ItemsAdderAdditions' `message` and
-`actionbar` come across, in order. `play_particle` and `shoot_particle` are a
-[`particle`](/rp-engine/actions#steps) step, a shot particle drawn as a puff
-where it happens. `{player}` means the same thing in both
-plugins. A permission that every action in an event asks for becomes one
-`permission` step at its front.
 
 ## What does not
 
@@ -92,39 +51,22 @@ than one that refuses out loud.
 
 <Callout type="warning" title="A world of blocks does not come across">
   Block *definitions* translate. The blocks already standing in a world do not:
-  the vanilla state each one hides in (a note block, a mushroom, a tripwire or a
-  chorus plant) was allocated by ItemsAdder against its own numbering, so this
-  engine reads them as whatever it gave that state. A pack migrates; a world
-  has to be rebuilt or remapped by hand.
+  the vanilla state each one hides in was allocated by ItemsAdder against its
+  own numbering, so this engine reads them as whatever it gave that state. A
+  pack migrates; a world has to be rebuilt or remapped by hand.
 
   Note also that the pool here is [smaller](/rp-engine/blocks) — 49 per note
   block base rather than 800 — because the instrument cannot be part of a
   block's identity. A pack with hundreds of blocks will not fit as it stands.
 </Callout>
 
-**Their entities** are a different feature rather than a different spelling,
-and want writing as [`entities/`](/rp-engine/entities) definitions, which are
-short. **Recipe groups other than the ones above** are skipped by name.
+**Their entities and recipes** are a different feature rather than a different
+spelling, and want writing as [`entities/`](/rp-engine/entities) and
+[`recipes/`](/rp-engine/recipes) definitions. Both are short.
 
-**Events and actions with nothing to land on**: holding, wearing, fishing, a
-sneaking click, guns and books have no trigger here; damage and dropping
-experience have no step. An action with a
-`delay`, or with a permission only some of its event's actions share, is
-skipped too, since a step runs when its trigger does and a permission step
-stops everything after it. The rest of the event still comes across.
-
-**Blocks drawn with an entity**: a `TILE` or `FIRE` `placed_model.type` draws
-with a spawner's or fire's entity, which RP Engine blocks do not, so it comes
-across as a full block. A [placed model](/rp-engine/models) draws any shape.
-
-**Loot by chance**, and mob and fishing loot. A block gives back one thing, so
-a table that might drop its item leaves the block dropping itself, and says so.
-
-**Some of a sound.** A sound that picks one of several files at random keeps the
-first, because an RP Engine sound plays one file, and `weight`,
-`attenuation_distance`, `preload` and `jukebox` have no equivalent here. Your
-audio stays where it is: their `sounds/` folder and resource pack folder are
-both packed where an RP Engine sound looks.
+**`events`, `drop` and `item_flags`** are ItemsAdder's own plugin behaviour
+rather than properties of an item. [Actions](/rp-engine/actions) cover most of
+what `events` did.
 
 ## Two things worth knowing
 
@@ -137,15 +79,9 @@ their `textures/item/ruby.png` and `models/lamp.json` need no moving — but if
 you are writing new content beside it, `assets/` is the documented home and is
 what the [content folder](/rp-engine/content) page assumes.
 
-**Armour art stays where it is.** A set's `layer_1` and `layer_2` are exactly
-the two pictures [vanilla's equipment path](/rp-engine/armour) draws, body and
-leggings, so the build serves them there for you. That needs Minecraft 1.21.4;
-on an older server the armour is still worn but draws with vanilla art, and the
-build names every piece that will.
-
-What does not come across from a set, each a warning naming the item: an
-**animated** layer, which is a strip of frames a worn layer cannot play (save one
-frame as `assets/textures/entity/equipment/humanoid/<id>.png`, or
-`humanoid_leggings/` for legs); a `use_color` **tint** and **emissive** layers,
-which needed ItemsAdder's shaders; and **colour-only** armour, which has no art
-and is worn as plain leather.
+**Armour art is the one file you do have to move.** ItemsAdder draws armour its
+own way; RP Engine uses [vanilla's equipment path](/rp-engine/armour), which
+arrived in 1.21.4 and is a different picture in a different place. Put yours at
+`assets/textures/entity/equipment/humanoid/<id>.png` (or
+`humanoid_leggings/` for legs) and the item is otherwise unchanged. The build
+warns with the exact path when it is missing.
