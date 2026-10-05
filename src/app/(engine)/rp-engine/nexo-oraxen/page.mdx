@@ -50,6 +50,13 @@ for moving over a piece at a time. Both plugins' current formats are read
 | custom armour: `equippable`, `trim_pattern`, or an id like `ruby_helmet` | [`armor`](/rp-engine/armour), worn with the set's layer art |
 | `Pack.CustomArmor` layers, or `ruby_armor_layer_1.png` / `_2.png` anywhere in the pack | the layer art, found the way the plugins find it |
 | `equippable` on the head with no `asset_id` / `model` | `hat`, so a 3D helmet shows its model |
+| `ItemFlags` | [`flags`](/rp-engine/stats) |
+| `Mechanics.commands` | [actions](/rp-engine/actions) on either click (on eating, for food), with its cooldown, permission and `one_usage` |
+| `Mechanics.custom` | actions, for its `CLICK`, `DROP`, `PICKUP` and `BREAK` events |
+| furniture or block `clickActions`, Oraxen's `events` | the piece's own [`interact`](/rp-engine/actions#the-thing-in-the-world) |
+| Oraxen's legacy `food`, `consumable`, `consumable_potion_effects` | `food`, and `consume` / `right_click` actions |
+| `soulbound` | `keep-on-death` |
+| Oraxen's `hat` | `hat` |
 | `Mechanics.furniture` | [`place:`](/rp-engine/models) |
 | furniture barriers | `solid: true` |
 | furniture interaction hitbox | `width` and `height` |
@@ -73,6 +80,17 @@ An item model such as `my_pack:item/ruby` becomes RP Engine's `item/ruby`. RP
 Engine builds its own item definitions from that, so nothing depends on the
 plugin's CustomModelData allocation.
 
+## Click commands and other behaviour
+
+A click action's `[console]`, `[player]`, `[message]`, `[actionbar]` and
+`[sound]` (with its volume and pitch) become `console`, `run`, `message`,
+`actionbar` and `sound` steps, and `<player>` and `%p%` become `{player}`.
+Oraxen's newer `events` read the same way, `executor: console` or `player`. A
+condition that only checks a permission (`#player.hasPermission("x")`) becomes a
+`permission` step; any other condition is a branch, which actions do not have,
+so what sits behind it is skipped and named. A `commands` cooldown comes across
+in Nexo's units (`5s`, `10t`) or Oraxen's milliseconds.
+
 ## What does not
 
 Each of these is a **warning naming the ID** when the pack loads, never a
@@ -90,10 +108,10 @@ than one that refuses out loud.
   with hundreds of blocks will not fit as it stands.
 </Callout>
 
-**Plugin behaviour rather than item properties**: click commands, storage,
-jukeboxes, connectable furniture, beds, doors, evolution and the rest of
-`Mechanics`. The item still loads, and [actions](/rp-engine/actions) cover most
-of what a click command did.
+**Behaviour with nothing to land on**: storage, jukeboxes, doors, beds,
+evolution, connectable furniture, a left-click event on a placed piece (a left
+click breaks it here), `opped_player` commands, `armor_effects`, backpacks and
+the rest of `Mechanics`. Each is named with the reason. The item still loads.
 
 **Shapes RP Engine does not have**: string, chorus, stair, slab, door,
 trapdoor, grate and bulb blocks come across as a full cube.
