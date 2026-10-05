@@ -1,0 +1,94 @@
+export const metadata = {
+  title: "Moving from BetterModel",
+  description:
+    "Drop BetterModel's plugin folder into RP Engine: its models become items you can place, spawn and bind, and its player animations become emotes.",
+};
+
+# Moving from BetterModel
+
+RP Engine reads BetterModel's plugin folder as it is. Copy
+`plugins/BetterModel/` into `plugins/RPEngine/content/` as `bettermodel/` and
+start the server. The folder name is the [namespace](/rp-engine/ids), so it has
+to be lowercase: a folder called `BetterModel` is refused rather than folded,
+and the load says so.
+
+```
+plugins/RPEngine/content/
+  bettermodel/                ← straight out of plugins/BetterModel/
+    models/knight.bbmodel     →  bettermodel:knight, an item wearing it
+    players/steve.bbmodel     →  every animation in it, an emote: /emote roll
+    players/dance.bbmodel     →  dance_<animation>
+    config.yml
+    build/                    ← ignored
+```
+
+There is nothing to turn on and no `pack.yml` is needed: a folder of
+Blockbench files is plainly BetterModel's, and loads as a pack named after the
+folder. `build/` is the resource pack BetterModel generated, which is its
+output rather than anything to read, so it is skipped.
+
+## Models become items
+
+`models/` holds blueprints exactly as [Model Engine](/rp-engine/modelengine)'s
+`blueprints/` does, and they load the same way. Each `.bbmodel` becomes an
+[item](/rp-engine/items) that wears it, named after the file, so
+`knight.bbmodel` is `bettermodel:knight`. A model in a subfolder is found where
+it is, and its ID is still the file's name.
+
+```
+/rp give bettermodel:knight     the item that wears it
+/rp bind bettermodel:knight     put it on the mob you are looking at
+```
+
+**The bone tags already mean the same thing.** BetterModel's are Model
+Engine's, and Model Engine's are RP Engine's: `h_` and `hi_` heads, `b_` and
+`ob_` hitboxes, `p_` seats and `tag_` nametags. See
+[Bones that do something](/rp-engine/bones).
+
+The generated item is a plain one, on paper. Write your own under the same ID
+in `items/` for anything more, a [`place:`](/rp-engine/models) block or a name,
+and yours wins.
+
+## Player animations become emotes
+
+`players/` holds BetterModel's player animations: a `.bbmodel` of a player,
+whose animations it plays on somebody wearing their own skin. That is exactly
+an RP Engine [emote](/rp-engine/emotes), so each animation in each file
+becomes one, played with `/emote`.
+
+**The numbers carry over unchanged.** BetterModel's player rig faces the way
+the emote rig does and its keyframes mean what an emote's do. Its bone tags map
+to the emote bones:
+
+| BetterModel | Emote bone |
+|---|---|
+| `ph` | head |
+| `pc` · `pw` · `phip` (chest, waist, hip) | body |
+| `pra` · `prfa` | right arm · right forearm |
+| `pla` · `plfa` | left arm · left forearm |
+| `prl` · `prfl` | right leg · right shin |
+| `pll` · `plfl` | left leg · left shin |
+| `player_root` | the whole figure |
+
+**Emote names are shared by the whole server**, so an animation in BetterModel's
+own `steve.bbmodel` is named after the animation alone (`/emote roll`), and one
+in any other file is prefixed with that file's name (`/emote dance_spin`).
+
+<Callout type="warning" title="Two things differ, and the load says so">
+  **Their torso is three bones and ours is one.** BetterModel has a hip, a
+  waist and a chest; the emote rig has a body. Where more than one of them
+  moves, the most specific (the chest, then the waist, then the hip) is the
+  body.
+
+  **Their arms and head ride the torso; ours stand on their own.** A bow from
+  the waist bends the body here without carrying the arms and head down with
+  it. An animation that leans on that will want its arms and head keyframed
+  to follow.
+</Callout>
+
+Held-item and cape bones are not carried, and nor is Molang in a keyframe,
+which has nothing here to evaluate it and is read as zero.
+
+Emotes play on a rig baked from each player's skin, which needs Minecraft
+1.21.4 or newer. On an older server they still load, but play on nobody. See
+[the rig it plays on](/rp-engine/emotes#the-rig-is-not-the-animation).
