@@ -1,14 +1,16 @@
 export const metadata = {
   title: "Dialogs",
   description:
-    "Minecraft 1.21.6's dialog screens in the game's own look — settings screens, stores, guides and menus, with pages a click turns between and live values like {player} filled in for each player: how one is made and edited, what a click can run, and what the server needs to open one.",
+    "Minecraft 1.21.6's dialog screens in the game's own look — settings screens, stores, guides, backpacks and menus, with item slots that show the game's own tooltips, the player's own inventory, pages a click turns between and live values like {player} filled in for each player: how one is made and edited, what a click can run, and what the server needs to open one.",
 };
 
 # Dialogs
 
 A dialog is the screen a server opens on a player — added in Minecraft
-**1.21.6**. It is not a container: it has no slots, and its buttons are real
-buttons that run real commands.
+**1.21.6**. It is not a container: nothing can be dragged in or out of it, and
+its buttons are real buttons that run real commands. It can still show items in
+slots, with their own tooltips, and even the player's own inventory — see
+[Items and inventories](#items-and-inventories).
 
 What makes it worth building is that a dialog is made of **text**. Its title,
 the lines in its body and every button's label are text components, and a text
@@ -67,6 +69,7 @@ and grids of these pieces:
 | **Label and value** | A label on the left and a value on the right, for receipts and stats. |
 | **Page of text** | Markdown-lite: `# Title` twice the size, `## Heading` in bold, `### Heading` in gold, `- bullets`, `> notes`, `**words**` in gold, `---` a rule. |
 | **Icon** | Any vanilla item, a player's head, one of your pack's own item sprites or textures, or one of the editor's drawn icons — at 16, 24, 32, 48 or 64 pixels, bare or **in a slot** (the dark well an item sits in). A head is that player's skin as it was when the dialog was saved. |
+| **Item slots** | A grid of the inventory's own slots — one, a row, a chest, a backpack up to 13 wide and 8 tall — with an item in any of them. Hovering one shows the game's own tooltip for that item, and a slot can run something when clicked. Or the **player's own inventory**, filled in as the dialog opens. See [Items and inventories](#items-and-inventories). |
 | **Image** | A picture of your own: a logo, a banner, a screenshot, a drawing. Import a PNG, JPG, GIF (its first frame) or WebP up to 512 pixels a side — from **Image** in **Add component**, or by dropping the file onto the screen — then click where it goes. It is drawn at its own size, shrinks to fit a narrower box, and keeps its proportions when you give it only a width; give it a height too and it stretches. An imported picture is kept with the pack, so any of its dialogs can use it again, and it travels with a dialog that is copied or moved to another pack. |
 | **Progress bar**, **QR code**, **Divider**, **Space** | As they sound. A QR code carries its own link and opens it when clicked. |
 
@@ -257,6 +260,72 @@ real face.
   changes how text is drawn sees it small, in the slot's top-left corner.
 </Callout>
 
+## Items and inventories
+
+A dialog can show items the way an inventory does: in the game's grey slots,
+each with its picture and its stack count, and with **the game's own tooltip**
+when you hover one — the item's name in its rarity's colour, its lore, the
+enchanted look. A backpack, a shop's stock, what a kit gives you, the rewards on
+a quest: the **Items** shelf in **Add component** has a single slot, a row, a
+grid, a **Backpack** (a titled panel with a big grid and your inventory under
+it), a **Kit preview** and the player's own **inventory** and **hotbar**.
+
+**Putting items in.** Select a grid of slots and its panel shows a small copy of
+it. Pick a slot there, or click it on the screen, then pick an item: search
+Minecraft's own items by name (every one of them, a block drawn as a block, the
+way the inventory draws it), or type the name of one of your pack's own
+textures. Then set its **count**, the **name** and **lore** its tooltip shows
+(colour codes work, and so do [live values](#live-values) like `{player}`), its
+**rarity**, which colours the name, and whether it looks **enchanted**. The panel
+shows the tooltip as the game will draw it. **When clicked** works as it does on
+a button, slot by slot, so a shop's slots can each run their own `buy` command.
+
+The grid's panel sets how many **columns** and **rows** it has — up to 13 by 8,
+so a backpack can be wider than a chest — and how a slot looks: the
+**inventory's** grey slot, a **dark well**, or the dialog's **theme**.
+A grid sits at the left of its card unless its **Position** says **Centre**
+or **Right**; to put one anywhere at all, drag it with Shift held or use
+**Place anywhere**.
+
+<Callout type="warning" title="An item newer than the server">
+  A server refuses a whole dialog whose tooltip names an item its version of
+  Minecraft does not have — a copper helmet on 1.21.8, say. The panel marks any
+  item newer than 1.21.6, and RP Engine leaves such an item's tooltip out on an
+  older server, so the dialog still opens.
+</Callout>
+
+### The player's own inventory
+
+Set a grid to **The player's inventory** (or add **Your inventory** from the
+Items shelf) and it shows **the inventory of whoever opens the dialog**: the 27
+slots above the hotbar, a small gap, then the hotbar, as the inventory screen
+draws them — or the hotbar alone, or the 27 alone. It is drawn empty in the
+editor; in game, RP Engine puts each of the player's items in its slot as the
+dialog opens, with its picture, its count and its own tooltip, exactly as their
+inventory shows it — a renamed sword with its enchantments, a written book, a
+shulker box and what is in it.
+
+A few things to know:
+
+- **It is what they held when it opened.** A dialog does not change while it is
+  open; one opened again shows the inventory as it is then.
+- **It is to look at.** A dialog is not a container, so items cannot be taken
+  out or moved, and clicking a slot of the player's inventory does nothing.
+- **An item with a model of its own** — a custom sword from a plugin, one of
+  your pack's items — is drawn as a question mark, because its picture is not
+  among Minecraft's. Its tooltip is still its own.
+- **On Spigot rather than Paper** the tooltip has the item's name and lore but
+  not the rest, because the server's own item format is out of the plugin's
+  reach there.
+- **A page that shows the inventory asks the server every time it opens**, like
+  any page with something per player on it, so it is never an out-of-date copy.
+
+<Callout type="warning" title="Needs RP Engine 0.1.74 or newer">
+  An older RP Engine opens the dialog with the player's inventory empty and
+  everything else as usual. A grid of items you chose works with any version,
+  because its tooltips are already in the dialog.
+</Callout>
+
 ## Pages
 
 A settings screen with a sidebar is really several screens that look alike: the
@@ -397,6 +466,9 @@ exactly what arrives, drawn in the dialog's own theme.
   player's head, a **control panel** of buttons, a **sidebar menu**, a **tab
   bar**, a **stats panel**, a **yes or no**, a row of reward tiles and a
   header bar. They are drawn in the dialog's own theme.
+- **Items** are slots with items in them — one, a row, a grid, a backpack, a
+  kit preview — and the player's own inventory and hotbar. See [Items and
+  inventories](#items-and-inventories).
 - **Controls** are the settings screen's switches, choices, sliders, fields and
   small buttons, each in the dialog's theme.
 - **Basics** are the single pieces in the first table above.
