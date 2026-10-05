@@ -65,6 +65,9 @@ for moving over a piece at a time. Both plugins' current formats are read
 | glyph grid (`rows`, `columns`) | one icon per cell, `<id>_1` onwards, numbered the way `<glyph:id:N>` numbers them |
 | `sounds.yml` entry | a [sound](/rp-engine/sounds), with its file, category, subtitle, volume, pitch and stream |
 | shaped, shapeless, furnace, blasting, smoking, campfire and stonecutting recipes | [recipes](/rp-engine/recipes), with vanilla, Nexo and Oraxen ingredients |
+| smithing recipes, Nexo's `trim_pattern` and `copy_components` included | `smithing` and `smithing_trim` recipes |
+| Nexo brewing recipes | `brewing` recipes, which need Paper |
+| anvil recipes: Oraxen's `base`, `addition` and `experience_cost`, Nexo's `input`, `material`, `cost` and `repair` | `anvil` recipes, a repair where there is no result |
 
 An item model such as `my_pack:item/ruby` becomes RP Engine's `item/ruby`. RP
 Engine builds its own item definitions from that, so nothing depends on the
@@ -102,9 +105,11 @@ rest.
 **Animated glyphs**: a GIF glyph is skipped, and an Oraxen `animation:` comes
 across as its first frame.
 
-**Smithing, brewing, anvil, cauldron and grindstone recipes**, and any recipe
-with an ingredient that is a tag or another plugin's item. Those are skipped
-whole and named, rather than loaded with an ingredient missing.
+**Cauldron, grindstone, crafter, transmute and predicate recipes**, and any
+recipe with an ingredient that is a tag or another plugin's item. Those are
+skipped whole and named, rather than loaded with an ingredient missing. A
+recipe's `permission` is not carried across either: RP Engine recipes are open
+to everyone.
 
 **Sounds that replace a vanilla one** (`minecraft:` ids and `replace: true`):
 put those in `overrides/sounds.json` instead.
