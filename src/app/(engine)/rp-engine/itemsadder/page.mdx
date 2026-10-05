@@ -43,6 +43,8 @@ a pack of yours, which is the useful shape for moving over a piece at a time.
 | `behaviours.furniture` | [`place:`](/rp-engine/models), with its light, solidity and seat |
 | `blocks.<id>` | a [custom block](/rp-engine/blocks), with its model, hardness, light and tool |
 | `font_images.<id>` | an [icon](/rp-engine/icons) |
+| `sounds.<id>`, with its subtitle, volume, pitch and stream | a [sound](/rp-engine/sounds), the subtitle looked up in your `minecraft_lang_overwrite` when it is a key |
+| a `sounds.json` in `resourcepack/assets/<namespace>/`, from before 4.0.12 | a [sound](/rp-engine/sounds) per entry |
 | `enabled: false` | skipped, as it is there |
 
 ## What does not
@@ -69,6 +71,12 @@ spelling, and want writing as [`entities/`](/rp-engine/entities) and
 **`events`, `drop` and `item_flags`** are ItemsAdder's own plugin behaviour
 rather than properties of an item. [Actions](/rp-engine/actions) cover most of
 what `events` did.
+
+**Some of a sound.** A sound that picks one of several files at random keeps the
+first, because an RP Engine sound plays one file, and `weight`,
+`attenuation_distance`, `preload` and `jukebox` have no equivalent here. Your
+audio stays where it is: their `sounds/` folder and resource pack folder are
+both packed where an RP Engine sound looks.
 
 ## Two things worth knowing
 
