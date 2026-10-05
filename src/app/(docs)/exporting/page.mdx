@@ -81,7 +81,7 @@ files written for you.
 
 ```
 contents/<your-pack>/
-  configs/items.yml            models and 2D items
+  configs/items.yml            models, 2D items and custom blocks
   configs/font_images.yml      icons
   resourcepack/assets/
     <your-pack>/               your items' models, textures and icons
@@ -93,6 +93,7 @@ Everything goes wherever ItemsAdder expects that kind of thing:
 | In your pack | Becomes |
 | --- | --- |
 | 3D model | an item with a custom model |
+| Custom block | an ItemsAdder block (`REAL_NOTE`) that drops itself when mined |
 | 2D custom item | an item — ItemsAdder builds the model from the sprite |
 | Icon / glyph | a `font_image` — ItemsAdder gives it a new character |
 | Block or item reskin | a vanilla file replacement |
@@ -123,6 +124,14 @@ becomes `/iaget my_pack:floating_sword`.
   writes none of those. It sets no `CustomModelData` either; ItemsAdder assigns
   them, so nothing here can land on a value you're already using.
 </Callout>
+
+**Custom blocks are real ItemsAdder blocks.** A model you gave a full block
+carrier is placed as a note block, the same carrier it uses in the Java pack,
+except ItemsAdder picks the note-block state and writes the blockstate itself.
+It has a hardness of 2, a little softer than stone, sounds like stone and
+drops itself; change any of that under `behaviours: block:` in `items.yml`. A
+directional block turns to face whoever placed it, like a furnace. As with
+every note-block block, it is a solid cube with no see-through pixels.
 
 Items ride on `PAPER` because it has no vanilla behaviour to inherit. Change
 `material` per item in `items.yml` if you'd rather one behaved like the item
