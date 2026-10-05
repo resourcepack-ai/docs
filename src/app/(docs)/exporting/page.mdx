@@ -84,7 +84,7 @@ contents/<your-pack>/
   configs/items.yml            models, 2D items and custom blocks
   configs/font_images.yml      icons
   resourcepack/assets/
-    <your-pack>/               your items' models, textures and icons
+    <your-pack>/               your items' models, textures, icons and sounds
     minecraft/                 the vanilla files your pack replaces
 ```
 
@@ -99,8 +99,7 @@ Everything goes wherever ItemsAdder expects that kind of thing:
 | Block or item reskin | a vanilla file replacement |
 | GUI screen that replaces a vanilla file | a vanilla file replacement |
 | GUI overlay | a `font_image` plus the title string that positions it |
-
-Sounds aren't included.
+| Sound | a sound in your pack's namespace, and a replaced vanilla sound stays replaced |
 
 The zip already contains `contents/`, so merge it into `plugins/ItemsAdder/`
 — dropping it *inside* the existing `contents/` gives you
@@ -144,6 +143,17 @@ Both it and we assign characters from Unicode's private-use range, and both
 start at the same place, so keeping ours would land on top of an emoji you
 already have and you'd see that instead. Reference the icons by their
 ItemsAdder placeholder.
+
+**Sounds play under your pack's namespace**, the way ItemsAdder's own packs
+keep theirs: a sound you named `custom.laser` is `my_pack:custom.laser` on an
+ItemsAdder server, ready for any ItemsAdder sound setting or
+`/iaplaysound my_pack:custom.laser <player>`. A sound that replaces a vanilla
+one, like `entity.creeper.primed`, also keeps its vanilla name so the game
+plays it instead of its own. That goes in `resourcepack/assets/minecraft/sounds.json`,
+which ItemsAdder merges with its own `sounds.json` rather than letting one
+replace the other. It has done that since December 2023; on an older
+ItemsAdder, delete that file or the custom block sounds go quiet. The
+`README.txt` lists every sound under the name it plays as.
 
 **The vanilla replacements apply to everyone.** Reskinned blocks, item sprites
 and GUI screens change how the game looks for every player on the server, which
