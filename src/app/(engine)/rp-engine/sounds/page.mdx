@@ -34,6 +34,10 @@ called `chime` finds `assets/sounds/chime.ogg` with nothing pointing at it.
 streamed sound is decoded as it plays instead of held in memory, which is what
 stops a five-minute track costing every player who hears it.
 
+The build writes your namespace's `sounds.json` and English language file for
+you. If your pack ships its own as well, the two are merged rather than one
+replacing the other, and where both name the same sound the definition wins.
+
 ## Length, and why anything loops
 
 `length:` is how long the file runs, in seconds, and it exists for one reason:
