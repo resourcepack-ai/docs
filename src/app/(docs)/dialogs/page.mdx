@@ -313,9 +313,12 @@ A few things to know:
 - **It is what they held when it opened.** A dialog does not change while it is
   open; one opened again shows the inventory as it is then — unless items can be
   moved in it, below.
-- **An item with a model of its own** — a custom sword from a plugin, one of
-  your pack's items — is drawn as a question mark, because its picture is not
-  among Minecraft's. Its tooltip is still its own.
+- **Your pack's own items look like themselves.** An item you reskinned is
+  drawn as your pack draws it, and one of your pack's own items — a custom
+  item, a variant, a model handed out as an item — is drawn from its sprite or
+  its model's thumbnail, the picture its page shows. A model with no thumbnail
+  yet, or **a custom item from another plugin**, is drawn as a question mark,
+  because its picture is not in your pack. Its tooltip is always its own.
 - **On Spigot rather than Paper** the tooltip has the item's name and lore but
   not the rest, because the server's own item format is out of the plugin's
   reach there.
