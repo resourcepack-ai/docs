@@ -350,6 +350,41 @@ clicked":
 A plugin can refuse a move — an item that may not go in the ender chest, say:
 see `DialogSlotMoveEvent` in RP Engine's API.
 
+### Backpacks, vaults and a plugin's own storage
+
+Besides the player's inventory and ender chest, a grid can show **a
+container**, at whatever size you give it — up to 13 by 8:
+
+- **The backpack it opened from.** Give an item in your server's content folder
+  the action `dialog:` with this dialog's id, and right-clicking it opens the
+  dialog with **that item's own contents** in this grid. What is put in is kept
+  on the item, the way a shulker box keeps its contents, so it goes wherever the
+  item goes — dropped, traded, put in a chest. The **Working backpack** on the
+  Items shelf is one, over the player's inventory.
+
+  ```yaml
+  # items/backpack.yml, on the server
+  backpack:
+    material: PAPER
+    model: backpack
+    actions:
+      right_click:
+        - dialog: studio:backpack
+        - cancel: true
+  ```
+
+  `studio:backpack` is the dialog's id in game — the dialog's panel in the
+  editor shows it. A backpack opens one at a time (a stack of them will not),
+  cannot be put inside a backpack, and stays in the player's inventory while it
+  is open.
+- **Kept on the player.** Storage of each player's own, by a name you choose,
+  across restarts: a **vault**, a second ender chest. Every grid that names the
+  same storage shows the same items. The **Vault** on the Items shelf is one;
+  open it with `/rp dialog <id>` or from any item's `dialog:` action.
+- **From a plugin.** A container another plugin on your server registers with
+  RP Engine under a name — a bank, a quiver, a guild chest. Until a plugin
+  registers that name, the grid's slots stay empty.
+
 <Callout type="warning" title="Needs RP Engine 0.1.74 or newer">
   An older RP Engine opens the dialog with the player's inventory empty and
   everything else as usual, and clicking a slot does nothing. A grid of items
