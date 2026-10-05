@@ -230,6 +230,11 @@ Copy the `.bbmodel` files into `plugins/ModelEngine/blueprints/`, then:
   not exist on R4. Run `/meg` on its own for the list your server actually has.
 </Callout>
 
+**The same files work in BetterModel.** It reads Blockbench "free" models with
+Model Engine's bone names, which is exactly what this export writes, so drop
+the `.bbmodel` files into `plugins/BetterModel/models/` instead and reload
+BetterModel. There is no separate export for it.
+
 <Callout type="warning" title="Model Engine's textures need serving, and it won't do it for you">
   `/meg reload` writes a resource pack to `plugins/ModelEngine/resource pack/`
   and stops there. A player who isn't wearing that pack watches the rig spawn,
