@@ -94,6 +94,7 @@ Everything goes wherever ItemsAdder expects that kind of thing:
 | --- | --- |
 | 3D model | an item with a custom model |
 | Custom block | an ItemsAdder block (`REAL_NOTE`) that drops itself when mined |
+| Vehicle | furniture you can sit in, with a hitbox measured from the model |
 | 2D custom item | an item — ItemsAdder builds the model from the sprite |
 | Icon / glyph | a `font_image` — ItemsAdder gives it a new character |
 | Block or item reskin | a vanilla file replacement |
@@ -131,6 +132,13 @@ It has a hardness of 2, a little softer than stone, sounds like stone and
 drops itself; change any of that under `behaviours: block:` in `items.yml`. A
 directional block turns to face whoever placed it, like a furnace. As with
 every note-block block, it is a solid cube with no see-through pixels.
+
+**Vehicles are furniture you can sit in, not drive.** ItemsAdder has no way to
+drive one of our models, so a vehicle places like a chair: right-click the
+ground with it, then right-click it to get in. ItemsAdder furniture has one
+seat, over the middle, so the rider sits at the height of the driver's seat
+and any other seats are left out; the `README.txt` says which. To drive it,
+use [RP Engine](/rp-engine).
 
 Items ride on `PAPER` because it has no vanilla behaviour to inherit. Change
 `material` per item in `items.yml` if you'd rather one behaved like the item
