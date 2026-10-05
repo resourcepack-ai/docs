@@ -19,7 +19,7 @@ plugins/RPEngine/content/
 ```
 
 There is nothing to turn on. A file is recognised by its own shape — an
-`info:` block beside `items:` or `font_images:` — which nothing of ours looks
+`info:` block beside `items:`, `font_images:` or `recipes:` — which nothing of ours looks
 like, since our top-level keys are IDs. One of their files also works **inside**
 a pack of yours, which is the useful shape for moving over a piece at a time.
 
@@ -45,7 +45,15 @@ a pack of yours, which is the useful shape for moving over a piece at a time.
 | `font_images.<id>` | an [icon](/rp-engine/icons) |
 | `sounds.<id>`, with its subtitle, volume, pitch and stream | a [sound](/rp-engine/sounds), the subtitle looked up in your `minecraft_lang_overwrite` when it is a key |
 | a `sounds.json` in `resourcepack/assets/<namespace>/`, from before 4.0.12 | a [sound](/rp-engine/sounds) per entry |
+| `recipes.crafting_table`, `cooking`, `campfire_cooking`, `stonecutter` | [recipes](/rp-engine/recipes): shaped, the cookers (one each for a recipe with several `machines`), campfire and stonecutting |
+| `recipes.smithing` | a `smithing` recipe |
+| `recipes.anvil_repair` | an `anvil` repair, a quarter of full durability per ingredient, as theirs |
+| `recipes.brewing` (from the ItemsAdderAdditions add-on) | a `brewing` recipe, which needs Paper; `minecraft:awkward_potion` is `potion/awkward` |
 | `enabled: false` | skipped, as it is there |
+
+A recipe's bare lowercase ID (`base: my_sword`) is the file's own namespace, as
+ItemsAdder reads it. A recipe's `permission` is not carried across: RP Engine
+recipes are open to everyone.
 
 ## What does not
 
@@ -64,9 +72,9 @@ than one that refuses out loud.
   block's identity. A pack with hundreds of blocks will not fit as it stands.
 </Callout>
 
-**Their entities and recipes** are a different feature rather than a different
-spelling, and want writing as [`entities/`](/rp-engine/entities) and
-[`recipes/`](/rp-engine/recipes) definitions. Both are short.
+**Their entities** are a different feature rather than a different spelling,
+and want writing as [`entities/`](/rp-engine/entities) definitions, which are
+short. **Recipe groups other than the ones above** are skipped by name.
 
 **`events`, `drop` and `item_flags`** are ItemsAdder's own plugin behaviour
 rather than properties of an item. [Actions](/rp-engine/actions) cover most of

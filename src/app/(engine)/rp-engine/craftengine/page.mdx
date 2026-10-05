@@ -78,6 +78,9 @@ A pack's `subpacks:` are chosen the same way.
 | image grid (`grid_size`, or `chars` as rows) | one icon per cell, `<id>_<row>_<column>` from 0, the way `<image:id:row:column>` counts |
 | emoji with a `:word:` keyword | an icon called `word`, so `:word:` works in chat with [chat icons](/rp-engine/config#icons-in-chat) on |
 | shaped, shapeless, smelting, blasting, smoking, campfire and stonecutting recipes | [recipes](/rp-engine/recipes), with vanilla and pack ingredients |
+| `smithing_transform` and `smithing_trim` recipes | `smithing` and `smithing_trim` recipes; `merge_components: false` turns off `copy-data` |
+| `brewing` recipes | `brewing` recipes, which need Paper |
+| `shaped_transform` and `shapeless_transform` recipes | ordinary shaped and shapeless recipes, with a warning: the result is made fresh rather than inheriting the source ingredient's data |
 | sound | a [sound](/rp-engine/sounds), with volume, pitch, stream and subtitle |
 | `resourcepack/` | copied into the pack RP Engine builds, as written |
 
@@ -116,9 +119,10 @@ warning names the rest.
 **Pinned characters**: an image's `char` is ignored, because RP Engine hands out
 its own. Write the icon as `:<namespace>:<id>:` rather than the character.
 
-**Smithing, brewing and transform recipes**, and any recipe with a tag or a
-choice of ingredients. Those are skipped whole and named, rather than loaded
-with an ingredient missing.
+**Dye recipes**, **smithing recipes without a template or an addition** (RP
+Engine's smithing table takes all three), and any recipe with a tag or a choice
+of ingredients. Those are skipped whole and named, rather than loaded with an
+ingredient missing.
 
 **Sounds that replace a vanilla one**: put those in
 `resourcepack/assets/minecraft/sounds.json`.
