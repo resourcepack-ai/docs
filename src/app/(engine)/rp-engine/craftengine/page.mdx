@@ -135,8 +135,16 @@ ingredient missing.
 `resourcepack/assets/minecraft/sounds.json`.
 
 **Sections with no RP Engine equivalent**: categories, jukebox songs, loot
-tables for vanilla blocks and mobs, entities, paintings, advancements, world features and
+tables for vanilla blocks and mobs, paintings, advancements, world features and
 the rest. Each is one line in the load, with a count.
+
+**Entities**: CraftEngine's `entities:` section is not a mob of its own. Each
+entry names an existing entity type (a vanilla mob, or one another plugin such
+as MythicMobs spawns) and gives every one of them attribute values and tags for
+CraftEngine's damage rules; there is no model, name or spawn in it. An RP
+Engine [entity](/rp-engine/entities) is a new mob wearing a model, so there is
+nothing for one to take, and the load says so. To put a model on mobs that
+already exist, [bind one](/rp-engine/mobs).
 
 ## Two things worth knowing
 
