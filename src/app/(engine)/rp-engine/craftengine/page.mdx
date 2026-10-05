@@ -74,6 +74,7 @@ A pack's `subpacks:` are chosen the same way.
 | seat | `seat` |
 | `glowing_furniture` light | `light` |
 | furniture loot | `drop` |
+| item, block and furniture `events` | [actions](/rp-engine/actions): see below |
 | image | an [icon](/rp-engine/icons), with its height and ascent |
 | image grid (`grid_size`, or `chars` as rows) | one icon per cell, `<id>_<row>_<column>` from 0, the way `<image:id:row:column>` counts |
 | emoji with a `:word:` keyword | an icon called `word`, so `:word:` works in chat with [chat icons](/rp-engine/config#icons-in-chat) on |
@@ -103,10 +104,16 @@ than one that refuses out loud.
 </Callout>
 
 **Behaviour rather than properties**: item and block behaviours other than
-placing a block or furniture, `events`, block properties beyond the first
-appearance, item settings such as fuel or repair items, and furniture
-interactions. The item still loads, and [actions](/rp-engine/actions) cover
-much of what an event did.
+placing a block or furniture (doors, crops, stairs, storage and the rest are
+blocks with states, which RP Engine's do not have), block properties beyond
+the first appearance, item settings such as fuel or repair items, and furniture
+interactions. The item still loads.
+
+**Events and functions with nothing to land on**: `step` and `fall`, a left
+click on a block or a piece (that is mining or breaking it here); functions
+such as particles, titles, teleports and anything that switches a block state
+or furniture variant; a `run` with a delay; anything behind a condition other
+than a permission; and a function aimed at other players.
 
 **Shapes RP Engine does not have**: tripwire, leaves, sapling, cactus and the
 other non-cube state groups come across as a full cube, and a seed that plants
@@ -128,8 +135,8 @@ ingredient missing.
 `resourcepack/assets/minecraft/sounds.json`.
 
 **Sections with no RP Engine equivalent**: categories, jukebox songs, loot
-tables for vanilla blocks and mobs, entities, paintings, advancements, world
-features and the rest. Each is one line in the load, with a count.
+tables for vanilla blocks and mobs, entities, paintings, advancements, world features and
+the rest. Each is one line in the load, with a count.
 
 ## Two things worth knowing
 
