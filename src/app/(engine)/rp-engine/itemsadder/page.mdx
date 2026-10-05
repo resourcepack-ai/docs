@@ -42,6 +42,10 @@ a pack of yours, which is the useful shape for moving over a piece at a time.
 | `behaviours.liquid_bucket` | [`liquid`](/rp-engine/liquids) |
 | `behaviours.furniture` | [`place:`](/rp-engine/models), with its light, solidity and seat |
 | `blocks.<id>` | a [custom block](/rp-engine/blocks), with its model, hardness, light and tool |
+| `behaviours.block` (or `specific_properties.block`) on an item | a [custom block](/rp-engine/blocks), with its name, lore, model (or the cube generated from its textures), hardness, tool and place sound |
+| `loots.blocks.<name>`, in any file | the block's `drop`, when the table's first item is the pack's own and certain |
+| `item_flags` | [`flags`](/rp-engine/stats) |
+| `events` | [actions](/rp-engine/actions), below |
 | `font_images.<id>` | an [icon](/rp-engine/icons) |
 | `sounds.<id>`, with its subtitle, volume, pitch and stream | a [sound](/rp-engine/sounds), the subtitle looked up in your `minecraft_lang_overwrite` when it is a key |
 | a `sounds.json` in `resourcepack/assets/<namespace>/`, from before 4.0.12 | a [sound](/rp-engine/sounds) per entry |
@@ -54,6 +58,24 @@ a pack of yours, which is the useful shape for moving over a piece at a time.
 A recipe's bare lowercase ID (`base: my_sword`) is the file's own namespace, as
 ItemsAdder reads it. A recipe's `permission` is not carried across: RP Engine
 recipes are open to everyone.
+
+## Events become actions
+
+| ItemsAdder event | RP Engine trigger |
+|---|---|
+| `interact.right`, `interact.left` (a bare `interact` is both) | `right_click`, `left_click` |
+| `attack`, `drop`, `pickup`, `block_break` | the same |
+| `eat`, `drink` | `consume` |
+| `item_break` | `break` |
+| `bow_shot` | `shoot` |
+| `placed_block` / `placed_furniture`: `interact`, `break`, `place` | the block's or furniture's own [`interact`, `remove`, `place`](/rp-engine/actions#the-thing-in-the-world) |
+
+Inside an event, `play_sound`, `execute_commands` (`as_console: true` runs as
+the console, otherwise as the player), `potion_effect`, `give_item`,
+`decrement_amount`, `cancel`, and ItemsAdderAdditions' `message` and
+`actionbar` come across, in order. `{player}` means the same thing in both
+plugins. A permission that every action in an event asks for becomes one
+`permission` step at its front.
 
 ## What does not
 
@@ -76,9 +98,15 @@ than one that refuses out loud.
 and want writing as [`entities/`](/rp-engine/entities) definitions, which are
 short. **Recipe groups other than the ones above** are skipped by name.
 
-**`events`, `drop` and `item_flags`** are ItemsAdder's own plugin behaviour
-rather than properties of an item. [Actions](/rp-engine/actions) cover most of
-what `events` did.
+**Events and actions with nothing to land on**: holding, wearing, fishing, a
+sneaking click, guns and books have no trigger here; particles, damage,
+replacing blocks and dropping experience have no step. An action with a
+`delay`, or with a permission only some of its event's actions share, is
+skipped too, since a step runs when its trigger does and a permission step
+stops everything after it. The rest of the event still comes across.
+
+**Loot by chance**, and mob and fishing loot. A block gives back one thing, so
+a table that might drop its item leaves the block dropping itself, and says so.
 
 **Some of a sound.** A sound that picks one of several files at random keeps the
 first, because an RP Engine sound plays one file, and `weight`,
