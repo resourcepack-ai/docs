@@ -59,12 +59,17 @@ underlines.
 | `/rp dialog <id> [name=value...] [player]` | Open one, filling its `{placeholders}` with the values given. The player goes last (the old place, straight after the id, still works) | `rpengine.dialog` |
 | `/rp var <name> <value>` | Change one of your own dialog settings and see the dialog again | `rpengine.var` — everyone |
 | `/rp page <id>` | Turn the dialog you are looking at to another of its pages | `rpengine.page` — everyone |
-| `/rp page close` | Close the dialog you are looking at — a paged dialog's footer button | `rpengine.page` — everyone |
+| `/rp page close` | Close the dialog you are looking at — a paged dialog's footer button, or anything set to **Close the dialog** | `rpengine.page` — everyone |
+| `/<command> [player]` | A dialog's own command, such as `/shop`: opens it on whoever types it, about the player named | everyone, or the permission the dialog names |
 
-The last two are what clicks inside a dialog run, so every player has them. Each
+The last three are what clicks inside a dialog run, so every player has them. Each
 only does what a click could: `/rp var` sets a setting some dialog offers, to a
 value it offers, and `/rp page` opens a page only when the dialog you were shown
 has a click that goes there.
+
+A dialog gets a command of its own from `command:` in its file, or **Players
+open it with** in Studio (RP Engine 0.1.74 or newer). A name another plugin
+already has is left to it; `/rp dialogs` shows each dialog's command.
 
 ## Liquids
 

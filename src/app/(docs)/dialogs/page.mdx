@@ -174,7 +174,9 @@ names the player it is about.
 They work wherever a dialog has words: on the screen, in the title, in a tooltip,
 on a footer button and in the command a click runs. On the screen, a **Text**, a
 **Label and value** (either half) and a **Chip** can each hold one. Select one
-and open **Insert a live value** under its words to pick a value from the list.
+and open **Insert a live value** under its words to pick a value from the list:
+the dialog's own settings, `{target}`, the player's own values below, the
+PlaceholderAPI placeholders most servers have, or a name of your own typed in.
 The **Live values** list in the dialog's own settings shows every placeholder
 the dialog uses, on every page, and where each one's value comes from.
 
@@ -660,8 +662,9 @@ footer button's:
 | **Open link** | The client asks before following it. |
 | **Copy text** | Onto their clipboard. |
 | **Go to page** | Turn to another of this dialog's [pages](#pages), or make a new one for it. |
+| **Close the dialog** | Closes it, as Escape does — for an X in a corner or a Cancel drawn on the screen. |
 | **Open another dialog** | Pick one of the pack's dialogs from the list — it opens straight away. |
-| **Nothing** | Which, with "After a click: Close", is what an Ok button is. |
+| **Nothing** | On the screen, the piece only shows its tooltip. On a footer button, the dialog closes. |
 
 A command runs **as the player**, so it obeys their permissions. A button that
 needs more than they have wants a command the server has set up for it, not a
@@ -687,12 +690,23 @@ Minecraft's, or one from a datapack.
 ## Inputs
 
 A dialog can ask for something: a text box, a checkbox, a list to pick from or
-a slider. Each has a **key**, and a button's command can write `$(key)` and get
-what the player put there.
+a slider. These are Minecraft's own, drawn by the game under the picture and
+above the footer, and a player types or picks in them. Add one under
+**Inputs** in the dialog's own settings (click an empty part of the screen to
+see them); click it, there or on the screen, to set its label, what it starts
+as, its choices or its range.
+
+Each has a **key**, and a **footer button's** command can write `$(key)` and get
+what the player put there. Select the button and click the key under its
+command to add it:
 
 ```
-tp @s $(destination)
+ban {target} $(length) $(reason)
 ```
+
+A checkbox gives `true` or `false`, and a choice written `7d=7 days` shows
+"7 days" and gives `7d`. Only the footer buttons fill in a key: a click on the
+picture sends its command exactly as written, and the editor says so.
 
 ## Clickable in whole lines
 
@@ -721,8 +735,14 @@ It chooses the **colours** from the subject, the way a designer would — a
 theme whose mood fits it, or a card and accent colour of its own (a classroom
 might come back chalkboard green with chalk-yellow highlights) — so different
 screens come back in different colours. Name colours in the request and it
-uses yours. If your pack has a **style guide** with a palette, the theme is
-built from its colours instead.
+uses yours: "red themed" makes the cards themselves red, not grey cards with a
+red highlight. Whatever else the request says is kept the same way — how many
+buttons, what they are called and in what order, a sidebar on the left. If your
+pack has a **style guide** with a palette, the theme is built from its colours
+instead.
+
+Ask for a form — "the player types a reason and picks a length" — and it adds
+the game's own [inputs](#inputs) for it.
 
 Before the dialog is saved, the generator takes **a second look** at what it
 drew: labels cut off, a card too narrow for what is in it, a screen too tall for
@@ -763,6 +783,15 @@ Pair the pack with a server running RP Engine and push it, the same way you
 
 The panel in the editor has the exact command for the dialog you are looking
 at.
+
+### A command of its own
+
+`/rp dialog` is for staff. To let **players** open a dialog themselves — a
+`/shop`, a `/menu`, a `/warps` — give it a command under **Players open it
+with** in the dialog's settings. Anybody who types it gets the dialog, or only
+those with a permission if you name one, and `/shop Steve` opens it about Steve
+as `{target}`. A name another plugin already uses is left to that plugin;
+`/rp dialogs` says which dialogs open with what. Needs RP Engine 0.1.74 or newer.
 
 ### A dialog about somebody
 
