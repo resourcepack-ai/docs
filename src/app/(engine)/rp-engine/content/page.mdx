@@ -21,6 +21,9 @@ plugins/RPEngine/content/
     recipes/     *.yml
     entities/    *.yml
     liquids/     *.yml
+    blocks/      *.yml
+    vehicles/    *.yml
+    emotes/      *.json or *.yml
     assets/                → assets/mypack/ in the built pack
       textures/
       models/              Blockbench files
@@ -37,9 +40,10 @@ file may declare many; the file name means nothing, and subfolders are
 organisation only — `items/weapons/swords.yml` contributes nothing to the ID.
 
 **A folder exists only if something reads it.** There is no `models/` — a
-placed model is a [`place:` block on the item](/rp-engine/models) — no
-`blocks/`, and no `emotes/`. Any other folder is warned about by name, which is
-what catches `item/` and `Sounds/`.
+placed model is a [`place:` block on the item](/rp-engine/models). Any other
+folder is warned about by name, which is what catches `item/` and `Sounds/`.
+The exceptions are other plugins' layouts, which are read where they lie: see
+[Model Engine](/rp-engine/modelengine) and [BetterModel](/rp-engine/bettermodel).
 
 **Errors are collected, never thrown.** See [reloading](/rp-engine/reloading).
 

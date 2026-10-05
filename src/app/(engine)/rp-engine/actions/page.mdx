@@ -90,6 +90,7 @@ alternatives are a Paper dependency or polling everybody's armour every tick.
 | `run` | Runs a command as the user, with their own permissions |
 | `sound` | `mypack:chime`, or a vanilla key. Optional volume and pitch |
 | `effect` | `SPEED 10 2` — type, seconds, level. Level is 1-based |
+| `particle` | `flame 12 0.3` — type, count, spread. At the block or piece the action is about, or at the user for a held item |
 | `give` | `mypack:ruby 3`. What will not fit drops on the floor |
 | `take` | Takes this many off the stack |
 | `cancel` | Cancels the vanilla use of the item |
@@ -112,6 +113,12 @@ refusal says something:
 
 **`cancel` is what stops the vanilla use.** A wand built on a bucket fills with
 water without it.
+
+**`particle` takes the game's own names**, `flame` or `happy_villager`, and
+the older spellings from before Minecraft 1.20.5 renamed most of them work too,
+on either side of that change. Count defaults to 8 and spread to 0.3 blocks. A
+particle that needs something more (a colour, a block to be made of) draws
+nothing.
 
 A step that cannot run is skipped and the rest still run — a misspelled potion
 costs that line, not the command after it.
