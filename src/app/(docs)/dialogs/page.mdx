@@ -245,6 +245,50 @@ the way the game spaces big text.
   own, shows its placeholders as written.
 </Callout>
 
+### Lists the server fills
+
+A **List** (on the Blocks shelf) is rows whose items come from your server rather
+than from the editor: the player's homes, the warps, the friends online, a top
+ten. It is drawn as one row — a button, a line of words, a card with a head —
+repeated as many times as the list has room for, up to twelve. In that row,
+`{warps}` (or whatever you call the list) is **each row's own value**, and
+`{warps_note}` is a second field of it, in its words, its tooltip and the
+command a click runs:
+
+```
+warp {warps}
+```
+
+Edit any row and every row changes; the Components panel shows the list as its
+one row, and the list's settings say what it is called and how many rows it has.
+
+**Rows with nothing in them are hidden** — their picture, their words and their
+click — so a list with room for eight shows three rows to a player who has three
+homes. The room for the other five stays, so leave a list at the end of a card
+or give it the room the longest list needs.
+
+There are two ways to fill one:
+
+- **When it opens**, all at once, separated by commas:
+
+  ```
+  /rp dialog studio:warps warps=Spawn,Shop,Arena
+  ```
+
+- **From a plugin**, before it opens:
+
+  ```java
+  engine.dialogs().list(player, "warps", List.of("Spawn", "Shop", "Arena"));
+  engine.dialogs().show(player, "studio:warps");
+  ```
+
+  `listRows` takes a map per row for more than one field. See [the Plugin
+  API](/rp-engine/api#dialogs).
+
+<Callout type="warning" title="Needs RP Engine 0.1.74 or newer">
+  An older RP Engine shows every row, its placeholders as written.
+</Callout>
+
 ### A player's face
 
 A **Player head** can be live too. In its icon picker, choose **Whoever opens

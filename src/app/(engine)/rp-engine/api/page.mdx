@@ -382,6 +382,30 @@ engine.dialogs().value(player, "coins")         // what you last set
 **These are the same values `overlays().set` publishes.** There is one set per
 player, so `coins` means the same thing on a HUD and in a store.
 
+A [list](/dialogs#lists-the-server-fills) — rows drawn in Studio, one per item —
+is filled the same way, all at once:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.dialogs().list(player, "warps", List.of("Spawn", "Shop", "Arena"));
+// More than one field a row: "" is the row's own value, "note" is {warps_note}.
+engine.dialogs().listRows(player, "warps", List.of(Map.of("", "Spawn", "note", "Where you start")));
+```
+
+```kotlin
+engine.dialogs().list(player, "warps", listOf("Spawn", "Shop", "Arena"))
+// More than one field a row: "" is the row's own value, "note" is {warps_note}.
+engine.dialogs().listRows(player, "warps", listOf(mapOf("" to "Spawn", "note" to "Where you start")))
+```
+
+</CodeTabs>
+
+It sets `warps_1`, `warps_2`… and `warps_count`, and takes away the items a
+longer list set before; rows past the end are hidden, clicks and all. A list
+given when the dialog opens, `warps=Spawn,Shop,Arena`, does the same for that
+opening alone.
+
 A placeholder is looked up in five places, and the first answer wins:
 
 1. **What you handed to `show`.**
