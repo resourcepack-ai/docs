@@ -740,6 +740,32 @@ heading, a line starting ✔ is green, one starting ⌀ or ✘ is red, and one
 starting "Click" is yellow. The panel shows a preview, and hovering the piece
 on the screen shows exactly what a player will see.
 
+### Colours and the box
+
+A line can colour its own words with the codes a label takes: `&c` for red,
+`&l` for bold, `&#ff8800` for any colour, `&r` to go back to the line's own.
+
+The dialog's own panel has **Tooltips**, the look of every tooltip on the
+dialog: the box, its rim (which fades from the top colour to the foot colour),
+the title's colour and the rest of the words'. Start from one of the looks,
+change any colour, set how see-through the box is, or press **From the theme**
+to take it from the dialog's theme. ✔, ⌀ and "Click…" lines keep their own
+colours.
+
+- **The box reaches the tooltips the game draws for an item**: a clickable
+  piece's and an item slot's. The game only draws a different box for an
+  item, so with a box of your own a clickable piece's tooltip is sent as one,
+  a sheet of paper whose name is the first line and whose description is the
+  rest. It reads exactly as the text would, in your box. With advanced
+  tooltips on (F3+H) the game adds `minecraft:paper` under it.
+- **A footer button's tooltip keeps the game's box** and takes your colours:
+  the game gives a button's tooltip no way to name another box.
+- A slot of the **player's own inventory** shows their item's tooltip as the
+  game draws it, in the game's box.
+- The box is two small pictures in your resource pack, so players see it once
+  the pack with this dialog is on their client, after a sync or from an
+  exported pack.
+
 ## What a button can do
 
 One thing each, chosen under **When clicked** in a piece's panel, or in a
