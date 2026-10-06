@@ -71,7 +71,8 @@ and grids of these pieces:
 | **Icon** | Any vanilla item, a player's head, one of your pack's own item sprites or textures, or one of the editor's drawn icons — at 16, 24, 32, 48 or 64 pixels, bare or **in a slot** (the dark well an item sits in). A head is that player's skin as it was when the dialog was saved. |
 | **Item slots** | A grid of the inventory's own slots — one, a row, a chest, a backpack up to 13 wide and 8 tall — with an item in any of them. Hovering one shows the game's own tooltip for that item, and a slot can run something when clicked. Or the **player's own inventory** or **ender chest**, filled in as the dialog opens — and they can move items in it, a click to pick up and a click to put down. See [Items and inventories](#items-and-inventories). |
 | **Image** | A picture of your own: a logo, a banner, a screenshot, a drawing. Import a PNG, JPG, GIF (its first frame) or WebP up to 512 pixels a side — from **Image** in **Add component**, or by dropping the file onto the screen — then click where it goes. It is drawn at its own size, shrinks to fit a narrower box, and keeps its proportions when you give it only a width; give it a height too and it stretches. An imported picture is kept with the pack, so any of its dialogs can use it again, and it travels with a dialog that is copied or moved to another pack. |
-| **Progress bar**, **QR code**, **Divider**, **Space** | As they sound. A QR code carries its own link and opens it when clicked. |
+| **Progress bar** | A label, a count and a bar. Its value and most are numbers, whole or with a point, or [live values](#bars-that-follow-the-player) such as `{xp_points}` and `{xp_needed}`, so the bar shows each player's own progress. It fills in the theme's accent, or in a **bar colour** of its own, and its empty part can have a **track colour** of its own too. |
+| **QR code**, **Divider**, **Space** | As they sound. A QR code carries its own link and opens it when clicked. |
 
 Any row, column or grid can also sit on one of the GUI's own surfaces:
 
@@ -176,7 +177,9 @@ on a footer button and in the command a click runs. On the screen, a **Text**, a
 **Label and value** (either half), a **Chip**, and the words of a **Button**, a
 **Sidebar button**, a **List option**, a **Badge**, a **Tile** and a **Link** can
 each hold one — `Buy · {price}` on a button, `{online} online` on a badge. On a
-button or a badge the value keeps to the piece's own room. Select one
+button or a badge the value keeps to the piece's own room. A **Progress bar**'s
+label can hold one too, and so can its value and most, which makes the bar
+itself live: see [Bars that follow the player](#bars-that-follow-the-player). Select one
 and open **Insert a live value** under its words to pick a value from the list:
 the dialog's own settings, `{target}`, the player's own values below, the
 PlaceholderAPI placeholders most servers have, or a name of your own typed in.
@@ -190,6 +193,7 @@ the dialog uses, on every page, and where each one's value comes from.
 | `{health}`, `{health_max}`, `{health_percent}` | Health |
 | `{food}` | Hunger, out of 20 |
 | `{level}`, `{xp}` | Experience level, and progress to the next as a percentage |
+| `{xp_points}`, `{xp_needed}` | Experience points into this level, and how many the level takes |
 | `{air}` | Seconds of breath left underwater |
 | `{ping}` | Latency in milliseconds |
 | `{world}`, `{x}`, `{y}`, `{z}`, `{direction}` | Where they are |
@@ -222,16 +226,13 @@ values.
 
 **On the screen, words with a live value are drawn by the game**, not into the
 dialog's picture, which is what lets them say something different to every
-player. Three things follow from that:
+player. Two things follow from that:
 
 - **They stay on one line.** Where a line breaks depends on what the value turns
   out to be, so these words never wrap. Press Enter in them to start a new line.
 - **A value too long for its line is cut short** and ends in "…". A character
   Minecraft's own small font cannot draw, such as Chinese, Japanese or an emoji,
   shows as "?", the same as it would in the picture.
-- **The heavy display capitals cannot hold one.** That face is drawn into the
-  picture, so placeholders in it stay exactly as typed. Use any other style for
-  a live value.
 
 In the editor, live words show their placeholders as written, such as `{player}`,
 in the place the game will draw the value, and at twice the size they are spaced
@@ -243,6 +244,49 @@ the way the game spaces big text.
   character its font cannot measure, inside the line, and then the picture below
   can shift. A dialog shown without RP Engine, such as one in a datapack of your
   own, shows its placeholders as written.
+</Callout>
+
+### Bars that follow the player
+
+A **Progress bar** whose value or most holds a live value fills itself for each
+player as the dialog opens. Type a number or a placeholder into either box in its
+panel, or click one of the **Follow** shortcuts under them, which set both at once:
+
+| Follow | Value | Most |
+|---|---|---|
+| Hearts | `{health}` | `{health_max}` |
+| Hunger | `{food}` | `20` |
+| Progress to the next level | `{xp}` | `100` |
+| Experience points | `{xp_points}` | `{xp_needed}` |
+| Breath underwater | `{air}` | `15` |
+| Health, as a percentage | `{health_percent}` | `100` |
+
+Any other value works the same way: a PlaceholderAPI placeholder without its %
+signs, a value you give when you open the dialog (`goal=500`), or one a plugin
+publishes. One side can be a plain number and the other live, such as
+`{kills}` out of `100`.
+
+- **Whole numbers and decimals both work**, and so do commas and a % sign, which
+  are ignored: `1,250` out of `5,000` is a quarter full, and so is `12.5` out of
+  `50`. The bar is the value over the most, kept between empty and full.
+- **A value that is not a number leaves the bar empty**, rather than guessing.
+  That includes a placeholder nothing answered, and shortened numbers such as
+  `1.2k` — use the plain number instead.
+- **The count over the bar is live too**: it shows the two values as they are
+  filled in. Untick **Show the count** to hide it.
+- **The editor shows a live bar 60% full**, because nobody's numbers are there
+  until somebody opens the dialog.
+
+The bar's colours are its own to choose. **Bar colour** is what it fills with, and
+its top row is drawn a little lighter, the way the theme lights its own. **Track
+colour** is the empty part. Leave either on **Auto** for the theme's colours, or
+the game's green and dark grey on a dialog with no theme.
+
+<Callout type="warning" title="Needs RP Engine 0.1.75 or newer">
+  An older RP Engine shows a live bar empty, with its count filled in. A dialog
+  shown without RP Engine, such as one in a datapack of your own, shows the bar
+  empty and its count as written. A bar of typed numbers is drawn into the
+  picture and works everywhere.
 </Callout>
 
 ### Lists the server fills
