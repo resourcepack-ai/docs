@@ -93,8 +93,11 @@ Then:
 /dialog show @s studio:<id>
 ```
 
-The datapack is the words, buttons and clicks. The pictures are in the Java
-pack, so the players need that too, from the same version of your pack.
+The datapack is the dialog's frame and its clicks. Everything drawn inside it
+(the cards, the words, the buttons) is pictures in the Java pack, which the
+files name as invisible characters written `\uE0…`. So your words are not in
+the files as text, and the players need the Java pack from the same version of
+your pack, or the screen is blank.
 
 Some things only work with [RP Engine](/rp-engine) on the server, and on a
 plain server they stay inert: live values such as `{player}` show as written,
