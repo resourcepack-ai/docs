@@ -960,8 +960,10 @@ datapack alone. The editor's **JSON** button has a **minecraft:dialog** tab with
 the dialog's file, to copy or download, and a button for the whole datapack.
 **Export pack › Dialogs** downloads the same datapack. It goes in your world's
 `datapacks/` folder, takes a restart, and opens with
-`/dialog show @s studio:<id>`. The pictures are still in the resource pack, so
-the players need that too.
+`/dialog show @s studio:<id>`. Everything drawn inside the screen is still
+pictures in the resource pack, which the file names as characters written
+`\uE0…`, so your words are not in it as text and the players need the resource
+pack too.
 
 What the plugin does for a dialog doesn't happen there. Live values show as
 written, bound switches and sliders stay on their default, live heads,
