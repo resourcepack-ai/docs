@@ -249,9 +249,11 @@ telemetry:
 ```
 
 Every 30 seconds the plugin tells resourcepack.ai that it is running, so we
-know how many servers use RP Engine. What it sends is a random id it made up
-the first time it started, kept in `plugins/RPEngine/server-id`, and nothing
-else: no address, no server name, no players, no content, no version. It logs
+know how many servers use RP Engine and its addons. What it sends is a random
+id it made up the first time it started, kept in `plugins/RPEngine/server-id`,
+and the names of any installed plugins that depend on RP Engine (its addons),
+and nothing else: no address, no server name, no players, no content, no
+version. It logs
 nothing either way, and a failed send changes nothing.
 
 `enabled: false` and nothing is sent at all.
