@@ -717,7 +717,9 @@ Click the empty space around the screen, or press Escape, to get back to the
 dialog's own settings: its title, its width, its theme, its footer (one button,
 or a yes/no pair) and how it behaves. Click the footer button itself to set its
 words and what it runs. **JSON** shows the whole layout as the tree the
-generator writes, and **Export** downloads the screen as a picture. Changes save
+generator writes, and its **minecraft:dialog** tab shows the file the game
+reads, to copy or download (see [Without RP Engine](#without-rp-engine)).
+**Export** downloads the screen as a picture. Changes save
 on their own; `Ctrl+Z` undoes and `Ctrl+Shift+Z` (or `Ctrl+Y`) redoes, and they
 cover everything.
 
@@ -950,6 +952,22 @@ first page was opened with.
   recipes, advancements, loot and tags, and this registry is built with the
   world instead.
 </Callout>
+
+### Without RP Engine
+
+A dialog is a vanilla `minecraft:dialog`, so a server can also run one from a
+datapack alone. The editor's **JSON** button has a **minecraft:dialog** tab with
+the dialog's file, to copy or download, and a button for the whole datapack.
+**Export pack › Dialogs** downloads the same datapack. It goes in your world's
+`datapacks/` folder, takes a restart, and opens with
+`/dialog show @s studio:<id>`. The pictures are still in the resource pack, so
+the players need that too.
+
+What the plugin does for a dialog doesn't happen there. Live values show as
+written, bound switches and sliders stay on their default, live heads,
+inventory slots, bars and lists are empty, and a click that runs an `/rp`
+command does nothing. The minecraft:dialog tab lists which of those the dialog
+you're looking at uses. Page turns and **Close the dialog** work without it.
 
 ## Older UI-style dialogs
 
