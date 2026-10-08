@@ -31,7 +31,9 @@ the asset row is written up front with status `generating` and the runner fills
 it in. The asset **is** the job record — it carries the status, the error and
 the result in one place, and it outlives the run. So a handle is just an asset's
 id, `<pack>:<kind>:<name>`, and it stays resolvable long after the generation
-finished.
+finished. Treat it as an opaque string: the asset it names says what it is in
+its `type` field (`block`, `item3d`, `dialog` and so on), and that, not the
+handle, is the thing to branch on.
 
 It also means the [asset listing](/api-reference/list-assets) is how you recover
 a handle for something generated in an earlier run.

@@ -141,7 +141,7 @@
     },
     {
       "name": "Generating",
-      "description": "The six generation endpoints."
+      "description": "The generation endpoints, one for each thing you can make."
     },
     {
       "name": "Jobs",
@@ -618,7 +618,7 @@
       "get": {
         "operationId": "listAssets",
         "summary": "List a pack's assets",
-        "description": "Page until `nextCursor` is null. An asset's `id` is also its job handle, so this is how you find the handle for something generated in an earlier run.\n\nNote the four storage kinds don't map one-to-one onto the six things you can generate: item sprites and GUI sheets are both stored as `texture` under a prefixed name (`item:sword`, `gui:shop_menu`, `hud:frostbite`), icons are stored as `font`, and a 3D item is a `model`.",
+        "description": "Page until `nextCursor` is null. An asset's `id` is also its job handle, so this is how you find the handle for something generated in an earlier run.\n\nEvery asset says what it is in `type` — `block`, `item`, `item3d`, `gui`, `hud`, `dialog`, `icon`, `sound` and so on — and that is the field to filter and branch on. `kind` is the file format it is stored as (`texture`, `model`, `font`, `sound`), which several types share: a block, an item sprite, a GUI, a HUD and a dialog are all `texture`s. Some types are parts of another asset rather than assets of their own (`block_face`, `model_texture`, `item_model`).",
         "tags": [
           "Packs"
         ],
@@ -641,9 +641,30 @@
                             "type": "string",
                             "description": "Stable id, and the job handle this asset was created under."
                           },
+                          "type": {
+                            "type": "string",
+                            "description": "What the asset is. Read this to tell assets apart.",
+                            "enum": [
+                              "model",
+                              "vehicle",
+                              "block",
+                              "block_face",
+                              "model_texture",
+                              "item",
+                              "item_model",
+                              "item3d",
+                              "armor",
+                              "armor3d",
+                              "gui",
+                              "hud",
+                              "dialog",
+                              "icon",
+                              "sound"
+                            ]
+                          },
                           "kind": {
                             "type": "string",
-                            "description": "Which store it lives in.",
+                            "description": "The file format it is stored as, which several types share.",
                             "enum": [
                               "texture",
                               "model",
@@ -653,7 +674,7 @@
                           },
                           "name": {
                             "type": "string",
-                            "description": "Its name within the pack. Prefixed for item sprites and GUI sheets."
+                            "description": "Its stored name within the pack. Treat it as an opaque key: `type` says what the asset is."
                           },
                           "status": {
                             "type": "string",
@@ -687,6 +708,7 @@
                         },
                         "required": [
                           "id",
+                          "type",
                           "kind",
                           "name",
                           "status",
@@ -707,6 +729,7 @@
                   "assets": [
                     {
                       "id": "medieval-keep:texture:mossy_bricks",
+                      "type": "block",
                       "kind": "texture",
                       "name": "mossy_bricks",
                       "status": "ready",
@@ -769,13 +792,40 @@
             }
           },
           {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Only assets of this type.",
+            "schema": {
+              "type": "string",
+              "description": "Only assets of this type.",
+              "enum": [
+                "model",
+                "vehicle",
+                "block",
+                "block_face",
+                "model_texture",
+                "item",
+                "item_model",
+                "item3d",
+                "armor",
+                "armor3d",
+                "gui",
+                "hud",
+                "dialog",
+                "icon",
+                "sound"
+              ]
+            }
+          },
+          {
             "name": "kind",
             "in": "query",
             "required": false,
-            "description": "Only assets of this storage kind.",
+            "description": "Only assets stored in this file format.",
             "schema": {
               "type": "string",
-              "description": "Only assets of this storage kind.",
+              "description": "Only assets stored in this file format.",
               "enum": [
                 "texture",
                 "model",
@@ -815,7 +865,7 @@
       "get": {
         "operationId": "getAssetFile",
         "summary": "Download an asset file",
-        "description": "The asset's own bytes, with the matching content type: PNG for textures and icons, JSON for models, Ogg Vorbis for sounds.\n\nRemember the prefixed names: `texture/item:rusted_key`, `texture/gui:shop_menu`, `texture/hud:frostbite`.\n\nAsking before it's ready answers 409 rather than handing back the placeholder that sits there while it generates — a blank PNG that looked like a result is the one genuinely misleading answer available here.",
+        "description": "The asset's own bytes, with the matching content type: PNG for textures and icons, JSON for models, Ogg Vorbis for sounds.\n\nThe path takes an asset's `kind` and `name` exactly as the asset listing reports them — `texture/item:rusted_key` for an item sprite, `texture/gui:shop_menu` for a GUI — so copy both from there rather than building them from its type.\n\nAsking before it's ready answers 409 rather than handing back the placeholder that sits there while it generates — a blank PNG that looked like a result is the one genuinely misleading answer available here.",
         "tags": [
           "Packs"
         ],
@@ -873,10 +923,10 @@
             "name": "kind",
             "in": "path",
             "required": true,
-            "description": "The storage kind.",
+            "description": "The file format it is stored as: the asset's `kind`.",
             "schema": {
               "type": "string",
-              "description": "The storage kind.",
+              "description": "The file format it is stored as: the asset's `kind`.",
               "enum": [
                 "texture",
                 "model",
@@ -889,10 +939,10 @@
             "name": "name",
             "in": "path",
             "required": true,
-            "description": "The asset's name.",
+            "description": "The asset's stored `name`, from the listing.",
             "schema": {
               "type": "string",
-              "description": "The asset's name.",
+              "description": "The asset's stored `name`, from the listing.",
               "example": "mossy_bricks"
             }
           }
@@ -1005,9 +1055,30 @@
                           "type": "string",
                           "description": "Stable id, and the job handle this asset was created under."
                         },
+                        "type": {
+                          "type": "string",
+                          "description": "What the asset is. Read this to tell assets apart.",
+                          "enum": [
+                            "model",
+                            "vehicle",
+                            "block",
+                            "block_face",
+                            "model_texture",
+                            "item",
+                            "item_model",
+                            "item3d",
+                            "armor",
+                            "armor3d",
+                            "gui",
+                            "hud",
+                            "dialog",
+                            "icon",
+                            "sound"
+                          ]
+                        },
                         "kind": {
                           "type": "string",
-                          "description": "Which store it lives in.",
+                          "description": "The file format it is stored as, which several types share.",
                           "enum": [
                             "texture",
                             "model",
@@ -1017,7 +1088,7 @@
                         },
                         "name": {
                           "type": "string",
-                          "description": "Its name within the pack. Prefixed for item sprites and GUI sheets."
+                          "description": "Its stored name within the pack. Treat it as an opaque key: `type` says what the asset is."
                         },
                         "status": {
                           "type": "string",
@@ -1051,6 +1122,7 @@
                       },
                       "required": [
                         "id",
+                        "type",
                         "kind",
                         "name",
                         "status",
@@ -1072,6 +1144,7 @@
                   "error": null,
                   "asset": {
                     "id": "medieval-keep:texture:mossy_bricks",
+                    "type": "block",
                     "kind": "texture",
                     "name": "mossy_bricks",
                     "status": "ready"
@@ -1133,7 +1206,7 @@
       "post": {
         "operationId": "generateTexture",
         "summary": "Generate a block texture",
-        "description": "Produces a `texture`.\n\n`vanillaTarget` is required when `mode` is `vanilla`; `description` is required when `mode` is `custom`. Setting `faceSlot` generates a single face of a block reskin and needs a `vanillaTarget` that supports per-face textures.",
+        "description": "Produces a `block`.\n\n`vanillaTarget` is required when `mode` is `vanilla`; `description` is required when `mode` is `custom`. Setting `faceSlot` generates a single face of a block reskin and needs a `vanillaTarget` that supports per-face textures.",
         "tags": [
           "Generating"
         ],
@@ -1147,11 +1220,32 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "The asset's name within the pack."
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "sound"
+                      ]
                     },
                     "kind": {
                       "type": "string",
-                      "description": "Which store the generated asset lands in.",
+                      "description": "The file format it is stored as.",
                       "enum": [
                         "texture",
                         "model",
@@ -1174,6 +1268,7 @@
                   },
                   "required": [
                     "id",
+                    "type",
                     "kind",
                     "status",
                     "pack",
@@ -1182,6 +1277,7 @@
                 },
                 "example": {
                   "id": "mossy_bricks",
+                  "type": "block",
                   "kind": "texture",
                   "job": "medieval-keep:texture:mossy_bricks",
                   "status": "generating",
@@ -1331,11 +1427,32 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "The asset's name within the pack."
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "sound"
+                      ]
                     },
                     "kind": {
                       "type": "string",
-                      "description": "Which store the generated asset lands in.",
+                      "description": "The file format it is stored as.",
                       "enum": [
                         "texture",
                         "model",
@@ -1358,6 +1475,7 @@
                   },
                   "required": [
                     "id",
+                    "type",
                     "kind",
                     "status",
                     "pack",
@@ -1366,6 +1484,7 @@
                 },
                 "example": {
                   "id": "lantern",
+                  "type": "model",
                   "kind": "model",
                   "job": "medieval-keep:model:lantern",
                   "status": "generating",
@@ -1478,7 +1597,7 @@
       "post": {
         "operationId": "generateItem",
         "summary": "Generate an item",
-        "description": "Produces a `texture` named `item:<name>` for a 2D sprite, or a `model` for a 3D one — the response's `kind` and `job` say which.\n\nOmit `target` (or send null) for an item of your own; give a vanilla item id to reskin it. Reskinning one this pack already reskins answers 409: change it in the Studio rather than overwriting it blind. `variant` needs a `target` and Minecraft 1.21.4 or newer.",
+        "description": "Produces an `item` (a 2D sprite) or an `item3d` (a 3D model bound to the item) — the response's `type` and `job` say which.\n\nOmit `target` (or send null) for an item of your own; give a vanilla item id to reskin it. Reskinning one this pack already reskins answers 409: change it in the Studio rather than overwriting it blind. `variant` needs a `target` and Minecraft 1.21.4 or newer.",
         "tags": [
           "Generating"
         ],
@@ -1492,11 +1611,32 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "The asset's name within the pack."
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "sound"
+                      ]
                     },
                     "kind": {
                       "type": "string",
-                      "description": "Which store the generated asset lands in.",
+                      "description": "The file format it is stored as.",
                       "enum": [
                         "texture",
                         "model",
@@ -1519,6 +1659,7 @@
                   },
                   "required": [
                     "id",
+                    "type",
                     "kind",
                     "status",
                     "pack",
@@ -1527,6 +1668,7 @@
                 },
                 "example": {
                   "id": "rusted_key",
+                  "type": "item",
                   "kind": "texture",
                   "shape": "sprite",
                   "job": "medieval-keep:texture:item:rusted_key",
@@ -1651,7 +1793,7 @@
       "post": {
         "operationId": "generateGui",
         "summary": "Generate a GUI sheet",
-        "description": "Produces a `texture` named `gui:<name>`.\n\n**The easy path is `auto: true`**: a reasoning model plans the whole screen from the prompt — rows, title, materials, buttons, layout — and `target` may be omitted. Without `auto`, you direct everything yourself.\n\n**Image spend**: `elements`, `decorations` and button `icon`s are each their own image call, which is why they share a cap. `texts`, button faces, the title plaque and the frame are composed rather than generated and cost nothing extra.\n\n**Game screens work differently.** `target: \"inventory\"` is the player's own inventory, which a pack reskins by replacing the vanilla file rather than by overlaying a plugin-opened screen. Vanilla owns its layout, so everything about a menu is ignored there — no title, buttons, cards, elements or decorations — and `auto` only chooses the panel and frame materials. A pack may hold one asset per replaced file; a second is refused with `conflict`.",
+        "description": "Produces a `gui`.\n\n**The easy path is `auto: true`**: a reasoning model plans the whole screen from the prompt — rows, title, materials, buttons, layout — and `target` may be omitted. Without `auto`, you direct everything yourself.\n\n**Image spend**: `elements`, `decorations` and button `icon`s are each their own image call, which is why they share a cap. `texts`, button faces, the title plaque and the frame are composed rather than generated and cost nothing extra.\n\n**Game screens work differently.** `target: \"inventory\"` is the player's own inventory, which a pack reskins by replacing the vanilla file rather than by overlaying a plugin-opened screen. Vanilla owns its layout, so everything about a menu is ignored there — no title, buttons, cards, elements or decorations — and `auto` only chooses the panel and frame materials. A pack may hold one asset per replaced file; a second is refused with `conflict`.",
         "tags": [
           "Generating"
         ],
@@ -1665,11 +1807,32 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "The asset's name within the pack."
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "sound"
+                      ]
                     },
                     "kind": {
                       "type": "string",
-                      "description": "Which store the generated asset lands in.",
+                      "description": "The file format it is stored as.",
                       "enum": [
                         "texture",
                         "model",
@@ -1692,6 +1855,7 @@
                   },
                   "required": [
                     "id",
+                    "type",
                     "kind",
                     "status",
                     "pack",
@@ -1700,6 +1864,7 @@
                 },
                 "example": {
                   "id": "keep_chest",
+                  "type": "gui",
                   "kind": "texture",
                   "job": "medieval-keep:texture:gui:keep_chest",
                   "status": "generating",
@@ -2012,7 +2177,7 @@
       "post": {
         "operationId": "generateHud",
         "summary": "Generate the in-game HUD",
-        "description": "Produces a `texture` named `hud:<name>` — a kind of its own beside the GUIs: where a GUI is one screen a plugin opens, this is the overlay drawn over the world while nothing is open at all: hearts, hunger, armor, air, the hotbar, the crosshair, the experience bar and the boss bar.\n\n**There are two sets**, chosen with `hud`. `hud` is what you read while you play; `overlays` is the full-screen layers — the vignette at the edge of your vision, the Nausea swirl. A pack may hold one of each.\n\n**One asset, many files.** A HUD set replaces up to 82 real vanilla sprites and is edited afterwards as a single sheet. A pack may hold ONE of each set; a second is refused with `conflict`.\n\n**Image spend is per GROUP, not per file.** Each group costs one image call, and everything in it is derived from that one drawing — one heart becomes all forty-four of vanilla's moods, fills and damage flashes, and one strip becomes the experience bar and every boss bar colour. Pass `groups` to narrow what you pay for.\n\n**The crosshair is picked, not described.** Vanilla’s stays readable by inverting whatever is behind it, which a resource pack cannot do, so this one is drawn light with a dark outline from a fixed set of shapes. `crosshair` chooses which; a prompt would not survive contact with a snowfield.",
+        "description": "Produces a `hud` — a type of its own beside the GUIs: where a GUI is one screen a plugin opens, this is the overlay drawn over the world while nothing is open at all: hearts, hunger, armor, air, the hotbar, the crosshair, the experience bar and the boss bar.\n\n**There are two sets**, chosen with `hud`. `hud` is what you read while you play; `overlays` is the full-screen layers — the vignette at the edge of your vision, the Nausea swirl. A pack may hold one of each.\n\n**One asset, many files.** A HUD set replaces up to 82 real vanilla sprites and is edited afterwards as a single sheet. A pack may hold ONE of each set; a second is refused with `conflict`.\n\n**Image spend is per GROUP, not per file.** Each group costs one image call, and everything in it is derived from that one drawing — one heart becomes all forty-four of vanilla's moods, fills and damage flashes, and one strip becomes the experience bar and every boss bar colour. Pass `groups` to narrow what you pay for.\n\n**The crosshair is picked, not described.** Vanilla’s stays readable by inverting whatever is behind it, which a resource pack cannot do, so this one is drawn light with a dark outline from a fixed set of shapes. `crosshair` chooses which; a prompt would not survive contact with a snowfield.",
         "tags": [
           "Generating"
         ],
@@ -2026,11 +2191,32 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "The asset's name within the pack."
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "sound"
+                      ]
                     },
                     "kind": {
                       "type": "string",
-                      "description": "Which store the generated asset lands in.",
+                      "description": "The file format it is stored as.",
                       "enum": [
                         "texture",
                         "model",
@@ -2053,6 +2239,7 @@
                   },
                   "required": [
                     "id",
+                    "type",
                     "kind",
                     "status",
                     "pack",
@@ -2061,8 +2248,9 @@
                 },
                 "example": {
                   "id": "outbreak_hud",
+                  "type": "hud",
                   "kind": "texture",
-                  "job": "medieval-keep:texture:gui:outbreak_hud",
+                  "job": "medieval-keep:texture:hud:outbreak_hud",
                   "status": "generating",
                   "pack": "medieval-keep"
                 }
@@ -2209,7 +2397,7 @@
       "post": {
         "operationId": "generateDialog",
         "summary": "Generate a dialog",
-        "description": "Produces a `texture` named `gui:<name>` — a dialog, the screen a server opens over the game with `/dialog` (Minecraft 1.21.6 and newer), drawn in Minecraft's own look: themed cards, switches, sliders and real clickable buttons.\n\n**The prompt is the whole brief.** A director decides what the screen is — its title, its sections, its controls and its colours (from the pack's style guide when it has one) — and the layout is drawn from that. `layout` narrows which kind of screen it builds; omit it and the director picks.\n\nOne flat charge per dialog, refunded in full if it fails. Edit the result afterwards in the Studio's dialog editor.",
+        "description": "Produces a `dialog` — the screen a server opens over the game with `/dialog` (Minecraft 1.21.6 and newer), drawn in Minecraft's own look: themed cards, switches, sliders and real clickable buttons.\n\n**The prompt is the whole brief.** A director decides what the screen is — its title, its sections, its controls and its colours (from the pack's style guide when it has one) — and the layout is drawn from that. `layout` narrows which kind of screen it builds; omit it and the director picks.\n\nOne flat charge per dialog, refunded in full if it fails. Edit the result afterwards in the Studio's dialog editor.",
         "tags": [
           "Generating"
         ],
@@ -2223,11 +2411,32 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "The asset's name within the pack."
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "sound"
+                      ]
                     },
                     "kind": {
                       "type": "string",
-                      "description": "Which store the generated asset lands in.",
+                      "description": "The file format it is stored as.",
                       "enum": [
                         "texture",
                         "model",
@@ -2250,6 +2459,7 @@
                   },
                   "required": [
                     "id",
+                    "type",
                     "kind",
                     "status",
                     "pack",
@@ -2258,6 +2468,7 @@
                 },
                 "example": {
                   "id": "keep_settings",
+                  "type": "dialog",
                   "kind": "texture",
                   "job": "medieval-keep:texture:gui:keep_settings",
                   "status": "generating",
@@ -2370,7 +2581,7 @@
       "post": {
         "operationId": "generateIcon",
         "summary": "Generate a font icon",
-        "description": "Produces a `font` — a bitmap glyph you can type into chat, signs and books. Omit `width` for a square glyph.",
+        "description": "Produces an `icon` — a bitmap glyph you can type into chat, signs and books. Omit `width` for a square glyph.",
         "tags": [
           "Generating"
         ],
@@ -2384,11 +2595,32 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "The asset's name within the pack."
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "sound"
+                      ]
                     },
                     "kind": {
                       "type": "string",
-                      "description": "Which store the generated asset lands in.",
+                      "description": "The file format it is stored as.",
                       "enum": [
                         "texture",
                         "model",
@@ -2411,6 +2643,7 @@
                   },
                   "required": [
                     "id",
+                    "type",
                     "kind",
                     "status",
                     "pack",
@@ -2419,6 +2652,7 @@
                 },
                 "example": {
                   "id": "heart",
+                  "type": "icon",
                   "kind": "font",
                   "job": "medieval-keep:font:heart",
                   "status": "generating",
@@ -2550,11 +2784,32 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "The asset's name within the pack."
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "sound"
+                      ]
                     },
                     "kind": {
                       "type": "string",
-                      "description": "Which store the generated asset lands in.",
+                      "description": "The file format it is stored as.",
                       "enum": [
                         "texture",
                         "model",
@@ -2577,6 +2832,7 @@
                   },
                   "required": [
                     "id",
+                    "type",
                     "kind",
                     "status",
                     "pack",
@@ -2585,6 +2841,7 @@
                 },
                 "example": {
                   "id": "gate_open",
+                  "type": "sound",
                   "kind": "sound",
                   "job": "medieval-keep:sound:gate_open",
                   "status": "generating",
