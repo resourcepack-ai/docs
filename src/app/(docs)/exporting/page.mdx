@@ -123,7 +123,6 @@ contents/<your-pack>/
     <your-pack>/               your items' models, textures, icons and sounds
     minecraft/                 the vanilla files your pack replaces
 datapacks/<your-pack>_dialogs/ your dialogs, if the pack has any
-RPEngine/content/<your-pack>/  the same dialogs, for RP Engine to open
 ```
 
 Everything goes wherever ItemsAdder expects that kind of thing:
@@ -139,7 +138,7 @@ Everything goes wherever ItemsAdder expects that kind of thing:
 | GUI screen that replaces a vanilla file | a vanilla file replacement |
 | GUI overlay | a `font_image` plus the title string that positions it |
 | Sound | a sound in your pack's namespace, and a replaced vanilla sound stays replaced |
-| Dialog | a datapack folder and an RP Engine folder, its pictures in a font of the pack's own |
+| Dialog | a datapack folder, its pictures in a font of the pack's own |
 
 The zip already contains `contents/`, so merge it into `plugins/ItemsAdder/`
 — dropping it *inside* the existing `contents/` gives you
@@ -202,26 +201,14 @@ replace the other. It has done that since December 2023; on an older
 ItemsAdder, delete that file or the custom block sounds go quiet. The
 `README.txt` lists every sound under the name it plays as.
 
-**Dialogs come two ways**, because ItemsAdder doesn't install vanilla dialogs.
-Both need Minecraft 1.21.6 or newer, and both draw a dialog's picture in a font
-of its own in your pack's folder rather than in the default font, which belongs
-to ItemsAdder and hands out the same characters. Run `/iazip` before anybody
-opens one. The `README.txt` lists every id.
-
-- **With [RP Engine](/rp-engine)** 0.2.1 or newer, which fills in everything
-  that changes per player: `{placeholders}`, switches and sliders bound to
-  settings, live bars and the player's inventory. Merge the zip's `RPEngine/`
-  folder into `plugins/`, run `/rp reload`, and open one with
-  `/rp dialog <your-pack>:<id> <player>`. It loads in a bundle of its own that
-  RP Engine never sends, so players aren't offered a second pack.
-- **As a plain datapack.** Move `datapacks/<your-pack>_dialogs/` into your
-  world's `datapacks/` folder, restart, and open one with
-  `/dialog show <player> studio:<id>`. Nothing fills a dialog opened this way, so
-  a `{placeholder}` shows exactly as written.
-
-A dialog synced to RP Engine from the editor can't stand in for these: it draws
-in the default font, and on an ItemsAdder server those characters are
-ItemsAdder's.
+**Dialogs travel as a datapack**, because ItemsAdder doesn't install vanilla
+dialogs. Move `datapacks/<your-pack>_dialogs/` into your world's `datapacks/`
+folder, restart, and open one with `/dialog show <player> studio:<id>`; the
+`README.txt` lists every id. That needs Minecraft 1.21.6 or newer. A dialog's
+picture is drawn in a font of its own in your pack's folder rather than in the
+default font, which belongs to ItemsAdder and hands out the same characters, so
+run `/iazip` before anybody opens one. Switches and sliders bound to player
+settings, and words filled in for each player, need [RP Engine](/rp-engine).
 
 **The vanilla replacements apply to everyone.** Reskinned blocks, item sprites
 and GUI screens change how the game looks for every player on the server, which
