@@ -21,8 +21,8 @@
     "@tailwindcss/postcss": "^4.3.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.21.0",
-    "next": "16.3.8",
-    "postcss": "^8.5.28",
+    "next": "16.2.9",
+    "postcss": "^8.5.15",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "rehype-pretty-code": "^0.14.4",
@@ -33,18 +33,15 @@
     "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "1.20.7",
+    "@opennextjs/cloudflare": "1.20.1",
     "@types/mdx": "^2.0.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.8",
+    "eslint-config-next": "16.2.9",
     "patch-package": "^8.0.1",
     "typescript": "^5",
-    "wrangler": "^4.146.0"
-  },
-  "overrides": {
-    "sharp": "0.35.5"
+    "wrangler": "^4.104.0"
   }
 }
