@@ -6,6 +6,10 @@
   // directly — no custom-worker.ts.
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-07-01",
+  // No <version>-<name>.workers.dev preview URL per upload: each would be
+  // a second, unguarded copy of this Worker on a hostname nobody watches.
+  // Inherited by every env block.
+  "preview_urls": false,
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
     "directory": ".open-next/assets",
