@@ -334,6 +334,44 @@ There are two ways to fill one:
   An older RP Engine shows every row, its placeholders as written.
 </Callout>
 
+### Shown only to some players
+
+Any piece — a card, a button, a grid of slots, a line of words — can be shown
+only to some players. Under **Show when** in its panel, add a condition:
+
+- **A setting or value**: one of the dialog's [player settings](#player-settings)
+  or any [live value](#live-values), compared with something. Pick *is*, *is
+  not*, *is more than* and the rest, or *is on* / *is off* for a switch. A
+  player setting offers the values its control has, by the words it shows.
+- **A permission** the player has, or lacks — `group.vip` is the one LuckPerms
+  gives everybody in its `vip` group.
+
+With more than one, choose whether they must **all** hold or **any one** of
+them. A player they do not hold for sees the piece's room empty, and its clicks,
+items and live words are gone with it. Typing the command one of its buttons
+would have run does nothing either, for anything RP Engine checks itself (a page
+turn, a slot of a vault, a list's pick) — a command of your own is still up to
+its own permission.
+
+Two pieces that take turns in **the same place** is the shape this was made for:
+two vaults, the first shown when `{vault_number}` *is* `1`, the second when it
+*is* `2` and the player has `vaults.vip`, and a segmented control above them
+with **Player setting** `vault_number`. Give both vaults **Place anywhere** and
+put them at the same spot. Clicking the segmented control changes the setting,
+the dialog opens again, and the other vault is there. A player who has never
+clicked it sees the one its default segment picks.
+
+The editor shows the dialog the way a player with the dialog's defaults sees it,
+so changing the segmented control's selected segment swaps the vaults there too.
+It assumes every permission is held and every other value fits, and it always
+shows the piece you have selected. In the Components panel, a piece with
+conditions is marked with a crossed-out eye.
+
+<Callout type="warning" title="Needs RP Engine 0.2.2 or newer">
+  An older RP Engine never draws a piece that has conditions, but still shows
+  its words and items and lets its clicks through.
+</Callout>
+
 ### A player's face
 
 A **Player head** can be live too. In its icon picker, choose **Whoever opens
@@ -968,9 +1006,10 @@ pack too.
 
 What the plugin does for a dialog doesn't happen there. Live values show as
 written, bound switches and sliders stay on their default, live heads,
-inventory slots, bars and lists are empty, and a click that runs an `/rp`
-command does nothing. The minecraft:dialog tab lists which of those the dialog
-you're looking at uses. Page turns and **Close the dialog** work without it.
+inventory slots, bars and lists are empty, pieces shown only to some players are
+not drawn (though their words and clicks are still there), and a click that
+runs an `/rp` command does nothing. The minecraft:dialog tab lists which of
+those the dialog you're looking at uses. Page turns and **Close the dialog** work without it.
 
 ## Older UI-style dialogs
 
