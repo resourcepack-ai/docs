@@ -1,0 +1,14 @@
+diff --git a/node_modules/@opennextjs/cloudflare/dist/cli/build/patches/plugins/turbopack.js b/node_modules/@opennextjs/cloudflare/dist/cli/build/patches/plugins/turbopack.js
+index e91c64d..029cf33 100644
+--- a/node_modules/@opennextjs/cloudflare/dist/cli/build/patches/plugins/turbopack.js
++++ b/node_modules/@opennextjs/cloudflare/dist/cli/build/patches/plugins/turbopack.js
+@@ -141,7 +141,8 @@ function discoverExternalModuleMappings(filePath) {
+                 const entryPath = path.join(nodeModulesDir, entry.name);
+                 const target = fs.readlinkSync(entryPath);
+                 // target is like "../../node_modules/shiki" — extract package name
+-                const match = target.match(/node_modules\/(.+)$/);
++                // Windows: readlink answers with "\\" separators.
++                const match = normalizePath(target).match(/node_modules\/(.+)$/);
+                 if (match?.[1]) {
+                     mappings.set(entry.name, match[1]);
+                 }
