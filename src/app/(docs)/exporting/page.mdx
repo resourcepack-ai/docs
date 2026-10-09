@@ -30,6 +30,7 @@ from:
 | Export | File | When you'd pick it |
 | --- | --- | --- |
 | **Model Engine** | `.zip` | `.bbmodel` blueprints for a server running [Model Engine](https://git.mythiccraft.io/mythiccraft/model-engine-4) |
+| **BetterModel** | `.zip` | Use the Model Engine export: the same blueprints work in [BetterModel](https://modrinth.com/plugin/bettermodel). See [below](#bettermodel) |
 | **ItemsAdder** | `.zip` | A `contents` folder for a server already running [ItemsAdder](https://wiki.itemsadder.com/) |
 | **Nexo** | `.zip` | Items, furniture, custom blocks and glyphs for a server already running [Nexo](https://docs.nexomc.com/). See [below](#nexo-and-oraxen) |
 | **Oraxen** | `.zip` | Items, furniture, custom blocks and glyphs for a server already running [Oraxen](https://docs.oraxen.com/). See [below](#nexo-and-oraxen) |
@@ -265,11 +266,6 @@ Copy the `.bbmodel` files into `plugins/ModelEngine/blueprints/`, then:
   not exist on R4. Run `/meg` on its own for the list your server actually has.
 </Callout>
 
-**The same files work in BetterModel.** It reads Blockbench "free" models with
-Model Engine's bone names, which is exactly what this export writes, so drop
-the `.bbmodel` files into `plugins/BetterModel/models/` instead and reload
-BetterModel. There is no separate export for it.
-
 <Callout type="warning" title="Model Engine's textures need serving, and it won't do it for you">
   `/meg reload` writes a resource pack to `plugins/ModelEngine/resource pack/`
   and stops there. A player who isn't wearing that pack watches the rig spawn,
@@ -350,6 +346,17 @@ Model Engine and has to be installed first.
 click, on range are our plugin's concept and mean nothing to Model Engine. The
 `README.txt` lists each model's animation names as exported, which is what
 MythicMobs wants typed.
+
+## BetterModel
+
+There is no separate BetterModel export because it doesn't need one. BetterModel
+reads Blockbench "free" models with Model Engine's bone names, which is exactly
+what the **Model Engine** export writes. Export that, then copy the `.bbmodel`
+files from its `blueprints/` folder into `plugins/BetterModel/models/` and
+reload BetterModel.
+
+Everything in [Model Engine](#model-engine) about bones, hitboxes and textures
+applies here too, since they are the same files.
 
 ## Nexo and Oraxen
 
