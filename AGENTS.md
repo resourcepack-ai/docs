@@ -62,7 +62,7 @@ You are attempting to export "metadata" from a component marked with
 "use client", which is disallowed.
 ```
 
-Every `.mdx` page fails that check under the webpack builder on Next 16.2.9 (not re-tested on 16.3.8),
+Every `.mdx` page fails that check under the webpack builder on Next 16.2.9,
 including one with no client components anywhere in its import graph (this was
 bisected — it's not our `mdx-components.tsx`, and it's not `@mdx-js/react`).
 `next build` with Turbopack compiles the identical pages without complaint,
@@ -74,35 +74,36 @@ adding `--webpack`, every deploy breaks.
 
 ## `@opennextjs/cloudflare` is patched for Windows builds
 
-`patches/@opennextjs+cloudflare+1.20.7.patch`, applied by `patch-package` on
+`patches/@opennextjs+cloudflare+1.20.1.patch`, applied by `patch-package` on
 `postinstall`. Don't drop it, and if you bump the dependency, regenerate it
 (`npx patch-package @opennextjs/cloudflare`) — the filename carries the version
 and a stale patch fails loudly on install.
 
-OpenNext's Turbopack plugin matches paths against forward slashes. On Windows
-nothing matched, so it emitted **empty** `requireChunk`/`loadWasmChunk`
-switches: the build passed, `wrangler deploy` reported success, and every SSR
-route 500'd with `ChunkLoadError`. Up to 1.20.1 the patch normalized four
-places; 1.20.2 onward normalize the traced files and the runtime's path
-themselves, so what is left is one line: the `.next/node_modules` symlink
-targets that map hashed external names (shiki's) back to packages, which
-`readlink` answers with backslashes on Windows.
+OpenNext's Turbopack plugin finds server chunks with
+`.includes(".next/server/chunks/")` — forward slashes only. On Windows nothing
+matches, so it emits **empty** `requireChunk`/`loadWasmChunk` switches. The
+build passes, `wrangler deploy` reports success, and then every SSR route 500s
+with `ChunkLoadError: Failed to load chunk server/chunks/ssr/[root-of-the-server]__*.js`.
+The patch normalizes separators in the four places that match or emit those
+paths (they end up inside `require(...)` string literals, so they must be POSIX
+in the *output* too, not just for comparison).
 
 This only bites here because `docs` is the one app that must build with
-Turbopack — see below. To check a build before shipping it:
+Turbopack — see below. Still unfixed in 1.20.2. To check a build before
+shipping it:
 
 ```bash
 grep -c 'case "server/chunks' '.open-next/server-functions/default/.next/server/chunks/ssr/[turbopack]_runtime.js'
 ```
 
-Zero means the chunks were not inlined and the deploy would be dead on arrival.
+Zero means the patch didn't apply and the deploy would be dead on arrival.
 Building in WSL avoids the whole problem, if you'd rather do that.
 
 ## `@opennextjs/cloudflare` is pinned exactly
 
-`1.20.7`, not a caret range, because the patch above is written against that
-exact file. It needs `next >=16.3.6` (this app is on 16.3.8) and wrangler
-`^4.125.0`.
+`1.20.1`, not a caret range. `1.20.2` tightened its peer dependency to
+`next >=16.2.11` and won't install against `next@16.2.9`, which is what this
+app is on. Bump it when the app moves.
 
 # Content pipeline
 
