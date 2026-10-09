@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Dialogs",
   description:
-    "Minecraft 1.21.6's dialog screens in the game's own look — settings screens, stores, guides, backpacks and menus, with item slots that show the game's own tooltips, the player's own inventory, pages a click turns between and live values like {player} filled in for each player: how one is made and edited, what a click can run, and what the server needs to open one.",
+    "Minecraft 1.21.6's dialog screens in the game's own look — settings screens, stores, guides, inventories and menus, with item slots that show the game's own tooltips, the player's own inventory, pages a click turns between and live values like {player} filled in for each player: how one is made and edited, what a click can run, and what the server needs to open one.",
 };
 
 # Dialogs
@@ -70,7 +70,7 @@ and grids of these pieces:
 | **Label and value** | A label on the left and a value on the right, for receipts and stats. |
 | **Page of text** | Markdown-lite: `# Title` twice the size, `## Heading` in bold, `### Heading` in gold, `- bullets`, `> notes`, `**words**` in gold, `---` a rule. |
 | **Icon** | Any vanilla item, a player's head, one of your pack's own item sprites or textures, or one of the editor's drawn icons — at 16, 24, 32, 48 or 64 pixels, bare or **in a slot** (the dark well an item sits in). A head is that player's skin as it was when the dialog was saved. |
-| **Item slots** | A grid of the inventory's own slots — one, a row, a chest, a backpack up to 13 wide and 8 tall — with an item in any of them. Hovering one shows the game's own tooltip for that item, and a slot can run something when clicked. Or the **player's own inventory** or **ender chest**, filled in as the dialog opens — and they can move items in it, a click to pick up and a click to put down. See [Items and inventories](#items-and-inventories). |
+| **Item slots** | A grid of the inventory's own slots — one, a row, a chest, any size up to 13 wide and 8 tall — with an item in any of them. Hovering one shows the game's own tooltip for that item, and a slot can run something when clicked. Or the **player's own inventory** or **ender chest**, filled in as the dialog opens — and they can move items in it, a click to pick up and a click to put down. See [Items and inventories](#items-and-inventories). |
 | **Image** | A picture of your own: a logo, a banner, a screenshot, a drawing. Import a PNG, JPG, GIF (its first frame) or WebP up to 512 pixels a side — from **Image** in **Add component**, or by dropping the file onto the screen — then click where it goes. It is drawn at its own size, shrinks to fit a narrower box, and keeps its proportions when you give it only a width; give it a height too and it stretches. An imported picture is kept with the pack, so any of its dialogs can use it again, and it travels with a dialog that is copied or moved to another pack. |
 | **Progress bar** | A label, a count and a bar. Leave the label empty and turn the count off and it is the bar alone, with no gap above it, so a line of your own can sit right on top. Its value and most are numbers, whole or with a point, or [live values](#bars-that-follow-the-player) such as `{xp_points}` and `{xp_needed}`, so the bar shows each player's own progress. It fills in the theme's accent, or in a **bar colour** of its own, and its empty part can have a **track colour** of its own too. |
 | **QR code**, **Divider**, **Space** | As they sound. A QR code carries its own link and opens it when clicked. |
@@ -397,7 +397,7 @@ real face.
 A dialog can show items the way an inventory does: in the game's grey slots,
 each with its picture and its stack count, and with **the game's own tooltip**
 when you hover one — the item's name in its rarity's colour, its lore, the
-enchanted look. A backpack, a shop's stock, what a kit gives you, the rewards on
+enchanted look. A chest, a shop's stock, what a kit gives you, the rewards on
 a quest: the **Items** shelf in **Add component** has a single **Item slot**, a
 **Grid of slots** and **Your inventory**. What a grid shows — items you choose,
 the player's inventory, hotbar or ender chest, or a container — and whether items
@@ -414,7 +414,7 @@ shows the tooltip as the game will draw it. **When clicked** works as it does on
 a button, slot by slot, so a shop's slots can each run their own `buy` command.
 
 The grid's panel sets how many **columns** and **rows** it has — up to 13 by 8,
-so a backpack can be wider than a chest — and how a slot looks: the
+wider than a chest if you like — and how a slot looks: the
 **inventory's** grey slot, a **dark well**, or the dialog's **theme**.
 A grid sits at the left of its card unless its **Position** says **Centre**
 or **Right**; to put one anywhere at all, drag it with Shift held or use
@@ -487,33 +487,33 @@ clicked":
 A plugin can refuse a move — an item that may not go in the ender chest, say:
 see `DialogSlotMoveEvent` in RP Engine's API.
 
-### Backpacks, vaults and a plugin's own storage
+### Storage on an item, on the player, or in a plugin
 
 Besides the player's inventory and ender chest, a grid can show **a
 container**, at whatever size you give it — up to 13 by 8:
 
-- **The backpack it opened from.** Give an item in your server's content folder
+- **The item it opened from.** Give an item in your server's content folder
   the action `dialog:` with this dialog's id, and right-clicking it opens the
   dialog with **that item's own contents** in this grid. What is put in is kept
   on the item, the way a shulker box keeps its contents, so it goes wherever the
   item goes — dropped, traded, put in a chest. Put a grid of the player's own
-  inventory under it, both movable, and it works like a real backpack.
+  inventory under it, both movable, and items move between the two.
 
   ```yaml
-  # items/backpack.yml, on the server
-  backpack:
+  # items/supply_crate.yml, on the server
+  supply_crate:
     material: PAPER
-    model: backpack
+    model: supply_crate
     actions:
       right_click:
-        - dialog: studio:backpack
+        - dialog: studio:supply_crate
         - cancel: true
   ```
 
-  `studio:backpack` is the dialog's id in game — the dialog's panel in the
-  editor shows it. A backpack opens one at a time (a stack of them will not),
-  cannot be put inside a backpack, and stays in the player's inventory while it
-  is open.
+  `studio:supply_crate` is the dialog's id in game — the dialog's panel in the
+  editor shows it. Such an item opens one at a time (a stack of them will not),
+  cannot be put inside another one, and stays in the player's inventory while
+  it is open.
 - **Kept on the player.** Storage of each player's own, by a name you choose,
   across restarts: a **vault**, a second ender chest. Every grid that names the
   same storage shows the same items. Open a dialog holding one with its
