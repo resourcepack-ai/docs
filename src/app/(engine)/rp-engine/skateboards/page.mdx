@@ -62,10 +62,21 @@ park furniture round the edges.
 
 | Node | What it allows | Default |
 |---|---|---|
-| `skateboards.use` | `/skateboard`, and putting a board down | Everyone |
+| `skateboards.use` | `/skateboard`, and the item that puts a board down | Everyone |
+| `skateboards.here` | `/skateboard here`, a board with no item | Operators |
+| `skateboards.here.unlimited` | No cooldown or cap on `/skateboard here` | Operators |
+| `skateboards.pickup.others` | Picking up a board somebody else put down | Operators |
 | `skateboards.ride` | Getting on a board that is already down | Everyone |
 | `skateboards.park` | `/skatepark` and its pieces | Operators |
 | `skateboards.reload` | `/skateboard reload` | Operators |
+
+**Putting one down by command is for staff.** `/skateboard here` makes a board out of
+nothing, so it has its own node, and even then a player has a cooldown and a
+cap on how many they can have standing at once (`spawn-limits` in the config).
+Every way of putting one down, the item included, asks the same placement
+question first, so a WorldGuard region (`rpengine-place`) or anything else
+that keeps models out of a place keeps boards out too. Only the player who
+put a board down can pick it up again, unless they have `skateboards.pickup.others`.
 
 **Riding is its own node on purpose.** A board left in a public square is a
 thing anybody can walk up to and right-click, so the two questions — may you

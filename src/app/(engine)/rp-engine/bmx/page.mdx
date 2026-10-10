@@ -106,10 +106,21 @@ berm, rollers to pump, a dirt quarter, and the flat run-in you build speed on.
 
 | Node | What it allows | Default |
 |---|---|---|
-| `bmx.use` | `/bmx`, and putting a bike down | Everyone |
+| `bmx.use` | `/bmx`, and the item that puts a bike down | Everyone |
+| `bmx.here` | `/bmx here`, a bike with no item | Operators |
+| `bmx.here.unlimited` | No cooldown or cap on `/bmx here` | Operators |
+| `bmx.pickup.others` | Picking up a bike somebody else put down | Operators |
 | `bmx.ride` | Getting on a bike that is already down | Everyone |
 | `bmx.trails` | `/trails` and its pieces | Operators |
 | `bmx.reload` | `/bmx reload` | Operators |
+
+**Putting one down by command is for staff.** `/bmx here` makes a bike out of
+nothing, so it has its own node, and even then a player has a cooldown and a
+cap on how many they can have standing at once (`spawn-limits` in the config).
+Every way of putting one down, the item included, asks the same placement
+question first, so a WorldGuard region (`rpengine-place`) or anything else
+that keeps models out of a place keeps bikes out too. Only the player who
+put a bike down can pick it up again, unless they have `bmx.pickup.others`.
 
 **Riding is its own node on purpose.** A bike left in a public square is a
 thing anybody can walk up to and right-click, so the two questions — may you
