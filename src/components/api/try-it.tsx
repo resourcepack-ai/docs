@@ -18,10 +18,16 @@ import { cn } from "@/lib/utils";
  * somebody presses this button to answer. So the panel says so, plainly, above
  * the button rather than in small print under it.
  *
- * **The key is kept in sessionStorage, not localStorage.** It survives moving
- * between endpoint pages, which is the whole convenience, and is gone when the
- * tab closes. A key is the whole account, and leaving one in localStorage
- * indefinitely on a docs site is a worse trade than retyping it tomorrow.
+ * **The key is kept in memory and nowhere else** — this module's own
+ * variable, never sessionStorage or localStorage. It still survives moving
+ * between endpoint pages, which is the whole convenience, because those are
+ * client-side navigations and the module stays loaded; a reload or a closed
+ * tab forgets it. Browser storage is the wrong place for a credential here in
+ * particular: this site shares its origin with every other page on the domain,
+ * and anything stored is readable by any script running on any of them, for as
+ * long as the tab lives. A variable inside this module is not on `window` and
+ * leaves with the page. (It used to be sessionStorage, so opening the panel
+ * also clears what an older version of this file may have left there.)
  *
  * **An endpoint with `authenticated: false` gets no key field and no warning
  * about credits**, because neither is true of it. The origin-check lookups are
@@ -30,7 +36,14 @@ import { cn } from "@/lib/utils";
  * the opposite of the thing being offered.
  */
 
-const KEY_STORAGE = "rpai-try-it-key";
+/** Where an older version of this panel kept the key; only ever cleared now. */
+const LEGACY_KEY_STORAGE = "rpai-try-it-key";
+
+/**
+ * The key, if the reader asked for it to be kept. Module scope rather than
+ * component state so it outlives one endpoint page and is there on the next.
+ */
+let rememberedKey = "";
 
 interface FieldValue {
   name: string;
@@ -259,12 +272,15 @@ export function TryIt({ operation }: { operation: Operation }) {
     })),
   );
 
-  // Read on open rather than in an effect: sessionStorage isn't available
-  // during the prerender, so it can't be initial state, and setting state from
-  // an effect paints the field empty first and then fills it.
+  // Read on open rather than as initial state, so the prerendered markup never
+  // depends on it and the field is filled before the panel paints.
   function openPanel() {
-    const stored = sessionStorage.getItem(KEY_STORAGE);
-    if (stored) setApiKey(stored);
+    if (rememberedKey) setApiKey(rememberedKey);
+    try {
+      sessionStorage.removeItem(LEGACY_KEY_STORAGE);
+    } catch {
+      // Storage can be walled off; then there is nothing of ours in it either.
+    }
     setOpen(true);
   }
 
@@ -324,8 +340,7 @@ export function TryIt({ operation }: { operation: Operation }) {
     setResult(null);
     setFailure(null);
     if (operation.authenticated) {
-      if (remember) sessionStorage.setItem(KEY_STORAGE, apiKey);
-      else sessionStorage.removeItem(KEY_STORAGE);
+      rememberedKey = remember ? apiKey : "";
     }
 
     const startedAt = Date.now();
@@ -468,7 +483,7 @@ export function TryIt({ operation }: { operation: Operation }) {
                     className="accent-brand size-3"
                   />
                   <label htmlFor="try-it-remember" className="text-muted-foreground text-[0.75rem]">
-                    Keep it for this tab only — cleared when you close it
+                    Keep it while you browse these pages — forgotten on reload
                   </label>
                 </span>
               </label>

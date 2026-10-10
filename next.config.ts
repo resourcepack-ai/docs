@@ -54,12 +54,22 @@ const nextConfig: NextConfig = {
               // to `default-src 'self'` and left every page an unhydrated
               // shell. Every fetch directive below is named for that reason.
               // static.cloudflareinsights.com is the Web Analytics beacon (components/cloudflare-analytics.tsx);
-              // its report to cloudflareinsights.com is already inside `connect-src https:`.
+              // its report goes to cloudflareinsights.com, which connect-src names below.
               "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https:",
               "font-src 'self' data: https:",
-              "connect-src 'self' https:",
+              // Every host this site's browser code talks to, and no wildcard.
+              // It was `https:`, which let any script running here post what
+              // it found to anywhere. The pages fetch only their own files,
+              // plus two others: the public API, which the API reference's
+              // "Try it" panel calls from the reader's browser, and the
+              // analytics beacon's report. A new browser fetch to another host
+              // needs its host added here, or it fails as a bare "Failed to
+              // fetch" with a CSP line in the console. `img-src https:` is
+              // still wide, so this narrows what script can READ back and how
+              // much it can send in one go, not every way out.
+              "connect-src 'self' https://api.resourcepack.ai https://cloudflareinsights.com https://static.cloudflareinsights.com",
               "media-src 'self' data: blob: https:",
               "worker-src 'self' blob:",
               "object-src 'none'",
