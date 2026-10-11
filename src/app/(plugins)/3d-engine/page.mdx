@@ -129,8 +129,8 @@ the client.
 
 Both are **saved with the world** and come back after a restart. The model
 item shows the model itself as its icon and is not used up, so one item places
-as many as you like. A player without `3dengine.place` can hold one but
-nothing happens when they use it.
+as many as you like. A player without `3dengine.place` can hold one, but using
+it places nothing and tells them they need that permission.
 
 **Changing a placed model.** Look at it (within eight blocks) and:
 
@@ -344,7 +344,8 @@ Nothing ever keeps more than `quality.max-triangles` (200,000) and
 `/3d quality` with no arguments shows the defaults and every per-model
 setting; with a model it shows what that model has. Setting one re-bakes it
 straight away and is kept in `config.yml` under `quality.models`, so a plugin
-that re-copies its own model files cannot undo it. `/3d quality <model> reset`
+that re-copies its own model files cannot undo it. It reads `config.yml` from
+disk before saving, so anything you have changed in the file by hand is kept. `/3d quality <model> reset`
 takes it back to its own settings.
 
 ## Shader effects
@@ -395,7 +396,7 @@ and `/3d` alone lists the ones you may use.
 | `/3d info [model]` | Size, states, points, seats, hitboxes, and what it costs the client |
 | `/3d quality [model] [triangles\|reset] [texture width]` | Shows the detail settings, or sets one model's and re-bakes it |
 | `/3d effect <name> [size]` | Puts down a shader effect. `/3d effect clear` takes them away |
-| `/3d reload` | Re-bakes the models folder and re-sends the pack |
+| `/3d reload` | Re-reads `config.yml`, re-bakes the models folder and re-sends the pack |
 | `/3d pack` | Re-sends you the pack |
 
 **From the console**, a player's name at the end of the command runs it as
@@ -453,10 +454,13 @@ that provides them works:
 
 ## Configuration
 
-`plugins/3DEngine/config.yml`. It is read when the server starts, and
-`/3d reload` does **not** re-read it, so restart after editing it. Edit it with
-the server stopped if you can: `/3d quality` saves the file, and writes back
-the settings the server started with over anything changed on disk since.
+`plugins/3DEngine/config.yml`. Edit it and run `/3d reload`, and the changes
+take effect, except for `pack.host`, `pack.port` and `pack.bind`: the pack
+server is started with the server, so those need a restart, and the reload
+tells you when one of them has changed. If the file has a mistake in it and
+can't be read, the reload says so and keeps the settings it already had, and
+`/3d quality` refuses to save rather than write over it. Saving keeps the
+file's comments.
 
 ```yaml
 pack:
