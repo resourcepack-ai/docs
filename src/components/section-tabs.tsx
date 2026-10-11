@@ -9,7 +9,7 @@ import { PLUGINS_ROOT, inPlugins } from "@/lib/plugins-nav";
 import { cn } from "@/lib/utils";
 
 /**
- * `Documentation | RP Engine | Plugins | API Reference` — the four top-level
+ * `Documentation | API | RP Engine | Plugins` — the four top-level
  * modes.
  *
  * Separate sections rather than groups in one sidebar, because they are read
@@ -26,9 +26,9 @@ import { cn } from "@/lib/utils";
  */
 const TABS = [
   { title: "Documentation", href: "/" },
+  { title: "API", href: API_ROOT },
   { title: "RP Engine", href: ENGINE_ROOT },
   { title: "Plugins", href: PLUGINS_ROOT },
-  { title: "API Reference", href: API_ROOT },
 ];
 
 export function SectionTabs() {
