@@ -98,11 +98,12 @@ const GUIDES: ApiNavItem[] = [
 ];
 
 // Group order is fixed rather than taken from the spec's key order: a reader
-// wants packs before the things that write into them, and jobs after because
+// wants packs before the things that write into them (uploading first, being
+// the free one), and jobs after because
 // nothing sends you there until something has been generated. Origin check is
 // last because it is the one group that isn't for our own customers — a
 // marketplace arrives at it from its own guide rather than by reading down.
-const GROUP_ORDER = ["Packs", "Generating", "Jobs", "Origin check"];
+const GROUP_ORDER = ["Packs", "Uploading", "Generating", "Jobs", "Origin check"];
 
 export const apiNav: ApiNavGroup[] = [
   { title: "Get started", items: GUIDES },

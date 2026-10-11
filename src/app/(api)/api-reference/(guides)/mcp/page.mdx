@@ -8,7 +8,8 @@ export const metadata = {
 
 ResourcePack AI speaks the **Model Context Protocol**, so an AI agent can build
 a pack on your behalf — create it, generate the blocks, models, items, icons and
-sounds, look at what came back, and iterate — without you clicking anything.
+sounds, bring in files you already have, look at what came back, and iterate —
+without you clicking anything.
 
 It is the same API described in the rest of this reference and the same AI
 Credits, with a key of its own. What changes is the shape: an agent gets a list of tools it can
@@ -86,6 +87,10 @@ arguments are documented in full.
 | [`list_assets`](/api-reference/list-assets) | What a pack holds. Also how you recover a job handle from an earlier run. |
 | [`get_asset_file`](/api-reference/get-asset-file) | An asset's bytes — an image comes back as an image. |
 | [`export_pack`](/api-reference/export-pack) | Build the Java `.zip`. Confirms it built rather than returning it. |
+| [`create_upload`](/api-reference/create-upload) | A URL to put a file into, for anything too big to send inline. |
+| [`upload_asset`](/api-reference/upload-asset) | Put a file you already have into a pack: a texture, sprite, icon, model, sound, GUI, HUD or armour. Free. |
+| [`upload_reference`](/api-reference/upload-reference) | A reference picture for a generation to follow. |
+| [`import_pack`](/api-reference/import-pack) | A whole resource pack `.zip` as a new pack, like the Studio's Import button. Free. |
 | [`generate_texture`](/api-reference/generate-texture) | A block texture. |
 | [`generate_model`](/api-reference/generate-model) | A 3D model. The slow one — minutes, not seconds. |
 | [`generate_item`](/api-reference/generate-item) | An item, as a flat sprite or real geometry. |
@@ -123,6 +128,31 @@ twice.
 `get_asset_file` returns a generated texture, sprite or icon **as an image**, so
 the agent can actually look at what it made before telling you it is done, and
 regenerate it if it is wrong. Sounds come back as audio, models as their JSON.
+
+### Sending files in
+
+`upload_asset`, `upload_reference` and `import_pack` take a `file`, which is one of four
+things, and the agent picks whichever its situation allows:
+
+- **`text`**: the file as text, such as a model's JSON the agent wrote itself.
+- **`base64`**: the bytes inline. Fine for a 16px texture.
+- **`url`**: a public `https` address to fetch it from.
+- **`upload`**: the id from `create_upload`, after the bytes were PUT to the URL it returned.
+
+`upload` is the one to use for any file on disk. An agent with a shell (Claude
+Code, Cursor, Codex) sends the bytes itself, so they never pass through the
+model:
+
+```bash
+curl -T lantern.bbmodel "<url from create_upload>"
+```
+
+Base64 works too, but a model writes it a token at a time, so it is slow and
+expensive for anything bigger than a small image.
+
+An import runs after `import_pack` answers, like a generation: the agent waits on
+its job (`<pack>:import`) with `wait_for_job`, and `get_job` then has the full
+report of what came in and what was left out.
 
 A pack export is the exception: `export_pack` confirms the zip built and how big
 it is, but does not hand over the bytes — a resource pack is megabytes, and
