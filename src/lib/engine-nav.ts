@@ -368,6 +368,13 @@ export const engineNav: EngineGroup[] = [
         keywords: ["addon", "bmx", "bike", "bicycle", "trails", "dirt jump", "vehicle", "trick", "manual",
           "wheelie", "barspin", "tailwhip", "truck driver", "bunnyhop", "perform"],
       },
+      {
+        title: "Paintball",
+        href: "/rp-engine/paintball",
+        description: "5v5 paintball: one hit and you are out for three seconds, most kills when the clock runs out wins.",
+        keywords: ["addon", "paintball", "minigame", "game", "5v5", "team", "red", "blue", "arena", "marker",
+          "gun", "grenade", "aim", "scoreboard", "hud", "/pb", "1.21.11"],
+      },
     ],
   },
   {
