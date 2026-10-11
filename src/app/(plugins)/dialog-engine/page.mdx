@@ -703,7 +703,7 @@ give them to players with your permissions plugin as usual:
 | `click-lifetime-minutes` | `30` | How long a dialog's buttons keep working after it is drawn. Drawing it again starts the clock over |
 | `default-after` | `wait` | What a dialog does the moment a button is pressed, when it does not say with `after:`. See below |
 | `close-delay-ticks` | `10` | Under `wait`, how long to hold the waiting screen for a plugin to answer before closing it |
-| `click-sound` | `ui.button.click` | The sound a click on a drawn dialog makes. Blank for none |
+| `click-sound` | `ui.button.click` | The sound a click on a drawn dialog makes. Blank for none. A dialog drawn in Studio can set [its own](/dialogs#click-sounds), which wins |
 | `validation-format` | `<red>⚠ {error}` | How a failed input check is shown, when the dialog does not print `{error}` itself |
 | `messages.*` | | Everything the plugin says to players. MiniMessage |
 | `edit.url` | `https://studio.resourcepack.ai` | Where the dialog editor is. Must be `https://` (plain `http://` only for one on the same machine) |
