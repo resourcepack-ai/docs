@@ -63,7 +63,15 @@
     },
     "invalid_job_handle": {
       "status": 400,
-      "description": "A job handle that isn't `<pack>:<kind>:<name>`."
+      "description": "A job handle that isn't `<pack>:<kind>:<name>` or `<pack>:import`."
+    },
+    "file_fetch_failed": {
+      "status": 400,
+      "description": "A file given by `url` couldn't be downloaded."
+    },
+    "not_a_pack": {
+      "status": 400,
+      "description": "An import's file isn't a resource pack, or holds nothing a pack here can use. `message` says which."
     },
     "missing_api_key": {
       "status": 401,
@@ -101,6 +109,10 @@
       "status": 404,
       "description": "No such pack, asset or job."
     },
+    "upload_not_found": {
+      "status": 404,
+      "description": "No upload by that id. Uploads expire after fifteen minutes and are used once."
+    },
     "job_not_found": {
       "status": 404,
       "description": "No job by that handle."
@@ -116,6 +128,10 @@
     "generation_failed": {
       "status": 409,
       "description": "That asset's generation failed. Its job carries the reason."
+    },
+    "file_too_large": {
+      "status": 413,
+      "description": "The file is over the limit for what it's being used as. `message` says the limit."
     },
     "rate_limited": {
       "status": 429,
@@ -859,6 +875,255 @@
             }
           }
         ]
+      },
+      "post": {
+        "operationId": "uploadAsset",
+        "summary": "Upload an asset",
+        "description": "Puts a file you already have into the pack — the Studio's Upload button. Free: nothing is generated, though it counts toward the pack's asset limit.\n\nWhat `file` must be, and what else each `type` needs:\n\n- `block` — a PNG. `target` is the vanilla block texture it replaces (`stone_bricks`); without one it is a texture of your own, named `name`. Square, 1–256px, or send `size` to resample. `faceSlot` with a `target` replaces one face only.\n- `item` — a PNG. `target` is the vanilla item it replaces (`diamond_sword`); without one it is a custom item named `name`. Square, 8–256px, or send `size`.\n- `icon` — a PNG of any shape, drawn as a chat glyph. Needs `name`. Kept at its own size when 32px tall or less, else 16 tall; `height` overrides it (1–256).\n- `model` — Minecraft block model JSON, or a Blockbench `.bbmodel` (its embedded textures come in with it).\n- `sound` — Ogg Vorbis, or WAV (converted to Ogg). Needs `event`. MP3 is not accepted; convert it first.\n- `gui` — a 256x256 PNG sheet. `target` is the vanilla screen it reskins (`generic_54`, `furnace`…).\n- `hud` — a PNG of the HUD sheet, at its own size.\n- `armor` — a PNG armour sheet (64x32). `target` is the vanilla set (`iron`, `diamond`…).\n- `armor3d` — a Blockbench `.bbmodel` of a 3D armour set.\n\nImages must be PNG. Answers 201 with the asset ready — there is no job to wait for.",
+        "tags": [
+          "Uploading"
+        ],
+        "responses": {
+          "201": {
+            "description": "The asset, ready.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's id, which also works as a job handle."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What the asset is.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "sound"
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "The file format it is stored as.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Its stored name, for `GET /packs/{pack}/assets/{kind}/{name}`."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `ready`."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "kind",
+                    "name",
+                    "status",
+                    "pack"
+                  ]
+                },
+                "example": {
+                  "id": "medieval-keep:texture:stone_bricks",
+                  "type": "block",
+                  "kind": "texture",
+                  "name": "stone_bricks",
+                  "status": "ready",
+                  "pack": "medieval-keep",
+                  "size": 16
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `upload_not_found`, `file_too_large`, `file_fetch_failed`, `forbidden`, `asset_limit_reached`, `conflict`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "What the file is.",
+                    "enum": [
+                      "block",
+                      "item",
+                      "icon",
+                      "model",
+                      "sound",
+                      "gui",
+                      "hud",
+                      "armor",
+                      "armor3d"
+                    ]
+                  },
+                  "file": {
+                    "type": "object",
+                    "description": "The file. Exactly one of `upload`, `url`, `base64` or `text`.",
+                    "properties": {
+                      "upload": {
+                        "type": "string",
+                        "description": "The `upload` id from `POST /uploads`, after PUTting the file to its URL. The way to send anything big, or anything already on disk.",
+                        "example": "up_3f2a9c0e5b7d41c8a6e2f19b0d4c7a35"
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "A public https URL to fetch the file from."
+                      },
+                      "base64": {
+                        "type": "string",
+                        "description": "The file's bytes as base64 (a `data:` URI is fine). Up to 8MB."
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "The file as text, for formats that are text (model JSON, .bbmodel). Up to 8MB."
+                      }
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label, and the name of a texture, item or icon of your own. Defaults to the file's name when it came from a `url`."
+                  },
+                  "target": {
+                    "type": "string",
+                    "description": "The vanilla thing it replaces: a block texture, an item, a GUI screen id or an armour set."
+                  },
+                  "size": {
+                    "type": "integer",
+                    "description": "Resample a block or item image to this square edge.",
+                    "minimum": 1,
+                    "maximum": 256
+                  },
+                  "height": {
+                    "type": "integer",
+                    "description": "An icon's height in pixels; its width follows the picture's shape.",
+                    "minimum": 1,
+                    "maximum": 256
+                  },
+                  "faceSlot": {
+                    "type": "string",
+                    "description": "With a block `target`: replace one face only.",
+                    "enum": [
+                      "top",
+                      "bottom",
+                      "side"
+                    ]
+                  },
+                  "event": {
+                    "type": "string",
+                    "description": "A sound's Minecraft event name. Required for `sound`.",
+                    "example": "custom.gate_open"
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "A sound's volume slider.",
+                    "enum": [
+                      "master",
+                      "music",
+                      "record",
+                      "weather",
+                      "block",
+                      "hostile",
+                      "neutral",
+                      "player",
+                      "ambient",
+                      "voice"
+                    ]
+                  },
+                  "carrierKind": {
+                    "type": "string",
+                    "description": "How a model is placed in game. Defaults to `item` for a .bbmodel and `full` for block model JSON.",
+                    "enum": [
+                      "item",
+                      "full",
+                      "partial"
+                    ]
+                  },
+                  "char": {
+                    "type": "string",
+                    "description": "An icon's character, if you want a particular one."
+                  }
+                },
+                "required": [
+                  "type",
+                  "file"
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "/packs/{pack}/assets/{kind}/{name}": {
@@ -1014,7 +1279,7 @@
       "get": {
         "operationId": "getJob",
         "summary": "Check a generation",
-        "description": "A handle looks like `<pack>:<kind>:<name>` and comes back from every generation endpoint.\n\nThere's no jobs table behind this: generation is two-phase, so the asset row is written up front with status `generating` and the runner fills it in. The asset *is* the job record, which is why a handle stays resolvable long after the run finished.\n\nPolling always terminates. A run that dies without recording anything reads as `error` once it passes the stale cutoff.",
+        "description": "A handle looks like `<pack>:<kind>:<name>` and comes back from every generation endpoint. A pack import's is `<pack>:import`, and its answer carries `import` (what came in, what didn't and why) where a generation's carries `asset`.\n\nThere's no jobs table behind this: generation is two-phase, so the asset row is written up front with status `generating` and the runner fills it in. The asset *is* the job record, which is why a handle stays resolvable long after the run finished.\n\nPolling always terminates. A run that dies without recording anything reads as `error` once it passes the stale cutoff.",
         "tags": [
           "Jobs"
         ],
@@ -1049,7 +1314,7 @@
                     },
                     "asset": {
                       "type": "object",
-                      "description": "The asset itself.",
+                      "description": "The asset itself. Absent for an import.",
                       "properties": {
                         "id": {
                           "type": "string",
@@ -1128,13 +1393,16 @@
                         "status",
                         "updatedAt"
                       ]
+                    },
+                    "import": {
+                      "type": "object",
+                      "description": "For an import: the report, once it has finished — `written` and `planned` per kind, `skipped` by reason, `failures`, `missingRefs`, `warnings`, and `stopped` if a plan limit ended it early. Null while it runs."
                     }
                   },
                   "required": [
                     "job",
                     "pack",
-                    "status",
-                    "asset"
+                    "status"
                   ]
                 },
                 "example": {
@@ -1384,7 +1652,7 @@
                   },
                   "referenceId": {
                     "type": "string",
-                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                    "description": "A reference image: the `referenceId` from `POST /packs/{pack}/references`, or one uploaded in the Studio."
                   },
                   "referenceStrength": {
                     "type": "number",
@@ -1576,7 +1844,7 @@
                   },
                   "referenceId": {
                     "type": "string",
-                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                    "description": "A reference image: the `referenceId` from `POST /packs/{pack}/references`, or one uploaded in the Studio."
                   },
                   "useStyleGuide": {
                     "type": "boolean",
@@ -1766,7 +2034,7 @@
                   },
                   "referenceId": {
                     "type": "string",
-                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                    "description": "A reference image: the `referenceId` from `POST /packs/{pack}/references`, or one uploaded in the Studio."
                   },
                   "referenceStrength": {
                     "type": "number",
@@ -2150,7 +2418,7 @@
                   },
                   "referenceId": {
                     "type": "string",
-                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                    "description": "A reference image: the `referenceId` from `POST /packs/{pack}/references`, or one uploaded in the Studio."
                   },
                   "referenceStrength": {
                     "type": "number",
@@ -2370,7 +2638,7 @@
                   },
                   "referenceId": {
                     "type": "string",
-                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                    "description": "A reference image: the `referenceId` from `POST /packs/{pack}/references`, or one uploaded in the Studio."
                   },
                   "referenceStrength": {
                     "type": "number",
@@ -2742,7 +3010,7 @@
                   },
                   "referenceId": {
                     "type": "string",
-                    "description": "A reference image already uploaded in the Studio. There is no API endpoint to upload one yet."
+                    "description": "A reference image: the `referenceId` from `POST /packs/{pack}/references`, or one uploaded in the Studio."
                   },
                   "referenceStrength": {
                     "type": "number",
@@ -2966,6 +3234,502 @@
                 "required": [
                   "prompt",
                   "event"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/uploads": {
+      "post": {
+        "operationId": "createUpload",
+        "summary": "Get a URL to upload a file to",
+        "description": "For a file too big to send inline — a whole pack — or one you have on disk and would rather not base64. Ask with the file's exact length, `PUT` the bytes to `url` with the `Content-Length` it names (`curl -T pack.zip \"<url>\"` does both), then pass `{\"upload\": \"<upload>\"}` as the `file` of the call that wants it.\n\nThe URL takes exactly `size` bytes and expires after fifteen minutes. An upload is used once: the call that consumes it deletes it.",
+        "tags": [
+          "Uploading"
+        ],
+        "responses": {
+          "201": {
+            "description": "A presigned URL.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "upload": {
+                      "type": "string",
+                      "description": "Pass this as `file.upload`."
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "PUT the bytes here."
+                    },
+                    "method": {
+                      "type": "string",
+                      "description": "Always `PUT`."
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "Headers the PUT must carry."
+                    },
+                    "maxBytes": {
+                      "type": "integer",
+                      "description": "The exact length the URL accepts."
+                    },
+                    "expiresAt": {
+                      "type": "string",
+                      "description": "ISO 8601. Upload before this."
+                    }
+                  },
+                  "required": [
+                    "upload",
+                    "url",
+                    "method",
+                    "headers",
+                    "maxBytes",
+                    "expiresAt"
+                  ]
+                },
+                "example": {
+                  "upload": "up_3f2a9c0e5b7d41c8a6e2f19b0d4c7a35",
+                  "url": "https://…r2.cloudflarestorage.com/…",
+                  "method": "PUT",
+                  "headers": {
+                    "Content-Length": "48213"
+                  },
+                  "maxBytes": 48213,
+                  "expiresAt": "2026-10-11T12:15:00.000Z"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "size": {
+                    "type": "integer",
+                    "description": "The file's length in bytes.",
+                    "minimum": 1,
+                    "maximum": 536870912,
+                    "example": 48213
+                  }
+                },
+                "required": [
+                  "size"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/references": {
+      "post": {
+        "operationId": "uploadReference",
+        "summary": "Upload a reference image",
+        "description": "A picture for a generation to follow. Pass the `referenceId` it answers as any generation endpoint's `referenceId`. PNG only, up to 2MB; 512px or smaller is plenty.",
+        "tags": [
+          "Uploading"
+        ],
+        "responses": {
+          "201": {
+            "description": "Stored.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it belongs to."
+                    },
+                    "referenceId": {
+                      "type": "string",
+                      "description": "Pass as `referenceId` when generating."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "referenceId"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "referenceId": "0f7c2a1e-6b3d-4e8a-9c51-2d7e4b0a8f13"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `upload_not_found`, `file_too_large`, `file_fetch_failed`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "object",
+                    "description": "The PNG. Exactly one of `upload`, `url`, `base64` or `text`.",
+                    "properties": {
+                      "upload": {
+                        "type": "string",
+                        "description": "The `upload` id from `POST /uploads`, after PUTting the file to its URL. The way to send anything big, or anything already on disk.",
+                        "example": "up_3f2a9c0e5b7d41c8a6e2f19b0d4c7a35"
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "A public https URL to fetch the file from."
+                      },
+                      "base64": {
+                        "type": "string",
+                        "description": "The file's bytes as base64 (a `data:` URI is fine). Up to 8MB."
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "The file as text, for formats that are text (model JSON, .bbmodel). Up to 8MB."
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/imports": {
+      "post": {
+        "operationId": "importPack",
+        "summary": "Import a resource pack",
+        "description": "A resource pack `.zip` — yours, or one from anywhere — as a new pack: the Studio's Import button. It always creates a pack, named after the zip unless you give `name`, at the Minecraft version its `pack.mcmeta` declares unless you give `minecraftVersion`. Free.\n\nSend the zip as an `upload` (see `POST /uploads`) unless it's small. A file that isn't a resource pack at all — a shaderpack, a `.rar`, a zip with nothing a pack can hold — is refused with `not_a_pack` before any pack is created.\n\n**This returns as soon as the pack exists; the import runs after.** Poll `job` (`<pack>:import`) at `GET /jobs/{job}` until it leaves `generating` — a large pack takes a few minutes. The finished job carries `import`: what came in, per kind; what was left out and why (entity art, shaders and anything else a pack here can't hold, as the Studio's review screen lists it); and any asset that failed to land.\n\nBlock and item textures, models, font glyphs, GUI sheets and sounds come in. Version overlays are read for the pack's version.",
+        "tags": [
+          "Uploading"
+        ],
+        "responses": {
+          "202": {
+            "description": "The pack exists and the import has started.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "object",
+                      "description": "The new pack.",
+                      "properties": {
+                        "slug": {
+                          "type": "string",
+                          "description": "The pack's id. Every other path takes this."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its display name."
+                        },
+                        "minecraftVersion": {
+                          "type": "string",
+                          "description": "The version the pack is authored against."
+                        },
+                        "role": {
+                          "type": "string",
+                          "description": "Whether this key's owner owns the pack or was added to it.",
+                          "enum": [
+                            "owner",
+                            "collaborator"
+                          ]
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "assetCounts": {
+                          "type": "object",
+                          "description": "How much the pack holds, by kind.",
+                          "properties": {
+                            "textures": {
+                              "type": "integer",
+                              "description": "Block textures, item sprites and GUI sheets."
+                            },
+                            "models": {
+                              "type": "integer",
+                              "description": "3D models."
+                            },
+                            "icons": {
+                              "type": "integer",
+                              "description": "Font glyphs."
+                            },
+                            "sounds": {
+                              "type": "integer",
+                              "description": "Sound events."
+                            }
+                          },
+                          "required": [
+                            "textures",
+                            "models",
+                            "icons",
+                            "sounds"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "slug",
+                        "name",
+                        "minecraftVersion",
+                        "role",
+                        "createdAt",
+                        "updatedAt",
+                        "assetCounts"
+                      ]
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating`."
+                    },
+                    "minecraftVersion": {
+                      "type": "string",
+                      "description": "The version the pack was created at."
+                    },
+                    "versionSource": {
+                      "type": "string",
+                      "description": "Where that version came from.",
+                      "enum": [
+                        "pack.mcmeta",
+                        "default"
+                      ]
+                    },
+                    "planned": {
+                      "type": "object",
+                      "description": "What the import will bring in, per kind: `textures`, `models`, `glyphs`, `guis`, `sounds`."
+                    },
+                    "skipped": {
+                      "type": "array",
+                      "description": "What won't come in, grouped by why.",
+                      "items": {
+                        "type": "object",
+                        "description": "One reason, and how many files it covers."
+                      }
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Notes about the pack as a whole.",
+                      "items": {
+                        "type": "string",
+                        "description": "One note."
+                      }
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "job",
+                    "status",
+                    "minecraftVersion",
+                    "versionSource",
+                    "planned",
+                    "skipped",
+                    "warnings"
+                  ]
+                },
+                "example": {
+                  "pack": {
+                    "slug": "faithful-32x",
+                    "name": "Faithful 32x",
+                    "role": "owner"
+                  },
+                  "job": "faithful-32x:import",
+                  "status": "generating",
+                  "minecraftVersion": "1.21.4",
+                  "versionSource": "pack.mcmeta",
+                  "planned": {
+                    "textures": 812,
+                    "models": 40,
+                    "glyphs": 0,
+                    "guis": 12,
+                    "sounds": 0
+                  },
+                  "skipped": [
+                    {
+                      "reason": "Entity, painting and particle art",
+                      "count": 214
+                    }
+                  ],
+                  "warnings": []
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `upload_not_found`, `file_too_large`, `file_fetch_failed`, `forbidden`, `not_a_pack`, `pack_limit_reached`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "object",
+                    "description": "The `.zip`. Exactly one of `upload`, `url`, `base64` or `text`.",
+                    "properties": {
+                      "upload": {
+                        "type": "string",
+                        "description": "The `upload` id from `POST /uploads`, after PUTting the file to its URL. The way to send anything big, or anything already on disk.",
+                        "example": "up_3f2a9c0e5b7d41c8a6e2f19b0d4c7a35"
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "A public https URL to fetch the file from."
+                      },
+                      "base64": {
+                        "type": "string",
+                        "description": "The file's bytes as base64 (a `data:` URI is fine). Up to 8MB."
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "The file as text, for formats that are text (model JSON, .bbmodel). Up to 8MB."
+                      }
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "The new pack's name. Defaults to the zip's.",
+                    "maxLength": 100
+                  },
+                  "minecraftVersion": {
+                    "type": "string",
+                    "description": "Build the pack for this version instead of the one its pack.mcmeta declares.",
+                    "example": "1.21.4"
+                  }
+                },
+                "required": [
+                  "file"
                 ]
               }
             }
