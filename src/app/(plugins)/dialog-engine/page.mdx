@@ -138,7 +138,7 @@ shop:
   title: "<gold><bold>Shop"
   columns: 2                    # buttons side by side
   escape: true                  # Escape closes it (default true)
-  after: seamless               # seamless | wait | close | none, see config.yml
+  after: wait                   # wait | close | none, see config.yml
   body:
     - "<gray>You have <white>%vault_eco_balance%</white> coins."   # text
     - item: diamond             # an item, with words beside it
@@ -180,8 +180,8 @@ shop:
 | `type:` | `notice`, `confirmation`, `multi_action` (or `menu`) or `links`. Leave it out and the buttons decide |
 | `columns:` | How many buttons side by side. Default 2 |
 | `escape:` | Whether Escape closes it. Default `true` |
-| `pause:` | Whether it pauses a single-player game. Default `false`, and not allowed with `after: none` or `seamless` |
-| `after:` | What the screen does the moment a button is pressed: `seamless`, `wait`, `close` or `none`. Default from `default-after` in [config](#config) |
+| `pause:` | Whether it pauses a single-player game. Default `false`, and not allowed with `after: none` |
+| `after:` | What the screen does the moment a button is pressed: `wait`, `close` or `none`. Default from `default-after` in [config](#config) |
 | `body:` | What is drawn above the inputs. See [Body](#body) |
 | `inputs:` | Text boxes, dropdowns, switches and sliders. See [Inputs](#inputs) |
 | `buttons:` | See [Buttons](#buttons) |
@@ -416,11 +416,6 @@ With [PlaceholderAPI](https://www.spigotmc.org/resources/6245/) installed,
 every `%placeholder%` works too, in the same places. A `%` in what a player
 typed is printed as typed and never filled, so nobody can type a placeholder
 into a text box to read somebody else's.
-
-A [drawn dialog](#drawn-dialogs)'s live words reach it too (since 0.4.2): a
-`{vault_eco_balance}` nothing else answers is asked of PlaceholderAPI as
-`%vault_eco_balance%`, and the editor takes `%vault_eco_balance%` as the same
-live value.
 
 ### Choices
 
@@ -706,9 +701,9 @@ give them to players with your permissions plugin as usual:
 | `update-check` | `true` | Say in the console and on join when an update is out |
 | `telemetry` | `true` | The anonymous usage count described under [Installing](#installing) |
 | `click-lifetime-minutes` | `30` | How long a dialog's buttons keep working after it is drawn. Drawing it again starts the clock over |
-| `default-after` | `seamless` | What a dialog does the moment a button is pressed, when it does not say with `after:`. See below |
-| `close-delay-ticks` | `10` | Under `wait`, how long to hold the waiting screen for a plugin to answer before closing it. A seamless dialog is closed on the next tick |
-| `click-sound` | `ui.button.click` | The sound a click on a drawn dialog makes. Blank for none. A dialog drawn in Studio can set [its own](/dialogs#click-sounds), which wins |
+| `default-after` | `wait` | What a dialog does the moment a button is pressed, when it does not say with `after:`. See below |
+| `close-delay-ticks` | `10` | Under `wait`, how long to hold the waiting screen for a plugin to answer before closing it |
+| `click-sound` | `ui.button.click` | The sound a click on a drawn dialog makes. Blank for none |
 | `validation-format` | `<red>⚠ {error}` | How a failed input check is shown, when the dialog does not print `{error}` itself |
 | `messages.*` | | Everything the plugin says to players. MiniMessage |
 | `edit.url` | `https://studio.resourcepack.ai` | Where the dialog editor is. Must be `https://` (plain `http://` only for one on the same machine) |
@@ -720,23 +715,13 @@ give them to players with your permissions plugin as usual:
 | `pack.url` | blank | Host the pack yourself and put its URL here; the built-in server is then off |
 | `pack.prompt` | | The line shown when the pack is offered |
 
-The four `after` behaviours:
+The three `after` behaviours:
 
-- `seamless`: the dialog stays on screen exactly as it is until the plugin
-  answers the click. The next dialog takes its place with nothing in between,
-  and when no dialog follows, the plugin closes it. No flash of the world and
-  no waiting screen. Recommended, and the default since 0.4.0. A button that
-  runs a command closes the dialog first, unless a later action of its own
-  opens the next one, so a dialog that command opens (another plugin's, or a
-  chest) is never closed by mistake.
-- `wait`: the game's "Waiting for Server" screen replaces the dialog until the
-  plugin answers.
+- `wait`: the screen stays up with "waiting for the server" until the plugin
+  answers, so one dialog replaces another with no flash of the world in
+  between. Recommended.
 - `close`: it closes at once, then the next dialog (if any) opens.
 - `none`: it stays exactly as it is.
-
-A config.yml from before 0.4.0 that still says `default-after: wait` (the old
-default) is moved to `seamless` once, on the first start of 0.4.0; set it back
-to `wait` to keep the waiting screen.
 
 ## How a click is kept safe
 
