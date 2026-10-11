@@ -241,31 +241,6 @@ to resourcepack.ai only while a link is open.
 
 `url:` is worth changing for one reason: pointing at a staging Studio.
 
-## Dialogs
-
-```yaml
-dialogs:
-  click-sound: "ui.button.click"   # blank for none
-  click-volume: 0.25               # 0 to 1
-  click-pitch: 1.0                 # 0.5 to 2
-```
-
-A click on a dialog's picture makes no sound in the game itself, so the plugin
-plays this when one reaches the server. Any sound event works: the game's, or
-one your pack adds. A Studio dialog can ask for its own
-[click sound](/dialogs#click-sounds), for the whole dialog or for one piece,
-and that wins. A hand-written dialog can too:
-
-```yaml
-shop:
-  json: shop.json
-  click-sound: { sound: block.note_block.chime, volume: 0.5, pitch: 1.5 }
-  click-sounds:                      # the clicks that run this command
-    - { command: "rp page mypack:shop.ranks", sound: entity.experience_orb.pickup }
-```
-
-`click-sound: ""` silences a dialog's clicks.
-
 ## Usage count
 
 ```yaml

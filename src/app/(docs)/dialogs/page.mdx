@@ -217,10 +217,7 @@ answer wins:
    API](/rp-engine/api#dialogs).
 4. **The list above.**
 5. **PlaceholderAPI**, if the server has it. `{vault_eco_balance}` asks it for
-   `%vault_eco_balance%`, and so does `%vault_eco_balance%` written the
-   PlaceholderAPI way: in a picture's words it is the same live value. Either
-   way a name is letters, digits and `_`, so one with a colon or a dash in it
-   (`%server_time_HH:mm%`) stays words.
+   `%vault_eco_balance%`.
 
 A name nothing answers is shown exactly as written, so a dialog that happens to
 say `{VIP}` keeps saying it. A placeholder can also choose:
@@ -847,53 +844,6 @@ A button that opens another dialog from the same pack carries that dialog with
 it, so it opens without a server restart. "Another id…" in the same list takes
 any other dialog id, which the server has to know already — one of
 Minecraft's, or one from a datapack.
-
-### After a click
-
-What the dialog itself does once something on it is clicked is its **After a
-press** setting:
-
-| Choice | What happens |
-| --- | --- |
-| **Seamless** (the default) | The dialog stays on screen exactly as it is until the server answers the click. A dialog the click opens takes its place with nothing in between, and when none comes, the server closes it. No flash of the world and no waiting screen. Needs RP Engine 0.2.6 or newer; in an exported datapack it is **Close**. |
-| **Close** | The dialog closes the moment it is clicked, so a dialog the click opens arrives after a glimpse of the world. |
-| **Stay open** | The dialog stays as it is, whatever the click did. |
-| **Wait** | The game swaps the dialog for its "Waiting for Server" screen until the server answers. A dialog with a link or copy button is sent as **Close** instead, because the server never hears those clicks and nothing would answer. |
-
-A seamless dialog stays open after a click the server never hears: opening a
-link, copying text, or a command your proxy handles itself, such as `/server`
-on a BungeeCord or Velocity network. Escape closes it.
-
-## Click sounds
-
-A click on the picture makes no sound in the game itself (only the game's own
-buttons click), so RP Engine plays the game's button click, quietly, when one
-reaches the server. **Click sound** in the dialog's own settings changes that
-for the whole dialog:
-
-- **The game's click**, with its own **pitch** and **volume**.
-- **Another sound**: one of your pack's sounds, one of the game's from the
-  list, or any sound event typed by name. ▶ plays one of your own at the pitch
-  and volume you set.
-- **Silent**: no sound at all.
-
-Any clickable piece has the same field in its own panel, so a Buy button can
-ring a till while the rest of the screen clicks. Left on **The dialog's**, a
-piece uses the dialog's sound.
-
-The server hears a click as the command it runs, so three things follow:
-
-- A click that never reaches the server makes no sound: one that opens a link,
-  copies text, opens another dialog in the game, or turns a page the game turns
-  by itself.
-- Two pieces whose clicks run exactly the same command share one sound, the
-  first one's.
-- The footer's buttons are the game's own and always make the game's click.
-
-A server's own default is `dialogs.click-sound` in RP Engine's
-[configuration](/rp-engine/config#dialogs), and `click-sound` in Dialog
-Engine's. Click sounds need RP Engine 0.2.5 or newer, or a Dialog Engine newer
-than 0.3.5; an older one plays its usual click.
 
 ## Inputs
 
