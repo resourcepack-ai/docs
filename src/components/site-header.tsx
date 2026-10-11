@@ -12,7 +12,6 @@ import { NavTree } from "@/components/nav-tree";
 import { SectionTabs } from "@/components/section-tabs";
 import { inEngine } from "@/lib/engine-nav";
 import { externalLinks } from "@/lib/nav";
-import { inPlugins, pluginsNav } from "@/lib/plugins-nav";
 import { asset } from "@/lib/base-path";
 
 export function SiteHeader() {
@@ -143,12 +142,6 @@ export function SiteHeader() {
                 correct it. */}
             {inEngine(pathname) ? (
               <EngineNavTree onNavigate={() => setMenuOpen(false)} />
-            ) : inPlugins(pathname) ? (
-              <NavTree
-                groups={pluginsNav}
-                label="Plugins"
-                onNavigate={() => setMenuOpen(false)}
-              />
             ) : (
               <NavTree onNavigate={() => setMenuOpen(false)} />
             )}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { nav, type NavGroup } from "@/lib/nav";
+import { nav } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
 /**
@@ -13,25 +13,13 @@ import { cn } from "@/lib/utils";
  * drawer — so it takes an `onNavigate` to let the drawer close itself on a
  * click. Active state is a left rail marker rather than a filled pill:
  * quieter, and it keeps the group's vertical line unbroken.
- *
- * The Plugins section reuses it with its own tree (`groups` and `label`),
- * because that tree is the same flat shape as this one and only the list
- * differs. RP Engine's two levels are why it has a component of its own.
  */
-export function NavTree({
-  onNavigate,
-  groups = nav,
-  label = "Documentation",
-}: {
-  onNavigate?: () => void;
-  groups?: NavGroup[];
-  label?: string;
-}) {
+export function NavTree({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <nav aria-label={label} className="flex flex-col gap-7">
-      {groups.map((group) => (
+    <nav aria-label="Documentation" className="flex flex-col gap-7">
+      {nav.map((group) => (
         <div key={group.title}>
           <h2 className="mb-2.5 px-3 text-[0.68rem] font-semibold tracking-[0.09em] text-faint uppercase">
             {group.title}

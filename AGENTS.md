@@ -4,7 +4,7 @@ The product documentation site, served at **resourcepack.ai/docs**. Next.js +
 MDX on Cloudflare Workers: no auth, no database, no secrets, no bindings at
 all — every page is prerendered static content.
 
-It documents the studio, our server plugins and the test server, but has **no code
+It documents the studio, both plugins and the test server, but has **no code
 dependency on any of them**. When behaviour changes in a way a user would
 notice, the matching page here needs updating by hand — nothing will warn you.
 
@@ -115,31 +115,21 @@ compiled at build time by `@next/mdx`.
 1. create `src/app/(docs)/<path>/page.mdx` with a `metadata` export and an `h1`
 2. add an entry to `src/lib/nav.ts`
 
-**There are four top-level sections, not one**, each with its own route group,
+**There are three top-level sections, not one**, each with its own route group,
 layout, sidebar tree and pager: `(docs)` on `lib/nav.ts`, `(engine)` on
-`lib/engine-nav.ts`, `(plugins)` on `lib/plugins-nav.ts`, and `(api)` on
-`lib/api-nav.ts`. Route groups do not appear in a URL, so an RP Engine page
-lives at `src/app/(engine)/rp-engine/…` and is served from `/rp-engine/…`
-exactly as before it moved.
+`lib/engine-nav.ts`, and `(api)` on `lib/api-nav.ts`. Route groups do not
+appear in a URL, so an RP Engine page lives at `src/app/(engine)/rp-engine/…`
+and is served from `/rp-engine/…` exactly as before it moved.
 
 Adding an RP Engine page is the same two steps against `engine-nav.ts`. What is
 easy to forget is the four places that walk ALL the trees and must keep doing
 so: the ⌘K palette (`docs-search.tsx`), the sitemap, the JSON-LD
 (`structured-data.tsx`), and the mobile drawer in `site-header.tsx`, which
 picks a tree by pathname because there is no rail beside it to correct a wrong
-answer. A fifth section means touching all four, plus `SectionTabs`.
-
-**Plugins** holds our standalone server plugins that are not RP Engine (Dialog
-Engine, 3D Engine, 3D Pets): one page each, no subpages, and a landing page at
-`/plugins` that the tab points at. Its pages sit at the top of the URL space
-(`/dialog-engine`, not `/plugins/dialog-engine`), so unlike RP Engine the
-section cannot be recognised by a path prefix. `inPlugins` answers it from the
-list in `plugins-nav.ts` instead, which means a page missing from that list
-also shows the wrong tab and the wrong drawer. Its tree is flat, so it reuses
-`NavTree` with a `groups` prop rather than having a component of its own.
+answer.
 
 **`engine-nav.ts` is the only tree with two levels**, and its sidebar collapses
-where the others do not. Thirty-four pages is a wall otherwise. Three rules
+where the other two do not. Thirty-four pages is a wall otherwise. Three rules
 worth keeping if you touch `EngineNavTree`:
 
 - **Group headings never collapse; pages with children do.** A group is a label
@@ -290,13 +280,3 @@ What that costs you when working here:
   at the root of a host and this app doesn't own one; the marketing site's
   `robots.ts` lists this app's sitemap. `/llms.txt` is over there for the same
   reason, and links to every page here by hand — see adding a page, above.
-
-<!-- BEGIN:nextjs-agent-rules -->
-
-# This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
