@@ -757,7 +757,8 @@ dialog's own settings: its title, its width, its theme, its footer (one button,
 or a yes/no pair) and how it behaves. Click the footer button itself to set its
 words and what it runs. **JSON** shows the whole layout as the tree the
 generator writes, and its **minecraft:dialog** tab shows the file the game
-reads, to copy or download (see [Without RP Engine](#without-rp-engine)).
+reads, to copy or download, with that dialog's own resource pack beside it (see
+[Without RP Engine](#without-rp-engine)).
 **Export** downloads the screen as a picture. Changes save
 on their own; `Ctrl+Z` undoes and `Ctrl+Shift+Z` (or `Ctrl+Y`) redoes, and they
 cover everything.
@@ -1003,6 +1004,21 @@ the dialog's file, to copy or download, and a button for the whole datapack.
 pictures in the resource pack, which the file names as characters written
 `\uE0…`, so your words are not in it as text and the players need the resource
 pack too.
+
+That can be the whole pack (**Export pack › Minecraft: Java Edition**), or just
+this dialog's part of it: the tab's **Resource pack (.zip)** button downloads
+only what the dialog draws with. That means its pictures, the fonts it uses, and
+a `README.txt` listing which `\uE0…` character is which picture file. Use it to
+add a dialog to a resource pack of your own:
+
+- **Load it as its own pack**, alongside yours. The game merges fonts from
+  different packs, so it replaces none of your glyphs.
+- **Or copy its files into your pack.** Merge the `providers` list of
+  `assets/minecraft/font/default.json` into yours instead of overwriting the
+  file, or one of the two loses its glyphs.
+
+Either way, the characters in the README must not also be used by your own
+pack. When two packs define the same character, only one of them is drawn.
 
 What the plugin does for a dialog doesn't happen there. Live values show as
 written, bound switches and sliders stay on their default, live heads,
