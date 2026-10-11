@@ -1,0 +1,374 @@
+export const metadata = {
+  title: "Paintball",
+  description:
+    "An addon for RP Engine: team paintball with a marker you hold to fire and aim down the sights, paint grenades, a full-screen HUD, and a field it builds for you in one command.",
+};
+
+# Paintball
+
+An **addon** for [RP Engine](/rp-engine): a plugin that installs into the
+engine and adds one thing, rather than a pack you author yourself. Drop it in
+beside the engine and it brings its own content with it.
+
+This one is paintball, red against blue. Hold right-click to fire a paint
+marker, left-click to aim down its sights, and throw a paint grenade round a
+corner. One hit splats you, you are back three seconds later, and the team with
+more kills when the clock runs out wins. Everything on screen during a match is
+drawn by a full-screen HUD, and one command builds a whole field to play on.
+
+## Installing
+
+It needs:
+
+- **Spigot or Paper, 1.21.11 or newer.** The marker is held with item
+  components that 1.21.11 added (hold to fire, no swing when you click, no
+  reach to punch with).
+- **RP Engine 0.2.3 or newer.** Paintball checks the engine's version as it
+  starts, and on anything older says so in the console and disables itself.
+
+<Steps>
+  <Step title="Drop it in">
+    Put `RPE-paintball.jar` in `plugins/` beside `RPEngine.jar` and start the
+    server. Its content (the marker, mask, grenade and paint models, the
+    sounds, the HUD and the scoreboard) installs itself into
+    `plugins/RPEngine/content/paintball/` on first boot, and the engine reloads
+    once so the resource pack it serves carries all of it. That folder is
+    yours: edit anything in it, and a new version of the plugin updates only
+    the files you have not changed.
+  </Step>
+  <Step title="Build a field">
+    As an op, stand somewhere flat and run `/pb arena generate main confirm`.
+    It builds a field around you and sets the arena up on it. See [Building an
+    arena](#building-an-arena) before you do this anywhere you have built.
+  </Step>
+  <Step title="Play">
+    `/pb join`, then `/pb start`. Alone is fine: you play against nobody, which
+    is a good way to try the marker.
+  </Step>
+</Steps>
+
+If you run Multiverse-Core, Paintball loads after it, so an arena in one of its
+worlds is found.
+
+## Playing
+
+### The lobby
+
+`/pb join` (or `/pb` on its own) puts you in the lobby: on the field you
+generate, a glass box over the middle that looks down on it. Your inventory
+and where you were are put away and given back when you leave. The hotbar
+holds:
+
+| Item | What it does |
+|---|---|
+| **Play for Red** / **Play for Blue** | Pick a side for the next match. Click the same one again to leave it to chance |
+| **Scoreboard** | The scoreboard of the last match |
+| **Leave** | Back to where you were, with your things |
+
+`/pb team red|blue|auto` does the same as the two team items. Sides are kept
+within one player of each other: if too many people pick one, whoever picked
+it last plays for the other and is told so. Anybody who did not pick fills in
+where they are needed. Somebody who joins once a match is under way goes
+straight onto the smaller team.
+
+The field has five spawns a side. That is not a cap: more players simply
+share them.
+
+### In a match
+
+Every match opens with a three-second countdown, frozen in place, then a
+whistle. You carry a marker, a paint grenade, a mask and a suit in your team's
+colour.
+
+| Key | What it does |
+|---|---|
+| **Right-click** (hold) | Fire. About seven balls a second, forty to a hopper |
+| **Left-click** | Up to the sights, or back down. Zoomed in, slower on your feet, and no spread at all |
+| **Q** | Reload. The marker also reloads by itself when the hopper runs dry |
+| **Right-click** the grenade | Throw it |
+| **F** | The scoreboard |
+| **Tab** | The player list: the score and the clock on top, each player's kills and deaths |
+
+**Every ball lands on the crosshair.** It drops and slows as it flies, and it
+is fired so that, drop and all, it arrives where you are looking. From the hip
+it strays a little, by the spread the crosshair's ticks show: a little standing
+still, more on the move, in the air or sprinting, and half of either crouched.
+Down the sights there is none. Changing slot, sprinting or reloading brings
+the sights down.
+
+**The grenade** goes off a second and a half after it lands and splats every
+enemy within three and a half blocks that it can see: a wall between you and
+it is cover. It stays in your hotbar, greyed out for fifteen seconds after a
+throw, and being splatted does not bring it back any sooner.
+
+**One hit splats you.** You watch as a spectator for three seconds, then come
+back at one of your team's spawns, protected for a second and a half: a ball
+that hits you in that time does nothing. There is no friendly fire. Enemy name
+tags are hidden, so you find people by looking for them.
+
+The match ends when the clock runs out (three minutes) or, if the server sets
+one, when a team reaches the kill limit. The result has the screen to itself
+for three seconds, then everybody gets the scoreboard, and a few seconds later
+it is back to the lobby for another. The paint comes off the walls between
+matches. It was never blocks: every splat is a display, so the arena itself is
+never changed.
+
+### What you see
+
+There is not a title or a boss bar in the game. **The whole screen is one
+HUD**:
+
+- **Top centre**, the score strip: both teams' kills and the clock.
+- **Top left**, the kill feed: the last three splats, who by, and with what.
+- **Bottom right**, your weapon: the grenade's card, filling as it recharges,
+  and the ammo panel with its bar.
+- **The crosshair**, with its spread ticks from the hip and a hit marker when
+  you land one.
+- **The middle**, which carries every moment of a match: the countdown ring,
+  GO!, the paint on your screen when you are splatted and the ring counting
+  you back in, SPLATTED and who when you get somebody, and the result on its
+  band with the final score.
+
+**The scoreboard** (F, `/pb scoreboard`, or the lobby's item) is a dialog with
+both teams' tables, the top five of each, best first: each player's face,
+kills, deaths and accuracy.
+
+### While you are playing
+
+In the lobby and in a match alike, you take no damage and get no hungrier,
+and you cannot build, break, open doors or chests, pick anything up, or move
+or drop what you carry. Commands are limited to `/pb`, `/msg`, `/tell`, `/w`,
+`/r`, `/reply`, `/me` and `/list`, unless you have
+`paintball.bypass.commands`. Walking out of the arena's bounds during a match
+puts you back where you last stood.
+
+`/pb leave` always works and needs no permission, so nobody can be stuck in a
+match. Disconnecting, or being teleported to another world by something else,
+counts as leaving. If the server goes down mid-match, everybody gets their
+things back the next time they join.
+
+## Running matches
+
+Matches do not start on their own: somebody with `paintball.start` runs
+`/pb start`. Players who can start a match are told so when they join the
+lobby; everybody else is told the lobby is waiting for an op.
+
+- **`/pb start`** starts a match now, on the arena you are in. If you are not
+  in yet it joins you first, which is why it works alone. `/pb start <arena>`
+  names one.
+- **`/pb stop`** during a match ends it the ordinary way: the result, the
+  scoreboard, then back to the lobby. In the lobby it sends everybody home.
+
+**`/pb as <player> <subcommand>`** runs a subcommand as somebody else, for
+NPCs, command blocks and anything else that can only run console commands:
+an NPC that runs `/pb as <player> join` for whoever clicks it is a join button. What the player runs
+is checked against **their** permissions, not the sender's.
+
+## Building an arena
+
+An arena is a waiting spot, at least one spawn for each team, and bounds: the
+box a player cannot walk out of during a match. Arenas are kept in
+`plugins/RPEPaintball/arenas.yml`. An arena id is lower-case letters, digits,
+`-` and `_`, up to 32 of them; its display name can be anything.
+
+### Generate a field
+
+```
+/pb arena generate <id> confirm [name]
+```
+
+Builds a speedball field centred on you and sets the arena up on it, open
+straight away: a floor paint shows up on, a netted fence, a base at each end,
+inflatable-style bunkers placed with point symmetry so both teams play the same
+field, and a glass box over the middle to wait in. Without `confirm` it only
+says what it is about to do.
+
+<Callout type="warning" title="It replaces every block in a large box">
+  The field is 31 blocks across and 57 long. Inside that it clears everything
+  from your feet to eleven blocks up, lays the floor and a foundation in the
+  two layers below, and builds the waiting box above the middle. Run it in an
+  empty world, or somewhere you do not mind losing. A flat world is best.
+</Callout>
+
+Running it again with the same id rebuilds the field where you now stand. From
+the console, name the place outright:
+
+```
+/pb arena generate <id> at <world> <x> <y> <z> [name]
+```
+
+### Set one up by hand
+
+To play on a map you built yourself, stand in the right places and run:
+
+<Steps>
+  <Step title="Create it">
+    `/pb arena create <id> [name]`, in the world the arena is in.
+  </Step>
+  <Step title="Where players wait">
+    `/pb arena setwaiting <id>` where you stand, facing the way you face.
+  </Step>
+  <Step title="Spawns">
+    `/pb arena addspawn <id> red`, and again for `blue`. Up to five a team;
+    past five the oldest goes. `/pb arena clearspawns <id> <red|blue>` starts
+    a team's over.
+  </Step>
+  <Step title="Bounds">
+    `/pb arena wand` hands you the bounds wand. Left-click a block for one
+    corner, right-click another for the opposite corner, then
+    `/pb arena setbounds <id>`.
+  </Step>
+  <Step title="Open it">
+    `/pb arena enable <id>`. If anything is missing it says what.
+  </Step>
+</Steps>
+
+`/pb arena list` shows every arena, its world, and whether it is open, ready,
+or what it still needs.
+
+### Managing arenas
+
+| Command | What it does |
+|---|---|
+| `/pb arena enable <id>` | Opens it. `/pb join` with no arena named goes to the first open one |
+| `/pb arena disable <id>` | Closes it |
+| `/pb arena tp <id>` | Takes you to its waiting spot |
+| `/pb arena name <id> <name>` | Renames it. The id stays the same |
+| `/pb arena delete <id>` | Removes it, ending any match on it. The blocks are left where they are |
+
+Spawns, bounds and closing an arena cannot be changed while a match is being
+played on it: `/pb stop <id>` first.
+
+## Commands
+
+`/paintball`, or `/pb` for short. `/pb help` and tab-completion only offer
+what you may run.
+
+| Command | What it does |
+|---|---|
+| `/pb join [arena]` | Into the lobby. `/pb` on its own does the same |
+| `/pb team <red\|blue\|auto>` | The side you would like, from the next match |
+| `/pb leave` | Out, with your inventory and position back |
+| `/pb scoreboard` | The match scoreboard (F in a match) |
+| `/pb start [arena]` | Start a match now, joining you first if you are not in |
+| `/pb stop [arena]` | End the match, or in the lobby, send everybody home |
+| `/pb as <player> <subcommand>` | Run a subcommand as somebody else |
+| `/pb reload` | Reread `config.yml` and `arenas.yml` |
+| `/pb arena list` | Every arena and what it still needs |
+| `/pb arena generate <id> confirm [name]` | Build a field where you stand |
+| `/pb arena generate <id> at <world> <x> <y> <z> [name]` | The same, from the console |
+| `/pb arena create <id> [name]` | A new, empty arena in your world |
+| `/pb arena setwaiting <id>` | Its waiting spot, where you stand |
+| `/pb arena addspawn <id> <red\|blue>` | A team spawn, where you stand |
+| `/pb arena clearspawns <id> <red\|blue>` | Remove a team's spawns |
+| `/pb arena wand` | The bounds wand |
+| `/pb arena setbounds <id>` | Its bounds, from the two corners you marked |
+| `/pb arena enable <id>` / `disable <id>` | Open or close it |
+| `/pb arena tp <id>` | Go to its waiting spot |
+| `/pb arena name <id> <name>` | Rename it |
+| `/pb arena delete <id>` | Remove it |
+
+## Permissions
+
+One node per command, so you can hand out exactly what somebody needs: a
+referee who can start and stop matches but not touch arenas, say.
+`paintball.play` and `paintball.admin` are shorthand: each grants every node
+listed under it, and nothing checks them directly. `/pb leave` needs no
+permission at all.
+
+| Node | What it allows | Default |
+|---|---|---|
+| `paintball.play` | Everything a player does: join, pick a team, the scoreboard. Grants the three below | Everyone |
+| `paintball.join` | `/pb join`: into an arena's lobby | Everyone |
+| `paintball.team` | `/pb team`, and the red and blue items in the lobby's hotbar | Everyone |
+| `paintball.scoreboard` | `/pb scoreboard`, F during a match, and the lobby's scoreboard item | Everyone |
+| `paintball.admin` | Every staff node: start, stop, reload, `/pb as`, arenas, the command bypass. Grants the eight below | Operators |
+| `paintball.start` | `/pb start`: start a match now (it joins you first if you are not in) | Operators |
+| `paintball.stop` | `/pb stop`: end a match, or empty a lobby | Operators |
+| `paintball.reload` | `/pb reload`: reread `config.yml` and `arenas.yml` | Operators |
+| `paintball.as` | `/pb as <player> ...`: run a subcommand as somebody else (for NPCs and console). Checked against **their** permissions | Operators |
+| `paintball.arena` | Arena setup: `list`, `create`, `setwaiting`, `addspawn`, `clearspawns`, `wand` and `setbounds`, `enable`, `disable`, `tp`, `name` | Operators |
+| `paintball.arena.generate` | `/pb arena generate`: build a whole field, replacing every block in a large box | Operators |
+| `paintball.arena.delete` | `/pb arena delete`: remove an arena, ending its match | Operators |
+| `paintball.bypass.commands` | Run any command during a match, not only the few a player may | Operators |
+| `paintball.update` | Be told when a newer Paintball is on SpigotMC. Not part of `paintball.admin` | Operators |
+
+## Configuration
+
+`plugins/RPEPaintball/config.yml`. The numbers:
+
+```yaml
+match-seconds: 180
+# End early when a team reaches this many kills. 0 plays the whole clock.
+kill-limit: 0
+freeze-seconds: 3
+respawn-seconds: 3
+spawn-protection-seconds: 1.5
+# How long the final scoreboard stays up before everybody is back in the lobby.
+end-seconds: 12
+
+marker:
+  # Ticks between shots while the trigger is held (3 = about seven a second).
+  fire-interval-ticks: 3
+  hopper: 40
+  reload-seconds: 1.6
+  # Blocks per tick as the ball leaves the barrel, and what pulls it down.
+  speed: 2.4
+  gravity: 0.022
+  drag: 0.992
+  spread-degrees: 0.7
+  moving-spread-degrees: 2.4
+  # Left click aims down the sights: no spread at all, and slower on your feet.
+  aim-spread-degrees: 0.0
+  aim-slowdown: 0.55
+  # How far out the crosshair finds what you are aiming at.
+  range: 96
+  lifetime-ticks: 60
+
+grenade:
+  # Greyed out for this long after a throw. 0 for no wait at all.
+  cooldown-seconds: 15
+  fuse-ticks: 30
+  throw-speed: 1.1
+  radius: 3.5
+
+paint:
+  # The most splats one match keeps on the walls; the oldest go first.
+  max-decals: 1500
+
+# Which marker each team carries: ember, tide, toxic, sunset or gold.
+teams:
+  red:
+    marker: ember
+  blue:
+    marker: tide
+
+hud:
+  kill-feed-seconds: 8
+  kill-banner-seconds: 2.5
+  hit-marker-ticks: 6
+
+update-check: true
+```
+
+**Every word a player reads** is under `messages:` in the same file, in
+[MiniMessage](https://docs.advntr.dev/minimessage/format.html): chat, the
+lobby's hotbar, the player list, the scoreboard's heading and the HUD's text.
+The words drawn as pictures in the HUD (GO!, VICTORY) are art in the content
+folder rather than config.
+
+**The HUD and the scoreboard are RP Engine content** like any other, so
+`ui.hud` and `ui.scoreboard` can point at a HUD or dialog of your own to
+replace either. A replacement has to show the same values.
+
+`/pb reload` rereads the file, and `arenas.yml` too unless somebody is playing.
+Options a newer version adds are written into your existing file when the
+server starts, with their defaults, and nothing already there is touched.
+
+## Update check
+
+With `update-check: true`, Paintball asks SpigotMC for its current version a
+few seconds after the server starts and every six hours after that. While you
+are behind, it says so in the console, and to every player with
+`paintball.update` (operators, by default) on each check and when they join,
+with a link to the SpigotMC page. Set it to `false` to turn that off.

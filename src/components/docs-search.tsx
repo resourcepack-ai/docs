@@ -8,14 +8,15 @@ import { createPortal } from "react-dom";
 import { flatNav, type NavItem } from "@/lib/nav";
 import { flatApiNav } from "@/lib/api-nav";
 import { engineItems } from "@/lib/engine-nav";
+import { pluginItems } from "@/lib/plugins-nav";
 
 import { cn } from "@/lib/utils";
 
-// Both trees, because ⌘K is the one place a reader shouldn't have to know which
-// of the two sections a page lives in — that's the cost of splitting them, and
-// this is what pays it. Module scope: both lists are static, so this is built
-// once rather than per mount.
-const searchable: NavItem[] = [...flatNav, ...engineItems, ...flatApiNav];
+// Every tree, because ⌘K is the one place a reader shouldn't have to know which
+// section a page lives in. That's the cost of splitting them, and this is what
+// pays it. Module scope: the lists are static, so this is built once rather
+// than per mount.
+const searchable: NavItem[] = [...flatNav, ...engineItems, ...pluginItems, ...flatApiNav];
 
 /**
  * ⌘K palette over the nav manifest.

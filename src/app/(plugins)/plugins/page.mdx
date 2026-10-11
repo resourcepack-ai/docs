@@ -1,0 +1,34 @@
+export const metadata = {
+  title: "Plugins",
+  description:
+    "Our Minecraft server plugins besides RP Engine: Dialog Engine for dialog screens in YAML, 3D Engine for real 3D models from .glb, .gltf and .obj files, and 3D Pets.",
+};
+
+# Plugins
+
+Besides [RP Engine](/rp-engine), we make a few server plugins that each do one
+thing. Every one of them runs on its own: none needs RP Engine installed, and
+none needs a ResourcePack AI account.
+
+<CardGroup cols={3}>
+  <Card title="Dialog Engine" href="/dialog-engine" icon="gui">
+    Minecraft's own dialog screens, written in YAML, with a Java API.
+  </Card>
+  <Card title="3D Engine" href="/3d-engine" icon="boxes">
+    Drop in a .glb, .gltf or .obj file and it is in the game.
+  </Card>
+  <Card title="3D Pets" href="/3d-pets" icon="paw">
+    A 3D dog that follows you and plays fetch, built on 3D Engine.
+  </Card>
+</CardGroup>
+
+## What each one runs on
+
+| Plugin | Server | Minecraft | Needs |
+| --- | --- | --- | --- |
+| [Dialog Engine](/dialog-engine) | Spigot or Paper | 1.21.7 and newer | Nothing else |
+| [3D Engine](/3d-engine) | Spigot or Paper | 26.3 | Nothing else |
+| [3D Pets](/3d-pets) | Spigot or Paper | 26.3 | 3D Engine |
+
+Players install nothing for any of them. Where a plugin needs a resource pack,
+it builds that pack and sends it to players itself.
