@@ -55,7 +55,10 @@ const nextConfig: NextConfig = {
               // shell. Every fetch directive below is named for that reason.
               // static.cloudflareinsights.com is the Web Analytics beacon (components/cloudflare-analytics.tsx);
               // its report goes to cloudflareinsights.com, which connect-src names below.
-              "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
+              // 'unsafe-eval' in dev only: React's dev build rebuilds call
+              // stacks with eval() and logs a console error on every page
+              // without it. Production never calls eval, so it never gets it.
+              `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://static.cloudflareinsights.com`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https:",
               "font-src 'self' data: https:",
