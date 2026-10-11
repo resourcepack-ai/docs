@@ -186,7 +186,8 @@ says what it is about to do.
 <Callout type="warning" title="It replaces every block in a large box">
   The field is 31 blocks across and 57 long. Inside that it clears everything
   from your feet to eleven blocks up, lays the floor and a foundation in the
-  two layers below, and builds the waiting box above the middle. Run it in an
+  two layers below, and builds the waiting box above the middle, up to
+  seventeen blocks above your feet. Run it in an
   empty world, or somewhere you do not mind losing. A flat world is best.
 </Callout>
 
@@ -231,13 +232,20 @@ or what it still needs.
 | Command | What it does |
 |---|---|
 | `/pb arena enable <id>` | Opens it. `/pb join` with no arena named goes to the first open one |
-| `/pb arena disable <id>` | Closes it |
+| `/pb arena disable <id>` | Closes it until `enable` opens it again. See below |
 | `/pb arena tp <id>` | Takes you to its waiting spot |
 | `/pb arena name <id> <name>` | Renames it. The id stays the same |
-| `/pb arena delete <id>` | Removes it, ending any match on it. The blocks are left where they are |
+| `/pb arena delete <id>` | Removes it, ending any match on it and sending its players home. The blocks are left where they are |
 
-Spawns, bounds and closing an arena cannot be changed while a match is being
-played on it: `/pb stop <id>` first.
+A closed arena cannot be joined or started by anybody, however they ask:
+`/pb join <id>`, `/pb start <id>` and `/pb as` all say it is closed. Closing
+one sends its lobby home, and a match being played on it ends the way
+`/pb stop` ends one (the result, the scoreboard), after which everybody goes
+home rather than back to the lobby. Deleting an arena does the same. Staff can
+still `tp` to a closed arena and change it.
+
+Spawns and bounds cannot be changed while a match is being played on an arena:
+`/pb stop <id>` first.
 
 ## Commands
 
@@ -249,7 +257,7 @@ what you may run.
 | `/pb join [arena]` | Into the lobby. `/pb` on its own does the same |
 | `/pb team <red\|blue\|auto>` | The side you would like, from the next match |
 | `/pb leave` | Out, with your inventory and position back |
-| `/pb scoreboard` | The match scoreboard (F in a match) |
+| `/pb scoreboard` | The match scoreboard (F in a match or its lobby) |
 | `/pb start [arena]` | Start a match now, joining you first if you are not in |
 | `/pb stop [arena]` | End the match, or in the lobby, send everybody home |
 | `/pb as <player> <subcommand>` | Run a subcommand as somebody else |
@@ -281,7 +289,7 @@ permission at all.
 | `paintball.play` | Everything a player does: join, pick a team, the scoreboard. Grants the three below | Everyone |
 | `paintball.join` | `/pb join`: into an arena's lobby | Everyone |
 | `paintball.team` | `/pb team`, and the red and blue items in the lobby's hotbar | Everyone |
-| `paintball.scoreboard` | `/pb scoreboard`, F during a match, and the lobby's scoreboard item | Everyone |
+| `paintball.scoreboard` | `/pb scoreboard`, F in a match or its lobby, and the lobby's scoreboard item | Everyone |
 | `paintball.admin` | Every staff node: start, stop, reload, `/pb as`, arenas, the command bypass. Grants the eight below | Operators |
 | `paintball.start` | `/pb start`: start a match now (it joins you first if you are not in) | Operators |
 | `paintball.stop` | `/pb stop`: end a match, or empty a lobby | Operators |
