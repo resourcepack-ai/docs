@@ -19,9 +19,9 @@ resource packs.
 
 | Export | File | When you'd pick it |
 | --- | --- | --- |
-| **Java pack** | `.zip` | The ordinary Resource Pack. Goes in `resourcepacks`, or to a server host |
-| **Bedrock pack** | `.mcpack` | Everything with a Bedrock equivalent, converted. Double-click to install. See [On Bedrock](#on-bedrock) |
-| **Dialogs** | `.zip` | Your dialogs as vanilla `minecraft:dialog` files, in a datapack. See [Dialogs as a datapack](#dialogs-as-a-datapack) |
+| **Minecraft: Java Edition** | `.zip` | The Java pack: the ordinary Resource Pack. Goes in `resourcepacks`, or to a server host |
+| **Minecraft: Bedrock Edition** | `.mcpack` | The Bedrock pack: everything with a Bedrock equivalent, converted. Double-click to install. See [On Bedrock](#on-bedrock) |
+| **Dialogs (minecraft:dialog)** | `.zip` | Your dialogs as vanilla `minecraft:dialog` files, in a datapack. See [Dialogs as a datapack](#dialogs-as-a-datapack) |
 
 **Plugin Support** — not resource packs. On a server running one of these, the
 plugin builds the pack, and what you're downloading is the content it builds
@@ -99,6 +99,13 @@ The datapack is the dialog's frame and its clicks. Everything drawn inside it
 files name as invisible characters written `\uE0…`. So your words are not in
 the files as text, and the players need the Java pack from the same version of
 your pack, or the screen is blank.
+
+If you keep a resource pack of your own, you don't need all of ours. In the
+dialog editor, **JSON › minecraft:dialog › Resource pack (.zip)** downloads one
+dialog's part of the Java pack: its pictures, the fonts it uses, and a
+`README.txt` listing which `\uE0…` character is which picture. See
+[Dialogs › Without RP Engine](/dialogs#without-rp-engine) for how to merge it
+into your pack.
 
 Some things only work with [RP Engine](/rp-engine) on the server, and on a
 plain server they stay inert: live values such as `{player}` show as written,
