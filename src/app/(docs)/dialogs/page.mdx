@@ -845,6 +845,37 @@ it, so it opens without a server restart. "Another id…" in the same list takes
 any other dialog id, which the server has to know already — one of
 Minecraft's, or one from a datapack.
 
+## Click sounds
+
+A click on the picture makes no sound in the game itself (only the game's own
+buttons click), so RP Engine plays the game's button click, quietly, when one
+reaches the server. **Click sound** in the dialog's own settings changes that
+for the whole dialog:
+
+- **The game's click**, with its own **pitch** and **volume**.
+- **Another sound**: one of your pack's sounds, one of the game's from the
+  list, or any sound event typed by name. ▶ plays one of your own at the pitch
+  and volume you set.
+- **Silent**: no sound at all.
+
+Any clickable piece has the same field in its own panel, so a Buy button can
+ring a till while the rest of the screen clicks. Left on **The dialog's**, a
+piece uses the dialog's sound.
+
+The server hears a click as the command it runs, so three things follow:
+
+- A click that never reaches the server makes no sound: one that opens a link,
+  copies text, opens another dialog in the game, or turns a page the game turns
+  by itself.
+- Two pieces whose clicks run exactly the same command share one sound, the
+  first one's.
+- The footer's buttons are the game's own and always make the game's click.
+
+A server's own default is `dialogs.click-sound` in RP Engine's
+[configuration](/rp-engine/config#dialogs), and `click-sound` in Dialog
+Engine's. Click sounds need RP Engine 0.2.5 or newer, or a Dialog Engine newer
+than 0.3.5; an older one plays its usual click.
+
 ## Inputs
 
 A dialog can ask for something: a text box, a checkbox, a list to pick from or
