@@ -2,7 +2,6 @@ import type { MetadataRoute } from "next";
 import { flatNav } from "@/lib/nav";
 import { flatApiNav } from "@/lib/api-nav";
 import { engineItems } from "@/lib/engine-nav";
-import { pluginItems } from "@/lib/plugins-nav";
 import { BASE_PATH } from "@/lib/base-path";
 
 /**
@@ -12,9 +11,8 @@ import { BASE_PATH } from "@/lib/base-path";
 export const SITE_URL = `https://resourcepack.ai${BASE_PATH}`;
 
 /**
- * Served at /docs/sitemap.xml, derived from every nav tree (`lib/nav.ts`,
- * `lib/engine-nav.ts`, `lib/plugins-nav.ts` and `lib/api-nav.ts`): between
- * them, every page this site has. The second is generated from the
+ * Served at /docs/sitemap.xml, derived from `lib/nav.ts` and `lib/api-nav.ts`
+ * — between them, every page this site has. The second is generated from the
  * API spec, so a new endpoint reaches the sitemap without anybody listing it.
  *
  * Originally just nav.ts — the same list the
@@ -30,7 +28,7 @@ export const SITE_URL = `https://resourcepack.ai${BASE_PATH}`;
  * landing's robots.ts is what points crawlers at this sitemap.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [...flatNav, ...engineItems, ...pluginItems, ...flatApiNav].map((item) => ({
+  return [...flatNav, ...engineItems, ...flatApiNav].map((item) => ({
     // nav hrefs are root-relative and the index is "/" — trim it so the home
     // page doesn't come out as "https://resourcepack.ai/docs/".
     url: item.href === "/" ? SITE_URL : `${SITE_URL}${item.href}`,
