@@ -432,10 +432,11 @@ export function navGroupOf(href: string): string | undefined {
   return nav.find((group) => group.items.some((item) => item.href === href))?.title;
 }
 
-// Neither the API Reference nor RP Engine is here. Both are separate
-// top-level sections with their own trees (lib/api-nav.ts, lib/engine-nav.ts)
-// — see SectionTabs for why all three are split rather than grouped. The API's
-// is derived from the spec; RP Engine's is hand-written like this one.
+// Neither the API Reference, RP Engine nor the other plugins are here. Each is
+// a separate top-level section with its own tree (lib/api-nav.ts,
+// lib/engine-nav.ts, lib/plugins-nav.ts); see SectionTabs for why they are
+// split rather than grouped. The API's is derived from the spec; the other two
+// are hand-written like this one.
 
 /** Off-site links in the top bar. */
 export const externalLinks = [
