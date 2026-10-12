@@ -50,6 +50,15 @@ export const pluginsNav: NavGroup[] = [
           "api", "event", "drawn dialog", "editor",
         ],
       },
+      {
+        title: "Punishments",
+        href: "/punishments",
+        description: "Warn, mute, kick and ban from a real Minecraft menu or plain commands, built on Dialog Engine.",
+        keywords: [
+          "punishments", "punish", "/punish", "ban", "tempban", "mute", "kick", "warn", "unban", "unmute",
+          "history", "moderation", "staff", "ip ban", "escalation", "addon", "dialog engine",
+        ],
+      },
     ],
   },
   {

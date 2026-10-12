@@ -1,18 +1,21 @@
 export const metadata = {
   title: "Plugins",
   description:
-    "Our Minecraft server plugins besides RP Engine: Dialog Engine for dialog screens in YAML, 3D Engine for real 3D models from .glb, .gltf and .obj files, and 3D Pets.",
+    "Our Minecraft server plugins besides RP Engine: Dialog Engine for dialog screens in YAML, Punishments for moderation, 3D Engine for real 3D models from .glb, .gltf and .obj files, and 3D Pets.",
 };
 
 # Plugins
 
 Besides [RP Engine](/rp-engine), we make a few server plugins that each do one
-thing. Every one of them runs on its own: none needs RP Engine installed, and
-none needs a ResourcePack AI account.
+thing. None of them needs RP Engine installed, and none needs a ResourcePack AI
+account. Two are addons for another one here, and say so.
 
 <CardGroup cols={3}>
   <Card title="Dialog Engine" href="/dialog-engine" icon="gui">
     Minecraft's own dialog screens, written in YAML, with a Java API.
+  </Card>
+  <Card title="Punishments" href="/punishments" icon="gavel">
+    Warn, mute, kick and ban from a real menu, built on Dialog Engine.
   </Card>
   <Card title="3D Engine" href="/3d-engine" icon="boxes">
     Drop in a .glb, .gltf or .obj file and it is in the game.
@@ -27,6 +30,7 @@ none needs a ResourcePack AI account.
 | Plugin | Server | Minecraft | Needs |
 | --- | --- | --- | --- |
 | [Dialog Engine](/dialog-engine) | Spigot or Paper | 1.21.7 and newer | Nothing else |
+| [Punishments](/punishments) | Spigot or Paper | 1.21.7 and newer | Dialog Engine, for the panel |
 | [3D Engine](/3d-engine) | Spigot or Paper | 26.3 | Nothing else |
 | [3D Pets](/3d-pets) | Spigot or Paper | 26.3 | 3D Engine |
 

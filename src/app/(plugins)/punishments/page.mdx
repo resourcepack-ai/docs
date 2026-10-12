@@ -1,0 +1,162 @@
+export const metadata = {
+  title: "Punishments",
+  description:
+    "Warn, mute, kick, temp-ban and ban from a real Minecraft menu or from plain commands: reasons with their own lengths, caps per staff rank, escalation, IP bans, history and a warning popup.",
+};
+
+# Punishments
+
+An **addon** for [Dialog Engine](/dialog-engine): a separate plugin that uses
+Dialog Engine to draw its screens. Unlike most addons it also works without it,
+as plain commands.
+
+It is a punishment plugin whose staff tools are a real Minecraft menu.
+`/punish Steve` shows Steve's record and a button for each of warn, mute, kick,
+temp-ban and ban, and every button does exactly what the matching command does.
+
+![The punishment panel, picking a reason](https://resourcepack.ai/listings/punishments/panel.png)
+
+## Installing
+
+<Steps>
+  <Step title="Install Dialog Engine for the panel">
+    The panel is drawn by [Dialog Engine](/dialog-engine) **0.4.1 or newer**
+    (free). Without it, Punishments still works: every command does, only
+    `/punish` and the screens need Dialog Engine.
+  </Step>
+  <Step title="Drop it in">
+    [Download Punishments.jar](https://cdn.resourcepack.ai/Punishments.jar), or
+    get it from [SpigotMC](https://www.spigotmc.org/resources/139570/), and put
+    it in `plugins/`. Then start the server.
+  </Step>
+  <Step title="That is it">
+    Its screens install themselves into Dialog Engine on the first start, in
+    `plugins/DialogEngine/drawn/punishments/`. Type `/punish` and a player's
+    name.
+  </Step>
+</Steps>
+
+It runs on **Spigot or Paper 1.21.7 and newer**, one jar for both. The panel
+needs players on **1.21.6 or newer** (1.21.9 or newer to see players' heads).
+Players install nothing: Dialog Engine sends the panel's small resource pack the
+first time somebody opens it.
+
+## The panel
+
+`/punish <player>` opens it. `/punish` on its own lists who is online, and takes
+a typed name for anybody who is not.
+
+- **Reason, Length and Silent** are remembered per staff member, so they stay
+  where you left them.
+- **Length "Auto"** uses the length set for the chosen reason in `config.yml`.
+- **Unmute and Unban** appear only when they apply.
+- **Temp-ban and Ban ask first**, with a box for details that are added to the
+  reason.
+- **History** lists everything the player has had, each with a Revoke button.
+- **Every button checks the same permission as its command** when it is
+  pressed: a helper without `punishments.ban` cannot ban from the panel either.
+
+A warned player sees a popup they have to acknowledge. If they were offline,
+they see it the next time they join.
+
+## Commands
+
+| Command | What it does | Permission |
+|---|---|---|
+| `/punish [player]` | The panel | `punishments.punish` |
+| `/warn <player> [-s] [reason]` | Warn | `punishments.warn` |
+| `/unwarn <player>` | Remove the newest warning | `punishments.unwarn` |
+| `/mute <player> [length] [-s] [reason]` | Mute | `punishments.mute` |
+| `/unmute <player>` | Unmute | `punishments.unmute` |
+| `/kick <player> [-s] [reason]` | Kick | `punishments.kick` |
+| `/tempban <player> <length> [-s] [-ip] [reason]` | Temp-ban | `punishments.tempban` |
+| `/ban <player> [length] [-s] [-ip] [reason]` | Ban, for good unless a length is given | `punishments.ban` |
+| `/unban <player>` | Unban | `punishments.unban` |
+| `/history <player>` | Their record | `punishments.history` |
+| `/punishments reload` | Read `config.yml` and `messages.yml` again | `punishments.admin` |
+| `/punishments revoke <id>` | Lift one punishment by its number | `punishments.revoke` |
+
+- **Lengths**: `30m`, `2h`, `7d`, `2w`, `1mo`, `1y`, combined like `1d12h`, or
+  `perm`. Leave it out and the reason's own length is used.
+- **Reasons**: a reason starting with `#` is a preset from `config.yml`, and
+  anything after it is details: `/tempban Steve #hacking flying at spawn`.
+- **`-s`** is silent: only staff with `punishments.notify` hear about it.
+- **`-ip`** also bans the player's address. A local or private address
+  (loopback, `10.x`, `192.168.x` and the like) is refused, because behind a
+  proxy or on a LAN it is everybody's.
+- Everything but kick works on offline players.
+
+Every command's name and aliases are in `config.yml`, and any command can be
+turned off there. Punishments takes `/ban`, `/kick` and the rest over from
+vanilla and other plugins.
+
+## Permissions
+
+Every node has its own command or option, so you can hand out exactly the ones
+a rank needs. All are op-only by default, except the last three.
+
+| Node | Allows |
+|---|---|
+| `punishments.punish` | `/punish`, the panel |
+| `punishments.warn`, `.unwarn` | `/warn`, `/unwarn` |
+| `punishments.mute`, `.unmute` | `/mute`, `/unmute` |
+| `punishments.kick` | `/kick` |
+| `punishments.tempban` | `/tempban` |
+| `punishments.ban` | `/ban`, permanent or with a length |
+| `punishments.ban.ip` | `-ip` on a ban |
+| `punishments.unban` | `/unban` |
+| `punishments.history` | `/history` |
+| `punishments.revoke` | `/punishments revoke`, and Revoke in the history |
+| `punishments.notify` | Hearing silent punishments and staff-only announcements |
+| `punishments.update` | Being told on joining that a newer version is out |
+| `punishments.staff` | All of the above |
+| `punishments.admin` | `/punishments reload`, and everything in `punishments.staff` |
+| `punishments.exempt` | Cannot be punished by players. Off by default |
+| `punishments.limit.helper`, `.limit.moderator` | The caps under `limits:` in `config.yml`. Off by default |
+
+An offline player counts as exempt if they held `punishments.exempt` when they
+were last online.
+
+## Setting it up
+
+`plugins/Punishments/config.yml`:
+
+- **`storage`**: SQLite out of the box, or MySQL/MariaDB to share one record
+  across a network. Changing it needs a restart.
+- **`reasons`**: the presets, each with how long a mute and a temp-ban for it
+  last.
+- **`limits`**: caps per staff rank, by permission. A helper might mute for a
+  day and temp-ban for three; longer lengths are cut down, and the staff member
+  is told.
+- **`warnings`**: when warnings stop counting, the popup, and **escalation**:
+  three warnings runs a mute, five a temp-ban, or whatever commands you write.
+  A step only runs if the warner could have run that command themselves.
+- **`mute`**: which commands a muted player cannot use, and whether signs and
+  books are blocked too.
+- **`broadcast`**: who hears about each punishment: everyone, staff or nobody.
+- **`update-check`**: whether to ask SpigotMC for newer versions.
+
+`plugins/Punishments/messages.yml` has every word, in
+[MiniMessage](https://docs.advntr.dev/minimessage/format.html), including the
+kick and ban screens and everything written on the panels.
+
+`/punishments reload` reads both.
+
+## Changing the screens
+
+The screens are ordinary Dialog Engine drawn dialogs, so they open in its
+browser editor: `/de edit punishments:panel`, or `confirm`, `history`,
+`players` and `warned`. **A screen you have edited is kept** when Punishments
+updates; delete its folder in `plugins/DialogEngine/drawn/punishments/` to take
+the new version's.
+
+## For developers
+
+Three Bukkit events, all on the main thread, in
+`ai.resourcepack.punishments.api.event`:
+
+| Event | |
+|---|---|
+| `PunishmentPreEvent` | A punishment is about to be given. Cancellable, and the reason can be changed |
+| `PunishmentEvent` | A punishment was given |
+| `PunishmentRevokeEvent` | A punishment was lifted |
