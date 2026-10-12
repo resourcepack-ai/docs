@@ -845,6 +845,22 @@ it, so it opens without a server restart. "Another id…" in the same list takes
 any other dialog id, which the server has to know already — one of
 Minecraft's, or one from a datapack.
 
+### After a click
+
+What the dialog itself does once something on it is clicked is its **After a
+press** setting:
+
+| Choice | What happens |
+| --- | --- |
+| **Seamless** (the default) | The dialog stays on screen exactly as it is until the server answers the click. A dialog the click opens takes its place with nothing in between, and when none comes, the server closes it. No flash of the world and no waiting screen. Needs RP Engine 0.2.6 or newer; in an exported datapack it is **Close**. |
+| **Close** | The dialog closes the moment it is clicked, so a dialog the click opens arrives after a glimpse of the world. |
+| **Stay open** | The dialog stays as it is, whatever the click did. |
+| **Wait** | The game swaps the dialog for its "Waiting for Server" screen until the server answers. A dialog with a link or copy button is sent as **Close** instead, because the server never hears those clicks and nothing would answer. |
+
+A seamless dialog stays open after a click the server never hears: opening a
+link, copying text, or a command your proxy handles itself, such as `/server`
+on a BungeeCord or Velocity network. Escape closes it.
+
 ## Click sounds
 
 A click on the picture makes no sound in the game itself (only the game's own
