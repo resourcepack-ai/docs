@@ -417,6 +417,11 @@ every `%placeholder%` works too, in the same places. A `%` in what a player
 typed is printed as typed and never filled, so nobody can type a placeholder
 into a text box to read somebody else's.
 
+A [drawn dialog](#drawn-dialogs)'s live words reach it too (since 0.4.2): a
+`{vault_eco_balance}` nothing else answers is asked of PlaceholderAPI as
+`%vault_eco_balance%`, and the editor takes `%vault_eco_balance%` as the same
+live value.
+
 ### Choices
 
 `{mode?on:Enabled|off:Disabled|Unknown}` prints the words for the value
