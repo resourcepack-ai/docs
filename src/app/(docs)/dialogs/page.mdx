@@ -375,6 +375,33 @@ conditions is marked with a crossed-out eye.
   its words and items and lets its clicks through.
 </Callout>
 
+### Other colours for some players
+
+A button, a line of words, a chip, a badge or a progress bar can look
+different for some players instead of being hidden from the rest. Under
+**Colour when** in its panel, add a look: conditions like the ones above, and
+the colours the piece has while they hold. For a button that is its **Button
+colour** and **Label colour**; for a bar, its bar and track colours.
+
+A talent tree is the shape this was made for: a button red in its own colours,
+with a look for when `{level}` *is at least* `4` that turns it green. With more
+than one look, the first whose conditions hold is the one drawn, so put the
+most specific first: green from level 4, then gold *otherwise, when* `{level}`
+*is at least* `2`. A player none of them hold for sees the piece's own colours.
+
+Only the colours change. The piece keeps its place, its clicks and its words,
+and a live value in its words is drawn in the look's colour. To show a
+different piece instead, put two pieces in one place with **Show when**, as
+above.
+
+The editor draws every piece in its own colours unless the dialog's own player
+settings pick a look; press the eye on a look to see it. In the Components
+panel, a piece with looks is marked with a palette.
+
+<Callout type="warning" title="Needs RP Engine 0.2.2 or newer">
+  An older RP Engine draws the piece in its own colours for everybody.
+</Callout>
+
 ### A player's face
 
 A **Player head** can be live too. In its icon picker, choose **Whoever opens
