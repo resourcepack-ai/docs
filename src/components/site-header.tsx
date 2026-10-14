@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { AskAi } from "@/components/ask-ai";
 import { DocsSearch } from "@/components/docs-search";
 import { EngineNavTree } from "@/components/engine-nav-tree";
 import { NavTree } from "@/components/nav-tree";
@@ -87,6 +88,7 @@ export function SiteHeader() {
 
         <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
           <DocsSearch />
+          <AskAi />
           <nav className="hidden items-center gap-1 sm:flex">
             {externalLinks.map((link) => (
               <a
