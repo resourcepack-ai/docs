@@ -1063,12 +1063,17 @@ add a dialog to a resource pack of your own:
 
 - **Load it as its own pack**, alongside yours. The game merges fonts from
   different packs, so it replaces none of your glyphs.
-- **Or copy its files into your pack.** Merge the `providers` list of
-  `assets/minecraft/font/default.json` into yours instead of overwriting the
-  file, or one of the two loses its glyphs.
+- **Or copy its files into your pack.** If it has an
+  `assets/minecraft/font/default.json`, merge its `providers` list into yours
+  instead of overwriting the file, or one of the two loses its glyphs.
 
-Either way, the characters in the README must not also be used by your own
-pack. When two packs define the same character, only one of them is drawn.
+The dialog's picture is drawn in a font of its own, under `assets/rpai/font/`,
+which no other pack or plugin writes. So emoji and HUD plugins (ItemsAdder,
+Nexo, Oraxen, CraftEngine, BetterHud and the rest) can't take its characters,
+and it can't take theirs. Only icons you typed into the dialog's words sit in
+the shared default font, and those are the ones the README lists. A dialog
+saved before 14 October 2026 still draws in the default font until you save it
+again.
 
 What the plugin does for a dialog doesn't happen there. Live values show as
 written, bound switches and sliders stay on their default, live heads,
