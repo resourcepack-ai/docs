@@ -34,7 +34,9 @@
  * Run: `node scripts/verify-llms.mjs [--strict]`
  */
 
+import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { dirname, join, relative, sep } from "node:path";
 
@@ -151,15 +153,19 @@ if (unlisted.length > 0) {
 
 // --- the generated one ----------------------------------------------------
 
-const full = read(join(landing, "public", "llms-full.txt"));
+// Generated fresh into a temporary file rather than read off disk: the real one
+// only exists after a build, and checking a stale copy proves nothing.
+const fullPath = join(tmpdir(), `llms-full-${process.pid}.txt`);
+execFileSync(process.execPath, [join(dirname(fileURLToPath(import.meta.url)), "gen-llms-full.mjs"), "--out", fullPath]);
+const full = read(fullPath);
 // Only the pages llms.txt itself points at: llms-full is the concatenation of
 // what the summary advertises, not of the whole tree.
 const stale = [...listed].filter((slug) => slug && !full.includes(`/docs/${slug}`));
 if (stale.length > 0) {
   problems.push(
-    `landing/public/llms-full.txt does not mention: ${stale.map((s) => `/docs/${s}`).join(", ")}.\n` +
-      "  That file is generated rather than written — run `npm run gen:llms-full` here\n" +
-      "  and commit what it writes, rather than editing it by hand.",
+    `llms-full.txt does not mention: ${stale.map((s) => `/docs/${s}`).join(", ")}.\n` +
+      "  It is generated from the pages, so a listed page missing from it is a page\n" +
+      "  the generator could not find (scripts/gen-llms-full.mjs).",
   );
 }
 

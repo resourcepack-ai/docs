@@ -14,6 +14,9 @@
 # testing
 /coverage
 
+# generated before every dev and build by scripts/gen-llms-full.mjs
+/public/llms-full.txt
+
 # next.js
 /.next/
 /out/

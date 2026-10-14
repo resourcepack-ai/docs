@@ -204,9 +204,12 @@ A new or renamed page also has to be reflected in `/llms.txt` and
 URLs are worth reading. Those are served from the root of resourcepack.ai
 rather than from this app, because the convention is only recognised at the
 root of a host and this app sits at a path under it — the same reason there's
-no `robots.ts` here. `npm run gen:llms-full` regenerates the second of them
-from the MDX and the API spec. **Any change to what routes exist matters
-there**: a new page, a renamed segment, a deleted one. The whole point of those
+no `robots.ts` here. The second is generated, not maintained: `prebuild` (and
+`predev`) run `scripts/gen-llms-full.mjs`, which writes it from the MDX and the
+API spec into `public/` (gitignored), served at `/docs/llms-full.txt`; the root
+`/llms-full.txt` redirects there. The help bot answers from that same file, so
+a page edit reaches it with the docs deploy. **Any change to what routes exist
+still matters for `llms.txt`**: a new page, a renamed segment, a deleted one. The whole point of those
 files is being trustworthy about which links resolve, and a crawler that finds
 a 404 in one has no way to tell us.
 
