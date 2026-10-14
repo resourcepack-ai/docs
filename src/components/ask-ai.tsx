@@ -12,6 +12,8 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 
+import { CodeBlock, languageOf } from "@/components/ask-ai-code";
+
 /**
  * "Ask AI": a chat panel that answers questions from these docs.
  *
@@ -244,19 +246,13 @@ function Markdown({
   while (i < lines.length) {
     const line = lines[i];
     if (line.startsWith("```")) {
+      const lang = languageOf(line.slice(3));
       const body: string[] = [];
       i++;
       while (i < lines.length && !lines[i].startsWith("```"))
         body.push(lines[i++]);
       i++;
-      blocks.push(
-        <pre
-          key={key++}
-          className="bg-background border-border overflow-x-auto rounded-lg border p-3 font-mono text-[0.78rem] leading-relaxed"
-        >
-          {body.join("\n")}
-        </pre>,
-      );
+      blocks.push(<CodeBlock key={key++} code={body.join("\n")} lang={lang} />);
       continue;
     }
     const listKind = /^\s*\d+[.)]\s/.test(line)
