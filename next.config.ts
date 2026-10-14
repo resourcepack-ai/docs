@@ -58,7 +58,10 @@ const nextConfig: NextConfig = {
               // 'unsafe-eval' in dev only: React's dev build rebuilds call
               // stacks with eval() and logs a console error on every page
               // without it. Production never calls eval, so it never gets it.
-              `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://static.cloudflareinsights.com`,
+              // challenges.cloudflare.com is Turnstile, which the Ask AI panel
+              // loads only when built with NEXT_PUBLIC_TURNSTILE_SITE_KEY; its
+              // challenge runs in a frame from the same host (frame-src below).
+              `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://static.cloudflareinsights.com https://challenges.cloudflare.com`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https:",
               "font-src 'self' data: https:",
@@ -72,7 +75,10 @@ const nextConfig: NextConfig = {
               // fetch" with a CSP line in the console. `img-src https:` is
               // still wide, so this narrows what script can READ back and how
               // much it can send in one go, not every way out.
-              "connect-src 'self' https://api.resourcepack.ai https://cloudflareinsights.com https://static.cloudflareinsights.com",
+              // help.resourcepack.ai is the Ask AI panel's answering service
+              // (components/ask-ai.tsx); in dev, a local `wrangler dev` of it.
+              `connect-src 'self' https://api.resourcepack.ai https://help.resourcepack.ai https://cloudflareinsights.com https://static.cloudflareinsights.com${process.env.NODE_ENV === "development" ? " http://localhost:8799" : ""}`,
+              "frame-src https://challenges.cloudflare.com",
               "media-src 'self' data: blob: https:",
               "worker-src 'self' blob:",
               "object-src 'none'",
