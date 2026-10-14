@@ -25,7 +25,9 @@ import { createPortal } from "react-dom";
  * are only made for https URLs. The service already strips links to sites
  * other than ours and a short list of stores; this is the second fence.
  *
- * The conversation lives in this tab's sessionStorage and nowhere else. Each
+ * Every question and answer is logged by the service, to improve answers and
+ * to catch abuse; the privacy policy says so. In the browser, the
+ * conversation lives in this tab's sessionStorage and nowhere else. Each
  * answer comes back with a signature, and only signed turns are accepted as
  * context for the next question, so the history a browser sends cannot put
  * words in the assistant's mouth.
@@ -44,6 +46,8 @@ interface Turn {
   sources?: { title: string; url: string }[];
   notice?: string;
   error?: string;
+  /** The conversation the service filed this under; sent back so follow-ups join it. */
+  threadId?: string;
   /** What the service signed, sent back as context with the next question. */
   signed?: { question: string; answer: string; sig: string } | null;
 }
@@ -341,6 +345,7 @@ export function AskAi() {
     const history = turns
       .flatMap((t) => (t.signed ? [t.signed] : []))
       .slice(-3);
+    const threadId = [...turns].reverse().find((t) => t.threadId)?.threadId;
     const next = [...turns, { question }];
     setTurns(next);
     setDraft("");
@@ -352,7 +357,7 @@ export function AskAi() {
       const res = await fetch(`${HELP_URL}/v1/ask`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question, history, turnstileToken: token }),
+        body: JSON.stringify({ question, history, threadId, turnstileToken: token }),
       });
       const body = (await res.json().catch(() => ({}))) as {
         answer?: string;
@@ -360,6 +365,7 @@ export function AskAi() {
         notice?: string;
         message?: string;
         turn?: Turn["signed"];
+        threadId?: string;
       };
       turn =
         res.ok && typeof body.answer === "string"
@@ -369,6 +375,7 @@ export function AskAi() {
               sources: body.sources ?? [],
               notice: body.notice,
               signed: body.turn ?? null,
+              threadId: body.threadId,
             }
           : {
               question,
