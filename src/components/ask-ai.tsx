@@ -497,22 +497,9 @@ export function AskAi() {
                     )}
                     {turn.answer !== undefined && (
                       <div className="text-prose break-words">
+                        {/* The answer links the pages it used inline; a row of
+                            source chips under it only repeated them. */}
                         <Markdown text={turn.answer} onNavigate={close} />
-                        {turn.sources && turn.sources.length > 0 && (
-                          <div className="mt-3 flex flex-wrap gap-1.5">
-                            {turn.sources.map((source) => (
-                              <AnswerLink
-                                key={source.url}
-                                href={source.url}
-                                onNavigate={close}
-                              >
-                                <span className="border-border text-muted-foreground inline-block rounded-md border px-2 py-0.5 text-[0.72rem] no-underline">
-                                  {source.title}
-                                </span>
-                              </AnswerLink>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     )}
                     {turn.error && (
