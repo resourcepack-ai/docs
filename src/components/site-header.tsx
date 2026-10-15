@@ -41,7 +41,7 @@ export function SiteHeader() {
   }, [menuOpen]);
 
   return (
-    <header className="border-border bg-background/85 fixed inset-x-0 top-0 z-40 h-(--topbar-h) border-b backdrop-blur-md">
+    <header data-site-header className="border-border bg-background/85 fixed inset-x-0 top-0 z-40 h-(--topbar-h) border-b backdrop-blur-md">
       <div className="mx-auto flex h-(--topbar-row-h) max-w-[100rem] items-center gap-3 px-4 sm:px-6">
         <button
           type="button"

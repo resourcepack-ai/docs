@@ -1,6 +1,16 @@
 "use client";
 
-import { ArrowUp, RotateCcw, Sparkles, X } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUp,
+  Check,
+  Copy,
+  FileText,
+  MessageCircle,
+  Plus,
+  User,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import {
   Fragment,
@@ -13,9 +23,12 @@ import {
 import { createPortal } from "react-dom";
 
 import { CodeBlock, languageOf } from "@/components/ask-ai-code";
+import { cn } from "@/lib/utils";
 
 /**
- * "Ask AI": a chat panel that answers questions from these docs.
+ * "Ask the docs": a side panel that answers questions from these docs. On a
+ * wide screen it sits beside the page rather than over it (globals.css), so a
+ * page an answer links to opens with the conversation still there.
  *
  * The answering happens on help.resourcepack.ai, which reads the same docs
  * (as llms-full.txt) and the public download list, and nothing else: it has
@@ -53,12 +66,6 @@ interface Turn {
   /** What the service signed, sent back as context with the next question. */
   signed?: { question: string; answer: string; sig: string } | null;
 }
-
-const EXAMPLES = [
-  "How do I test my pack on a real server?",
-  "What's the latest RP Engine and where do I get it?",
-  "How do I export a pack for Bedrock?",
-];
 
 function loadTurns(): Turn[] {
   try {
@@ -156,14 +163,18 @@ function useTurnstile(container: React.RefObject<HTMLDivElement | null>) {
 
 // --- The small Markdown reader ----------------------------------------------
 
+const LINK = "text-primary-ink underline underline-offset-2";
+
 function AnswerLink({
   href,
   children,
   onNavigate,
+  className = LINK,
 }: {
   href: string;
   children: ReactNode;
   onNavigate: () => void;
+  className?: string;
 }) {
   if (
     href === DOCS_ORIGIN ||
@@ -175,7 +186,7 @@ function AnswerLink({
       <Link
         href={path.startsWith("#") ? `/${path}` : path}
         onClick={onNavigate}
-        className="text-primary-ink underline underline-offset-2"
+        className={className}
       >
         {children}
       </Link>
@@ -186,7 +197,7 @@ function AnswerLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer nofollow"
-      className="text-primary-ink underline underline-offset-2"
+      className={className}
     >
       {children}
     </a>
@@ -307,11 +318,72 @@ function Markdown({
 
 // --- The panel ---------------------------------------------------------------
 
+/** Starting points for an empty panel, grouped the way the docs are. */
+const EXAMPLES: { group: string; questions: string[] }[] = [
+  {
+    group: "Studio",
+    questions: [
+      "How do I export a pack for Bedrock?",
+      "Can I import a Blockbench model?",
+    ],
+  },
+  {
+    group: "RP Engine",
+    questions: [
+      "What's the latest RP Engine, and where do I get it?",
+      "How do players get my pack when they join?",
+    ],
+  },
+  {
+    group: "Testing",
+    questions: ["How do I try my pack on a real server?"],
+  },
+];
+
+/** Wide enough that the panel sits beside the page (see globals.css) rather than over it. */
+const BESIDE_THE_PAGE = "(min-width: 64rem)";
+
+function SourceList({
+  sources,
+  onNavigate,
+}: {
+  sources: { title: string; url: string }[];
+  onNavigate: () => void;
+}) {
+  return (
+    <div className="border-border flex flex-col overflow-hidden rounded-[10px] border">
+      {sources.map((source) => (
+        <AnswerLink
+          key={source.url}
+          href={source.url}
+          onNavigate={onNavigate}
+          className="border-line text-prose hover:bg-muted flex items-center gap-2.5 border-t px-3 py-2 text-[0.8rem] no-underline transition-colors first:border-t-0"
+        >
+          <FileText className="text-faint size-3.5 shrink-0" />
+          <span className="min-w-0 truncate">{source.title}</span>
+          <ArrowRight className="text-faint ml-auto size-3.5 shrink-0" />
+        </AnswerLink>
+      ))}
+    </div>
+  );
+}
+
+function Thinking() {
+  return (
+    <div className="flex flex-col gap-2" aria-label="Writing an answer">
+      <div className="bg-muted h-2.5 w-[92%] animate-pulse rounded-full" />
+      <div className="bg-muted h-2.5 w-[78%] animate-pulse rounded-full" />
+      <div className="bg-muted h-2.5 w-[40%] animate-pulse rounded-full" />
+    </div>
+  );
+}
+
 export function AskAi() {
   const [open, setOpen] = useState(false);
   const [turns, setTurns] = useState<Turn[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
+  const [copied, setCopied] = useState<number | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const turnstileBox = useRef<HTMLDivElement>(null);
@@ -324,16 +396,28 @@ export function AskAi() {
     });
   }, [turns, busy]);
 
+  // While open, the page makes room for the panel (globals.css). Escape closes.
   useEffect(() => {
     if (!open) return;
+    const root = document.documentElement;
+    root.dataset.askAi = "open";
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      delete root.dataset.askAi;
+      window.removeEventListener("keydown", onKey);
+    };
   }, [open]);
 
   const close = useCallback(() => setOpen(false), []);
+
+  // Following a link keeps the conversation open beside the page it opened.
+  // Only where the panel covers the page (a phone) does it get out of the way.
+  const onNavigate = useCallback(() => {
+    if (!window.matchMedia(BESIDE_THE_PAGE).matches) setOpen(false);
+  }, []);
 
   async function send(text: string) {
     const question = text.trim().slice(0, MAX_QUESTION);
@@ -353,7 +437,12 @@ export function AskAi() {
       const res = await fetch(`${HELP_URL}/v1/ask`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question, history, threadId, turnstileToken: token }),
+        body: JSON.stringify({
+          question,
+          history,
+          threadId,
+          turnstileToken: token,
+        }),
       });
       const body = (await res.json().catch(() => ({}))) as {
         answer?: string;
@@ -398,105 +487,155 @@ export function AskAi() {
     inputRef.current?.focus();
   }
 
+  async function copy(index: number, answer: string) {
+    try {
+      await navigator.clipboard.writeText(answer);
+      setCopied(index);
+      setTimeout(() => setCopied((c) => (c === index ? null : c)), 1500);
+    } catch {
+      // No clipboard permission: nothing to report that would help.
+    }
+  }
+
   return (
     <>
       <button
         type="button"
         onClick={() => {
+          if (open) {
+            setOpen(false);
+            return;
+          }
           setTurns(loadTurns());
           setOpen(true);
         }}
-        className="border-border bg-card/60 text-muted-foreground hover:border-[#45453d] hover:text-foreground flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-[0.8rem] transition-colors"
+        aria-pressed={open}
+        className={cn(
+          "flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-[0.8rem] transition-colors",
+          open
+            ? "border-primary bg-primary-tint text-foreground"
+            : "border-border bg-card/60 text-muted-foreground hover:text-foreground hover:border-[#45453d]",
+        )}
       >
-        <Sparkles className="text-brand size-3.5 shrink-0" strokeWidth={2} />
-        <span className="hidden sm:inline">Ask AI</span>
+        <MessageCircle className="size-3.5 shrink-0" strokeWidth={2} />
+        <span className="hidden sm:inline">Ask</span>
       </button>
 
       {/* Portalled for the same reason the search palette is: the header's
-          backdrop-filter would otherwise be this panel's containing block. */}
+          backdrop-filter would otherwise be this panel's containing block.
+          No scrim: on a wide screen the page moves over to make room, and on
+          a phone the panel is the whole screen. */}
       {open &&
         createPortal(
-          <div
-            className="fixed inset-0 z-50 flex justify-end"
-            onMouseDown={close}
+          <section
+            aria-label="Ask the docs"
+            className="border-border bg-card fixed inset-y-0 right-0 z-50 flex w-full flex-col [animation:rpin_.22s_ease] lg:w-(--ask-w) lg:border-l"
           >
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] sm:bg-black/25" />
-            <div
-              role="dialog"
-              aria-modal="true"
-              aria-label="Ask AI"
-              className="border-border bg-card relative flex h-dvh w-full flex-col border-l shadow-[0_16px_40px_rgba(0,0,0,0.4)] [animation:rpin_.22s_ease] sm:w-[26rem]"
-              onMouseDown={(event) => event.stopPropagation()}
-            >
-              <div className="border-border flex items-center gap-2 border-b px-4 py-3">
-                <Sparkles className="text-brand size-4" strokeWidth={2} />
-                <span className="text-[0.9rem] font-semibold">Ask AI</span>
-                <span className="text-faint ml-1 text-[0.72rem]">
-                  answers from these docs
-                </span>
-                <div className="ml-auto flex items-center gap-1">
-                  {turns.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={reset}
-                      aria-label="New conversation"
-                      title="New conversation"
-                      className="text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded-md p-1.5 transition-colors"
-                    >
-                      <RotateCcw className="size-4" />
-                    </button>
-                  )}
+            <div className="border-line flex h-[3.25rem] shrink-0 items-center gap-2.5 border-b pr-2.5 pl-4">
+              <MessageCircle
+                className="text-primary-ink size-4"
+                strokeWidth={2}
+              />
+              <span className="text-[0.9rem] font-semibold">Ask the docs</span>
+              <div className="ml-auto flex items-center gap-0.5">
+                {turns.length > 0 && (
                   <button
                     type="button"
-                    onClick={close}
-                    aria-label="Close"
-                    className="text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded-md p-1.5 transition-colors"
+                    onClick={reset}
+                    aria-label="New conversation"
+                    title="New conversation"
+                    className="text-muted-foreground hover:text-foreground hover:bg-muted grid size-[30px] place-items-center rounded-[7px] transition-colors"
                   >
-                    <X className="size-4" />
+                    <Plus className="size-4" />
                   </button>
-                </div>
+                )}
+                <button
+                  type="button"
+                  onClick={close}
+                  aria-label="Close"
+                  className="text-muted-foreground hover:text-foreground hover:bg-muted grid size-[30px] place-items-center rounded-[7px] transition-colors"
+                >
+                  <X className="size-4" />
+                </button>
               </div>
+            </div>
 
-              <div
-                ref={scrollRef}
-                className="flex-1 space-y-5 overflow-y-auto px-4 py-4 text-[0.86rem] leading-relaxed"
-              >
-                {turns.length === 0 && (
-                  <div className="space-y-3">
-                    <p className="text-muted-foreground">
-                      Ask anything about Studio, RP Engine, Dialog Engine or 3D
-                      Engine. Answers come from these docs and our download
-                      pages.
-                    </p>
-                    <div className="flex flex-col items-start gap-2">
-                      {EXAMPLES.map((example) => (
+            <div
+              ref={scrollRef}
+              className="flex flex-1 flex-col gap-[1.375rem] overflow-y-auto px-[1.125rem] py-5"
+            >
+              {turns.length === 0 && (
+                <div>
+                  <h3 className="mt-1 mb-1.5 text-[1.125rem] font-semibold tracking-[-0.01em]">
+                    What do you want to know?
+                  </h3>
+                  <p className="text-muted-foreground mb-[1.125rem] leading-[1.55]">
+                    Answers come from these docs and the download pages. It
+                    can&apos;t see your account or your packs.
+                  </p>
+                  {EXAMPLES.map(({ group, questions }) => (
+                    <div key={group} className="mb-4 flex flex-col gap-0.5">
+                      <span className="text-faint mb-1.5 font-mono text-[0.66rem] tracking-[0.1em] uppercase">
+                        {group}
+                      </span>
+                      {questions.map((question) => (
                         <button
-                          key={example}
+                          key={question}
                           type="button"
-                          onClick={() => send(example)}
-                          className="border-border hover:border-[#45453d] hover:text-foreground text-muted-foreground rounded-lg border px-3 py-1.5 text-left text-[0.8rem] transition-colors"
+                          onClick={() => send(question)}
+                          className="text-prose hover:bg-muted -mx-2.5 flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[0.845rem] transition-colors"
                         >
-                          {example}
+                          {question}
+                          <ArrowRight className="text-faint ml-auto size-3.5 shrink-0" />
                         </button>
                       ))}
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
+              )}
 
-                {turns.map((turn, n) => (
-                  <div key={n} className="space-y-2.5">
-                    <div className="bg-primary-tint text-primary-ink ml-auto w-fit max-w-[85%] rounded-xl rounded-br-sm px-3 py-2 break-words whitespace-pre-wrap">
+              {turns.map((turn, n) => (
+                <div key={n} className="flex flex-col gap-3">
+                  <div className="text-foreground flex gap-2.5 text-[0.94rem] leading-snug font-semibold">
+                    <span className="bg-muted text-muted-foreground mt-px grid size-5 shrink-0 place-items-center rounded-full">
+                      <User className="size-3" strokeWidth={2.25} />
+                    </span>
+                    <span className="min-w-0 break-words whitespace-pre-wrap">
                       {turn.question}
-                    </div>
+                    </span>
+                  </div>
+                  <div className="flex min-w-0 flex-col gap-3.5 pl-[1.875rem]">
                     {turn.notice && (
-                      <p className="text-amber text-[0.78rem]">{turn.notice}</p>
+                      <p className="text-amber text-[0.78rem] leading-snug">
+                        {turn.notice}
+                      </p>
                     )}
                     {turn.answer !== undefined && (
-                      <div className="text-prose break-words">
-                        {/* The answer links the pages it used inline; a row of
-                            source chips under it only repeated them. */}
-                        <Markdown text={turn.answer} onNavigate={close} />
-                      </div>
+                      <>
+                        <div className="text-prose text-[0.875rem] leading-[1.65] break-words">
+                          <Markdown text={turn.answer} onNavigate={onNavigate} />
+                        </div>
+                        {turn.sources && turn.sources.length > 0 && (
+                          <SourceList
+                            sources={turn.sources}
+                            onNavigate={onNavigate}
+                          />
+                        )}
+                        <div className="text-faint flex gap-3.5 text-[0.75rem]">
+                          <button
+                            type="button"
+                            onClick={() => copy(n, turn.answer ?? "")}
+                            className="hover:text-muted-foreground flex items-center gap-1.5 transition-colors"
+                          >
+                            {copied === n ? (
+                              <Check className="size-3.5" />
+                            ) : (
+                              <Copy className="size-3.5" />
+                            )}
+                            {copied === n ? "Copied" : "Copy"}
+                          </button>
+                        </div>
+                      </>
                     )}
                     {turn.error && (
                       <p className="text-destructive text-[0.82rem]">
@@ -506,68 +645,67 @@ export function AskAi() {
                     {turn.answer === undefined &&
                       !turn.error &&
                       busy &&
-                      n === turns.length - 1 && (
-                        <p className="text-faint animate-pulse">
-                          Reading the docs…
-                        </p>
-                      )}
+                      n === turns.length - 1 && <Thinking />}
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
+            </div>
 
-              <form
-                className="border-border border-t p-3"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  send(draft);
-                }}
-              >
-                <div className="border-border bg-background focus-within:border-[#45453d] flex items-end gap-2 rounded-xl border p-2">
-                  <textarea
-                    ref={inputRef}
-                    autoFocus
-                    value={draft}
-                    maxLength={MAX_QUESTION}
-                    rows={1}
-                    onChange={(event) => setDraft(event.target.value)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" && !event.shiftKey) {
-                        event.preventDefault();
-                        send(draft);
-                      }
-                    }}
-                    placeholder="Ask a question"
-                    aria-label="Ask a question"
-                    className="placeholder:text-faint max-h-32 min-h-[1.5rem] flex-1 resize-none bg-transparent px-1 text-[0.86rem] outline-none [field-sizing:content]"
-                  />
+            <form
+              className="border-line flex shrink-0 flex-col gap-2 border-t px-3.5 py-3"
+              onSubmit={(event) => {
+                event.preventDefault();
+                send(draft);
+              }}
+            >
+              <div className="bg-background flex flex-col gap-2.5 rounded-xl border border-[#45453d] pt-2.5 pr-2.5 pb-2 pl-3 focus-within:border-[#5b5b51]">
+                <textarea
+                  ref={inputRef}
+                  autoFocus
+                  value={draft}
+                  maxLength={MAX_QUESTION}
+                  rows={1}
+                  onChange={(event) => setDraft(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" && !event.shiftKey) {
+                      event.preventDefault();
+                      send(draft);
+                    }
+                  }}
+                  placeholder="Ask about Studio, RP Engine or a plugin"
+                  aria-label="Ask a question"
+                  className="placeholder:text-faint max-h-32 min-h-[1.375rem] resize-none bg-transparent text-[0.875rem] outline-none [field-sizing:content]"
+                />
+                <div className="flex items-center gap-2">
+                  <span className="text-faint hidden font-mono text-[0.66rem] sm:inline">
+                    Enter to send · Shift+Enter for a new line
+                  </span>
                   <button
                     type="submit"
                     disabled={busy || !draft.trim()}
                     aria-label="Send"
-                    className="bg-primary text-primary-foreground grid size-7 shrink-0 place-items-center rounded-lg transition-opacity disabled:opacity-40"
+                    className="bg-primary ml-auto grid size-[30px] shrink-0 place-items-center rounded-lg text-white transition-opacity disabled:opacity-35"
                   >
-                    <ArrowUp className="size-4" strokeWidth={2.25} />
+                    <ArrowUp className="size-4" strokeWidth={2.4} />
                   </button>
                 </div>
-                <div ref={turnstileBox} />
-                <p className="text-faint mt-2 px-1 text-[0.7rem] leading-snug">
-                  AI answers can be wrong; the linked pages are the source of
-                  truth. It can&apos;t see your account, so don&apos;t share
-                  personal details. Account or billing problems: open a ticket
-                  in our{" "}
-                  <a
-                    href="https://resourcepack.ai/discord"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="underline"
-                  >
-                    Discord
-                  </a>
-                  .
-                </p>
-              </form>
-            </div>
-          </div>,
+              </div>
+              <div ref={turnstileBox} />
+              <p className="text-faint px-0.5 text-[0.72rem] leading-[1.45]">
+                Answers can be wrong; the linked page is right. Account or
+                billing?{" "}
+                <a
+                  href="https://resourcepack.ai/discord"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-muted-foreground underline underline-offset-2"
+                >
+                  Open a Discord ticket
+                </a>
+                .
+              </p>
+            </form>
+          </section>,
           document.body,
         )}
     </>
