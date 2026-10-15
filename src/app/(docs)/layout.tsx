@@ -39,7 +39,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
             </div>
           </main>
 
-          <aside className="hidden w-(--toc-w) shrink-0 xl:block">
+          <aside data-toc className="hidden w-(--toc-w) shrink-0 xl:block">
             <div className="sticky top-(--topbar-h) max-h-[calc(100dvh-var(--topbar-h))] overflow-y-auto py-10 pl-2">
               <TableOfContents />
             </div>
