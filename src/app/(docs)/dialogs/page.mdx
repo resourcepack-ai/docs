@@ -337,6 +337,44 @@ There are two ways to fill one:
   An older RP Engine shows every row, its placeholders as written.
 </Callout>
 
+### Rows repeated a number of times
+
+Sometimes the server can say **how many** but not what each one is called: a
+button per home slot a player owns, a slot per backpack upgrade, a star per
+level. In the list's settings, switch it to **Repeated a number of times** and
+give **How many**:
+
+- **A number** — `4` — repeats the row exactly that many times, for everybody.
+- **A live value** — `{home_slots}`, or a PlaceholderAPI one as
+  `{player_level}` or `%player_level%` — repeats it once for each, per player,
+  up to the most you set. A player whose value is `3` sees three rows, one with
+  none sees none, and the rows past it are hidden, clicks and all.
+
+In the row, the list's own name is **the row's number**. Call the list `home`
+and a button saying `Home {home}` that runs
+
+```
+home {home}
+```
+
+reads *Home 1* and runs `home 1` in the first row, *Home 2* and `home 2` in the
+second, and so on. A choice on it picks words by number —
+`{home?1:Main home|*:Spare home}`. Its other fields are still each row's own
+value: `{home_label}` is filled from `home_1_label`, `home_2_label` and so on,
+the way a [list the server fills](#lists-the-server-fills) names its fields.
+
+The count can also be one of the dialog's own [player
+settings](#player-settings). Bind a stepper to `amount`, repeat a row
+`{amount}` times, and the rows come and go as the player presses + and −. The
+editor shows as many rows as the stepper's default; for a count the server
+gives, it shows them all.
+
+<Callout type="warning" title="Needs RP Engine 0.2.2 or newer, or Dialog Engine">
+  A repeated row with a live count is a piece with a condition, the same as
+  [Shown only to some players](#shown-only-to-some-players). A fixed count
+  needs nothing: its rows are simply there.
+</Callout>
+
 ### Shown only to some players
 
 Any piece — a card, a button, a grid of slots, a line of words — can be shown
@@ -373,6 +411,33 @@ conditions is marked with a crossed-out eye.
 <Callout type="warning" title="Needs RP Engine 0.2.2 or newer">
   An older RP Engine never draws a piece that has conditions, but still shows
   its words and items and lets its clicks through.
+</Callout>
+
+### Something else in its place
+
+Hidden, a piece leaves an empty space. To show the other players something
+instead — a greyed **VIP only** button where the VIP button is, a padlock over a
+locked reward — press **Show something else instead…** under its conditions.
+The piece and a stand-in for it go into a **Show one of** box, in the place the
+piece had: everybody its conditions hold for sees the piece, and everybody else
+sees the stand-in. The stand-in starts as a copy of the piece with no
+conditions (a button is greyed out and does nothing), so change it into whatever
+the others should see.
+
+A Show one of box can choose between up to six pieces. Each player sees the
+**first whose Show when holds** for them, and a last piece with no condition is
+what everybody else sees. A rank's badge is three of them: gold when `{rank}` is
+`gold`, silver when it is `silver`, and plain for the rest. **Another choice**
+in the box's panel adds one, and **Only one of its pieces** under Show turns any
+box into one, or back. The pieces share one place, and the box is as big as the
+biggest of them, so nothing around it moves whichever is shown.
+
+Pick a piece in the box's panel, or in the Components panel, to edit it: the
+editor shows the piece you have selected in place of the others.
+
+<Callout type="warning" title="Needs RP Engine 0.2.2 or newer, or Dialog Engine">
+  The same conditions as above, so the same engines. Without one, every piece
+  of the box is drawn, the last on top.
 </Callout>
 
 ### Other colours for some players
