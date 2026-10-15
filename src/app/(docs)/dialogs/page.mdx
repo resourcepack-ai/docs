@@ -487,6 +487,50 @@ real face.
   changes how text is drawn sees it small, in the slot's top-left corner.
 </Callout>
 
+### Icons from your server's own pack
+
+If your server already has icons — font images from ItemsAdder, Nexo or Oraxen,
+glyphs in a resource pack of your own, or RP Engine icons — a dialog can show
+them as they are. Add a **Pack glyph** (Basics) and paste the icon into its
+panel in whichever form you have it:
+
+- a text component, `{"text":"","font":"minecraft:default"}`, or
+  MiniMessage's `<font:nexo:default></font>`;
+- the character itself, or an escape like ``;
+- an **RP Engine icon** the way chat writes it, `:mypack:thirst:` (or
+  `<mypack:thirst>`, or just `:thirst:`).
+
+Then tell it the icon's **Height** and **Ascent**, the two numbers in its
+font's JSON, and its **Width**: how wide it is drawn, which is the picture's
+width × height ÷ the picture's height. Studio has never seen your pack, so in
+the editor a glyph is a marked box. Choose a **Picture in the editor** (any
+image imported into the dialog) to see the real thing while you lay it out.
+Nothing ships that picture.
+
+The game draws the glyph itself, from the players' own packs, so only players
+who have your pack see it. A pasted glyph needs no plugin at all: it works with
+RP Engine, Dialog Engine and a plain datapack alike. An RP Engine icon is put in
+by RP Engine as the dialog opens, at the icon's real width. Its character
+changes whenever your content folder does, so it is never stored. A
+[live value](#live-values) in either picks the glyph for each player:
+`:status:{thirst_state}:` shows whichever of your status icons that value
+names.
+
+Two things the game decides, not the editor:
+
+- **Up and down, a glyph moves in steps.** The game sets text on lines 9 pixels
+  apart, and your font's ascent says where on its line the glyph sits. So a
+  glyph lands up to 4 pixels from where you put it, and the editor shows exactly
+  where.
+- **Its width has to be right.** The rest of the dialog steps back over a pasted
+  glyph by the width you give, so a wrong one shifts whatever follows it on its
+  line. An RP Engine icon is measured by RP Engine, so it cannot be off.
+
+<Callout type="warning" title="RP Engine icons need RP Engine 0.2.10 or newer">
+  Elsewhere, including Dialog Engine and an older RP Engine, an icon's place is
+  left blank and nothing around it moves. Pasted glyphs need nothing.
+</Callout>
+
 ## Items and inventories
 
 A dialog can show items the way an inventory does: in the game's grey slots,
