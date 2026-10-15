@@ -1019,6 +1019,23 @@ Pair the pack with a server running RP Engine and push it, the same way you
 The panel in the editor has the exact command for the dialog you are looking
 at.
 
+### As files, for Dialog Engine or RP Engine
+
+A server that isn't paired with your pack can still have the dialog: the
+editor's **Export** menu downloads it for either plugin, as a zip you unzip into
+the server's `plugins/` folder.
+
+- **Dialog Engine** gets a drawn dialog in
+  `plugins/DialogEngine/drawn/<pack>/<dialog>/`. Run `/de reload` and open it
+  with `/de open <pack>:<dialog>`. `/de edit` brings it back into the editor
+  later.
+- **RP Engine** gets a content folder in `plugins/RPEngine/content/<pack>/`,
+  with the dialog's pictures in its `resourcepack/` folder. Run `/rp reload`.
+
+Both carry everything the plugin fills in for you: live values, inventories,
+bars, lists, pages and pieces shown only to some players. The download is built
+from your last save, so the editor saves first.
+
 ### A command of its own
 
 `/rp dialog` is for staff. To let **players** open a dialog themselves — a
@@ -1073,9 +1090,9 @@ first page was opened with.
 ### Without RP Engine
 
 A dialog is a vanilla `minecraft:dialog`, so a server can also run one from a
-datapack alone. The editor's **JSON** button has a **minecraft:dialog** tab with
-the dialog's file, to copy or download, and a button for the whole datapack.
-**Export pack › Dialogs** downloads the same datapack. It goes in your world's
+datapack alone. The editor's **Export** menu has the datapack, and the **JSON**
+button has a **minecraft:dialog** tab with the dialog's own file, to copy or
+download. **Export pack › Dialogs** downloads the same datapack. It goes in your world's
 `datapacks/` folder, takes a restart, and opens with
 `/dialog show @s studio:<id>`. Everything drawn inside the screen is still
 pictures in the resource pack, which the file names as characters written
@@ -1083,7 +1100,8 @@ pictures in the resource pack, which the file names as characters written
 pack too.
 
 That can be the whole pack (**Export pack › Minecraft: Java Edition**), or just
-this dialog's part of it: the tab's **Resource pack (.zip)** button downloads
+this dialog's part of it: **Resource pack (.zip)**, in the Export menu and the
+tab, downloads
 only what the dialog draws with. That means its pictures, the fonts it uses, and
 a `README.txt` listing which `\uE0…` character is which picture file. Use it to
 add a dialog to a resource pack of your own:
