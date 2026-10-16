@@ -93,6 +93,10 @@
       "status": 403,
       "description": "The key is valid, but its account is on Starter. The API needs a paid plan."
     },
+    "account_suspended": {
+      "status": 403,
+      "description": "The account is suspended, so its keys open nothing. `message` says until when, if the suspension has an end date."
+    },
     "forbidden": {
       "status": 403,
       "description": "Valid key, but not permitted to do this in this pack."
@@ -283,7 +287,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -419,7 +423,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `pack_limit_reached`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `pack_limit_reached`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -582,7 +586,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -762,7 +766,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -961,7 +965,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `upload_not_found`, `file_too_large`, `file_fetch_failed`, `forbidden`, `asset_limit_reached`, `conflict`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `upload_not_found`, `file_too_large`, `file_fetch_failed`, `forbidden`, `asset_limit_reached`, `conflict`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1139,7 +1143,7 @@
             "description": "The file."
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `still_generating`, `generation_failed`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `still_generating`, `generation_failed`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1227,7 +1231,7 @@
             "description": "A `application/zip` body."
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `forbidden`, `export_failed`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`, `export_failed`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1422,7 +1426,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_job_handle`, `job_not_found`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_job_handle`, `job_not_found`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1555,7 +1559,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1762,7 +1766,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1947,7 +1951,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `conflict`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `conflict`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2142,7 +2146,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `unavailable`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `unavailable`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2526,7 +2530,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `unavailable`, `conflict`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `unavailable`, `conflict`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2746,7 +2750,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2930,7 +2934,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3119,7 +3123,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `unavailable`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `unavailable`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3305,7 +3309,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3400,7 +3404,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `upload_not_found`, `file_too_large`, `file_fetch_failed`, `forbidden`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `upload_not_found`, `file_too_large`, `file_fetch_failed`, `forbidden`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3654,7 +3658,7 @@
             }
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `not_found`, `invalid_request`, `upload_not_found`, `file_too_large`, `file_fetch_failed`, `forbidden`, `not_a_pack`, `pack_limit_reached`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `upload_not_found`, `file_too_large`, `file_fetch_failed`, `forbidden`, `not_a_pack`, `pack_limit_reached`.",
             "content": {
               "application/json": {
                 "schema": {
