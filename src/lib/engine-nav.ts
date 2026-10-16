@@ -361,13 +361,16 @@ export const engineNav: EngineGroup[] = [
         description: "Push, tuck, ollie, grind and wall ride, with a skatepark to build - and the worked example for the plugin API.",
         keywords: ["addon", "skateboard", "skatepark", "vehicle", "trick", "grind", "wall ride", "ollie", "example"],
       },
-      {
-        title: "BMX",
-        href: "/rp-engine/bmx",
-        description: "Pedal, manual and bunnyhop, with barspins, tailwhips and 360s that combine, and dirt jumps to ride at.",
-        keywords: ["addon", "bmx", "bike", "bicycle", "trails", "dirt jump", "vehicle", "trick", "manual",
-          "wheelie", "barspin", "tailwhip", "truck driver", "bunnyhop", "perform"],
-      },
+      // BMX is hidden until it has a published release; its page is at
+      // (engine)/rp-engine/_bmx, which the underscore keeps off the router.
+      // Restore by renaming the folder and uncommenting this.
+      // {
+      //   title: "BMX",
+      //   href: "/rp-engine/bmx",
+      //   description: "Pedal, manual and bunnyhop, with barspins, tailwhips and 360s that combine, and dirt jumps to ride at.",
+      //   keywords: ["addon", "bmx", "bike", "bicycle", "trails", "dirt jump", "vehicle", "trick", "manual",
+      //     "wheelie", "barspin", "tailwhip", "truck driver", "bunnyhop", "perform"],
+      // },
       {
         title: "Paintball",
         href: "/rp-engine/paintball",
