@@ -132,20 +132,10 @@ export const engineNav: EngineGroup[] = [
           {
             title: "Animation",
             href: "/rp-engine/animation",
-            description: "Keyframes read straight out of a Blockbench save file.",
-            keywords: ["animation", "bbmodel", "blockbench", "keyframe", "bone", "rig", "export"],
-          },
-          {
-            title: "Controlling playback",
-            href: "/rp-engine/playback",
-            description: "Loop, hold or once — and speed, priority and crossfades.",
-            keywords: ["loop", "hold", "once", "speed", "priority", "blend", "crossfade", "door"],
-          },
-          {
-            title: "Layers and masks",
-            href: "/rp-engine/layers",
-            description: "Playing two animations at once, and on part of a model.",
-            keywords: ["layer", "weight", "mask", "bones", "overlay", "wave", "walk"],
+            description: "Keyframes from Blockbench or Studio: when they play, speed, blending, layers and masks.",
+            keywords: ["animation", "bbmodel", "blockbench", "keyframe", "bone", "rig", "export",
+              "loop", "hold", "once", "speed", "priority", "blend", "crossfade", "door", "playback",
+              "layer", "weight", "mask", "bones", "overlay", "wave", "walk"],
           },
           {
             title: "Bones that do something",
