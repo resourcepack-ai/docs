@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Plugin API",
   description:
-    "Drive items, models, emotes, vehicles, 3D armour, icons, sounds, HUD overlays and dialogs from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
+    "Drive items, models, emotes, vehicles, 3D armour, 3D shader objects, icons, sounds, HUD overlays and dialogs from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
 };
 
 # Plugin API
@@ -12,7 +12,7 @@ icon in a message, open a dialog with your own values on it, and cancel any of
 those when your rules say no. Every snippet is shown in Java and Kotlin; pick
 one and the rest of the docs follows your choice.
 
-This page matches **RP Engine 0.2.8**, the current release.
+This page matches **RP Engine 0.2.10**, the current release.
 
 ## Setting up
 
@@ -59,6 +59,7 @@ engine.items();         // custom items
 engine.models();        // models, and the ones standing in your worlds
 engine.emotes();        // emotes and movement sets
 engine.vehicles();      // vehicles, and the ones standing in your worlds
+engine.shaderObjects(); // 3D shader objects: place them and drive them
 engine.armor();         // 3D armour sets, and putting them on people
 engine.sounds();        // custom sounds
 engine.icons();         // icons, and putting one into text
@@ -75,6 +76,7 @@ engine.items()          // custom items
 engine.models()         // models, and the ones standing in your worlds
 engine.emotes()         // emotes and movement sets
 engine.vehicles()       // vehicles, and the ones standing in your worlds
+engine.shaderObjects()  // 3D shader objects: place them and drive them
 engine.armor()          // 3D armour sets, and putting them on people
 engine.sounds()         // custom sounds
 engine.icons()          // icons, and putting one into text
@@ -323,6 +325,53 @@ nobody. `ArmorResult` has a reason: `WORN`, `UNKNOWN_SET` or `UNSUPPORTED`.
 A set pushed from Studio is only drawn for players holding that push's pack.
 Main thread only, except `available`, `ids` and `info`. See
 [3D armour](/rp-engine/armour).
+
+## 3D shader objects
+
+Needs RP Engine 0.2.10 or newer, and a server on Minecraft 1.21.4 or newer.
+`engine.shaderObjects()` places and drives [3D objects](/rp-engine/objects):
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+ShaderObjects objects = engine.shaderObjects();
+if (!objects.supported()) return;                     // false before 1.21.4
+ContentId nuke = ContentId.parse("studio:nuke").orElseThrow();
+ShaderObject bomb = objects.spawn(location, nuke).orElseThrow();
+
+bomb.moveBy(new Vector(0, -20, 0), 50, Easing.IN);    // over 50 ticks
+bomb.turnTo(90, 0, 0, 40, Easing.IN_OUT);             // yaw, pitch, roll
+bomb.resize(40, 2, Easing.LINEAR);                    // diameter in blocks
+bomb.state("detonate");                               // starts its clock
+bomb.play("drop");                                    // a sequence from objects/
+```
+
+```kotlin
+val objects = engine.shaderObjects()
+if (!objects.supported()) return                      // false before 1.21.4
+val nuke = ContentId.parse("studio:nuke").orElseThrow()
+val bomb = objects.spawn(location, nuke).orElseThrow()
+
+bomb.moveBy(Vector(0, -20, 0), 50, Easing.IN)         // over 50 ticks
+bomb.turnTo(90f, 0f, 0f, 40, Easing.IN_OUT)           // yaw, pitch, roll
+bomb.resize(40.0, 2, Easing.LINEAR)                   // diameter in blocks
+bomb.state("detonate")                                // starts its clock
+bomb.play("drop")                                     // a sequence from objects/
+```
+
+</CodeTabs>
+
+`spawn(location, id, size)` sets the size; without it the object's own size is
+used. `at(entity)`, `near(location, radius)` and `loaded()` find objects
+already placed, and `ids()` and `info(id)` list what the server has (states,
+sequences, size). On a handle, `replay()`, `settle()`, `seed(n)`, `moveTo`,
+`stop()` and `remove()` match the [commands](/rp-engine/objects#commands);
+`state(name)` and `play(name)` return false for a name the object doesn't have.
+A time of 0 ticks is instant. Easing is `LINEAR`, `IN`, `OUT` or `IN_OUT`.
+
+A handle lasts as long as its entity, and the object's state, place, turn and
+size survive a restart; a running sequence or move does not. Main thread only,
+except `ids` and `info`.
 
 ## Sounds
 
