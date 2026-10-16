@@ -1,15 +1,20 @@
 export const metadata = {
   title: "Animation",
   description:
-    "Keyframes from a Blockbench project, when they play, and what an animated model costs.",
+    "Keyframes from a Blockbench project or Studio, when they play, and the speed, blending, layers and masks a server can set.",
 };
 
 # Animation
 
-If a model's `.bbmodel` file has animations in it, the placed model moves: a
-windmill turns, a chest lid opens, a statue breathes. There is nothing to
-declare and nothing to export. Put the Blockbench project in `assets/models/`
-and RP Engine reads its bones and keyframes.
+If a model has animations, the placed model moves: a windmill turns, a chest
+lid opens, a statue breathes. RP Engine plays them on its own, and you can
+change how each one plays on your server without editing the model.
+
+## Where animations come from
+
+**From Blockbench.** Put the Blockbench project in `assets/models/` and RP
+Engine reads its bones and keyframes. There is nothing to declare and nothing
+to export.
 
 ```
 content/mypack/
@@ -23,6 +28,11 @@ content/mypack/
   it is the only file your animation is in.
 </Callout>
 
+**From Studio.** A model animated in Studio's editor brings its animations and
+triggers with it when you send the pack to your server. See
+[Animations](/animations) for keyframing and triggers there. Everything below
+about controlling playback applies to both.
+
 ## When it plays
 
 The Blockbench file decides when each animation starts:
@@ -35,18 +45,123 @@ The Blockbench file decides when each animation starts:
 Right-clicking a piece with a right-click animation plays it rather than
 sitting on it. Sneak and right-click to sit, if it has a `seat`.
 
-To play an animation by name from a plugin, use `Placement.play` in
-[the API](/rp-engine/api). On a model worn by a mob,
-[MythicMobs](/rp-engine/mythicmobs) can play one with `rpanimate`.
+### Playing from a plugin
 
-## Changing how it plays
+Plugins and commands play an animation by its name in Blockbench. From your
+own plugin, use `Placement.play` in [the API](/rp-engine/api). On a model worn
+by a mob, [MythicMobs](/rp-engine/mythicmobs) can play one with `rpanimate`.
 
-Speed, priority, blending, and what happens at the end can all be set per
-animation in the item's `place:` block, without touching the model. See
-[Controlling playback](/rp-engine/playback). To play two at once, or move only
-part of a model, see [Layers and masks](/rp-engine/layers).
+## Controlling playback
 
-## How it works, and what it costs
+An animation plays exactly as it was made unless you say otherwise. To change
+how one plays on your server, name it under `animations:` in the item's
+`place:` block:
+
+```yaml
+chair:
+  material: PAPER
+  model: chair
+  place:
+    animations:
+      spin:             # the animation's name in Blockbench
+        mode: loop      # loop | hold | once, overriding the .bbmodel
+        speed: 0.5      # half the authored speed
+        priority: 10    # wins when two animations claim one trigger
+        blend: 0.25     # seconds to ease in and out of it
+```
+
+Leave out any setting to keep what the model says.
+
+| Setting | Does | Default |
+|---|---|---|
+| `mode` | What happens at the end: `loop`, `hold` or `once` | From the model |
+| `speed` | Playback speed multiplier | `1` |
+| `priority` | Which animation wins a shared trigger (higher wins) | `0` |
+| `blend` | Seconds to ease in and out | Off |
+| `layer` | Which [layer](#layers) it plays on | `0` |
+| `bones` | Limits it to these bones (a [mask](#masks)) | Whole model |
+| `weight` | How far it moves what it touches, 0 to 1 | `1` |
+
+### What happens at the end
+
+| `mode` | What happens |
+|---|---|
+| `loop` | Starts again |
+| `hold` | Stops on the last frame and stays there |
+| `once` | Plays, then goes back to rest |
+
+Use `hold` for a door, a lid or a drawbridge. Without it they spring shut the
+moment they finish opening.
+
+`mode` changes what happens at the end, not when an animation starts. That
+still comes from the Blockbench file: an animation set to Loop there plays on
+its own, and anything else plays on right-click.
+
+### Speed
+
+`speed: 0.5` is half as fast; `2` is twice as fast. The same walk cycle can be a
+stroll on one server and a sprint on another without editing the model.
+
+### Priority
+
+Matters when a model has more than one animation on the same trigger, for
+example two right-click animations. Higher wins; with equal priority, the one
+that comes first in the file wins.
+
+### Blend
+
+`blend:` is how many seconds the model takes to ease into and out of the
+animation, instead of snapping between poses. A quarter of a second suits most
+things. It is off unless you set it, because blending a quick flicker would
+smear it into nothing.
+
+Blend does nothing on a [vehicle](/rp-engine/vehicles): a vehicle's animations
+always switch instantly when its state changes.
+
+## Layers and masks
+
+A layer lets one animation play on top of another, such as a wave over a walk.
+A mask limits an animation to part of a model, such as the upper body. Both go
+in the same `animations:` block:
+
+```yaml
+  place:
+    animations:
+      walk:  { mode: loop, layer: 0 }
+      wave:  { mode: once, layer: 1, bones: [torso], blend: 0.2 }
+```
+
+### Layers
+
+`layer: 0` is the base: a walk cycle or an idle. Only one base animation plays
+at a time, and starting another replaces it.
+
+Anything on layer 1 or higher plays on top of whatever is running, so a wave on
+layer 1 plays over the walk rather than replacing it. Each layer holds one
+animation, so waving again replaces the first wave and leaves the walk alone.
+
+The layer comes from these settings, so a plugin or command that plays an
+animation by name doesn't need to know about layers.
+
+### Masks
+
+`bones:` limits the animation to the bones you name and everything attached
+under them. `bones: [torso]` moves the torso and the arms and head hanging off
+it, which is what "upper body only" usually means. Name the parent bone rather
+than listing every limb. Bone names are whatever you called them in
+Blockbench.
+
+A bone is either in the mask or not. There is no partial strength per bone; if
+you need the shoulder at half strength and the hand at full, author that into
+the animation itself.
+
+### Weight
+
+`weight:` (0 to 1) scales how far the animation moves what it touches. Half a
+wave is a smaller wave. Rotation and position are scaled toward zero and scale
+toward 1, so a bone scaled to 2 at half weight ends up at 1.5.
+
+## What an animated model costs
 
 The game cannot animate a block model, so an animated model is placed as one
 display entity per moving bone, plus one for everything that stays still, and

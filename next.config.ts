@@ -122,6 +122,9 @@ const nextConfig: NextConfig = {
       { source: "/oraxen", destination: "/exporting#nexo-and-oraxen", permanent: true },
       { source: "/rp-engine/nexo", destination: "/rp-engine/nexo-oraxen", permanent: true },
       { source: "/rp-engine/oraxen", destination: "/rp-engine/nexo-oraxen", permanent: true },
+      // Playback and layers were pages of their own; they are sections of Animation now.
+      { source: "/rp-engine/playback", destination: "/rp-engine/animation#controlling-playback", permanent: true },
+      { source: "/rp-engine/layers", destination: "/rp-engine/animation#layers-and-masks", permanent: true },
     ];
   },
 };
