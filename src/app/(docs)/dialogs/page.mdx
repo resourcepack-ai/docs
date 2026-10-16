@@ -349,6 +349,10 @@ like `show_sidebar`) and it shows each player's own setting instead. Clicking it
 changes their setting and redraws the dialog. Settings are kept per player
 across restarts, with no setup.
 
+A slider or stepper can show a setting with at most 21 positions, so 0 to 100
+needs a step of 5 or more. With more than that it stays a picture, and its
+panel says so and suggests a step.
+
 Other plugins read a setting as `%rpengine_var_show_sidebar%` through
 PlaceholderAPI, or through [RP Engine's API](/rp-engine/api#player-settings).
 Inside the dialog, `{show_sidebar}` is its value. A player can only set a
