@@ -4,6 +4,7 @@ import {
   ArrowUp,
   Boxes,
   Download,
+  ImagePlus,
   MessageCircle,
   Monitor,
   Package,
@@ -74,6 +75,54 @@ interface Turn {
   threadId?: string;
   /** What the service signed, sent back as context with the next question. */
   signed?: { question: string; answer: string; sig: string } | null;
+  /** Small previews of the pictures sent with this question (the full ones are not kept). */
+  images?: string[];
+}
+
+// --- Pictures -----------------------------------------------------------------
+
+const MAX_IMAGES = 5;
+const LONG_SIDE = 1568;
+const IMAGE_TYPES = /^image\/(png|jpeg|webp|gif)$/;
+
+interface Attached {
+  /** What is sent: resized, as a data: URL. */
+  data: string;
+  /** What is shown: a small preview. */
+  thumb: string;
+}
+
+/**
+ * A picture as the help service gets it. This product's pictures are often
+ * pixel art: a 16x16 texture is scaled UP, with no smoothing, so a model can
+ * see its pixels, and stays a lossless PNG. A screenshot is scaled down to
+ * 1568px on its long side, the size models actually look at, so a 4K capture
+ * costs no more than it needs to.
+ */
+async function prepareImage(file: Blob): Promise<Attached> {
+  const bitmap = await createImageBitmap(file);
+  const long = Math.max(bitmap.width, bitmap.height);
+  const draw = (scale: number, smooth: boolean) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const ctx = canvas.getContext("2d")!;
+    ctx.imageSmoothingEnabled = smooth;
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    return canvas;
+  };
+  let data: string;
+  if (long <= 256) {
+    data = draw(Math.max(1, Math.floor(512 / long)), false).toDataURL("image/png");
+  } else {
+    const canvas = draw(Math.min(1, LONG_SIDE / long), true);
+    data = canvas.toDataURL("image/webp", 0.85);
+    if (!data.startsWith("data:image/webp")) data = canvas.toDataURL("image/jpeg", 0.85);
+  }
+  const thumbCanvas = draw(Math.min(160 / long, long <= 256 ? Math.floor(160 / long) || 1 : 1), long > 256);
+  const thumb = thumbCanvas.toDataURL("image/webp", 0.8);
+  bitmap.close();
+  return { data, thumb };
 }
 
 function loadTurns(): Turn[] {
@@ -477,6 +526,9 @@ export function AskAi() {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
+  const [attached, setAttached] = useState<Attached[]>([]);
+  const [dragging, setDragging] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const latestRef = useRef<HTMLDivElement>(null);
@@ -511,19 +563,38 @@ export function AskAi() {
     if (!window.matchMedia(BESIDE_THE_PAGE).matches) setOpen(false);
   }, []);
 
+  async function addFiles(files: Iterable<File>) {
+    const pictures = [...files].filter((f) => IMAGE_TYPES.test(f.type));
+    if (!pictures.length) return;
+    const room = MAX_IMAGES - attached.length;
+    const prepared = await Promise.all(
+      pictures.slice(0, Math.max(0, room)).map((f) => prepareImage(f).catch(() => null)),
+    );
+    setAttached((current) =>
+      [...current, ...prepared.filter((p): p is Attached => p !== null)].slice(0, MAX_IMAGES),
+    );
+    inputRef.current?.focus();
+  }
+
   async function send(text: string) {
-    const question = text.trim().slice(0, MAX_QUESTION);
+    const typed = text.trim().slice(0, MAX_QUESTION);
+    const images = attached;
+    // A picture on its own is a question too ("what's wrong with this?").
+    const question = typed || (images.length ? "(see the attached images)" : "");
     if (!question || busy) return;
     const history = turns
       .flatMap((t) => (t.signed ? [t.signed] : []))
       .slice(-3);
     const threadId = [...turns].reverse().find((t) => t.threadId)?.threadId;
-    const next = [...turns, { question }];
+    const thumbs = images.map((i) => i.thumb);
+    const asked = { question: typed, images: thumbs.length ? thumbs : undefined };
+    const next = [...turns, asked];
     setTurns(next);
     setDraft("");
+    setAttached([]);
     setBusy(true);
 
-    let turn: Turn = { question };
+    let turn: Turn = asked;
     try {
       const token = await turnstileToken();
       const res = await fetch(`${HELP_URL}/v1/ask`, {
@@ -533,6 +604,7 @@ export function AskAi() {
           question,
           history,
           threadId,
+          images: images.map((i) => i.data),
           turnstileToken: token,
         }),
       });
@@ -547,7 +619,7 @@ export function AskAi() {
       turn =
         res.ok && typeof body.answer === "string"
           ? {
-              question,
+              ...asked,
               answer: body.answer,
               sources: body.sources ?? [],
               notice: body.notice,
@@ -555,13 +627,13 @@ export function AskAi() {
               threadId: body.threadId,
             }
           : {
-              question,
+              ...asked,
               error:
                 body.message ?? "Something went wrong. Try again in a moment.",
             };
     } catch {
       turn = {
-        question,
+        ...asked,
         error:
           "Couldn't reach the help service. Check your connection and try again.",
       };
@@ -611,6 +683,19 @@ export function AskAi() {
         createPortal(
           <section
             aria-label="Ask the docs"
+            onDragOver={(event) => {
+              if (!event.dataTransfer.types.includes("Files")) return;
+              event.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={(event) => {
+              if (event.currentTarget === event.target) setDragging(false);
+            }}
+            onDrop={(event) => {
+              event.preventDefault();
+              setDragging(false);
+              void addFiles(event.dataTransfer.files);
+            }}
             className="border-border bg-background fixed inset-y-0 right-0 z-50 flex w-full flex-col [animation:rpin_.22s_ease] lg:w-(--ask-w) lg:border-l lg:shadow-[-24px_0_48px_rgba(0,0,0,0.25)]"
           >
             <div className="border-line text-muted-foreground flex h-[2.875rem] shrink-0 items-center gap-2 border-b pr-2.5 pl-5 text-[0.8rem] sm:pl-7">
@@ -692,8 +777,21 @@ export function AskAi() {
                     {turn.error ? "No answer" : "Answer"}
                   </span>
                   <h2 className="-mt-2 text-[1.5rem] leading-tight font-semibold tracking-[-0.015em] break-words text-balance">
-                    {turn.question}
+                    {turn.question || "What's going on here?"}
                   </h2>
+                  {turn.images && turn.images.length > 0 && (
+                    <div className="-mt-1 flex flex-wrap gap-2">
+                      {turn.images.map((src, i) => (
+                        // eslint-disable-next-line @next/next/no-img-element -- a data: URL preview, nothing to optimise
+                        <img
+                          key={i}
+                          src={src}
+                          alt=""
+                          className="border-border h-16 w-auto max-w-[6rem] rounded-md border object-cover [image-rendering:pixelated]"
+                        />
+                      ))}
+                    </div>
+                  )}
                   {turn.notice && (
                     <p className="text-amber text-[0.78rem] leading-snug">
                       {turn.notice}
@@ -735,7 +833,34 @@ export function AskAi() {
                 send(draft);
               }}
             >
-              <div className="bg-card flex min-h-11 items-end gap-2.5 rounded-[22px] border border-[#45453d] py-[7px] pr-[7px] pl-[18px] focus-within:border-[#5b5b51]">
+              {attached.length > 0 && (
+                <div className="mb-2 flex flex-wrap gap-2">
+                  {attached.map((img, i) => (
+                    <div key={i} className="relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element -- a data: URL preview */}
+                      <img
+                        src={img.thumb}
+                        alt=""
+                        className="border-border h-14 w-auto max-w-[5rem] rounded-md border object-cover [image-rendering:pixelated]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setAttached((current) => current.filter((_, j) => j !== i))}
+                        aria-label="Remove picture"
+                        className="bg-background border-border text-muted-foreground hover:text-foreground absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full border"
+                      >
+                        <X className="size-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div
+                className={cn(
+                  "bg-card flex min-h-11 items-end gap-1.5 rounded-[22px] border py-[7px] pr-[7px] pl-[18px] focus-within:border-[#5b5b51]",
+                  dragging ? "border-primary" : "border-[#45453d]",
+                )}
+              >
                 <textarea
                   ref={inputRef}
                   autoFocus
@@ -743,6 +868,12 @@ export function AskAi() {
                   maxLength={MAX_QUESTION}
                   rows={1}
                   onChange={(event) => setDraft(event.target.value)}
+                  onPaste={(event) => {
+                    if (event.clipboardData.files.length) {
+                      event.preventDefault();
+                      void addFiles(event.clipboardData.files);
+                    }
+                  }}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" && !event.shiftKey) {
                       event.preventDefault();
@@ -755,9 +886,30 @@ export function AskAi() {
                   aria-label="Ask a question"
                   className="placeholder:text-faint max-h-32 min-h-[1.375rem] flex-1 resize-none self-center bg-transparent text-[0.875rem] outline-none [field-sizing:content]"
                 />
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  multiple
+                  hidden
+                  onChange={(event) => {
+                    if (event.target.files) void addFiles(event.target.files);
+                    event.target.value = "";
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  disabled={attached.length >= MAX_IMAGES}
+                  aria-label="Attach a picture"
+                  title={attached.length >= MAX_IMAGES ? "Up to 5 pictures" : "Attach a picture (or paste one)"}
+                  className="text-muted-foreground hover:text-foreground hover:bg-muted grid size-[30px] shrink-0 place-items-center rounded-full transition-colors disabled:opacity-35"
+                >
+                  <ImagePlus className="size-4" />
+                </button>
                 <button
                   type="submit"
-                  disabled={busy || !draft.trim()}
+                  disabled={busy || (!draft.trim() && attached.length === 0)}
                   aria-label="Send"
                   className="bg-primary grid size-[30px] shrink-0 place-items-center rounded-full text-white transition-opacity disabled:opacity-35"
                 >
