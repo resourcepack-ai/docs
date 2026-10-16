@@ -1,46 +1,59 @@
 export const metadata = {
   title: "Configuration",
   description:
-    "config.yml — the pack format, how the plugin talks in chat, and icons players can type.",
+    "Every setting in RP Engine's config.yml: serving the pack, the join prompt, chat, emotes, vehicles, dialogs, Studio and telemetry.",
 };
 
 # Configuration
 
-`plugins/RPEngine/config.yml`. Everything in it has a working default; most
-servers change the first setting and nothing else.
+The settings live in `plugins/RPEngine/config.yml`, which the plugin writes
+the first time it starts. Every setting has a working default. The one most
+servers need to change is `host.public-address`, so players outside your
+network can download the pack. Many settings apply on `/rp reload`; restart
+the server to be sure a change has taken effect.
 
-## The pack
-
-```yaml
-pack:
-  format: 46                  # must match the version your players are on
-  description: "My server"
-default-bundle: main          # what a joining player is handed
-```
-
-**`pack.format` is the one to get right.** A number that does not match the
-client's version shows a "made for a different version" warning on join. The
-comment beside it lists the numbers.
-
-## Serving
+## Serving the pack
 
 ```yaml
 host:
   port: 8181
-  public-address: "http://203.0.113.4:8181"
+  public-address: "http://127.0.0.1:8181"
+  enabled: true
 ```
 
-The plugin serves its own built packs over HTTP. It is **told** its public
-address rather than guessing one: a server behind a proxy or a NAT cannot work
-out how the outside world reaches it, and a guess produces a pack that
-downloads on the machine you tested on and nowhere else.
+The plugin serves its built packs over HTTP itself.
+
+| Key | Default | What it does |
+|---|---|---|
+| `host.port` | `8181` | The port it listens on. `0` picks a free one, which is only useful for testing |
+| `host.public-address` | `http://127.0.0.1:8181` | The address a player's game downloads the pack from. Set it to your server's public IP or hostname and the port above, and open that port. The plugin cannot work this out itself behind a proxy or NAT |
+| `host.enabled` | `true` | `false` if you host the built zips yourself (a CDN, a web server) and only want the plugin to build them |
+
+## The pack and the join prompt
+
+```yaml
+pack:
+  description: "RP Engine"
+  # format: 46
+default-bundle: "main"
+prompt:
+  message: ""
+  force: false
+```
+
+| Key | Default | What it does |
+|---|---|---|
+| `pack.description` | `RP Engine` | Shown in the client's resource pack list, with the bundle name added |
+| `pack.format` | not set | Leave it unset; the plugin picks the right number for your version. Set it only when the startup log says your Minecraft is newer than this RP Engine, then update the plugin and remove it. See [Minecraft versions](/rp-engine/versions#the-pack-format) |
+| `default-bundle` | `main` | The [bundle](/rp-engine/bundles) every joining player is sent. Empty sends nothing, for a server that sends packs itself |
+| `prompt.message` | empty | Text shown when the client asks the player to accept the pack. Empty uses the game's own wording |
+| `prompt.force` | `false` | `true` disconnects a player who declines the pack |
 
 ## How it talks
 
-Every line the plugin writes wears a prefix and a palette, and both are yours:
-
 ```yaml
 chat:
+  icons: false
   prefix: "RPEngine"
   colour:
     prefix: "#3670f8"
@@ -51,29 +64,56 @@ chat:
     success: "#55ff55"
 ```
 
-A plugin that shouts in its own brand colours on somebody else's server is a
-plugin whose messages get muted. The defaults are ours; the palette is yours.
-
-Colours are hex, with or without the `#`. Anything that is not a hex triple
-falls back to its default rather than throwing — a typo in a colour is not a
-reason for a plugin to stop talking.
+Every line the plugin writes starts with `[prefix]`, and the colours are
+yours to change so it matches your server. `accent` colours names, counts and
+codes, and the headings in `/rp` help. Colours are hex, with or without the
+`#`; anything else falls back to the default.
 
 ## Icons in chat
 
+`chat.icons: true` lets anybody with `rpengine.chat.icons` (every player, by
+default) type `:wave:` in chat to draw the [icon](/rp-engine/icons) called
+`wave`. Use `:mypack:wave:` where two packs use the same name. It is off by
+default.
+
+Text that is not an icon name is left exactly as typed, so `10:30`, `:)` and
+links are safe.
+
+## Emotes
+
 ```yaml
-chat:
-  icons: false
+emotes:
+  player-commands: true
+  bake-on-join: true
+  rigs: true
+  cast-permission: "rpengine.emote.cast"
+  nametag-see-through: false
+  held-item-pitch: 90.0
+  held-item-yaw: 0.0
+  held-item-roll: 0.0
 ```
 
-Turn it on and anybody with `rpengine.chat.icons` can type `:wave:` in chat to
-get the [icon](/rp-engine/icons) called `wave`. Use
-`:mypack:wave:` where two packs use one name.
+An emote plays on a rig: a copy of the player's skin, cut into parts, which is
+part of the pack.
 
-**Off by default**, because a plugin that starts rewriting what people type the
-moment it is installed is one somebody has to find the setting for in a hurry.
+| Key | Default | What it does |
+|---|---|---|
+| `player-commands` | `true` | Registers `/emote`. Turn it off if another plugin already has `/emote`; `/rp emote` still works, and `/emotereply` is always registered |
+| `rigs` | `true` | Builds a rig for every player who has joined, plus a shared default, so emotes and vehicle seats work without Studio. Needs Minecraft 1.21.4 or newer |
+| `bake-on-join` | `true` | Rebuilds the rigs when somebody joins who has none yet. See below |
+| `cast-permission` | `rpengine.emote.cast` | The node needed to pull other players into an emote. Empty for no check |
+| `nametag-see-through` | `false` | Whether an emoting player's name shows through walls. Off, because a see-through name tends to vanish behind nearby models |
+| `held-item-pitch`, `-yaw`, `-roll` | `90`, `0`, `0` | Calibration for how a held item is turned in a rig's hand. You should not need these; if a held item looks wrong, please report it |
 
-A name that is not an icon is left exactly as typed, so `10:30`, `:)` and a URL
-all survive.
+**What `bake-on-join` does.** A player the server has never seen has no rig,
+so they appear as the default skin until the rigs are rebuilt. With this on,
+the rebuild starts as soon as they join, and anybody else arriving within a few
+seconds is covered by one follow-up build. Players who are already online are
+not sent the new pack straight away (a new pack reloads their screen): they
+get it the next time they are sent a pack anyway, such as on rejoining or with
+`/rp push`. Until then they see the newcomer as the default. Turn it off to
+choose the moment yourself; `/rp reload` always includes every rig that has
+arrived.
 
 ## Seats
 
@@ -82,12 +122,38 @@ models:
   seat-offset: 0.0
 ```
 
-Nudges every seat on the server up or down, in blocks. `seat:` on a piece says
-where that piece's seat is; this corrects how the game *draws* somebody
-sitting, which is wrong by the same amount for every chair you own.
+Moves every seat on placed models up or down, in blocks. Positive is higher.
+If everybody sits slightly too high or low on every chair, set the difference
+here and `/rp reload`. You should not need it.
 
-Sit on something, decide it is a hand's width out, put the number here and
-`/rp reload`. Positive is higher. Most servers never touch it.
+## Vehicles
+
+```yaml
+vehicles:
+  seat-offset: 0.0
+  seat-forward: 0.0
+  debug-seats: false
+  push-players: false
+  collide: true
+  speedometer: true
+  mount-hint: true
+  seat-rig: true
+```
+
+| Key | Default | What it does |
+|---|---|---|
+| `seat-offset` | `0.0` | Moves every [vehicle](/rp-engine/vehicles) seat up (positive) or down, in blocks |
+| `seat-forward` | `0.0` | Moves every vehicle seat toward the front (positive) or back |
+| `debug-seats` | `false` | Once a second, reports where each rider actually ended up against where the plugin put them. For tracking down one seat that is out while others are fine |
+| `push-players` | `false` | Whether a moving vehicle shoves players out of the way. Mobs are always shoved, and vehicles always stop at walls |
+| `collide` | `true` | Whether vehicles bump into each other. The result depends on speed, angle and each vehicle's weight. Turn it off for a race track or a crowded car park |
+| `speedometer` | `true` | Shows the driver's speed above the hotbar in km/h, yellow while the tyres slide. A single vehicle can opt out; see [the speedometer](/rp-engine/vehicles#the-speedometer) |
+| `mount-hint` | `true` | Tells somebody the controls once when they get in. Passengers are told which seat they took either way |
+| `seat-rig` | `true` | Shows occupants sitting or standing in their emote rig, even when the pack gives the seat no emote. Off shows ordinary players, which costs fewer entities on a full vehicle |
+
+Which controls a vehicle uses depends on your server: Paper 1.21.4 and newer
+reads the movement keys, anything else steers by where the driver looks. See
+[Minecraft versions](/rp-engine/versions).
 
 ## Plants
 
@@ -98,148 +164,10 @@ blocks:
 
 How many [plants](/rp-engine/blocks#plants) fit depends on whether Paper has
 frozen tripwire updates (`block-updates.disable-tripwire-updates` in
-`config/paper-global.yml`): thirty-two if it has, two if not. `auto` reads
-Paper's setting. `true` or `false` says it outright, for a server whose Paper
-config lives somewhere else.
-
-Saying `true` when tripwire is not frozen makes neighbouring plants turn into
-each other, so only say it when you know.
-
-## Vehicles
-
-```yaml
-vehicles:
-  seat-offset: 0.0
-  seat-forward: 0.0
-  push-players: false
-  collide: true
-  speedometer: true
-  mount-hint: true
-  seat-rig: true
-```
-
-`seat-offset` and `seat-forward` are the same nudge as the one above, for the
-seats in a [vehicle](/rp-engine/vehicles): up, and along the vehicle toward
-its front. Where a rider ends up is the chassis, plus the seat, plus the
-game's own rule for placing a passenger — and that last one cannot be read by
-a plugin and has changed between versions. If every seat on your server is
-consistently a bit off from where the editor drew it, these close the gap in
-one `/rp reload`.
-
-`push-players` makes a moving vehicle shove players out of its way, as it
-already does mobs. Off, because cars nudging each other's drivers about in a
-car park, and a passenger being flung as they get out, are both worse than a
-vehicle passing through somebody. Nothing here changes what a vehicle does
-about blocks — it always stops at a wall.
-
-`collide` is whether vehicles run into **each other**. On, and what happens
-when they do is worked out rather than staged: how fast the two were closing,
-which way round they met, how far off centre the hit landed and what each of
-them [weighs](/rp-engine/vehicles). So a lorry shunts a hatchback aside and
-hardly slows, a clip on the corner sends you round and a square rear-ending
-does not, and at a crawl the whole thing turns into pushing. Turn it off for a
-track where a pile-up is worse than a clean overtake, or a lobby where cars are
-parked shoulder to shoulder.
-
-`speedometer` is whether a driver sees their speed above the hotbar in
-kilometres an hour, going yellow while the tyres are sliding. On. It stays off
-the action bar for a few seconds after anything else is written there, so it
-never paints over which seat you got. Off writes nothing and puts the readout
-nowhere else. An individual vehicle can opt out on its own with
-`speedometer: false` — see [vehicles](/rp-engine/vehicles#the-speedometer),
-which is what a skateboard does.
-
-`mount-hint` is the line above the hotbar when somebody gets in: the controls,
-once, and nothing else. On, because which keys drive depends on what this
-server can read from a client — a server that cannot read them steers by
-**look** instead, and nothing anywhere else says so. Off for a server that has
-told its players once and would rather the screen stayed clean. A passenger is
-told which seat they took either way, because on a small vehicle the seat
-markers overlap and somebody who meant to drive needs to know they did not.
-
-`seat-rig` puts every occupant in their emote rig, sitting the way the seat's
-pose says, even on a pack that never authored a driving pose. It is on because
-the game otherwise draws a passenger standing up to their waist in the hull.
-Off costs nothing and shows ordinary players; a seat that names an emote is
-unaffected either way.
-
-## The /emote command
-
-```yaml
-emotes:
-  player-commands: true
-  bake-on-join: true
-```
-
-Whether `/emote` and `/emotereply` are registered as commands of their own.
-Turn it off and nothing is lost — `/rp emote` runs the same code — but the
-server has one command instead of three.
-
-`bake-on-join` rebuilds the packs shortly after somebody turns up whose emote
-rig is not in them. A player's rig **is** pack
-content — a model per bone wearing their skin — so a player this server has
-never seen has no rig to wear and appears as the shared default until a build
-catches up. That is the "why is my friend a default skin" every server hits,
-and it lands on a first join, which is the worst moment for it.
-
-The rebuild starts **at once**: somebody who walked in on their own should not
-stand about as a default skin waiting out a window that exists for crowds.
-Anybody who arrives during that rebuild, or in the five seconds after it, is
-covered by a single follow-up rather than costing a rebuild each — so a server
-filling up at the start of an evening pays two, not twenty.
-
-The new build is **not** pushed onto players who already have a working pack.
-A new pack reloads the client that receives it, and somebody walking in should
-not reload everybody else's screen. It goes to whoever joins next, and to
-anybody already online the next time they are sent a pack anyway — a push,
-`/rp push`, or rejoining — so until then they see the newcomer as the default
-rig. A player whose download had not finished when the rebuild landed is sent
-the new build straight away, since the old one is no longer being served.
-
-Off is for a server that would rather choose the moment — a big pack, a busy
-lobby — and `/rp reload` still bakes whatever has arrived since.
-
-**On by default.** It is worth turning off on a server that already has an
-`/emote` from another plugin: two plugins claiming one name means whichever
-loaded first wins, and the loser's version is reachable only as
-`/theirplugin:emote`, which no player will ever type.
-
-<Callout type="note" title="Upgrading">
-  This setting is new, so an existing `config.yml` will not have the line in
-  it. A missing line reads as `true`, which is what the plugin has always done
-  — add it by hand if you want it off.
-</Callout>
-
-## Studio
-
-```yaml
-sync:
-  url: "wss://sync.resourcepack.ai/connect"
-  server-token: ""
-```
-
-Only needed if you use [Studio](https://studio.resourcepack.ai) to push packs
-to a running server. Leave it alone and nothing connects to Studio.
-
-A server that never links behaves exactly as it did before any of this
-existed — Studio is one content source among several, not a requirement.
-
-## Editing in a browser
-
-```yaml
-edit:
-  enabled: true
-  url: "https://studio.resourcepack.ai"
-```
-
-`/rp edit <id>` hands you a link to the editors at resourcepack.ai,
-opened on the file in your own content folder — no account needed. See
-[Editing in a browser](/rp-engine/editing).
-
-`enabled: false` and the command says so instead of doing anything. It talks
-to resourcepack.ai only while a link is open.
-
-`url:` is worth changing for one reason: pointing at a staging Studio.
+`config/paper-global.yml`): 32 if it has, 2 if not. `auto` reads Paper's
+setting. `true` or `false` states it outright, for a server whose Paper config
+lives somewhere else. Saying `true` when tripwire is not frozen makes
+neighbouring plants turn into each other.
 
 ## Dialogs
 
@@ -250,11 +178,10 @@ dialogs:
   click-pitch: 1.0                 # 0.5 to 2
 ```
 
-A click on a dialog's picture makes no sound in the game itself, so the plugin
-plays this when one reaches the server. Any sound event works: the game's, or
-one your pack adds. A Studio dialog can ask for its own
-[click sound](/dialogs#click-sounds), for the whole dialog or for one piece,
-and that wins. A hand-written dialog can too:
+A click on a dialog's picture makes no sound in the game, so the plugin plays
+this one. Any sound event works, the game's or one your pack adds. A Studio
+dialog can choose its own [click sound](/dialogs#click-sounds), for the whole
+dialog or one piece, and that takes priority. A hand-written dialog can too:
 
 ```yaml
 shop:
@@ -266,6 +193,27 @@ shop:
 
 `click-sound: ""` silences a dialog's clicks.
 
+## Studio
+
+```yaml
+sync:
+  url: "wss://sync.resourcepack.ai/connect"
+  server-token: ""
+edit:
+  enabled: true
+  url: "https://studio.resourcepack.ai"
+distribution:
+  api-url: "https://studio.resourcepack.ai"
+```
+
+Nothing connects to Studio unless somebody runs `/rp sync`, `/rp edit` or
+`/rp distribute`. Leave the URLs alone.
+
+| Key | Default | What it does |
+|---|---|---|
+| `sync.server-token` | empty | Only for a server the Studio account owner runs themselves. With a token, Studio can see who is online and push to them without a pairing code |
+| `edit.enabled` | `true` | `false` turns off [`/rp edit`](/rp-engine/editing) |
+
 ## Usage count
 
 ```yaml
@@ -273,17 +221,15 @@ telemetry:
   enabled: true
 ```
 
-Every 30 seconds the plugin tells resourcepack.ai that it is running, so we
-know how many servers and players use RP Engine and its addons. It is
-anonymous, and it is the only telemetry RP Engine has. What it sends is three
-things: a random id it made up the first time it started, kept in
-`plugins/RPEngine/server-id`; how many players are online, as a single number;
-and the names of any installed plugins that depend on RP Engine (its addons).
-Nothing else: no address, no server name, no player names or UUIDs, no
-content, no version. It logs nothing either way, and a failed send changes
-nothing.
+Every 30 seconds the plugin tells resourcepack.ai it is running, so we know
+how many servers and players use RP Engine and its addons. It sends three
+things: a random id it created the first time it started (kept in
+`plugins/RPEngine/server-id`; delete the file and a new one is made), the
+number of players online, and the names of installed plugins that depend on
+RP Engine. No address, server name, version, player names or UUIDs, worlds or
+content. A failed send is silently dropped.
 
-`enabled: false` and nothing is sent at all.
+`enabled: false` sends nothing at all, from the next restart.
 
 ## Update check
 
@@ -291,4 +237,5 @@ nothing.
 update-check: true
 ```
 
-Nudges you in the console on startup and in chat on join when an update is out.
+Tells the console at startup, and players with `rpengine.update` (ops) when
+they join, that a newer RP Engine is out.

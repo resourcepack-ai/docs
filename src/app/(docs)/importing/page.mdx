@@ -1,14 +1,14 @@
 export const metadata = {
   title: "Importing",
   description:
-    "Bring an existing Resource Pack .zip into the Studio: what comes in, what can't, and how the review step works.",
+    "Bring an existing resource pack .zip into Studio: what comes in, what can't, and how the review step works.",
 };
 
 # Importing
 
-**Import**, next to New pack, takes an ordinary Java Resource Pack `.zip` and
-turns it into a pack here, with every texture, model, font, GUI sheet and
-sound it can represent opened up for editing.
+**Import**, next to **New pack** on the dashboard, turns an ordinary Java
+resource pack `.zip` into a pack here, with every texture, model, icon, GUI
+sheet and sound it can use opened up for editing.
 
 Import always **creates a new pack**. It never merges into an existing one,
 because most of what two packs hold would collide; use
@@ -19,21 +19,17 @@ it somewhere else.
 
 <Steps>
   <Step title="Pick the zip">
-    The archive is opened **in your browser**, and nothing is uploaded at
-    this stage. Real packs run to hundreds of megabytes, and most of that
-    (the parts we can't use, the duplicates) never needs to cross the wire
-    at all.
+    The zip is opened **in your browser** and nothing is uploaded yet, so
+    even a pack of hundreds of megabytes is quick to read.
   </Step>
   <Step title="Review what was found">
-    The review screen lists what will come in, and just as deliberately what
-    won't, file by file, with the reason. A pack where 340 of 900 files come
-    in and nothing says where the rest went reads as broken; the report is
-    the answer to that.
+    The review screen lists what will come in and what won't, file by file,
+    with the reason for each file left out.
   </Step>
   <Step title="Approve it">
-    Only now does anything upload. The pack is created and fills in; if you
-    cancel partway, the Studio asks whether to keep or delete what already
-    landed rather than deciding for you.
+    Only now does anything upload. The pack is created and fills in. If you
+    cancel partway, Studio asks whether to keep or delete what has already
+    arrived.
   </Step>
 </Steps>
 
@@ -48,10 +44,10 @@ it somewhere else.
   256 per import.
 - **GUI sheets** for the screens in our catalog, cut using the known window
   regions.
-- **Sounds**, when `sounds.json` names them: a sound *is* its event, and the
-  file name alone never says whether an `.ogg` replaces the creeper fuse or
-  adds `custom.laser`. Audio no event names is reported as unreachable
-  rather than imported under a guess. Capped at 64 per import.
+- **Sounds**, when `sounds.json` names them. The event name is what decides
+  whether an `.ogg` replaces the creeper fuse or adds a new sound, so audio
+  that no event names is reported rather than guessed at. Capped at 64 per
+  import.
 
 **Multi-version packs are handled.** A pack that ships `overlays` for several
 Minecraft versions has the overlay matching its own declared version applied
@@ -65,16 +61,16 @@ Reported, never silently dropped:
 - **Entity, painting and particle sheets.** Their layouts live in the game's
   own code, not in the pack, so there's no honest way to cut them up.
 - **Core shaders.**
-- **Blockstate and item definition files.** The Studio owns those: carriers
-  and variants are reallocated on export rather than copied through.
-- **Audio that isn't Ogg Vorbis.** Ogg *Opus* has the same extension, plays
-  fine on a desktop, and silently fails in game, so it's caught here with a
-  message instead.
+- **Blockstate and item definition files.** Studio writes those itself when
+  it exports.
+- **Audio Minecraft can't play properly.** Anything that isn't mono Ogg
+  Vorbis: Ogg *Opus* (same extension, silent in game), stereo `.ogg` files
+  (which play without position), and other formats.
 - **OptiFine extensions.**
 
 ## Round-tripping our own export
 
-Importing a pack this Studio exported mostly restores it: geometry, textures
+Importing a pack Studio exported mostly restores it: geometry, textures
 and sounds survive. What doesn't, yet: a model's animations, bones and
 display settings come back as plain geometry, and per-face block textures
 return as ordinary model textures. Keep the original pack around rather than

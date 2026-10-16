@@ -1,27 +1,27 @@
 export const metadata = {
   title: "Our test server",
   description:
-    "play.resourcepack.ai — a lobby, a shared sandbox, and a private sandbox of your own.",
+    "play.resourcepack.ai: a lobby, a shared sandbox, and a private sandbox of your own.",
 };
 
 # Our test server
 
-The zero-setup way to see a pack in Minecraft. Nothing to install, no plugin,
-no server of your own.
+Our test server is the quickest way to see a pack in Minecraft. There's
+nothing to install and no server of your own to run.
 
 ```
 play.resourcepack.ai
 ```
 
-Join on Minecraft Java **or** Bedrock — same address, same worlds, and you'll
-see each other.
+Join on Minecraft Java or Bedrock. It's the same address and the same worlds,
+so Java and Bedrock players see each other.
 
 ## Where to build
 
 <CardGroup>
   <Card title="The shared sandbox" icon="blocks">
-    In front of you in the lobby. Everyone's, and it **wipes at the top of
-    every hour**.
+    In front of you in the lobby. Everyone shares it, it **wipes every hour**,
+    and each player can leave up to 10 models standing in it.
   </Card>
   <Card title="Your own sandbox" icon="boxes">
     Through the portal, or `/sandbox` from anywhere. Private, and **kept
@@ -45,23 +45,22 @@ It's removed after **a week without a visit**; any visit resets the clock.
 | `/weather <clear\|rain\|thunder>` | Set the weather in your sandbox |
 | `/reset` | Wipe your sandbox back to empty |
 | `/fly` | Toggle flight when your rank has the `rpai.fly` permission |
-| `/sandbox` | Straight to your own sandbox, wherever you are |
-| `/shared` | Straight to the shared sandbox in the lobby |
+| `/sandbox` (or `/private`) | Straight to your own sandbox, wherever you are |
+| `/shared` (or `/plot`) | Straight to the shared sandbox in the lobby |
 | `/leave` | Leave the sandbox you're in |
 | `/hub`, `/lobby`, `/spawn` | Back to the lobby |
+| `/cinematic` | Play the server's intro flythrough |
 
 <Callout type="tip">
-  `/floor`, `/time` and `/weather` are more useful than they look. Judging a
-  texture against white concrete, then grass, then deepslate — and once at
-  night — tells you in half a minute whether it reads in the places people
-  will actually build with it.
+  Use `/floor`, `/time` and `/weather` to judge a texture against white
+  concrete, grass and deepslate, and once at night. It shows in half a minute
+  whether it works where people will actually build with it.
 </Callout>
 
 ### Seeing a pack where players will actually see it
 
-A pack isn't only blocks. These put your own text and items into the places
-Minecraft renders them, which is the only honest way to check a custom icon or
-a model's head slot:
+These put your own text and items where Minecraft draws them, which is the way
+to check a custom icon, a font or a model worn on the head:
 
 | Command | What it does |
 | --- | --- |
@@ -74,17 +73,16 @@ a model's head slot:
 
 ## Your in-game rank
 
-Once your Minecraft account is linked and verified, the test server mirrors
-your ResourcePack AI account into an in-game rank. A Creator or Studio
-subscription shows as the **Creator** or **Studio** rank. **Early Access**
-and **Supporter** are badges, which stack above your plan rank instead of
-replacing it. Your rank colour also colours your player name. Starter has no
-synced rank.
+Once your Minecraft account is linked, the server gives you an in-game rank
+from your ResourcePack AI account. A Creator or Studio subscription shows as
+the **Creator** or **Studio** rank. **Early Access** and **Supporter** are
+badges that sit alongside your plan rank. Your rank colours your name.
+Starter has no rank.
 
 ## Linking your account
 
-Do this once and you never think about it again. It's also what verifies your
-Minecraft account for the rank sync above.
+Do this once. It's what lets **Sync** find you on the server, and what gives
+you the rank above.
 
 <Steps>
   <Step title="Get a code from the Studio">
@@ -96,28 +94,26 @@ Minecraft account for the rank sync above.
     ```
     /permlink 48213097
     ```
-    The page updates itself the moment it lands — you don't have to go back
-    and refresh anything.
+    The account page updates on its own once it works.
   </Step>
 </Steps>
 
 ## Loading your pack
 
-Once you're linked, there's no per-pack setup at all: hit **Sync** on any
-pack while you're on the server and it arrives. On Java it swaps in where you
-stand; on Bedrock you're briefly bounced out and back in.
+Once you're linked there's no per-pack setup: press **Sync** on any pack while
+you're on the server and it arrives. On Java it loads where you stand; on
+Bedrock you're briefly disconnected and reconnected.
 
 <Callout type="note">
-  The pairing is to **you**, not to the server. Someone standing next to you
-  won't see your pack unless they've linked their own account.
+  The pack goes to **you**, not to the whole server. Someone standing next to
+  you won't see it.
 </Callout>
 
 ## Getting what you made in front of you
 
-Syncing loads the pack, and reskins are simply live: every copy of a
-reskinned block, item or sound in the world is already using your version.
-For everything else, the asset's page in the Studio has a button that does
-the in-game action for you while you're on the server:
+Reskins are live as soon as the pack loads: every reskinned block, item or
+sound in the world uses your version. For everything else, the asset's page in
+Studio has a button that does it for you while you're on the server:
 
 | Asset | Button | What happens in game |
 | --- | --- | --- |
@@ -128,5 +124,5 @@ the in-game action for you while you're on the server:
 | Icon | **Send in-game** | The glyph arrives in your chat |
 | Sound | **Play in-game** | The event plays where you're standing |
 
-Each button sits next to the equivalent command, so on a server where you'd
-rather type (or wire it into your own plugin), copy the command instead.
+Each button sits next to the matching command, so you can copy that instead to
+type it yourself or use it on your own server.

@@ -10,16 +10,16 @@ An **addon** for [RP Engine](/rp-engine): a plugin that installs into the
 engine and adds one thing, rather than a pack you author yourself. Drop it in
 beside the engine and it brings its own content with it.
 
-This one is a skateboard you can actually ride — push it along, tuck for
-speed, ollie, grind, lie down on it, ride a wall — and a skatepark to ride it
+This one is a skateboard you can ride: push it along, tuck for speed, ollie,
+grind, lie down on it and ride a wall. It also comes with a skatepark to ride it
 in: ramps, rails, boxes, platforms and the park furniture, all placeable and
 all skateable.
 
 ## Installing
 
 Drop `RPE-skateboards.jar` in `plugins/` beside `RPEngine.jar` and start the
-server. Its content — the board's model, textures, item, vehicle definition
-and rider animations, and every skatepark piece — installs itself into
+server. Its content (the board's model, textures, item, vehicle definition
+and rider animations, and every skatepark piece) installs itself into
 `plugins/RPEngine/content/skateboards/` on first boot, and the engine reloads
 once to pick it up. That folder is yours: edit anything in it, and a new
 version of the plugin overwrites only its own files.
@@ -42,8 +42,8 @@ Two more worth knowing:
   is remembered per player and for every board you ever step on, and a
   right-footed rider gets the mirrored copy of every animation.
 - **Bailing.** Land a long way round from the way you are travelling and you
-  come off. Straight is fine, and so is straight backwards — that is a fakie,
-  not a fall.
+  come off. Straight is fine, and so is straight backwards: that is a fakie,
+  not a fall. You take half a heart.
 
 ## The skatepark
 
@@ -51,10 +51,8 @@ Two more worth knowing:
 `/skatepark all` gives you the lot. Right-click the ground to place one, punch
 it to take it back.
 
-Every piece is a placed model with vehicle collision on, which is what makes
-it a skatepark rather than scenery: a board rolls up a ramp's face and grinds
-along the top of a box, because the engine holds a vehicle up on a placed
-model's own cubes. Slabs and platforms to build the ground, banks, quarter
+Every piece is a placed model with vehicle collision on, so a board rolls up
+a ramp's face and grinds along the top of a box. Slabs and platforms to build the ground, banks, quarter
 pipes and a wall ride to launch off, boxes, ledges and rails to grind, and the
 park furniture round the edges.
 
@@ -70,29 +68,28 @@ park furniture round the edges.
 | `skateboards.park` | `/skatepark` and its pieces | Operators |
 | `skateboards.reload` | `/skateboard reload` | Operators |
 
-**Putting one down by command is for staff.** `/skateboard here` makes a board out of
-nothing, so it has its own node, and even then a player has a cooldown and a
-cap on how many they can have standing at once (`spawn-limits` in the config).
-Every way of putting one down, the item included, asks the same placement
-question first, so a WorldGuard region (`rpengine-place`) or anything else
-that keeps models out of a place keeps boards out too. Only the player who
-put a board down can pick it up again, unless they have `skateboards.pickup.others`.
+Everybody else puts a board down with the item. `/skateboard here` makes one
+from nothing, so it is for staff, and it has a cooldown and a cap on how many
+boards a player can have standing at once (`spawn-limits` in the config).
+Every way of putting a board down, the item included, respects protection: a
+WorldGuard region with `rpengine-place` denied, or anything else that keeps
+models out of a place, keeps boards out too. Sneak and right-click a board to
+pick it up; only the player who put it down can, unless they have
+`skateboards.pickup.others`.
 
-**Riding is its own node on purpose.** A board left in a public square is a
-thing anybody can walk up to and right-click, so the two questions — may you
-*have* one, may you *get on* one — have different answers on most servers.
-Revoke `skateboards.ride` and a player can still be handed a board and put it
-down for somebody else; revoke `skateboards.use` and they cannot produce one at
-all.
+`skateboards.use` and `skateboards.ride` are separate because a board left in
+a public square is one anybody can right-click. Revoke `ride` and a player can
+still put a board down for somebody else; revoke `use` and they cannot get one
+at all. Negate both in LuckPerms (or your permissions plugin) to turn the addon
+off for a group without uninstalling it.
 
-Both default to everyone, which is what a server that installed a skateboard
-plugin probably wants. Negate them in LuckPerms (or whatever you use) to turn
-the plugin off for a group without uninstalling anything.
+`skateboards.update` (operators) is told when a newer version is out, if
+`update-check` is on.
 
 ## Configuration
 
-`plugins/RPESkateboards/config.yml`. Every line the plugin says is in there,
-and the switches:
+`plugins/RPESkateboards/config.yml` holds every message the plugin sends, and
+these switches:
 
 ```yaml
 prefix: "&b[Skateboards] &7"
@@ -104,15 +101,19 @@ bail: true
 # Whether the board says "Landed it", "Fakie!" and "Bailed!" in chat.
 trick-messages: true
 
-# Hand every player a board when they join. Off - a plugin that fills
-# somebody's inventory uninvited is one an owner has to undo. `first-join-only`
-# makes it a welcome gift rather than a daily one, and the gift still needs
-# `skateboards.use`.
+# Hand every player a board when they join (needs skateboards.use).
+# first-join-only makes it a one-off welcome gift.
 give-on-join: false
 first-join-only: true
 
 # Nudges you in the console on startup and in chat on join when an update is out.
 update-check: true
+
+# /skateboard here: seconds between boards, and how many one player may have
+# standing at once (-1 for no cap). skateboards.here.unlimited skips both.
+spawn-limits:
+  cooldown-seconds: 10
+  max-per-player: 2
 ```
 
 `/skateboard reload` rereads it, including for somebody already on a board.

@@ -6,53 +6,46 @@ export const metadata = {
 
 # Putting a model on a mob
 
-Any entity on the server can wear one of your models. A MythicMobs boss, a
-Citizens NPC, a shopkeeper, a mob another plugin owns.
+Any entity on the server can wear one of your models: a MythicMobs boss, a
+Citizens NPC, a shopkeeper, a mob another plugin owns. Look at it and run:
 
 ```
-/rp bind mypack:golem     look at a mob, put the model on it
+/rp bind mypack:golem     put the model on the mob you are looking at
 /rp unbind                take it off again
 ```
 
-<Callout type="note" title="The entity is never replaced">
-  It keeps its AI, its loot table, its health, its hitbox and its uuid, and
-  every plugin holding a reference to it still has the same entity. Its vanilla
-  body is made invisible; `unbind` gives it back.
+The entity is not replaced. It keeps its AI, loot, health, hitbox and UUID, and
+every plugin that knows about it still has the same entity. Only its vanilla
+body is made invisible, and `/rp unbind` brings it back.
 
-  An implementation that spawned a new mob to carry the model would take the
-  mob away from the plugin running it, and hand back something that only looks
-  similar.
-</Callout>
+To spawn a new mob that comes with a model from your content folder, use
+[custom entities](/rp-engine/entities) instead.
 
 ## The model is an item ID
 
-The same ID a [`place:`](/rp-engine/models) block names — so one model can be
-stood in a world and worn by a mob without being written twice.
+Use the same ID a [`place:`](/rp-engine/models) block uses, so one model can
+stand in the world and be worn by a mob without being written twice.
 
-If it animates, the worn copy animates. It faces wherever its host faces, and
-[bones that do something](/rp-engine/bones) do them here:
-`h_` heads track what the mob is fighting, `b_` hitboxes let it be hit on the
-wing you aimed at, `tag_` puts its name somewhere sensible.
+If the model animates, the worn copy animates and faces wherever its mob faces.
+[Bones that do something](/rp-engine/bones) work here: `h_` heads track what
+the mob is fighting, `b_` hitboxes let it be hit where you aimed, `p_` and
+`mount` bones are seats, and `tag_` puts its name somewhere sensible.
 
-## Animations are played by name
+## Playing animations
 
-A worn model has nothing to punch and nothing to walk into, so the triggers a
-placed model resolves have nothing to fire from. Whatever drives the mob
-decides when it animates — a [MythicMobs skill](/rp-engine/mythicmobs), or
-[your own plugin](/rp-engine/api).
+A worn model has no clicks to react to, so whatever controls the mob decides
+when it animates: a [MythicMobs skill](/rp-engine/mythicmobs) (`rpanimate`),
+or [your own plugin](/rp-engine/api) through `Models.animate`.
 
 ## What it costs
 
-An animated model is one display entity per moving bone, and they are
-passengers of the mob — so vanilla moves them, and there is no per-tick work of
-ours involved.
-
-That still makes a ten-bone boss eleven entities. It is a boss, not a spawner
-mob.
+An animated model is one display entity per moving bone, riding the mob. A
+ten-bone boss is eleven entities, so keep detailed rigs for bosses rather than
+common mobs.
 
 ## Making it stick
 
-`/rp bind` lasts as long as the entity does. A mob that is removed and respawned
-by whatever owns it comes back bare — which is what the
-[Citizens trait](/rp-engine/citizens) and
-[MythicMobs' `~onSpawn`](/rp-engine/mythicmobs) are for.
+`/rp bind` lasts as long as that entity does. A mob that is removed and
+respawned by the plugin that owns it comes back without the model. Use the
+[Citizens trait](/rp-engine/citizens) or MythicMobs'
+[`rpmodel` on `~onSpawn`](/rp-engine/mythicmobs) to put it back on every time.

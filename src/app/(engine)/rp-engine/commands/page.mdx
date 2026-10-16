@@ -1,41 +1,48 @@
 export const metadata = {
   title: "Commands",
   description:
-    "Every RP Engine command, and what it takes.",
+    "Every RP Engine command, what it takes, and the permission it needs.",
 };
 
 # Commands
 
-One command, `/rpengine`, with `/rpe` and `/rp` as aliases — plus `/emote` and
-`/emotereply` for players.
+RP Engine has one main command, `/rpengine`, which you can also type as `/rpe`
+or `/rp`. Players also get `/emote`, and `/emotereply` for answering emote
+invitations.
 
-**Everything tab-completes**, at every argument. A subcommand you cannot run is
-not offered, because completing a command that then refuses is worse than not
-completing it.
+Every argument tab-completes, and you are only offered subcommands you have
+permission to run. When the plugin tells you to run a command in chat, you can
+click it.
 
-**A command named in a message is clickable.** When the plugin tells somebody
-to run something — a sync invitation, "mark a corner first" — the command in
-that line is underlined: click it to run it, or, if it has a `<placeholder>` in
-it, to drop it into your chat box ready to finish. The help listing below is
-left as plain text on purpose; a page where every line is a link is a page of
-underlines.
+`[player]` means the command can target somebody else, which needs a second
+permission. See [Pointing a command at somebody else](/rp-engine/permissions#pointing-a-command-at-somebody-else).
 
 ## Content
 
 | Command | What it does | Permission |
 |---|---|---|
-| `/rp reload` | Reread the content folder and rebuild every pack | `rpengine.reload` |
+| `/rp reload` | Reread the content folder and config, and rebuild every pack | `rpengine.reload` |
 | `/rp info` | What this server is holding | `rpengine.info` |
 | `/rp bundles` | The built packs, with their sizes and hashes | `rpengine.bundles` |
+| `/rp push` | Send this server's pack to yourself again | `rpengine.push` |
 | `/rp items` | Every custom item | `rpengine.items` |
-| `/rp give <id> [player]` | Give one | `rpengine.give` |
-| `/rp models` | Placed models near you | `rpengine.models` |
-| `/rp purge` | Remove placed models whose content is gone | `rpengine.purge` |
-| `/rp spawn <id>` | Spawn a custom entity | `rpengine.spawn` |
-| `/rp entities` | Every custom entity | `rpengine.entities` |
-| `/rp bind <id>` | Put a model on the mob you are looking at | `rpengine.bind` |
-| `/rp unbind` | Take it off again | `rpengine.unbind` |
+| `/rp give <id> [amount]` | Give yourself an item | `rpengine.give` |
+| `/rp blocks` | Every custom block, and how many block states are left | `rpengine.blocks` |
 | `/rp recipes` | Every recipe | `rpengine.recipes` |
+
+## Models and entities
+
+| Command | What it does | Permission |
+|---|---|---|
+| `/rp models [radius]` | Placed models near you, with orphans marked | `rpengine.models` |
+| `/rp purge [radius]` | Remove orphaned models near you (see [Reloading](/rp-engine/reloading#orphans)) | `rpengine.purge` |
+| `/rp entities` | Every custom entity | `rpengine.entities` |
+| `/rp spawn <id>` | Spawn a custom entity where you stand | `rpengine.spawn` |
+| `/rp bind <item id>` | Put that item's model on the mob you are looking at | `rpengine.bind` |
+| `/rp unbind` | Take it off again | `rpengine.unbind` |
+
+The radius is in blocks: 16 by default, 128 at most. Binding a model to
+another player, rather than a mob, needs `rpengine.bind.others`.
 
 ## Sound, text and interface
 
@@ -44,39 +51,56 @@ underlines.
 | `/rp sounds` | Every custom sound | `rpengine.sounds` |
 | `/rp sound <id> [player]` | Play one | `rpengine.sound` |
 | `/rp icons` | Every icon, with the character it became | `rpengine.icons` |
-| `/rp say <text>` | Send yourself text, with `:pack:icon:` resolved | `rpengine.say` |
+| `/rp say <text>` | Send yourself text, with `:pack:icon:` drawn as icons | `rpengine.say` |
 | `/rp screens` | Every screen and HUD | `rpengine.screens` |
-| `/rp screen <id> [player]` | Open one | `rpengine.screen` |
+| `/rp screen <id> [player]` | Open a screen | `rpengine.screen` |
 | `/rp hud <id\|clear> [player]` | Draw an overlay, or clear it | `rpengine.hud` |
-| `/rp shaders` | Every [shader](/shaders) from Studio, and whether you hold its pack | `rpengine.shaders` |
-| `/rp shader <id\|clear> [player]` | Show a shader, or take them all off | `rpengine.shader` |
+| `/rp shaders` | Every [shader object](/shaders) from Studio, and whether you hold its pack | `rpengine.shaders` |
+| `/rp shader <id\|clear> [player]` | Show a shader object, or take them all off | `rpengine.shader` |
 
 ## Dialogs
+
+Dialogs need Minecraft 1.21.6 or newer.
 
 | Command | What it does | Permission |
 |---|---|---|
 | `/rp dialogs` | Every [dialog](/dialogs), and whether you hold its pack | `rpengine.dialogs` |
-| `/rp dialog <id> [name=value...] [player]` | Open one, filling its `{placeholders}` with the values given. The player goes last (the old place, straight after the id, still works) | `rpengine.dialog` |
-| `/rp var <name> <value>` | Change one of your own dialog settings and see the dialog again | `rpengine.var` — everyone |
-| `/rp page <id>` | Turn the dialog you are looking at to another of its pages | `rpengine.page` — everyone |
-| `/rp page close` | Close the dialog you are looking at — a paged dialog's footer button, or anything set to **Close the dialog** | `rpengine.page` — everyone |
-| `/<command> [player]` | A dialog's own command, such as `/shop`: opens it on whoever types it, about the player named | everyone, or the permission the dialog names |
+| `/rp dialog <id> [name=value...] [player]` | Open one, filling its `{placeholders}` with the values given | `rpengine.dialog` |
+| `/rp var <name> <value>` | Change one of your own dialog settings | `rpengine.var` (everyone) |
+| `/rp page <id>` | Turn the dialog you are looking at to another page | `rpengine.page` (everyone) |
+| `/rp page close` | Close the dialog you are looking at | `rpengine.page` (everyone) |
+| `/rp slot <slot>` | Move an item in a dialog's item slots | `rpengine.slot` (everyone) |
+| `/<command> [player]` | A dialog's own command, such as `/shop` | everyone, or the permission the dialog names |
 
-The last three are what clicks inside a dialog run, so every player has them. Each
-only does what a click could: `/rp var` sets a setting some dialog offers, to a
-value it offers, and `/rp page` opens a page only when the dialog you were shown
-has a click that goes there.
+`var`, `page` and `slot` are what clicks inside a dialog run, so every player
+has them. Each only does what a click in the dialog you were shown could do.
 
-A dialog gets a command of its own from `command:` in its file, or **Players
-open it with** in Studio (RP Engine 0.1.74 or newer). A name another plugin
-already has is left to it; `/rp dialogs` shows each dialog's command.
+A dialog gets its own command from `command:` in its file, or **Players open
+it with** in Studio. If another plugin already has that command name, the
+other plugin keeps it. `/rp dialogs` shows each dialog's command.
+
+## Emotes
+
+| Command | What it does | Permission |
+|---|---|---|
+| `/emote <name>` | Perform an emote, or wear it if it is a movement set | `rpengine.emote` (everyone) |
+| `/emote <name> <player...>` | Perform it with other players. They are asked first | `rpengine.emote.cast` |
+| `/emote <name> --showYourself` | Wear a movement set and see it yourself. For testing: it lags behind you | `rpengine.emote` |
+| `/emote stop` | Stop yours, and everybody in it with you | `rpengine.emote` |
+| `/emotereply <accept\|deny> <token>` | Answer an invitation. This is what the **[accept]** and **[deny]** buttons run | none |
+| `/rp emote ...` | The same as `/emote` | `rpengine.emote` |
+| `/rp emotes` | Every emote the server holds | `rpengine.emotes` (everyone) |
+
+`emotes.player-commands: false` in [`config.yml`](/rp-engine/config#emotes)
+removes `/emote`, for a server that already has one from another plugin.
+`/rp emote` still works, and `/emotereply` is always there.
 
 ## Liquids
 
 | Command | What it does | Permission |
 |---|---|---|
 | `/rp liquid corner` | Mark one corner of a pool | `rpengine.liquid` |
-| `/rp liquid fill <id>` | Make the box between it and where you stand that liquid | `rpengine.liquid` |
+| `/rp liquid fill <id>` | Fill the box between that corner and where you stand with that liquid | `rpengine.liquid` |
 | `/rp liquid clear` | Remove the pool you are in | `rpengine.liquid` |
 | `/rp liquid list` | Every pool, per world | `rpengine.liquid` |
 
@@ -85,70 +109,50 @@ already has is left to it; `/rp dialogs` shows each dialog's command.
 | Command | What it does | Permission |
 |---|---|---|
 | `/rp vehicles` | Every vehicle, and who fits in it | `rpengine.vehicles` |
-| `/rp vehicle <id>` | Park one where you stand, facing the way you do | `rpengine.vehicle` |
-| `/rp vehicle remove` | Take away the nearest one | `rpengine.vehicle` |
+| `/rp vehicle <id>` | Park one where you stand, facing the way you face | `rpengine.vehicle` |
+| `/rp vehicle remove` | Take away the one nearest you | `rpengine.vehicle` |
 
-Getting in is a right-click on a seat, not a command — see
-[Vehicles](/rp-engine/vehicles).
+Players get in by right-clicking a seat. See [Vehicles](/rp-engine/vehicles).
 
 ## 3D armour
 
 | Command | What it does | Permission |
 |---|---|---|
-| `/rp armor` | Every 3D armour set the pushed pack holds | `rpengine.armor` |
-| `/rp armor wear <set> [player]` | Put the whole set on; what they had on goes in their inventory | `rpengine.armor` |
+| `/rp armor` | Every 3D armour set the server holds | `rpengine.armor` |
+| `/rp armor wear <set> [player]` | Put the whole set on. What they were wearing goes into their inventory | `rpengine.armor` |
 | `/rp armor give <set> [player]` | Hand over its pieces | `rpengine.armor` |
-| `/rp armor self` | See your own body pieces, in F5 and first person, until you turn it off | `rpengine.armor` |
+| `/rp armor self` | See your own 3D armour, in F5 and first person. Run it again to hide it | `rpengine.armor` |
 
 See [Armour](/rp-engine/armour#3d-armour-from-studio).
-
-## Emotes
-
-| Command | What it does | Permission |
-|---|---|---|
-| `/emote <name>` | Perform it, or wear it if it is a movement set | `rpengine.emote` |
-| `/emote <name> <player...>` | With a cast. They are asked first | `rpengine.emote.cast` |
-| `/emote stop` | Stop yours, and everybody in it with you | `rpengine.emote` |
-| `/emotereply accept` / `deny` | Answer an invitation | none — see below |
-| `/rp emotes` | Every emote the server holds | `rpengine.emotes` |
-
-`/emote` and `/emotereply` can be turned off in
-[`config.yml`](/rp-engine/config) — `/rp emote` is the same code, so a server
-that would rather have one command than three loses nothing.
 
 ## Studio
 
 | Command | What it does | Permission |
 |---|---|---|
-| `/rp sync <code>` | Pair with a pack open in Studio | `rpengine.sync` |
-| `/rp sync add <player>` | Ask somebody onto your sync | `rpengine.sync` |
-| `/rp sync accept` / `deny` | Answer that | `rpengine.sync` |
-| `/rp sync who` | Who is on it | `rpengine.sync` |
+| `/rp sync <code>` | Pair with a pack open in Studio, using the code from Studio | `rpengine.sync` |
+| `/rp sync add <player>` | Share your pushes with somebody else | `rpengine.sync` |
+| `/rp sync accept` / `deny` | Answer an invitation to somebody's sync | `rpengine.sync` |
+| `/rp sync who` | Who is on your sync | `rpengine.sync` |
 | `/rp sync remove <player>` | Take somebody off, and the pack off them | `rpengine.sync` |
-| `/rp sync leave` | Leave somebody else's | `rpengine.sync` |
-| `/rp sync stop` | End yours, for everybody | `rpengine.sync` |
-| `/rp push` | Re-send this server's pack to yourself | `rpengine.push` |
-| `/rp distribute <code>` | Serve a published pack to everybody who joins. `off` stops | `rpengine.distribute` |
+| `/rp sync leave` | Leave somebody else's sync | `rpengine.sync` |
+| `/rp sync stop` | End yours, for everybody on it | `rpengine.sync` |
+| `/rp distribute <code>` | Serve a pack published in Studio to everybody who joins | `rpengine.distribute` |
+| `/rp distribute off` | Stop serving it | `rpengine.distribute` |
 
 ## Editing in a browser
 
-No account needed for these — see [Editing in a browser](/rp-engine/editing).
+No account needed. See [Editing in a browser](/rp-engine/editing).
 
 | Command | What it does | Permission |
 | --- | --- | --- |
-| `/rp edit <id>` | Open it in the editor in your browser. One argument — it works out which editor from what the ID is | `rpengine.edit` |
+| `/rp edit <id>` | Open it in the right editor in your browser | `rpengine.edit` |
 | `/rp edit` | The links you have open, and how long they have left | `rpengine.edit` |
 | `/rp edit close` | End them | `rpengine.edit` |
 
 ## Permissions
 
-One node per command, `rpengine.<subcommand>`, and `rpengine.admin` is a parent
-holding all of them. Everything above defaults to op except `rpengine.emote`,
-`rpengine.emotes`, `rpengine.var` and `rpengine.page`, which everybody has.
-
-`/emotereply` is deliberately ungated: it can only answer an invitation
-somebody was already sent, and a player who cannot reply is a player who cannot
-decline being pulled into an emote.
-
-The full table, including the three nodes that gate something other than a
-command, is on [Permissions](/rp-engine/permissions).
+Each subcommand has its own node, `rpengine.<subcommand>`, and
+`rpengine.admin` grants all of them. Everything defaults to op except
+`rpengine.emote`, `rpengine.emotes`, `rpengine.var`, `rpengine.page`,
+`rpengine.slot` and `rpengine.chat.icons`, which every player has.
+[Permissions](/rp-engine/permissions) has the full list.

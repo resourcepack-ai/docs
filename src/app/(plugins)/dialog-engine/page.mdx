@@ -6,20 +6,19 @@ export const metadata = {
 
 # Dialog Engine
 
-**Dialog Engine** is a plugin for Minecraft's own dialog screens: the real
-menus the client has drawn since 1.21.6, with text, items, text boxes,
-dropdowns, switches, sliders and buttons. You write them in YAML, and the
-plugin opens them, fills them in for each player and runs what their buttons
-say.
+Dialog Engine is a server plugin for Minecraft's dialog screens: the real
+menus the game has had since 1.21.6, with text, items, text boxes, dropdowns,
+switches, sliders and buttons. You write a dialog in YAML, and the plugin opens
+it, fills it in for each player and runs whatever its buttons say.
 
 - **Server owners** write dialogs in a folder and give them commands,
   permissions, conditions, lists and actions. No code.
 - **Developers** ship dialogs with their own plugin, add their own actions,
   placeholders and lists, and hear every click as an event.
 
-It needs no resource pack. A dialog is drawn by the game itself, in the
-game's own look. (The one exception is [drawn dialogs](#drawn-dialogs), which
-are pictures and bring a small pack of their own.)
+A dialog is drawn by the game itself, so it needs no resource pack. The one
+exception is a [drawn dialog](#drawn-dialogs), which is a picture designed in
+the browser and comes with a small pack of its own.
 
 ## Installing
 
@@ -29,36 +28,34 @@ are pictures and bring a small pack of their own.)
     [SpigotMC](https://www.spigotmc.org/resources/139513/).
   </Step>
   <Step title="Drop it in">
-    The jar into `plugins/`, then restart. It runs on **Spigot or Paper
-    1.21.7 or newer**, one jar for both, on **Java 21**. Players need a
-    1.21.6 or newer client, since that is when dialogs arrived in the game.
-    [PlaceholderAPI](https://www.spigotmc.org/resources/6245/) is optional.
+    Put the jar in `plugins/` and restart. It runs on **Spigot or Paper
+    1.21.7 or newer** (one jar for both) and needs **Java 21**. Players need a
+    1.21.6 or newer client. [PlaceholderAPI](https://www.spigotmc.org/resources/6245/)
+    is optional. On an older server the plugin says so in the console and
+    turns itself off.
   </Step>
   <Step title="Look at what it made">
     ```
     plugins/DialogEngine/
       config.yml
-      AI-GUIDE.md        ← the format, for an AI assistant
-      dialogs/           ← yours
-        samples/         ← ten working examples
-      drawn/
-        samples/         ← two drawn examples
+      AI-GUIDE.md        ← the format, written for an AI assistant
+      dialogs/           ← your dialogs
+        samples/         ← working examples
+      drawn/             ← drawn dialogs
+        samples/
     ```
   </Step>
 </Steps>
 
-On a server older than 1.21.7 the plugin says so in the console and disables
-itself.
-
 <Callout type="note" title="What talks to the internet">
-  Two things, and both can be turned off in `config.yml`. `update-check` asks
-  SpigotMC for the latest version. `telemetry` sends an anonymous count every
-  30 seconds: a random id, the number of players online and the names of
-  plugins that depend on Dialog Engine. Nothing else.
+  `update-check` asks SpigotMC for the latest version. `telemetry` sends an
+  anonymous count every 30 seconds: a random id, the number of players online
+  and the names of plugins that depend on Dialog Engine. Both can be turned off
+  in `config.yml`.
 
-  [Drawn dialogs](#drawn-dialogs) are the third: `/de edit`, and a drawn
-  dialog whose `dialog.yml` you edited by hand, send that one dialog to the
-  editor to be drawn. Plain YAML dialogs never leave the server.
+  [Drawn dialogs](#drawn-dialogs) also go online: `/de edit`, and a
+  `dialog.yml` you edited by hand, send that one dialog to the editor to be
+  drawn. Plain YAML dialogs never leave the server.
 </Callout>
 
 ## Your first dialog
@@ -80,51 +77,40 @@ itself.
             - "[close]"
     ```
 
-    That is the dialog `myserver:hello`. The folder is the namespace and the
+    That is the dialog `myserver:hello`: the folder is the namespace and the
     key is the name.
   </Step>
   <Step title="Reload">
-    ```
-    /de reload
-    ```
-
-    It tells you how many dialogs loaded and lists every problem it found,
-    with the file each one is in.
+    Run `/de reload`. It says how many dialogs loaded and lists every problem
+    it found, with the file each one is in.
   </Step>
   <Step title="Open it">
-    ```
-    /hello
-    ```
-
-    Or `/de open myserver:hello`, which works on any dialog whether it has a
-    command or not.
+    Type `/hello`, or `/de open myserver:hello`, which works on any dialog
+    whether it has a command or not.
   </Step>
 </Steps>
+
+<Callout type="tip" title="Writing dialogs with an AI">
+  `plugins/DialogEngine/AI-GUIDE.md` is rewritten on every start. It is the
+  whole format plus the rules that catch the usual mistakes. Hand it to an AI
+  assistant along with what you want the screen to do.
+</Callout>
 
 ## Where dialogs live
 
 Every folder in `dialogs/` is a **namespace**, and every top-level key in a
-`.yml` file inside it is a **dialog**: `welcome` in
-`dialogs/samples/menus.yml` is `samples:welcome`. Subfolders are read too and
-stay in the same namespace. Files sitting directly in `dialogs/` are in the
-namespace `server`.
+`.yml` file inside it is a **dialog**: `welcome` in `dialogs/samples/menus.yml`
+is `samples:welcome`. Subfolders stay in the same namespace. Files directly in
+`dialogs/` are in the namespace `server`.
 
-Names are lower case: `a-z`, `0-9`, `_`, `.` and `-`. The same name twice in
-one namespace is reported, and the later one wins.
-
-When one dialog names another (`[open] confirm`, `if-missing: pick`), a name
-without a namespace means one in the same namespace.
-
-Text everywhere is [MiniMessage](https://docs.advntr.dev/minimessage/format.html)
-(`<gold>`, `<bold>`, `<#3670f8>`), never `&` codes. Quote any string that
-starts with `<`, `[`, `{`, `%` or `*`, or has `: ` in it, or YAML will read it
-as something else.
-
-<Callout type="tip" title="Writing dialogs with an AI">
-  The plugin writes `plugins/DialogEngine/AI-GUIDE.md` on every start. It is
-  the format plus the rules that catch the usual mistakes, written for an AI
-  assistant to read. Hand it over with what you want the screen to do.
-</Callout>
+- Names are lower case: `a-z`, `0-9`, `_`, `.` and `-`. The same name twice in
+  one namespace is reported, and the later one wins.
+- When one dialog names another (`[open] confirm`, `if-missing: pick`), a name
+  without a namespace means one in the same namespace.
+- Text is [MiniMessage](https://docs.advntr.dev/minimessage/format.html)
+  (`<gold>`, `<bold>`, `<#3670f8>`), never `&` codes.
+- Quote any string that starts with `<`, `[`, `{`, `%` or `*`, or contains
+  `: `, or YAML will read it as something else.
 
 ## The format
 
@@ -137,10 +123,8 @@ shop:
   permission: myserver.shop     # who may open it themselves (optional)
   title: "<gold><bold>Shop"
   columns: 2                    # buttons side by side
-  escape: true                  # Escape closes it (default true)
-  after: seamless               # seamless | wait | close | none, see config.yml
   body:
-    - "<gray>You have <white>%vault_eco_balance%</white> coins."   # text
+    - "<gray>You have <white>%vault_eco_balance%</white> coins."   # a line of text
     - item: diamond             # an item, with words beside it
       name: "<aqua>Diamond"
       description: "<gray>A coin each"
@@ -165,43 +149,39 @@ shop:
     label: "Close"
 ```
 
-### The dialog itself
+### Dialog keys
 
 | Key | What it does |
 |---|---|
-| `title:` | The heading. MiniMessage |
-| `external-title:` | A shorter title for where the game names the dialog outside it, such as on a button that opens it |
-| `command:` | A command that opens it, one word of `a-z`, `0-9`, `_` and `-`. See [Its own command](#its-own-command) |
-| `aliases:` | More names for that command |
-| `permission:` | What a player needs to open it themselves, by its command or from another dialog |
-| `args:` | Names for the command's arguments, which become placeholders. See [A dialog about somebody](#a-dialog-about-somebody) |
-| `if-missing:` | The dialog to open instead when an argument is left out |
-| `defaults:` | Values the dialog starts with, as `key: value` |
+| `title:` | The heading |
+| `external-title:` | A shorter title for where the game names the dialog outside it, such as a button that opens it |
+| `command:`, `aliases:` | A command that opens it. See [Its own command](#its-own-command) |
+| `permission:` | What a player needs to open it themselves |
+| `args:`, `if-missing:` | Command arguments that become placeholders, and the dialog to open when one is left out. See [A dialog about somebody](#a-dialog-about-somebody) |
+| `defaults:` | Starting values, as `key: value` |
 | `type:` | `notice`, `confirmation`, `multi_action` (or `menu`) or `links`. Leave it out and the buttons decide |
-| `columns:` | How many buttons side by side. Default 2 |
+| `columns:` | Buttons side by side. Default 2 |
 | `escape:` | Whether Escape closes it. Default `true` |
-| `pause:` | Whether it pauses a single-player game. Default `false`, and not allowed with `after: none` or `seamless` |
-| `after:` | What the screen does the moment a button is pressed: `seamless`, `wait`, `close` or `none`. Default from `default-after` in [config](#config) |
+| `pause:` | Whether it pauses a single-player game. Default `false`. Ignored with `after: none` or `seamless` |
+| `after:` | What happens on screen when a button is pressed: `seamless`, `wait`, `close` or `none`. See [After a click](#after-a-click) |
 | `body:` | What is drawn above the inputs. See [Body](#body) |
-| `inputs:` | Text boxes, dropdowns, switches and sliders. See [Inputs](#inputs) |
-| `buttons:` | See [Buttons](#buttons) |
-| `exit:` | The button at the bottom, which Escape also presses |
-| `lists:` | Lists of rows the dialog can repeat over. See [Lists and pages](#lists-and-pages) |
+| `inputs:` | See [Inputs](#inputs) |
+| `buttons:`, `exit:` | See [Buttons](#buttons). `exit:` is the bottom button, which Escape also presses |
+| `lists:` | Rows the dialog can repeat over. See [Lists and pages](#lists-and-pages) |
 | `json:` | Send a file of the game's own dialog JSON instead. See [Raw JSON dialogs](#raw-json-dialogs) |
 
 ### Types
 
-**The layout follows the buttons.** One button and no `exit:` is a notice.
-More is a grid of buttons, `columns:` wide, with the `exit:` button under it.
+The layout follows the buttons. One button and no `exit:` is a notice (a notice
+with no button at all gets the game's Ok button). More buttons make a grid,
+`columns:` wide, with the `exit:` button under it.
 
-Say `type: confirmation`, or just write `confirm:` and `cancel:` buttons in
-place of `buttons:`, for a yes/no screen. `type: links` is the game's server
-links screen, the links your server sends in its configuration.
+For a yes/no screen, write `confirm:` and `cancel:` in place of `buttons:` (or
+say `type: confirmation`). `type: links` is the game's server links screen.
 
 ```yaml
 rules_decline:
   title: "Decline the rules?"
-  type: confirmation
   escape: false
   body:
     - "<gray>You can't play here without accepting them."
@@ -215,13 +195,13 @@ rules_decline:
 
 ### Body
 
-A body entry is a string, which is a line of text, or a map:
+A body entry is a string (one line of text) or a map:
 
 | Key | What it does |
 |---|---|
 | `text:` | MiniMessage. A list is several lines. `width:` 1 to 1024, default 200 |
-| `item:` | An item id, drawn with `description:` beside it. Also `name:`, `lore:`, `amount:`, `model:` (an item model id), `glow:`, `tooltip:` (`false` turns off its hover tooltip), `decorations:` (`false` hides its count and durability bar), and `width:`/`height:` 1 to 256 |
-| `head:` | A player's name: the item is their head |
+| `item:` | An item id, drawn with `description:` beside it. Also takes `name:`, `lore:`, `amount:`, `model:` (an item model id), `glow:`, `tooltip:` (`false` turns off its hover tooltip), `decorations:` (`false` hides its count and durability bar), and `width:`/`height:` 1 to 256 |
+| `head:` | A player's name, drawn as their head |
 | `if:` | Only drawn when this holds. See [Conditions](#conditions) |
 | `for-each:` | Drawn once per row of a list. See [Lists and pages](#lists-and-pages) |
 
@@ -241,13 +221,20 @@ body:
 
 | `type:` | Keys | What `{key}` holds |
 |---|---|---|
-| `text` | `max-length`, `lines` and `height` for a text area, `initial` | What was typed |
+| `text` | `max-length`, `initial`, and `lines` and `height` for a text area | What was typed |
 | `options` | `options:`, a list of `{id, text, initial}` (or `- id: Text`), or a `for-each` | The chosen `id`. `{key.label}` is its text |
 | `toggle` | `initial`, `on-true`, `on-false` | `true` or `false`. `{key.text}` is `on-true` or `on-false` |
 | `slider` | `min`, `max`, `step`, `initial`, `format` (a translation key) | The number |
 
-Every input needs a `key:` of letters, digits and `_`, and takes `label:`,
+Every input needs a `key:` of letters, digits and `_`, and also takes `label:`,
 `label-visible:`, `width:` and `if:`.
+
+A text input can be checked with `required: true`, `min-length:`, `pattern:` (a
+Java regex the whole value must match) and `error:` (the message). When a
+button is pressed and a check fails, the dialog is drawn again with the typed
+text still in it and the message on top. The message is also `{error}`, so the
+dialog can print it where it likes. A button with `validate: false` skips the
+checks, which suits a Cancel button. The `exit:` button never checks.
 
 ```yaml
 inputs:
@@ -268,18 +255,7 @@ inputs:
     error: "Tell us a little more: at least 10 characters."
 ```
 
-### Checks
-
-A text input can have `required: true`, `min-length:`, `pattern:` (a Java
-regex the whole value must match) and `error:` (the message to show). When a
-button is pressed with an input that fails, the dialog is drawn again with
-what was typed still in it and the message on top. The message is also
-`{error}`, which the dialog can print where it likes instead.
-
-A button with `validate: false` skips the checks, which is what a Cancel
-button wants. The `exit:` button never checks.
-
-What a player typed is **escaped wherever it is printed**, so nobody can put a
+What a player typed is escaped wherever it is printed, so nobody can put a
 colour or a click into somebody else's screen.
 
 ### Buttons
@@ -296,9 +272,9 @@ colour or a click into somebody else's screen.
 | `id:` | A name for [your own plugin](#events) to recognise it by |
 | `actions:` | What it does. See [Actions](#actions) |
 
-For a button that does one thing there are shorthands, each one action:
+A button that does one thing can use a shorthand instead of `actions:`:
 `command:`, `console:`, `open:`, `url:`, `copy:`, `suggest:`, `message:`,
-`close: true` and `back: true`.
+`close: true` or `back: true`.
 
 ```yaml
 buttons:
@@ -312,23 +288,23 @@ buttons:
 
 ## Actions
 
-A button's `actions:` run in order, top to bottom. A line without a `[tag]` is
-a command the player runs.
+A button's `actions:` run in order. A line without a `[tag]` is a command the
+player runs.
 
 | Action | What it does |
 |---|---|
 | `[player] cmd` | The player runs it, with their own permissions |
 | `[console] cmd` | The console runs it |
-| `[message] text` | Tells the player. MiniMessage |
+| `[message] text` | Tells the player |
 | `[broadcast] text` | Tells everybody |
 | `[actionbar] text` | Shows it above the hotbar |
 | `[title] title \| subtitle` | Shows a title |
 | `[sound] id [volume] [pitch]` | Plays a sound: `[sound] entity.experience_orb.pickup 1 1.4` |
-| `[open] id [key=value ...]` | Opens another dialog, carrying this one's values (and what was typed) over |
-| `[back]` | The dialog this one was opened from, as it was |
-| `[refresh]` | This one again, with what was typed still in it |
+| `[open] id [key=value ...]` | Opens another dialog, carrying this one's values and inputs over |
+| `[back]` | Returns to the dialog this one was opened from, as it was |
+| `[refresh]` | Draws this one again, with what was typed still in it |
 | `[page] next\|prev\|first\|last\|N` | Turns the page of a paged list |
-| `[set] key=value ...` | Sets a value for the actions after, and any dialog opened |
+| `[set] key=value ...` | Sets a value for the actions after it, and for any dialog opened |
 | `[clear] [keys]` | Forgets what was typed: every input, or the keys named |
 | `[close]` | Closes the dialog |
 | `[delay] ticks` | Waits before the rest. 20 ticks is a second |
@@ -341,57 +317,69 @@ a command the player runs.
 | `[myplugin:tag] ...` | Whatever another plugin registered |
 
 `[url]`, `[copy]` and `[suggest]` are the game's own button actions, so they
-do exactly that only when they are a button's **only** action. Mixed in with
-others, `[url]` sends the link in chat to click, and `[copy]` and `[suggest]`
-do nothing.
+only work as described when they are a button's **only** action. Mixed with
+others, `[url]` sends the link in chat instead, and `[copy]` and `[suggest]` do
+nothing.
 
-End a button that should leave the screen with `[close]`, or it stays up.
+### After a click
 
-### What a player typed, in a command
+What the screen does the moment a button is pressed is the dialog's `after:`,
+or `default-after` in [config](#config) when it does not say:
 
-A `[console]` or `[player]` command takes a typed value (a text input, a
-command's `args:`, values from `/de open`, `{player_display}`) **only when it
-is letters, digits, `_`, `.` and `-`**: a name, a number, an id. Anything else
+- `seamless` (the default): the dialog stays exactly as it is until the plugin
+  answers. The next dialog replaces it with nothing in between, and if none
+  follows, the plugin closes it. A button that runs a command closes the dialog
+  first, unless a later action opens another, so a screen that command opens
+  (a chest, another plugin's menu) is not closed by mistake.
+- `wait`: the game's "Waiting for Server" screen until the plugin answers. A
+  dialog with a `[url]`, `[copy]` or `[suggest]` button behaves as `close`,
+  since the server never hears those being pressed.
+- `close`: closes at once, then opens the next dialog, if any.
+- `none`: stays as it is. End a button with `[close]` to leave the screen.
+
+### Typed values in commands
+
+A `[console]` or `[player]` command only takes a typed value (a text input, a
+command's `args:`, values from `/de open`, `{player_display}`) when it is
+letters, digits, `_`, `.` and `-`: a name, a number, an id. Anything else
 (`@a`, a space, a quote) and the button runs nothing. A text input is drawn
-again with the `unsafe-value` message on it, anything else gets the message in
-chat, and the console says which placeholder it was. The check happens before
-the first action runs, so a click never stops halfway with the money taken and
-nothing given.
+again with the `unsafe-value` message, otherwise the player gets it in chat,
+and the console names the placeholder. This is checked before the first action
+runs, so a click never stops halfway.
 
-Where more than that is safe, say how the value is used:
+When more than that is safe, say how the value is used:
 
 | Filter | What it does |
 |---|---|
-| `{key\|raw}` | As typed, on one line. For the last, free-text argument of a plugin's command: `staffchat {player}: {details\|raw}`. Not for vanilla's `say`, `msg` or `tell`, which read `@a` in it. In a `[player]` command it is usually fine: the player could type that command themselves |
+| `{key\|raw}` | As typed, on one line. For the last, free-text argument of a plugin's command: `staffchat {player}: {details\|raw}`. Not for vanilla's `say`, `msg` or `tell`, which read `@a` in it |
 | `{key\|json}` | Escaped for the inside of a quoted JSON string: `tellraw @a {"text":"{msg\|json}"}` |
 | `{key\|snbt}` | Escaped for the inside of a quoted SNBT string: `give {player} paper[custom_name='{name\|snbt}']` |
 
 Values from the dialog itself, from plugins and PlaceholderAPI, and from
 sliders, toggles and dropdowns (only options the dialog drew count) are not
-checked. A filter works on them too.
+checked.
 
 ### When a command fails
 
-**A command that fails stops the rest.** When a `[console]` or `[player]`
-command fails as far as the server can tell, the actions after it do not run.
-For `[console]` the player is told (`command-failed`) and the console logs it.
+If a `[console]` or `[player]` command fails, the actions after it do not run.
+For `[console]` the player sees `command-failed` and the console logs it.
 
-The server can only tell when the command does not exist (the plugin behind it
-is missing, say) or throws an error. A command that ran and refused, like an
-`eco take` without the money in the account, has succeeded as far as the
-server knows, whatever it printed. So **check before taking anything**, as the
-shop above does with `[if] %vault_eco_balance% >= {amount}`, using
-PlaceholderAPI's Vault expansion.
+The server can only tell a command failed when it does not exist (its plugin is
+missing) or throws an error. A command that ran and refused, like `eco take`
+without the money, counts as a success. So **check before taking anything**, as
+the shop above does with `[if] %vault_eco_balance% >= {amount}`.
 
 ## Placeholders
 
-`{name}` works anywhere: titles, text, labels, tooltips, actions and
-conditions. A name nothing knows is left as written.
+`{name}` works in titles, text, labels, tooltips, actions and conditions. A name
+nothing knows is left as written. Values come from:
 
-- **What the dialog was opened with**: `/de open shop Steve coins=40`, an API
-  call, a command's `args:`, `defaults:`, or an `[open]` or `[set]` action.
-- **Everything typed** into its inputs, once a button is pressed.
-- **The built-ins**:
+- what the dialog was opened with: `/de open shop Steve coins=40`, an API call,
+  a command's `args:`, `defaults:`, or an `[open]` or `[set]` action
+- everything typed into its inputs, once a button is pressed
+- the built-ins below
+- whatever a plugin registered, as `{prefix_key}` (see
+  [For developers](#for-developers))
 
 | Placeholder | Value |
 |---|---|
@@ -407,45 +395,28 @@ conditions. A name nothing knows is left as written.
 | `{max_players}` | The server's player limit |
 | `{dialog}` | This dialog's id |
 
-- **Whatever a plugin registered**, as `{prefix_key}`. See
-  [For developers](#for-developers).
-
-### PlaceholderAPI
-
 With [PlaceholderAPI](https://www.spigotmc.org/resources/6245/) installed,
-every `%placeholder%` works too, in the same places. A `%` in what a player
-typed is printed as typed and never filled, so nobody can type a placeholder
-into a text box to read somebody else's.
+every `%placeholder%` works in the same places. A `%` in what a player typed is
+never filled, so nobody can type a placeholder into a text box to read
+somebody else's.
 
-A [drawn dialog](#drawn-dialogs)'s live words reach it too (since 0.4.2): a
-`{vault_eco_balance}` nothing else answers is asked of PlaceholderAPI as
-`%vault_eco_balance%`, and the editor takes `%vault_eco_balance%` as the same
-live value.
-
-### Choices
-
-`{mode?on:Enabled|off:Disabled|Unknown}` prints the words for the value
-`mode` has, and the last entry when none matches. `$value` in the words prints
-the value itself:
+**Choices.** `{mode?on:Enabled|off:Disabled|Unknown}` prints the words for the
+value `mode` has, or the last entry when none matches. `$value` prints the value
+itself:
 
 ```yaml
 - "<gray>Chat: {chat?true:<green>on|false:<red>off|$value}"
 ```
 
-### Filters
-
-`{name|raw}`, `{name|json}` and `{name|snbt}` are for putting what a player
-typed into a command. See [What a player typed, in a command](#what-a-player-typed-in-a-command).
-
 ## Conditions
 
-`if:` works on a body entry, an input and a button, and `[if]` is the same
-thing as an action.
+`if:` works on a body entry, an input and a button. `[if]` is the same thing as
+an action.
 
 ```
 {muted}                             true unless empty, false, 0, no, off or null
 !{muted}
-{warnings} >= 3                     numbers compare as numbers, anything else as words
+{warnings} >= 3
 {rank} == admin && perm:server.staff
 ({page} > 1 || {mode} != "quiet mode")
 ```
@@ -455,33 +426,30 @@ thing as an action.
 - `&&`, `||`, `!` and brackets combine them.
 - `perm:node` is whether the player has that permission.
 - A placeholder nothing could fill counts as false.
-- Put a value with spaces in it in quotes.
+- Quote a value with spaces in it.
 
-A button's `if:` and `permission:` are asked again when it is pressed, so a
-button that has stopped applying since the dialog was drawn does nothing.
+A button's `if:` and `permission:` are checked again when it is pressed, so a
+button that stopped applying after the dialog was drawn does nothing.
 
 ## Lists and pages
 
 `for-each: name` on a body entry, a button or an input's `options:` repeats it
-once per row of a list. In each one:
+once per row of a list. Inside it:
 
 - `{row.field}` is a field of the row. `as:` renames `row`.
 - `{row.index}`, `{row.first}` and `{row.last}` say where in the list it is.
+- `per-page: N` pages the list and sets `{page}`, `{pages}`, `{has_next}` and
+  `{has_prev}`. `[page] next` turns the page. `limit: N` caps how many rows
+  are shown.
 
-`per-page: N` pages it, and sets `{page}`, `{pages}`, `{has_next}` and
-`{has_prev}`. `[page] next` turns. `limit: N` caps how many rows are shown.
-
-**Built in:**
-
-| List | Fields |
+| Built-in list | Fields |
 |---|---|
 | `online_players` | `name`, `uuid`, `world`, `ping` |
 | `other_players` | The same, without the player looking |
 | `worlds` | `name`, `players`, `environment` |
 
-Vanished players stay hidden from whoever cannot see them.
-
-A dialog can declare its own under `lists:`, and plugins register more.
+Vanished players stay hidden from whoever cannot see them. A dialog can declare
+its own lists under `lists:`, and plugins can register more.
 
 ```yaml
 warps:
@@ -523,22 +491,21 @@ players:
 
 ### Its own command
 
-`command: shop` makes `/shop` open it, and `aliases:` adds more names. These
-commands come and go with `/de reload`, no restart. With a `permission:`, a
-player without it is refused and does not see the command in tab completion.
-
-A command name another plugin already has stays that plugin's: the dialog
-goes without, and the console says so.
+`command: shop` makes `/shop` open the dialog, and `aliases:` adds more names.
+They come and go with `/de reload`, no restart needed. With a `permission:`, a
+player without it is refused and does not see the command in tab completion. A
+command name another plugin already has stays that plugin's, and the console
+says so.
 
 ### A dialog about somebody
 
 `args: [target]` makes `/punish Steve` open the dialog with `{target}` set to
-`Steve`. Tab completion offers online players. The last argument takes the
+`Steve`, and tab completion offers online players. The last argument takes the
 rest of the line, so `args: [target, reason]` reads `/punish Steve being rude`
 as `Steve` and `being rude`.
 
-`if-missing: other_dialog` opens another dialog when an argument is left out,
-typically a list of players to pick from:
+`if-missing:` opens another dialog when an argument is left out, usually a list
+of players to pick from:
 
 ```yaml
 report:
@@ -562,32 +529,28 @@ report_pick:
 /de open <id> [player] [key=value ...]
 ```
 
-`/de open samples:report Steve target=Alex` opens the report on Steve's
-screen, about Alex. Staff opening a dialog this way skip its `permission:`;
-`dialogengine.open` is the permission that counts. The console and command
-blocks always name a player.
+`/de open samples:report Steve target=Alex` opens the report on Steve's screen,
+about Alex. Opening a dialog this way skips its own `permission:`; only
+`dialogengine.open` (and `dialogengine.open.others` for another player) count.
+The console and command blocks always name a player.
 
-### From another dialog
-
-`[open] id` opens another, carrying every value over, and `[back]` on that one
-returns to the first as it was. The target dialog's `permission:` is still
-checked.
+From another dialog, `[open] id` carries every value over, and `[back]` returns
+to the first one as it was. The target dialog's `permission:` is still checked.
 
 ## Raw JSON dialogs
 
-For a dialog Minecraft's format can say and this one cannot, `json: file.json`
-(a file beside the YAML) sends a `minecraft:dialog` object exactly as written,
-with `{placeholders}` filled. Its buttons do whatever the JSON says, and none
-of Dialog Engine's actions or checks apply to them.
+For something the game's dialog format can do and this YAML cannot,
+`json: file.json` (a file beside the YAML) sends a `minecraft:dialog` object
+exactly as written, with `{placeholders}` filled. Its buttons do whatever the
+JSON says, and none of Dialog Engine's actions or checks apply to them.
 
 ## Drawn dialogs
 
-A plain dialog is the game's own widgets. A **drawn dialog** is a picture: a
-screen designed in the [dialog editor](/dialogs) in the browser, in the
-game's own look or any other, shown with a small resource pack. Its buttons
-still run Dialog Engine's [actions](#actions), so `[console]`, `[open]`,
-`[message]` and the rest all work, and placeholders are filled when it is
-opened and clicked.
+A plain dialog uses the game's own widgets. A **drawn dialog** is a picture: a
+screen designed in Studio's [dialog editor](/dialogs) in the browser, in the
+game's look or any other, and shown with a small resource pack. Its buttons
+still run Dialog Engine's [actions](#actions), and placeholders, PlaceholderAPI
+values and the player's own inventory are filled in as it is opened.
 
 ```
 /de edit server:shop_drawn
@@ -596,55 +559,50 @@ opened and clicked.
 That prints a link to the editor, which needs no account. The link works once
 and lasts three hours. Draw the screen, press **Send to server**, and it is
 written into `plugins/DialogEngine/drawn/server/shop_drawn/` and loaded. Run
-`/de edit` on it again to change it.
+`/de edit` on it again to change it. You can also download a dialog from the
+editor's **Export** menu for Dialog Engine, unzip it into `plugins/` and run
+`/de reload`.
 
-`/de edit` only draws. A name a YAML dialog already has is edited in its file,
-and the command says so. A name without a namespace is in `server`.
-
-Each drawn dialog's folder holds a `dialog.yml`, with its `command:` and
-`commandPermission:` at the top, like a YAML dialog's. You can edit it by hand
-and `/de reload`: a changed file is sent to the editor to be redrawn, which
-needs the internet.
+- `/de edit` only draws. A YAML dialog is edited in its file, and the command
+  says so. A name without a namespace is in `server`.
+- Each drawn dialog's folder has a `dialog.yml` with its `command:` and
+  `commandPermission:` at the top. You can edit it by hand and `/de reload`: a
+  changed file is sent to the editor to be redrawn, which needs the internet.
 
 ### The resource pack
 
-Drawn dialogs are drawn by one small pack, built from all of them. It is sent
-**beside** whatever pack your server already sends, not instead of it, and it
-is only built once there is a drawn dialog at all. A server that never uses
-`/de edit` never asks anybody to download anything.
+All drawn dialogs share one small pack, which is sent alongside any pack your
+server already sends, not instead of it. It is only built once you have a drawn
+dialog, so a server that never uses `/de edit` never asks anybody to download
+anything.
 
-By default the plugin serves the pack itself, on port `8165`. **Set
-`pack.public-host`** to your server's public address or domain, and open that
-port, or players outside your machine cannot download it. Or host the pack
-yourself: `/de pack` writes it to a file, and `pack.url` says where you put
-it. See [Config](#config).
+The plugin serves the pack itself on port `8165`. **Set `pack.public-host`** to
+your server's public address or domain and open that port, or players outside
+your machine cannot download it. Or host it yourself: `/de pack` writes it to a
+file, and `pack.url` says where you put it.
 
-Players with `dialogengine.pack.notify` are told the address the pack is
-downloaded from when it fails to load for them, which is the quickest way to
-spot a missing `public-host`.
+Players with `dialogengine.pack.notify` are told the download address when the
+pack fails to load for them, which is the quickest way to spot a missing
+`public-host`.
 
 ## Samples
 
-On the first start the plugin writes ten sample dialogs into
-`plugins/DialogEngine/dialogs/samples/`, one file each: a welcome notice,
-server rules, a shop, kits, warps, a player list, a profile, a report form, a
-settings page with every input type, and a menu of them all. **Open the menu
-with `/dialog-samples`.** Only players with `dialogengine.samples` (ops) can
-open them.
+On first start the plugin writes sample dialogs into `dialogs/samples/`: a
+welcome notice, server rules, a shop, kits, warps, a player list, a profile, a
+report form, a settings page with every input type, and a menu of them all,
+which `/dialog-samples` opens. Two more are drawn dialogs in `drawn/samples/`: a
+punishment panel (`/sample-punish <player>`) and a six-page social settings menu
+(`/sample-social`). Their pack is only sent when somebody opens one.
 
-Two more are **drawn** dialogs, in `plugins/DialogEngine/drawn/samples/`: a
-punishment panel (`/sample-punish <player>`) and a six-page social settings
-menu (`/sample-social`). `/de edit samples:punish` opens one in the editor.
-Their pack is sent when a player opens one, never on join, so the samples
-alone never ask anybody to download anything.
-
-They are yours to copy, change or delete. Deleting one file keeps it deleted;
-deleting the whole folder brings them all back on the next start. Set
-`samples: false` in `config.yml` and they are never written.
+Only players with `dialogengine.samples` (ops) can open the samples. They are
+yours to copy, change or delete. Deleting one file keeps it deleted; deleting
+the whole folder brings them all back on the next start. `samples: false` in
+`config.yml` stops them being written.
 
 ## Commands
 
-`/dialogengine`, with `/de` and `/dialogs` as aliases.
+`/dialogengine`, with `/de` and `/dialogs` as aliases. `/de` on its own lists
+the subcommands you can use, and tab completion only offers those.
 
 | Command | What it does | Permission |
 |---|---|---|
@@ -653,43 +611,32 @@ deleting the whole folder brings them all back on the next start. Set
 | `/de info <id>` | What a dialog is made of: type, buttons, inputs, command, permission | `dialogengine.info` |
 | `/de edit <id>` | Draw one in the browser editor, or make a new one | `dialogengine.edit` |
 | `/de pack` | Write the drawn dialogs' resource pack to a file | `dialogengine.pack` |
-| `/de reload` | Read everything again, and say what is wrong | `dialogengine.reload` |
+| `/de reload` | Read everything again and report what is wrong | `dialogengine.reload` |
 
-A subcommand you cannot run is not offered in tab completion, and `/de` on
-its own lists only the ones you can.
-
-`/dialogclick` is what a click on a drawn dialog runs. It does only what the
-dialog on that player's screen allows, so it needs no permission, and typing
-it yourself does nothing.
+`/dialogclick` is what a click on a drawn dialog runs. It only does what the
+dialog on that player's screen allows, so it needs no permission and typing it
+yourself does nothing.
 
 ## Permissions
 
-**One node per subcommand**, always `dialogengine.<subcommand>`, and every one
-of them is op-only by default.
+Every node is op-only by default.
 
 | Node | What it allows |
 |---|---|
-| `dialogengine.list` | `/de list`, every dialog on the server and its command |
-| `dialogengine.open` | `/de open <id>` on yourself: any dialog, whatever `permission:` the dialog itself asks for |
+| `dialogengine.list` | `/de list` |
+| `dialogengine.open` | `/de open <id>` on yourself, for any dialog, whatever its own `permission:` |
 | `dialogengine.open.others` | `/de open <id> <player>` on somebody else, on top of `dialogengine.open` |
-| `dialogengine.info` | `/de info <id>`, what a dialog is made of |
-| `dialogengine.edit` | `/de edit <id>`, drawing a dialog in the browser editor or making a new one |
-| `dialogengine.pack` | `/de pack`, writing the drawn dialogs' resource pack to a file |
-| `dialogengine.reload` | `/de reload`, reading every dialog again and seeing what is wrong |
-| `dialogengine.pack.notify` | Being told the address players download the drawn dialogs' pack from, when it fails to load for you |
+| `dialogengine.info` | `/de info` |
+| `dialogengine.edit` | `/de edit`. Pressing Send in the editor **writes files into your server's dialog folder**, so grant it with care |
+| `dialogengine.pack` | `/de pack` |
+| `dialogengine.reload` | `/de reload` |
+| `dialogengine.pack.notify` | Being told the drawn dialogs' pack address when it fails to load for you |
 | `dialogengine.samples` | Opening the sample dialogs |
-| `dialogengine.update` | Being told on joining that a newer Dialog Engine is on SpigotMC |
-| `dialogengine.admin` | All of the above, in one node |
+| `dialogengine.update` | Being told on joining that a newer Dialog Engine is out |
+| `dialogengine.admin` | All of the above in one node |
 
-`dialogengine.admin` is a parent for a server that does not want to think
-about it. Nothing checks it directly.
-
-`dialogengine.edit` is the one worth a second look before granting it widely:
-pressing Send in the editor **writes files into your server's dialog folder**.
-
-A dialog's own `permission:` (who may open it) and a button's (who sees it)
-are whatever node you write there. Dialog Engine declares none of them, so
-give them to players with your permissions plugin as usual:
+A dialog's own `permission:` and a button's are whatever node you write there.
+Give them out with your permissions plugin as usual:
 
 ```
 /lp group default permission set myserver.shop true
@@ -705,71 +652,51 @@ give them to players with your permissions plugin as usual:
 | `samples` | `true` | Write the sample dialogs when their folder is missing |
 | `update-check` | `true` | Say in the console and on join when an update is out |
 | `telemetry` | `true` | The anonymous usage count described under [Installing](#installing) |
-| `click-lifetime-minutes` | `30` | How long a dialog's buttons keep working after it is drawn. Drawing it again starts the clock over |
-| `default-after` | `seamless` | What a dialog does the moment a button is pressed, when it does not say with `after:`. See below |
-| `close-delay-ticks` | `10` | Under `wait`, how long to hold the waiting screen for a plugin to answer before closing it. A seamless dialog is closed on the next tick |
-| `click-sound` | `ui.button.click` | The sound a click on a drawn dialog makes. Blank for none. A dialog drawn in Studio can set [its own](/dialogs#click-sounds), which wins |
-| `validation-format` | `<red>⚠ {error}` | How a failed input check is shown, when the dialog does not print `{error}` itself |
-| `messages.*` | | Everything the plugin says to players. MiniMessage |
-| `edit.url` | `https://studio.resourcepack.ai` | Where the dialog editor is. Must be `https://` (plain `http://` only for one on the same machine) |
+| `click-lifetime-minutes` | `30` | How long a dialog's buttons keep working after it is drawn. Drawing it again restarts the clock |
+| `default-after` | `seamless` | What a dialog does when a button is pressed, if it has no `after:`. See [After a click](#after-a-click) |
+| `close-delay-ticks` | `10` | Under `wait`, how long the waiting screen is held for a plugin to answer before it closes |
+| `click-sound` | `ui.button.click` | The sound a click on a drawn dialog makes. Blank for none. A dialog drawn in Studio can set [its own](/dialogs#click-sounds) |
+| `validation-format` | `<red>⚠ {error}` | How a failed input check is shown when the dialog does not print `{error}` itself |
+| `messages.*` | | Everything the plugin says to players, in MiniMessage |
+| `edit.url` | `https://studio.resourcepack.ai` | Where the dialog editor is. Must be `https://` |
 | `pack.send` | `true` | Send the drawn dialogs' pack to players as they join |
 | `pack.required` | `false` | Kick players who decline it |
 | `pack.port` | `8165` | The port the built-in pack server listens on |
-| `pack.bind` | blank | The address it listens on. Blank is every address the machine has |
-| `pack.public-host` | blank | The address players download it from. Set this to your server's public address or domain |
-| `pack.url` | blank | Host the pack yourself and put its URL here; the built-in server is then off |
+| `pack.bind` | blank | The address it listens on. Blank is every address |
+| `pack.public-host` | blank | The address players download it from: your server's public address or domain |
+| `pack.url` | blank | Host the pack yourself and put its URL here. The built-in server is then off |
 | `pack.prompt` | | The line shown when the pack is offered |
 
-The four `after` behaviours:
+## How clicks are kept safe
 
-- `seamless`: the dialog stays on screen exactly as it is until the plugin
-  answers the click. The next dialog takes its place with nothing in between,
-  and when no dialog follows, the plugin closes it. No flash of the world and
-  no waiting screen. Recommended, and the default since 0.4.0. A button that
-  runs a command closes the dialog first, unless a later action of its own
-  opens the next one, so a dialog that command opens (another plugin's, or a
-  chest) is never closed by mistake.
-- `wait`: the game's "Waiting for Server" screen replaces the dialog until the
-  plugin answers.
-- `close`: it closes at once, then the next dialog (if any) opens.
-- `none`: it stays exactly as it is.
+Every button is bound to the dialog the player was shown, with the values it
+was drawn with. Nothing a player types in chat presses a button.
 
-A config.yml from before 0.4.0 that still says `default-after: wait` (the old
-default) is moved to `seamless` once, on the first start of 0.4.0; set it back
-to `wait` to keep the waiting screen.
-
-## How a click is kept safe
-
-Every button is a server callback bound to the drawing of the dialog the
-player saw: the values it was drawn with, and its inputs. **Nothing a player
-can type in chat presses a button.**
-
-- Only the latest drawing can be pressed. A new one (another dialog, a
-  refresh, a failed check) retires the buttons of the one before.
-- A button's `permission:` and `if:` are asked again when it is pressed.
-- Buttons stop working `click-lifetime-minutes` after the dialog was drawn,
-  and a player gets at most ten clicks a second.
-- A drawn dialog's clicks work once per showing, only while that dialog is on
-  the player's screen, and only run a command that is in its `dialog.yml`.
+- Only the latest drawing can be pressed. Opening another dialog, refreshing or
+  a failed check retires the old buttons.
+- A button's `permission:` and `if:` are checked again when it is pressed.
+- Buttons stop working `click-lifetime-minutes` after the dialog was drawn, and
+  a player gets at most ten clicks a second.
+- A drawn dialog's clicks work once per showing, only while it is on the
+  player's screen, and only run commands in its `dialog.yml`.
 
 ## For developers
 
-Add `depend: [DialogEngine]` (or `softdepend`, and check
-`DialogEngine.isEnabled()` first) to your `plugin.yml`, and compile against
-the jar. The API is in `ai.resourcepack.dialogs.api`, and every call is
-main-thread only, like the rest of Bukkit.
+Add `depend: [DialogEngine]` to your `plugin.yml` (or `softdepend`, and check
+`DialogEngine.isEnabled()` first) and compile against the jar. The API is in
+`ai.resourcepack.dialogs.api`, and every call is main-thread only.
 
 ```java
 DialogEngineAPI dialogs = DialogEngine.api();
 
-// Ship your dialogs: copy defaults into your data folder, then hand it over.
-// Server owners edit them there; /de reload reads them again.
+// Ship dialogs server owners can edit: copy defaults into your data folder,
+// then register it. /de reload reads it again.
 saveResource("dialogs/menu.yml", false);
 dialogs.registerFolder(this, "myplugin", new File(getDataFolder(), "dialogs"));
 
 // Open one, with values for its {placeholders}.
 dialogs.open(player, "myplugin:menu", Map.of("coins", "120"));
-dialogs.refresh(player);   // the player's current dialog, drawn again
+dialogs.refresh(player);   // draw the player's current dialog again
 dialogs.close(player);
 
 // A new action: [myplugin:give] diamond 3
@@ -789,32 +716,34 @@ dialogs.registerList(this, "myplugin_quests", (viewer, ctx) -> quests.of(viewer)
         .toList());
 ```
 
-A dialog built in code is a `ConfigurationSection` in the same format:
-`registerDialog(plugin, "myplugin:x", section)`.
-
-**Values you pass are read as MiniMessage.** Anything a player wrote goes
-through `dialogs.escape(...)` first. An action's argument arrives with its
-placeholders filled and what a player typed in it as typed, so check it
-before it goes into a command.
+- **Values you pass are read as MiniMessage.** Put anything a player wrote
+  through `dialogs.escape(...)` first. An action's argument arrives with its
+  placeholders filled and typed text as typed, so check it before it goes into
+  a command.
+- `registerDialog(plugin, "myplugin:x", section)` registers a dialog built in
+  code, as a `ConfigurationSection` in the same format.
+- `installDrawn(plugin, namespace)` installs drawn dialogs your jar carries
+  under `drawn/<namespace>/` (listed in its `files.txt`), once per version of
+  your plugin. Any the server owner has edited are left alone.
+- `setting(player, name)` reads what a drawn dialog's switch, slider or
+  dropdown bound to `name` is set to for that player.
+- Also: `current(player)` and `values(player)` for the dialog a player has
+  open, `ids()` and `info(id)` for what is loaded, `canOpen(player, id)`,
+  `textJson(...)` to render MiniMessage the way a dialog does, `unregister(plugin)`
+  and `reload()`.
 
 Everything a plugin registers is dropped when it disables.
-
-Beyond those, the API has `current(player)` and `values(player)` for the
-dialog a player has open, `ids()` and `info(id)` for what is loaded,
-`canOpen(player, id)` for a dialog's `permission:`, `textJson(...)` to render
-MiniMessage the way a dialog does, and `reload()`.
 
 ### Events
 
 | Event | When |
 |---|---|
-| `DialogOpenEvent` | A dialog is about to be drawn: opened, refreshed, paged or returned to. Cancellable; `values()` can be changed, and `isReopened()` says whether it is the same dialog again |
-| `DialogClickEvent` | A button was pressed, its inputs passed, its actions not yet run. Cancellable; `getButtonId()`, `getInputs()`, `getActions()` (changeable), and `getContext()` to open, refresh or close |
-| `DialogInputErrorEvent` | An input failed its check; the message can be changed |
+| `DialogOpenEvent` | A dialog is about to be drawn: opened, refreshed, paged or returned to. Cancellable. `values()` can be changed, and `isReopened()` says whether it is the same dialog again |
+| `DialogClickEvent` | A button was pressed and its inputs passed, before its actions run. Cancellable. `getButtonId()`, `getInputs()`, `getActions()` (changeable), and `getContext()` to open, refresh or close |
+| `DialogInputErrorEvent` | An input failed its check. The message can be changed |
 | `DialogEngineReloadEvent` | Everything was read again |
 
-A button with an `id:` and no actions is a button your plugin answers in
-`DialogClickEvent`:
+A button with an `id:` and no actions is one your plugin answers:
 
 ```java
 @EventHandler

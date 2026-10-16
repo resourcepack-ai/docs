@@ -6,11 +6,11 @@ export const metadata = {
 
 # Placing a model
 
-A model is a Blockbench file and an item that carries it. Placing one puts a
-**display entity** in the world at its true size — not a block, not an armour
-stand wearing a helmet.
-
-It is declared on the item, in a `place:` block:
+A placed model is furniture, decoration or a prop: a chair, a lamp, a statue.
+You give an item a `place:` block, and right-clicking a block with that item
+puts the model down in the world at its true size. It is drawn by a **display
+entity** (an invisible entity whose only job is to show a model), not a block
+and not an armour stand wearing a helmet.
 
 ```
 content/mypack/
@@ -28,133 +28,76 @@ chair:
     scale: 1.0
     solid: false         # true gives it something to walk into
     vehicle-collision: true  # false lets vehicles drive through it
-    seat: 0.6            # sit on it, this far above its base. 0 is no seat
+    seat: 0.5            # sit on it, this far above its base. 0 is no seat
     light: 0             # 0-15, what it gives off
     surface: floor       # floor | wall | ceiling | any
     drop: mypack:shard   # what breaking it gives back. Default: itself
   permission: mypack.chair
 ```
 
-`/rp give mypack:chair` gives you the item; right-click the ground to place it,
-and hit it to take it back.
+`/rp give mypack:chair` gives you the item. Right-click the ground to place it,
+and punch it to take it back. Breaking it in creative mode gives nothing back.
 
-<Callout type="note" title="Why it is not its own category">
-  `mypack:chair` is the item and the thing you put down, because an ID is
-  unique across the whole registry. Needing `mypack:chair` and
-  `mypack:chair_placed` for one chair is the sort of tax that makes a format
-  feel like paperwork — and it means the item and the placed model can never
-  disagree about which file to use.
-</Callout>
+The item and the placed model share one ID (`mypack:chair`), so there is no
+separate "placed" entry to keep in step with the item.
 
 ## Size
 
 A placed model is the size the Blockbench file says it is: 16 model units to
-the block, no transform applied, so a model built to y=32 stands two blocks
-tall. If a lamp looks a block tall when you built it three, the model itself is
-small — open it and check the cube coordinates rather than reaching for
-`scale`, which is there for when you deliberately want the same model in two
-sizes.
+the block, so a model built to y=32 stands two blocks tall. If a lamp looks a
+block tall when you built it three, check the cube coordinates in the model.
+`scale:` multiplies the size, for when you want the same model in two sizes.
 
 ## Which way it faces
 
 | `facing:` | How it turns |
 |---|---|
 | `cardinal` | North, east, south or west, like a placed furnace. The default |
-| `diagonal` | Eight directions, for something that reads as angled |
-| `free` | However you were looking |
+| `diagonal` | Eight directions |
+| `free` | Exactly the way you were looking |
 | `fixed` | Always the same way, for something with no front |
 
 ## The hitbox
 
-Measured off the model unless you say otherwise. Whoever built it already
-decided how big it is, and a hitbox smaller than what you can see means most of
-a statue cannot be punched and the part that can is buried inside it. `width:`
-and `height:` in blocks override it.
+The hitbox (what you can punch) is measured off the model, so a two-block
+statue can be hit anywhere you can see it. `width:` and `height:`, in blocks,
+override it.
 
-`solid: false` by default, because a display entity has no collision at all.
-`solid: true` puts an invisible barrier behind it, removed when the model is
-broken — right for a bench, wrong for a rug.
+A display entity has no collision, so players walk straight through a placed
+model. `solid: true` puts an invisible barrier block in the model's own block
+space and removes it when the model is broken. That suits a bench, not a rug.
+The barrier is one block, whatever shape the model is.
 
 ## Vehicles
 
-`vehicle-collision: true` by default, and it is a different question from
-`solid:` with a different answer.
+`vehicle-collision` decides whether [vehicles](/rp-engine/vehicles) are stopped
+by the model. It is on by default and separate from `solid:`, which is about
+players on foot.
 
-`solid` is about a **walking** player, and it is bought with a barrier block —
-one cube, at the anchor, whatever shape the piece actually is. That is why it
-is opt-in: it writes to the world. This is about a **driving** one. It covers
-the whole piece rather than one block of it, and it costs the world nothing: a
-vehicle asks the placed models around it where they are, and no block is
-placed.
+A vehicle is tested against the model's real cubes, not a box round them, and
+no blocks are placed for it. You can drive a go-kart between the legs of a
+table or under an archway, and a fence stops you along its whole length. Any
+placement angle works.
 
-So a car stops at your fence whether or not anybody can walk through it, which
-is what you want in every pack that has a fence.
+- Turned cubes keep their angle, so a turned slab is a **ramp** a vehicle
+  drives up.
+- Anything up to a block high is climbed like a kerb, and stairs built from
+  stacked cubes are climbed a tread at a time.
+- A piece a vehicle can climb also holds it up, so a row of platform models is a
+  bridge.
 
-**It uses the model's real shape, not a box round it.** A block model is
-already a list of cuboids, so that is what a vehicle is tested against: you can
-drive a go-kart between the legs of a table and under an archway, and a fence
-stops you along its whole length rather than only where its anchor block is.
-Any placement angle works, not just the four cardinals.
+Set `vehicle-collision: false` for things that should have no effect at all: a
+road marking, a manhole cover, a decal.
 
-Turned cubes keep their angle rather than being squared off, so a handrail
-collides where the rail is instead of filling the box around it — and a turned
-slab is a **ramp**: a vehicle rides up it rather than stopping at it. Stairs
-built as stacked cubes are climbed a tread at a time, up to a block per step.
+## Seats, light, surfaces and drops
 
-<Callout type="note" title="Low pieces are driven over, not into">
-  Anything a vehicle could step onto — up to a block high — is climbed like a
-  kerb rather than refused, and a piece a vehicle can climb also holds it up.
-  A rug is driven over, and a row of platform models is a bridge you can drive
-  across. `vehicle-collision: false` is for the pieces that should have no
-  effect at all: a painted road marking, a manhole cover, a decal.
-</Callout>
-
-## Sitting
-
-`seat:` makes the model something you can sit on. Its value is how far above
-the model's base a player's backside goes, in blocks; a dining chair is about
-`0.6`. Right-click to sit, shift to get up.
-
-The seat is a marker the player rides, and it is **never saved**: gone on
-dismount, on quit, when the model is broken, and when the server stops. Nothing
-is left behind to accumulate in a world over months — a field of invisible
-things players can stand on is how this feature usually rots.
-
-One player per model, and a model with a seat keeps its hitbox.
-
-## Light
-
-A display entity emits nothing, so `light:` puts a real light block in the
-model's anchor and takes it away when the piece is broken. A lamp wants about
-`14`.
-
-**A solid piece cannot also be a lamp.** One block cannot be a barrier and a
-light at once, and the barrier wins.
-
-## Where it may go
-
-`surface:` refuses a placement rather than turning the piece sideways.
-
-| `surface:` | Where it can go |
-|---|---|
-| `floor` | The top of a block. Chairs, tables, statues. The default |
-| `wall` | The side of one. Torches, signs, brackets |
-| `ceiling` | The underside. Chandeliers, hanging plants |
-| `any` | Anywhere |
-
-A chandelier stuck to the underside of a floor is somebody's build ruined, so
-the wrong face is a refusal.
-
-## What it drops
-
-Breaking a piece gives back the item it was placed from, keeping whatever name
-or enchantments that item had. `drop:` overrides it with a different content
-ID, for a piece that is meant to break rather than come back.
+`seat:`, `light:`, `surface:` and `drop:` are covered on
+[Seats, light and surfaces](/rp-engine/placement-options).
 
 ## Furniture that does something
 
-A piece can also be a container, a jukebox, a lamp or a door a click switches,
-a sofa that joins the pieces beside it, or something that grows into another
+A piece can also be a container, a jukebox, a lamp or door a click switches, a
+sofa that joins the pieces beside it, or something that grows into another
 piece over time:
 
 ```yaml
@@ -172,35 +115,32 @@ one a click goes to when a piece is several at once.
 
 ## Animation
 
-If the `.bbmodel` has keyframes in it, the piece moves — see
-[Animation](/rp-engine/animation). Bones can also carry hitboxes, seats and
-nametags; see [Bones that do something](/rp-engine/bones).
+If the `.bbmodel` has keyframes in it, the piece moves. See
+[Animation](/rp-engine/animation). Bones can also carry hitboxes and nametags;
+see [Bones that do something](/rp-engine/bones).
 
 ## Who may place what
 
-Three gates, answering different questions.
+- **`permission:`** on the item decides who may use it, which includes placing
+  it. Without one, anybody holding it may.
+- **WorldGuard**: the `rpengine-place` region flag allows or denies placing and
+  breaking models in a region. See [WorldGuard](/rp-engine/worldguard).
+- **`ModelPlaceEvent`** is for any other rule, from your own plugin. Cancel it
+  and the model is not placed and the item is not used up. See
+  [the API](/rp-engine/api).
 
-**`permission:`** on the item decides who may place *this one*. Without it,
-anybody holding it may.
-
-**The build check** decides where. A placement asks the server whether that
-player could have placed a block there, so world protection — WorldGuard,
-GriefPrevention, a claims plugin, spawn protection — applies with nothing to
-configure.
-
-**`ModelPlaceEvent`** is the escape hatch for your own rule. Cancel it and the
-placement does not happen and the item is not consumed. See
-[the API](/rp-engine/api).
+Placing never replaces a block: the space has to be empty. Right-clicking a
+chest, door or other block you can use opens it as normal; sneak to place
+against it.
 
 ## What is stored
 
-A placed model is two entities — a display for what you see, an interaction for
-what you can hit — both tagged in persistent data. Nothing is written to a
-database of ours, so a model survives a restart, moves with a world you copy,
-and does not need us to be running to be there.
+A placed model is two entities saved with the chunk: a display for what you
+see and an interaction entity for what you can hit. Nothing is kept in a
+separate file or database, so a model survives a restart and moves with a
+world you copy.
 
-If a pack stops declaring a model, everything already placed keeps standing; it
-simply has no art until the pack declares it again. `/rp models` lists what is
-around you and marks the orphans, and `/rp purge` removes those and only those
-— purging models a pack still defines would be a demolition command wearing a
-cleanup command's name.
+If a pack stops declaring a model, everything already placed stays where it is
+with no art until the pack declares it again. `/rp models` lists the models
+around you and marks these orphans, and `/rp purge` removes the orphans and
+nothing else.

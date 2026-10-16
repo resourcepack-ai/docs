@@ -6,11 +6,15 @@ export const metadata = {
 
 # Recipes
 
+Recipes let players make your custom items with the game's own crafting table,
+furnaces, stonecutter, smithing table, brewing stand and anvil.
+
 ```yaml
 # recipes/gems.yml
 ruby_block:
   type: shaped           # the default
-  result: mypack:ruby_block
+  result: mypack:ruby_block   # a content ID or a vanilla material
+  amount: 1              # how many it makes
   pattern: ["RRR", "RRR", "RRR"]
   keys:
     R: mypack:ruby       # a space in the pattern is an empty slot
@@ -38,7 +42,7 @@ sapphire_from_lapis:
   result: mypack:sapphire
   ingredient: LAPIS_LAZULI
   experience: 0.5
-  time: 100              # ticks
+  time: 100              # ticks; defaults to vanilla's time for that cooker
 
 dust:
   type: shapeless
@@ -49,16 +53,13 @@ dust:
 ## Exact and loose ingredients
 
 <Callout type="note" title="A content ID matches that item and nothing else">
-  An ordinary diamond will not satisfy a recipe calling for `mypack:ruby`, even
-  though a ruby *is* a diamond underneath. The persistent-data tag is what is
-  checked, not the material.
-
-  A vanilla material matches loosely, the way a vanilla ingredient should — any
-  `LAPIS_LAZULI` will do.
+  An ordinary diamond won't fill a slot that calls for `mypack:ruby`, even if
+  the ruby is a diamond underneath. A vanilla material matches loosely, as in
+  vanilla: any `LAPIS_LAZULI` will do.
 </Callout>
 
-That asymmetry is the useful one. Your custom items are safe from being crafted
-around, and vanilla ingredients still behave like vanilla.
+So your custom items can't be crafted around, and vanilla ingredients still
+behave like vanilla.
 
 A **vanilla potion** is the material, a slash and the potion type:
 `potion/awkward`, `splash_potion/healing`. `minecraft:diamond` means the
@@ -89,11 +90,11 @@ and with `copy-data` on it keeps the base's enchantments, wear and trim, the
 way a netherite upgrade does.
 
 <Callout type="note" title="Versions">
-  Before 1.20 the smithing table has two slots, so the template is not asked
-  for and trim recipes do nothing. A trim recipe needs its `pattern` from
-  1.21.5, unless its template is a vanilla trim template, which stands for its
-  own. Before 1.21.5 the pattern comes from the template, so only a vanilla
-  trim template trims anything.
+  Before 1.20 the smithing table has two slots, so no template is asked for and
+  trim recipes need 1.20. From 1.21.5 a trim recipe needs a `pattern`, unless
+  its template is a vanilla trim template, which brings its own. Before 1.21.5
+  the game takes the pattern from the template, so only vanilla trim templates
+  trim anything.
 </Callout>
 
 ## Brewing
@@ -106,9 +107,9 @@ ruby_tonic:
   result: mypack:ruby_tonic
 ```
 
-Brewing recipes **need Paper**: they are added to the game's own brewing table,
-so they brew exactly as vanilla potions do. On Spigot, which has no way to add
-one, the load says how many were left out.
+Brewing recipes **need Paper**, which adds them to the game's own brewing
+stand so they brew like vanilla potions. On Spigot they are skipped, and the
+console says how many.
 
 ## Anvils
 
@@ -128,17 +129,16 @@ mend_ruby_sword:
   repair: 25%            # per ruby, or a number of durability points
 ```
 
-The game has no anvil recipes, so RP Engine runs these itself. One of the base
-is used each time. A repair uses as many of the addition as it takes to mend
-the base, the way repairing with a material does in vanilla. The anvil wears
-down as it does with any other use. Take the result with the mouse: the number
-keys and dropping do nothing for an anvil recipe.
+The game has no anvil recipes, so RP Engine runs these itself. Each use costs
+`cost` levels, one of the base and `addition-amount` of the addition, and wears
+the anvil as normal. A repair mends by `repair` for each `addition-amount`,
+using as many as it takes, like a vanilla material repair. Take the result with
+the mouse: number keys and dropping don't work for anvil recipes.
 
 ## Naming
 
-A recipe ID is **not** a content ID, so a recipe may be called `ruby_block`
-while an item of that name also exists. They live in different registries and
-never collide.
+A recipe ID is not a content ID, so a recipe can be called `ruby_block` while
+an item has the same name. Two recipes can't share a name.
 
-Recipes are registered with the server on load and cleared on reload, so a
-recipe you delete stops working without a restart.
+Recipes are cleared and re-added on every reload, so a recipe you delete stops
+working without a restart.

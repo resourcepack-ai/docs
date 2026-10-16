@@ -6,47 +6,53 @@ export const metadata = {
 
 # Screens
 
-A screen is a picture drawn behind a container window.
+A screen is your own artwork drawn behind a container window, such as a chest
+or a furnace, so a shop or menu looks the way you designed it. The slots are
+still the real container's.
 
 ```yaml
 # screens/menus.yml
 shop:
+  file: shop             # assets/textures/gui/shop.png. Defaults to the id
   container: chest_9x6   # the real container it opens as
 ```
 
 Draw the sheet **256×256** with the vanilla window art centred on it, and say
-which container it was drawn for. Everything else — the height, the ascent, the
-negative space that slides it into place — follows from that.
+which container it was drawn for. RP Engine works out the position from that.
+You can draw outside the window freely (a title plate above it, a frame round
+it) without moving anything.
 
-`/rp screen mypack:shop` opens one. `/rp screens` lists them.
+`/rp screen mypack:shop [player]` opens one. `/rp screens` lists them.
 
-## The container is the geometry
+## The container decides the position
 
-<Callout type="warning" title="This is the setting that goes wrong">
-  `container:` is what **positions** the picture, not just what gives it slots.
-  Declare a five-row sheet as a six-row chest and the whole screen sits nine
-  pixels out, with nothing in game to say why.
+<Callout type="warning" title="The setting that goes wrong">
+  `container:` positions the picture as well as choosing the slots. Declare a
+  five-row sheet as a six-row chest and the whole screen sits nine pixels out,
+  with nothing in game to say why.
 </Callout>
 
-The name is the real container the GUI opens as, and it decides both the window
-your backdrop is aligned against and the inventory a player sees. Chests,
-droppers, hoppers, furnaces, anvils, looms — the ones vanilla has.
+| Containers | |
+|---|---|
+| Chests | `chest_9x1` to `chest_9x6` (the default is `chest_9x6`) |
+| Others | `dispenser`, `hopper`, `anvil`, `beacon`, `brewing`, `crafting`, `enchanting`, `furnace`, `grindstone`, `loom`, `cartography`, `stonecutter` |
 
-## The Inventory label
+Any other name is refused at load, and the console lists the valid ones.
+`height`, `ascent` and `offset` can be set by hand for art that isn't laid out
+the usual way, but normally you leave them out.
 
-The word "Inventory" disappears from every container screen while a bundle
-holds any custom GUI.
+## The "Inventory" label
 
-That is not a choice so much as the only lever there is. The client draws that
-label *after* the window title, so a backdrop cannot cover it, and blanking it
-in a language file is the one place it can be reached. A server with no custom
-screens is unaffected.
+While a pack holds any custom screen, the word "Inventory" disappears from
+every container screen, the player's own inventory included. The game draws
+that label on top of everything, so hiding it everywhere is the only way to
+stop it showing through your art. A server with no custom screens is
+unaffected.
 
 ## Opening one from a plugin
 
-A screen is art, not a menu — RP Engine draws the backdrop and does not decide
-what the slots do. Any inventory plugin you already use fills them; open the
-container it was drawn for and the picture is behind it.
-
-From your own code, `Icons` gives you the character run that positions it, and
-you put it in the inventory title. See [the plugin API](/rp-engine/api).
+A screen is artwork, not a menu: RP Engine draws the background and doesn't
+decide what the slots do. The picture is a run of characters in the window's
+title, so to fill the slots yourself, open the container the art was drawn for
+with that run as its title. `Icons` in [the plugin API](/rp-engine/api) gives
+you the characters.

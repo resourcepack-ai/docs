@@ -7,34 +7,32 @@ export const metadata = {
 # MCP server
 
 ResourcePack AI speaks the **Model Context Protocol**, so an AI agent can build
-a pack on your behalf — create it, generate the blocks, models, items, icons and
-sounds, bring in files you already have, look at what came back, and iterate —
-without you clicking anything.
+a pack for you: create it, generate blocks, models, items, GUIs, dialogs, icons
+and sounds, bring in files you already have, look at what came back, and try
+again where it's wrong.
 
-It is the same API described in the rest of this reference and the same AI
-Credits, with a key of its own. What changes is the shape: an agent gets a list of tools it can
-call rather than a list of URLs it has to be programmed against.
+It is the same API as the rest of this reference, with the same AI Credits and
+a key of its own. The difference is that an agent gets a list of tools to call
+instead of URLs it has to be programmed against.
 
 <Callout type="note" title="On a paid plan">
   MCP keys are available on any paid plan, and the MCP server spends the same AI
-  Credits the Studio does. There is no separate MCP pricing.
+  Credits Studio does. There is no separate MCP pricing.
 </Callout>
 
 ## Connect
 
 The server lives at **`https://api.resourcepack.ai/mcp`** and authenticates with
 an **MCP key** from the [Developers page](https://studio.resourcepack.ai/developers).
-MCP keys start `rpai_mcp_`, and they are separate from API keys: an MCP key only
-works on the MCP server and an API key only works on the REST API, so revoking
-the key you gave an agent never breaks your own code. A request with the wrong
-kind of key is refused with `wrong_key_kind`.
-
-Keys created before MCP keys existed (September 2026) still work in both places.
+MCP keys start `rpai_mcp_` and only work on the MCP server, and API keys only
+work on the REST API, so revoking the key you gave an agent never breaks your
+own code. The wrong kind of key is refused with `wrong_key_kind`. (Keys made
+before MCP keys existed work in both places.)
 
 <Steps>
   <Step title="Get an MCP key">
     [studio.resourcepack.ai/developers](https://studio.resourcepack.ai/developers),
-    the **MCP keys** card. Copy it when it is shown — it is shown once.
+    the **MCP keys** card. Copy it straight away: it is only shown once.
   </Step>
   <Step title="Add the server to your client">
     In Claude Code:
@@ -60,7 +58,7 @@ Keys created before MCP keys existed (September 2026) still work in both places.
     ```
   </Step>
   <Step title="Ask for something">
-    "Make me a pack of overgrown temple blocks — mossy bricks, cracked stone and
+    "Make me a pack of overgrown temple blocks: mossy bricks, cracked stone and
     a carved idol model." The agent will create the pack, generate into it, wait
     for the results and show you what it made.
   </Step>
@@ -85,16 +83,16 @@ arguments are documented in full.
 | [`create_pack`](/api-reference/create-pack) | Start a new pack. |
 | [`get_pack`](/api-reference/get-pack) | One pack, and the oldest Minecraft version its contents load on. |
 | [`list_assets`](/api-reference/list-assets) | What a pack holds. Also how you recover a job handle from an earlier run. |
-| [`get_asset_file`](/api-reference/get-asset-file) | An asset's bytes — an image comes back as an image. |
+| [`get_asset_file`](/api-reference/get-asset-file) | An asset's file. An image comes back as an image. |
 | [`export_pack`](/api-reference/export-pack) | Build the Java `.zip`. Confirms it built rather than returning it. |
 | [`create_upload`](/api-reference/create-upload) | A URL to put a file into, for anything too big to send inline. |
 | [`upload_asset`](/api-reference/upload-asset) | Put a file you already have into a pack: a texture, sprite, icon, model, sound, GUI, HUD or armour. Free. |
 | [`upload_reference`](/api-reference/upload-reference) | A reference picture for a generation to follow. |
 | [`import_pack`](/api-reference/import-pack) | A whole resource pack `.zip` as a new pack, like the Studio's Import button. Free. |
 | [`generate_texture`](/api-reference/generate-texture) | A block texture. |
-| [`generate_model`](/api-reference/generate-model) | A 3D model. The slow one — minutes, not seconds. |
+| [`generate_model`](/api-reference/generate-model) | A 3D model. The slow one: minutes, not seconds. |
 | [`generate_item`](/api-reference/generate-item) | An item, as a flat sprite or real geometry. |
-| [`generate_gui`](/api-reference/generate-gui) | A container screen — chests, furnaces and the rest. |
+| [`generate_gui`](/api-reference/generate-gui) | A container screen: chests, furnaces and the rest. |
 | [`generate_hud`](/api-reference/generate-hud) | The overlay drawn over the world: hearts, hunger, hotbar, crosshair. |
 | [`generate_dialog`](/api-reference/generate-dialog) | A dialog: a server menu in Minecraft's own look, opened with `/dialog`. |
 | [`generate_icon`](/api-reference/generate-icon) | A bitmap glyph you can type into chat, signs and books. |
@@ -102,26 +100,20 @@ arguments are documented in full.
 | [`get_job`](/api-reference/get-job) | One generation's status. Usually `wait_for_job` is what you want instead. |
 | `wait_for_job` | **No HTTP equivalent.** Waits for generations to finish, so the agent doesn't poll. |
 
-The tool list is generated from the same description of the API that this
-reference and the [OpenAPI document](/openapi.json) come from, so it carries the
-same arguments, the same limits and the same enums. An endpoint switched off
-behind a feature flag is left out rather than offered and refused.
-
-Two differences from calling the endpoints yourself are worth knowing, because
-both exist to stop an agent wasting your credits.
+The tools are generated from the same source as this reference and the
+[OpenAPI document](/openapi.json), so they take the same arguments, limits and
+enums. An endpoint that is switched off is left out of the list.
 
 ### `wait_for_job` waits, so the agent doesn't poll
 
 Every generation is [asynchronous](/api-reference/jobs): you get a job handle
-back and poll it. That is right for a program and wrong for an agent — a model
-polling every two seconds spends a whole turn per check, so one block costs
-thirty turns of "still generating".
+and poll it. For an agent, each poll costs a whole turn, so `wait_for_job` does
+the waiting on the server instead. The agent passes every handle it is waiting
+on in one call and gets one answer when they have all finished.
 
-So there is a `wait_for_job` tool that does the waiting server-side. The agent
-hands over every handle it is waiting on, in one call, and gets one answer back
-when they have all finished. If the wait runs out of time it says which are
-still going and the agent calls again — nothing is lost and nothing is charged
-twice.
+It waits 120 seconds by default, up to 600 with `timeoutSeconds`. If time runs
+out it says which jobs are still going and the agent calls again. Nothing is
+lost or charged twice.
 
 ### Files come back as files
 
@@ -131,32 +123,31 @@ regenerate it if it is wrong. Sounds come back as audio, models as their JSON.
 
 ### Sending files in
 
-`upload_asset`, `upload_reference` and `import_pack` take a `file`, which is one of four
-things, and the agent picks whichever its situation allows:
+`upload_asset`, `upload_reference` and `import_pack` take a `file` in one of
+four forms:
 
 - **`text`**: the file as text, such as a model's JSON the agent wrote itself.
 - **`base64`**: the bytes inline. Fine for a 16px texture.
 - **`url`**: a public `https` address to fetch it from.
 - **`upload`**: the id from `create_upload`, after the bytes were PUT to the URL it returned.
 
-`upload` is the one to use for any file on disk. An agent with a shell (Claude
-Code, Cursor, Codex) sends the bytes itself, so they never pass through the
-model:
+Use `upload` for any file on disk. An agent with a shell sends the bytes
+itself, so they never pass through the model:
 
 ```bash
 curl -T lantern.bbmodel "<url from create_upload>"
 ```
 
-Base64 works too, but a model writes it a token at a time, so it is slow and
+Base64 works too, but an agent writes it a token at a time, so it is slow and
 expensive for anything bigger than a small image.
 
 An import runs after `import_pack` answers, like a generation: the agent waits on
 its job (`<pack>:import`) with `wait_for_job`, and `get_job` then has the full
 report of what came in and what was left out.
 
-A pack export is the exception: `export_pack` confirms the zip built and how big
-it is, but does not hand over the bytes — a resource pack is megabytes, and
-there is nothing useful an agent can do with them. Download it over HTTP:
+`export_pack` confirms the zip built and how big it is, but doesn't return the
+file, which is megabytes an agent has no use for. Download it over HTTP with an
+**API** key (an MCP key is refused there):
 
 ```bash
 curl -H "Authorization: Bearer $RPAI_KEY" -o pack.zip \
@@ -167,16 +158,16 @@ curl -H "Authorization: Bearer $RPAI_KEY" -o pack.zip \
 
 | | |
 | --- | --- |
-| **Transport** | Streamable HTTP. POST JSON-RPC; the server does not open a message stream, so a `GET` answers 405. |
+| **Transport** | Streamable HTTP. POST JSON-RPC. The server doesn't open a message stream, so a `GET` answers 405. |
 | **Sessions** | None. Every request carries the key and stands alone, so a dropped connection costs nothing. |
-| **Rate limits** | Shared with the REST API — [120 reads and 30 writes a minute](/api-reference/rate-limits) per key. `wait_for_job` paces its own polling to stay well inside the read budget. |
+| **Rate limits** | The same budgets as the REST API: [120 reads and 30 writes a minute](/api-reference/rate-limits) per key. `wait_for_job` paces its own polling to stay inside the read budget. |
 | **Errors** | A failed call comes back as a tool error the agent can read and act on, carrying the same [stable code](/api-reference/errors) the REST API uses. |
 | **Origin check** | The two [origin-check endpoints](/api-reference/origin) are not tools. They need no key and exist for marketplaces, who are better served over HTTP. |
 
 <Callout type="tip" title="Tell it what you want, not how">
-  The server hands the agent its own briefing — what a pack is, that generating
-  costs real money, and how to tell assets apart by their `type` — so you do not have to explain
-  any of it. Describe the pack you want and let it choose the calls.
+  The server gives the agent its own briefing (what a pack is, that generating
+  costs credits, how to tell assets apart by `type`), so you don't have to
+  explain any of it. Describe the pack you want and let it choose the calls.
 </Callout>
 
 <CardGroup cols={2}>

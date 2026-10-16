@@ -8,15 +8,14 @@ export const metadata = {
 
 A pack is the container for everything you make (models, vehicles, blocks,
 items, armor, GUIs, HUDs, dialogs, icons, sounds, emotes and shaders), and the
-unit you test, share and export. Everything in the Studio happens inside one.
-Each of those has its own tab on the pack page; 2D and 3D items share Items,
-and armor and 3D armor share Armor.
+unit you test, share and export. Everything in Studio happens inside one.
+Each kind has its own tab on the pack page; 2D and 3D items share Items, and
+armor and 3D armor share Armor.
 
 ## Creating one
 
-**New pack** on the dashboard. The Studio starts you with a name and an icon;
-use the dice to randomize both, or upload your own image. Nothing you pick is
-permanent: name and icon change any time.
+**New pack** on the dashboard. Studio suggests a name and an icon; use the
+dice to pick others, or upload your own image. Both can be changed any time.
 
 If what you want already exists as a `.zip`, use
 [Import](/importing) beside it instead: import always creates a new pack from
@@ -24,21 +23,30 @@ the file.
 
 ## Managing one
 
-Right-click a pack card (or open its menu) for the full set: **Open**,
-**Rename**, **Duplicate**, **Export**, **Change icon** and **Delete**.
-Duplicate copies the whole pack, assets and all, which is the way to
-experiment on a copy without risking the original.
+Right-click a pack card (or open its menu) for **Open pack**, **Edit pack**,
+**Duplicate**, **Export**, **Change icon** and **Delete pack**. Duplicate
+copies the whole pack, assets and all, so you can experiment without risking
+the original.
 
-**Edit pack** also holds one setting that matters once other people are
-involved: whose credits the pack spends, yours or each prompter's own. See
-[Collaborators](/collaborators).
+**Edit pack** changes the name and description, and holds one setting that
+matters once other people are involved: whose credits the pack spends. See
+[Collaborators](/collaborators#whose-credits-get-spent).
+
+## How many packs you can have
+
+| Plan | Packs | Assets per pack |
+| --- | --- | --- |
+| Starter | 5 | 50 |
+| Creator | 20 | Unlimited |
+| Studio | 20 | Unlimited |
+| Team | 20 per seat | Unlimited |
 
 ## Folders
 
-A big pack's grid gets long, so you can sort it into folders. They're listed
-to the left of the grid like the folders in a file manager (on a narrower
-screen, as a row above the tabs): click one and the grid shows what's in it,
-click the pack's name above them to see everything again.
+Sort a big pack into folders. They're listed beside the grid like folders in
+a file manager (on a narrower screen, as a row above the tabs). Click one and
+the grid shows what's in it; click the pack's name above them to see
+everything again.
 
 Each folder holds one kind of asset: a folder of models, a folder of icons, a
 folder of emotes. The **+** beside the list's title makes one, asking for a
@@ -48,8 +56,7 @@ beside the **+** tucks the list away to a small **Folders** tab, and it stays
 tucked away until you open it again.
 
 **Show folders**, with the pack's buttons at the top, decides how the grid
-treats them.
-On (the default), folders also appear as tiles at the top of the pack, and
+treats them. On (the default), folders also appear as tiles at the top of the pack, and
 whatever is filed in one is tucked inside it rather than shown in the grid;
 hover a tile to see the first few things inside. Off, every asset stays in the
 grid where it always was, with a small folder mark on anything filed, and the
@@ -90,10 +97,9 @@ assets raise that floor:
 - **Item variants** dispatch through item model definitions, which are 1.21.4+.
 - A model using **light emission** needs 1.21.2+.
 
-Each asset shows its own floor as a chip on its page, with the reason spelled
-out; for a model, it names the cubes responsible, so "remove every reference"
-is something you can act on rather than hunt for. The pack's floor is simply
-the highest of its assets', and the pack card shows it as "1.21.4+".
+Each asset shows its own floor as a chip on its page, with the reason; for a
+model, it names the cubes responsible. The pack's floor is the highest of its
+assets', and the pack card shows it, for example "1.21.4+".
 
 The floor only ever reflects content. Delete or retarget the asset that
 raised it and the pack's range widens again.

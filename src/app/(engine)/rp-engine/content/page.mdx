@@ -6,8 +6,9 @@ export const metadata = {
 
 # The content folder
 
-One folder per pack, and the folder name is the
-[namespace](/rp-engine/ids).
+Everything you add lives in `plugins/RPEngine/content/`, one folder per pack.
+The folder name is the pack's [namespace](/rp-engine/ids): lowercase letters,
+digits, `_`, `.` and `-`.
 
 ```
 plugins/RPEngine/content/
@@ -18,12 +19,14 @@ plugins/RPEngine/content/
     fonts/       *.yml
     screens/     *.yml
     huds/        *.yml
+    dialogs/     *.yml
     recipes/     *.yml
     entities/    *.yml
     liquids/     *.yml
     blocks/      *.yml
     vehicles/    *.yml
     emotes/      *.json or *.yml
+    armor3d/     *.yml      3D armour sets
     assets/                → assets/mypack/ in the built pack
       textures/
       models/              Blockbench files
@@ -35,23 +38,22 @@ plugins/RPEngine/content/
 ## The rules
 
 **The category folder decides the kind.** Top-level keys in a file are ID
-paths, so nesting under an `items:` key would say the same thing twice. One
-file may declare many; the file name means nothing, and subfolders are
-organisation only — `items/weapons/swords.yml` contributes nothing to the ID.
+paths, so you do not nest them under an `items:` key. One file can declare
+many things, the file name does not matter, and subfolders are only for your
+own organisation: `items/weapons/swords.yml` adds nothing to the ID.
 
-**A folder exists only if something reads it.** There is no `models/` — a
-placed model is a [`place:` block on the item](/rp-engine/models). Any other
-folder is warned about by name, which is what catches `item/` and `Sounds/`.
-The exceptions are other plugins' layouts, which are read where they lie: see
+**Only the folders above are read.** There is no `models/` folder: a placed
+model is a [`place:` block on an item](/rp-engine/models). Any other folder is
+warned about by name, which catches typos like `item/` and `Sounds/`. Other
+plugins' layouts are the exception and are read where they are: see
 [Model Engine](/rp-engine/modelengine) and [BetterModel](/rp-engine/bettermodel).
 
-**Errors are collected, never thrown.** See [reloading](/rp-engine/reloading).
+**A mistake skips one definition, not the pack.** See [Reloading](/rp-engine/reloading).
 
 ## YAML or TOML
 
-A definition file may be `.yml`, `.yaml` or `.toml`, and both spellings can sit
-in the same folder. They produce exactly the same thing — nothing downstream
-knows which one a definition came from.
+A definition file can be `.yml`, `.yaml` or `.toml`, mixed freely in one
+folder. They mean exactly the same thing.
 
 ```toml
 [ruby]
@@ -65,8 +67,7 @@ seat = 0.5
 
 <Callout type="warning" title="Quote an ID with a / or a . in it">
   Both mean something to TOML, so `weapons/sword` has to be written
-  `["weapons/sword"]`. It is the one thing that catches people out, and the
-  error message says so when it happens.
+  `["weapons/sword"]`. The error message says so when it happens.
 </Callout>
 
 ## pack.yml
@@ -86,32 +87,25 @@ version: 1.0.0
 bundles: [main]      # which built packs this content goes into
 ```
 
-`bundles:` is the only one that changes behaviour — see
-[Bundles](/rp-engine/bundles). The rest is what a player sees on the pack
-screen.
+`bundles:` is the only one that changes behaviour; see
+[Bundles](/rp-engine/bundles). Leave it out and the pack goes into `main`.
 
 ## assets/ and overrides/
-
-Two folders, and the difference matters.
 
 **`assets/`** becomes `assets/mypack/` in the built pack. It is namespaced, so
 nothing in it can collide with another pack or with vanilla.
 
-**`overrides/`** becomes `assets/minecraft/`. It is how you replace vanilla art
-— a different dirt texture, a new font, a changed sound.
+**`overrides/`** becomes `assets/minecraft/`. It is how you replace vanilla
+art: a different dirt texture, a new font, a changed sound.
 
 <Callout type="warning" title="overrides/ is the one place two packs can fight">
   Two packs both replacing `assets/minecraft/textures/block/dirt.png` is a real
-  conflict, and the later namespace alphabetically wins. Both are named in a
-  build warning.
-
-  It is a separate folder rather than letting a pack write `assets/minecraft/`
-  itself, so the risk is visible while somebody is authoring rather than on the
-  day two packs are installed together.
+  conflict. The namespace that comes later alphabetically wins, and both are
+  named in a build warning.
 </Callout>
 
 ## Blockbench files
 
-`assets/models/` holds `.bbmodel` project files or `.json` exports. See
-[Items](/rp-engine/items#3d-items) for which to use and why the project file is
-the answer.
+`assets/models/` holds Blockbench `.bbmodel` project files or exported Java
+`.json` models. The `.bbmodel` is the better choice, because its textures are
+inside it. See [Items](/rp-engine/items#3d-items).

@@ -5,48 +5,48 @@ export const metadata = {
 
 # API overview
 
-Everything the Studio does to a pack, your own code can do too: create a pack,
-generate blocks, models, items and icons into it, and download the finished
-`.zip`.
+The ResourcePack AI API lets your own code do what Studio does to a pack:
+create a pack, generate block textures, models, items, GUIs, the HUD, dialogs,
+icons and sounds into it, upload files you already have or import a whole
+resource pack, and download the finished `.zip`.
 
 <Callout type="note" title="On a paid plan">
   API keys are available on any paid plan. Calls spend the same AI Credits the
-  app does — there's no separate API pricing and no per-request charge.
+  app does. There's no separate API pricing and no per-request charge.
 </Callout>
 
 ## Base URL
 
 <ApiBaseUrl />
 
-That host serves the API and nothing else. Every path in this reference is
-relative to it.
+That host serves only the API. Every path in this reference is relative to it.
+The full spec is at [/openapi.json](/openapi.json).
 
 ## Get a key
 
 <Steps>
   <Step title="Open the Developers page">
-    [studio.resourcepack.ai/developers](https://studio.resourcepack.ai/developers),
-    then find the **API keys** card. The **MCP keys** card under it is for
-    connecting an AI agent (see [MCP](/api-reference/mcp)); the two kinds are
-    separate, and each only works on its own surface. Neither is Bring Your Own
-    Key, on your account page, which is a key *you* bring so model generations
-    bill to your OpenAI account. These are keys *we* give you so your code can
-    call us.
+    Go to [studio.resourcepack.ai/developers](https://studio.resourcepack.ai/developers)
+    and find the **API keys** card. The **MCP keys** card below it is for
+    connecting an AI agent (see [MCP server](/api-reference/mcp)). Each kind of
+    key only works on its own surface.
   </Step>
   <Step title="Name it and create it">
-    The name is only for telling keys apart later, so use the thing it's for —
-    `ci`, `my bot`, `laptop`.
+    The name is only for telling keys apart, so use what it's for: `ci`,
+    `my bot`, `laptop`.
   </Step>
   <Step title="Copy it immediately">
-    **The key is shown once and never again.** We store a hash of it, not the
-    key, so there is no way for us to show it to you a second time — if you lose
-    it, revoke it and make another.
+    **The key is shown once.** We store only a hash of it, so we can't show it
+    again. If you lose it, revoke it and make another.
   </Step>
 </Steps>
 
-API keys look like `rpai_` followed by 43 random characters (MCP keys like
-`rpai_mcp_` followed by the same). The prefix is there so
-a key that leaks into a commit or a log is easy to search for.
+API keys are `rpai_` followed by 43 random characters (MCP keys start
+`rpai_mcp_`). The prefix makes a key that leaks into a commit or log easy to
+search for.
+
+Don't confuse these with **Bring Your Own Key** on your account page, which is
+a key you give us. These are keys we give your code.
 
 ## Authenticate
 
@@ -57,48 +57,43 @@ curl https://api.resourcepack.ai/v1/packs \
   -H "Authorization: Bearer rpai_YOUR_KEY"
 ```
 
-There's no other way to send it. A key in a query string ends up in access logs,
-browser history and `Referer` headers, so it isn't accepted.
+That's the only accepted way. Keys in query strings end up in logs and browser
+history, so they're refused.
 
 <Callout type="warning" title="A key is your whole account">
   It can read, generate into and export every pack you own or collaborate on,
-  and it spends your credits. Keep it server-side — never in a Minecraft plugin,
+  and it spends your credits. Keep it server-side: never in a Minecraft plugin,
   a browser bundle, or anything you hand to a player. Revoke it from the same
-  card the moment you think it's out.
+  card the moment you think it's out, and check its [history](/api-reference/history).
 </Callout>
 
 ## Rate limits
 
-Two budgets per key, measured over a rolling minute: **120 reads** and **30
-writes**, where a write is creating a pack, generating anything, or exporting.
-Over budget answers 429 with a `Retry-After` header.
-
-Credits are still the throttle that matters — a generation you can't afford is
-refused with a 402 however slowly you ask. See
-[Rate limits](/api-reference/rate-limits) for what counts against which.
+Each key gets **120 reads** and **30 writes** per rolling minute. A write is
+any `POST` (creating a pack, generating, uploading, importing) plus export.
+Over budget answers `429` with a `Retry-After` header. Credits still apply: a
+generation you can't afford is refused with `402`. See
+[Rate limits](/api-reference/rate-limits).
 
 ## What's not here
 
-The API covers creating packs, generating into them, and getting assets back
-out. It deliberately doesn't cover editing pixels or geometry, iterating on an
-existing asset, deleting things, pack settings, collaborators or syncing to a
-server — those live in the Studio. If you need one of them programmatically,
-say so in [Discord](https://resourcepack.ai/discord).
+The API creates packs, generates and uploads into them, and gets assets back
+out. It doesn't edit pixels or geometry, refine an existing asset, delete
+anything, change pack settings or collaborators, or sync to a server. Those are
+in Studio. If you need one of them from code, tell us in
+[Discord](https://resourcepack.ai/discord).
 
 <CardGroup cols={2}>
   <Card title="Errors" href="/api-reference/errors" icon="wrench">
-    The envelope, and every code worth branching on.
-  </Card>
-  <Card title="Rate limits" href="/api-reference/rate-limits" icon="gauge">
-    Two budgets per key, and how a refusal looks.
+    The error shape, and every code worth branching on.
   </Card>
   <Card title="Jobs and polling" href="/api-reference/jobs" icon="rocket">
-    Why generation is asynchronous, and how to wait properly.
+    Generation is asynchronous. How to wait properly.
   </Card>
   <Card title="Create a pack" href="/api-reference/create-pack" icon="wallet">
     The first call you'll make.
   </Card>
   <Card title="Generating with AI" href="/generating" icon="brush">
-    What makes a prompt land. Applies equally here.
+    What makes a prompt work. Applies here too.
   </Card>
 </CardGroup>

@@ -1,277 +1,157 @@
 export const metadata = {
   title: "Animations",
   description:
-    "Keyframe a model in the editor, then play it back on a real server with our plugin — triggers, interpolation and limits.",
+    "Keyframe a model in the editor or with AI, choose when it plays, and play it on a server with RP Engine.",
 };
 
 # Animations
 
-Vanilla Minecraft has no concept of an animated block model. A Resource Pack
-can change what a block *looks* like, not make it move. So animations here are
-two halves that meet in the middle: you keyframe a model in **Animate mode**,
-and our **plugin** plays those keyframes back on placed models, on your
-server.
+You can make a model move: a door that swings open, a fan that spins, a chest
+lid that opens when someone walks up. You keyframe it in the model editor's
+**Animate** mode, or have the AI do it, and choose what makes it play.
 
-<Callout type="warning" title="On Java, animations need the plugin">
-  A Java pack with an animated model is still a perfectly valid Resource Pack —
-  the animation data lives in fields vanilla ignores — but the model sits
-  still anywhere our plugin isn't running. Bedrock is different: it has native
-  keyframe animation, so the converted pack carries the real thing. More on
-  that below.
+Vanilla Minecraft can't animate a model, so playback in game is done by
+[RP Engine](/testing/plugin), our server plugin. Our test server runs it.
+
+<Callout type="warning" title="On Java, animations need RP Engine">
+  A pack with an animated model is still a valid resource pack, but the model
+  stands still anywhere RP Engine isn't running. Bedrock is different: its
+  pack carries the animations natively. See [On Bedrock](#on-bedrock).
 </Callout>
 
 ## Animating in the editor
 
 <Steps>
   <Step title="Group what moves into bones">
-    Animate mode works on **cubes** and on **bones** (named groups of cubes
-    with a shared pivot, made in Edit mode). A hinge, a wheel, a wing — each
-    wants to be a bone, because rotating a bone rotates its cubes around one
-    pivot rather than each around its own. A generated model comes
-    pre-grouped — named bones, pivots at the joints — so there this step is
-    usually already done.
+    Animate mode moves **cubes** and **bones** (named groups of cubes that
+    share a pivot point, made in Edit mode). A hinge, a wheel or a wing should
+    each be a bone, so it turns around one point. Generated models arrive
+    already grouped, with pivots at the joints.
   </Step>
-  <Step title="Keyframe it">
-    Pick a target, scrub the timeline, change the rotation, position or scale,
-    and a keyframe is set at that time. An animation has a name and a length
-    in seconds; keyframes past the end are dropped when you shorten it.
+  <Step title="Add keyframes">
+    Create an animation and give it a name and a length in seconds. Pick a
+    cube or bone, move the playhead, and change its rotation, position or
+    scale: a keyframe is set at that time. Keyframes past the end are dropped
+    if you shorten the animation.
   </Step>
-  <Step title="Choose interpolation">
-    Per keyframe:
+  <Step title="Choose how it moves between keyframes">
+    Each keyframe has an interpolation:
 
-    - **Linear** — straight line between values. The default.
-    - **Smooth** — a Catmull-Rom curve through the neighbouring keys. Use for
-      anything organic; a segment is smooth if *either* end is.
-    - **Step** — hold the value, then jump. Use for mechanical snaps and for
-      anything that should look like it has no in-between frames.
+    - **Linear**: a straight line between values. The default.
+    - **Smooth**: a curve through the neighbouring keyframes. Good for
+      anything organic.
+    - **Step**: hold the value, then jump. Good for mechanical snaps.
 
-    Values hold flat before the first key and after the last one.
+    Before the first keyframe and after the last, the value holds still.
   </Step>
-  <Step title="Pick playback triggers">
-    An animation with no triggers never plays by itself in game — though a
-    plugin can still play it [from code](#playing-from-code). That's the next
-    section.
+  <Step title="Choose when it plays">
+    Pick one or more triggers (below). An animation with no triggers never
+    plays on its own, though a plugin can still play it by name.
   </Step>
 </Steps>
 
-<Callout type="tip" title="Animate with AI">
-  You can hand the keyframing over: **Animate with AI** gives the model's
-  bones keyframed animations from an instruction, and generation itself can
-  include looping and interaction animations when the prompt asks for them.
-  Either way the result is ordinary keyframes on the timeline, editable like
-  your own. An AI animation run merges onto your latest save, so edits you
-  make while it's running survive.
-</Callout>
+### When it ends
 
-An emote that includes a model uses the same bones. Before it writes the
-player's motion, the builder separates any model assembly the interaction must
-move—a barbell from its bench, for example—and then animates the player and
-that assembly on one clock. The model gains an ordinary, triggerless animation
-you can edit in its own timeline; the emote drives it automatically and keeps
-it synchronized with the player's hands.
+By default a one-off animation returns the model to its rest pose when it
+finishes. Tick **Stay on the last frame** and the model keeps that pose until
+another animation plays. Use it for a door that stays open, or for stages
+that build on each other.
 
-Bones belong to the model, not to the emote. A model that already has them —
-because you made them, or because an earlier emote did — keeps exactly the
-bones it has, and the emote animates those. So if you want a particular split,
-make it yourself in the model editor first and every emote will use it.
+### Animate with AI
 
-A model you add to an emote starts out **not attached**, which means it stands
-in the scene and stays put while the player moves — right for a chair, a bench
-or an anvil, which the player moves onto rather than carries. If your
-instruction describes the player holding, wearing, wielding or playing it
-instead, the run will pick it up for you: it attaches the model to a hand, the
-body or the head, places it where it would really sit, and turns it to suit the
-pose. Scenery is left exactly where you put it. You can always set **Attached
-to** yourself beforehand, and a model you have already attached is never moved.
+**Animate with AI** writes animations from a sentence, such as "gentle idle
+bob, tail sways behind". The result is ordinary keyframes you can edit. Use
+**Start from** to have the new animation carry on from the end of an existing
+one (**After** that animation) instead of from the base pose, which is how you
+build something in stages. It costs about 15 credits.
+
+Edits you make while it runs are kept: the result is merged onto your latest
+save.
 
 ## Triggers
 
-Each animation can claim several triggers, and a model can have several
-animations. Triggers are what connect a timeline to something that actually
-happens in the world.
+A model can have several animations, and each can have several triggers.
 
-| Trigger | Fires when |
+| Trigger | Plays when |
 | --- | --- |
 | **On loop** | Continuously, while the model is placed |
-| **On placement** | Once, immediately after the model is placed |
+| **On placement** | Once, straight after the model is placed |
 | **On right click** | A player uses the model |
-| **On left click** | A player hits the model |
-| **On range** | A player enters a radius around it (default 5 blocks, 0.5–64) |
+| **On left click** | A player hits the model (this also makes it unbreakable) |
+| **On range** | A player comes within a radius of it (0.5 to 64 blocks) |
 
-Rules worth knowing before you build something complicated:
+How they behave:
 
-- **One animation wins per event.** If two animations both claim right-click,
-  only one plays — by default the first in model order. Which one is a choice
-  you make when you give the model out: with two or more triggered animations,
-  the give card grows a **Plays** dropdown, and the picked animation rides on
-  the item itself. Place it and that copy uses your pick for every trigger the
-  animation claims; anything it doesn't claim falls back to model order as
-  usual. Two copies of the same model can be placed playing different
-  animations.
-- **One-shots don't stack.** While a triggered animation is playing, further
-  triggers of it are ignored rather than restarting or layering it.
-- **What happens after a one-shot:** the model returns to rest, or falls back
-  to the first looping animation if it has one.
-- **Range is entry-based.** Presence is re-checked periodically, so a group
-  arriving together starts it once, and it can fire again after someone leaves
-  and comes back — it doesn't re-trigger every tick while you stand there.
+- **One animation per trigger.** If two animations both claim right-click,
+  the first in the model's list plays. To choose a different one, use the
+  **Plays** dropdown on the model's **Get in-game** card when you give it out.
+  The choice rides on that item, so two copies of one model can play
+  different animations.
+- **A playing animation isn't restarted.** Triggering it again while it's
+  running does nothing.
+- **After a one-off finishes**, the model goes back to rest, or to its looping
+  animation if it has one (unless it's set to stay on the last frame).
+- **Range fires on arrival.** It plays when someone walks into the radius,
+  not every moment they stand in it, and can play again after they leave and
+  come back.
 
 <Callout type="note" title="Left click makes a model unbreakable">
-  A left-click trigger has a side effect by design: that placement can no
-  longer be punched to pick it up. Otherwise the first hit would break the rig
-  and drop the item instead of playing the animation. Give players another way
-  to remove it if that matters.
+  A model with an "On left click" trigger can't be punched to pick it up,
+  otherwise the first hit would break it instead of animating it. Give
+  players another way to remove it if they need one.
 </Callout>
 
-## Playing from code
+## Playing from a plugin
 
-Triggers cover "when a player does something to this model". For anything
-else — a quest completing, a boss dying, a timer — a plugin on your server can
-play an animation by name.
-
-**Naming it is all it takes.** Unlike a trigger, this doesn't care what the
-animation claims, so an animation with no triggers at all is playable this way
-and nothing else can reach it. That's a reasonable way to build: give the
-animations you drive from code no triggers, and they'll never fire by accident
-when somebody clicks.
-
-Add `softdepend: [RPEngine]` to your `plugin.yml` so you load after it, and
-take the plugin off Bukkit — see
-[For plugin developers](/rp-engine/api) for the rest of the surface.
+A server plugin can play any animation by name, including one with no
+triggers, which is a good way to keep animations you drive from code from
+firing when someone clicks. With RP Engine installed:
 
 ```java
 RPEnginePlugin engine =
     (RPEnginePlugin) Bukkit.getPluginManager().getPlugin("RPEngine");
-if (engine == null) return; // plugin isn't installed
+if (engine == null) return; // RP Engine isn't installed
 
 for (Placement statue : engine.models().near(altar, 8)) {
     statue.play("Wave");
 }
 ```
 
-You get a `Placement` from a location (`near`), from a chunk (`in`), or
-straight from an entity (`at`) — pass it the entity out of a
-`PlayerInteractAtEntityEvent` and it resolves the rig that was clicked. From
-there:
+You can find placed models near a location (`near`), in a chunk (`in`), or
+from a clicked entity (`at`), then `play`, `stop` or ask what's `playing()`.
+Call these on the main thread, and remember a model in an unloaded chunk
+isn't found. The full API, including listening for clicks on a model, is in
+[For plugin developers](/rp-engine/api).
 
-| Call | What it does |
-| --- | --- |
-| `animations()` | Every animation name this model has, in editor order |
-| `play(name)` | Plays it. `false` if the name is unknown, the model has no moving parts, or that animation is already mid-play |
-| `play(name, true)` | Same, but restarts it if it's already running |
-| `stop()` | Back to the idle loop if there is one, otherwise the rest pose |
-| `playing()` | What's on screen now, including an idle loop it fell back to itself |
-
-Two things worth knowing before you wire it up. **Call it on the main thread**
-— it moves entities, so an async call throws rather than quietly corrupting
-something. And **a rig in an unloaded chunk isn't there**: `near` only finds
-what's loaded, which is also the only thing anyone could be looking at.
-
-Placing models from code, giving out the item that places one, and refusing a
-placement are all on [For plugin developers](/rp-engine/api).
-
-### Reacting to a player clicking a model
-
-`isModel` answers "is this entity part of a placed model" without building a
-handle you're about to discard:
-
-```java
-@EventHandler(priority = EventPriority.LOWEST)
-public void onUse(PlayerInteractAtEntityEvent event) {
-    if (event.getHand() != EquipmentSlot.HAND) return;
-    if (!rpai.models().isModel(event.getRightClicked())) return;
-
-    Placement rig = rpai.models().at(event.getRightClicked()).orElseThrow();
-    rig.play("Open");
-}
-```
-
-<Callout type="warning" title="Listen at LOWEST, or your handler works intermittently">
-  Our plugin handles that same event at NORMAL and **cancels** it when the
-  model has a right-click trigger. At NORMAL or later you'd see a cancelled
-  event for models that have one and a live event for models that don't —
-  which reads as your code working on some models and not others. Running
-  first means always seeing the click as the player sent it.
-
-  Left click is `EntityDamageByEntityEvent`, and that one is cancelled for
-  **every** rig, so punching can't break it. Same rule, no exceptions.
-
-  The hand check matters too: an interaction fires once per hand, so without
-  it everything in your handler happens twice.
-</Callout>
-
-### Surviving an older plugin version
-
-A `null` check isn't enough on its own. If the server runs a jar from before
-this API existed, merely *resolving* `ResourcePackAI` throws
-`NoClassDefFoundError` — before your null check runs, and it takes your whole
-`onEnable` with it. Keep every reference to our types in one class you only
-touch after checking:
-
-```java
-if (Bukkit.getPluginManager().getPlugin("ResourcePackAI") != null) {
-    this.rigs = new MyRigHook(this);   // the only class naming our types
-}
-```
-
-The `ResourcePackAI` service arrived in plugin version **2.0.0**. The older
-`ModelAnimations` service is still registered beside it and still works, so a
-plugin written against 1.1.x keeps running — but new code should take
-`ResourcePackAI`, which is where everything since lives. Rather than comparing
-version strings, ask `rpai.supports(Feature.MODELS)` and friends: a feature
-question has an answer that stays true.
-
-The jar ships a `-sources.jar` beside it, so put that in `libs/` too and your
-IDE shows the documentation for every call above instead of decompiled
-bytecode.
-
-<Callout type="note" title="Bedrock players see it too">
-  A code-driven animation is the same animation as a triggered one in every
-  way that matters — including the packet that tells a Bedrock viewer's client
-  to play the frames natively. Nothing extra to do.
-</Callout>
-
-## How playback actually works
+## How playback works
 
 Useful to know when something looks wrong in game:
 
-- When a pack is synced to you, an **animation rig manifest** is
-  sent alongside it. The plugin keeps those rigs keyed by model id and saves
-  them to disk, so placed models keep animating across a server restart.
-- A placed animated model isn't one entity. Each moving part of the rig gets
-  its own display entity; the parts that never move are left as one static
-  remainder and skipped by the animator entirely.
-- On Java, playback is driven from the server every two ticks — ten updates a
-  second, not sixty. It's smooth for the motion these models do, and
-  deliberately cheap: a build full of animated props shouldn't cost you the
-  server.
-- The keyframe maths is the same code in the editor and the plugin, so what
-  you preview is what plays.
+- When you Sync, the animations go to the server with the pack. RP Engine
+  saves them, so placed models keep animating after a restart.
+- A placed animated model is several display entities, one per moving part,
+  plus one for everything that doesn't move.
+- On Java the server updates moving parts ten times a second and the client
+  smooths between updates. That keeps a build full of animated props cheap
+  for the server.
+- The editor and RP Engine use the same keyframe maths, so what you preview
+  is what plays.
 
 ## On Bedrock
 
-Bedrock has native keyframe animation, and the exported Bedrock pack carries
-your keyframes as real Bedrock animations. So on a Geyser server the split is
-the other way round from Java: the plugin still decides *when* an animation
-plays — same triggers, same rules as above — but the **client** plays the
-frames. That's smoother than the Java side, which is tweening from the server
-a few times a second.
+The Bedrock pack carries your keyframes as real Bedrock animations. On a
+server with Geyser, RP Engine still decides when an animation plays (same
+triggers, same rules), and the player's own client plays the frames, which
+looks smoother than Java.
 
-<Callout type="note">
-  A Bedrock player sees a placed model only once that pack has been applied to
-  them, since their client renders it out of their own copy. Someone who
-  hasn't been pushed the pack sees nothing there.
-</Callout>
+A Bedrock player only sees a placed model once the pack has been applied to
+them, because their client draws it from their own copy of the pack.
 
 ## Limits
 
-Things to expect:
-
-- Animations are per-**model**. One model's trigger can't start another
-  model's animation — though a plugin holding both can, by playing each
-  [from code](#playing-from-code).
-- Placement rotation is remembered per placement, so the same model animates
-  correctly whichever way you faced when you put it down.
-- Nothing triggers without the plugin. Someone who just downloads your Java
-  pack sees the model in its rest pose — the triggers are a server-side idea,
-  and that's true on Bedrock too.
+- Animations belong to one model. One model's trigger can't start another
+  model's animation, though a plugin can play both.
+- Each placed copy remembers which way it was placed, so it animates the same
+  way whichever direction you faced.
+- Someone who downloads your pack and plays without RP Engine sees every model
+  in its rest pose.

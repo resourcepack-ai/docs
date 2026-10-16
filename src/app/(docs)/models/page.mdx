@@ -1,82 +1,71 @@
 export const metadata = {
   title: "Models",
   description:
-    "3D models: generating one, the editor's five modes, cubes and bones, display slots, and how a model reaches the world.",
+    "3D models: generating one, the editor's five modes, cubes and bones, display slots, placing a model in game, and exporting it.",
 };
 
 # Models
 
-A model is geometry: cubes with textured faces, arranged inside (or
-overhanging) a single block. It's the one asset kind that changes an object's
-shape rather than its surface.
+A model is a 3D object made of cubes, each face painted with a texture. It's
+the one asset type that changes an object's shape rather than only its
+surface: a lamp, a market stall, a statue, a car.
 
 ## Making one
 
-Describe it and generate it, the same as anything else, but expect minutes
-rather than seconds. Models run through **the builder**, our most advanced
-pipeline, built for maximum quality over speed: it plans the object,
-constructs it cube by cube, paints its materials as it goes, and re-inspects
-its own work before calling it done.
+On the pack page, press **Add asset** and pick the **Model** tab. Then:
 
-<Card title="Generating with AI" href="/generating" icon="sparkles">
-  What separates a prompt that builds the thing from one that builds a box.
-</Card>
+- **Generate**: describe it. The AI plans the object, builds it cube by
+  cube, paints it, and checks its own work. This takes a few minutes and
+  costs about 75 credits; you can close the tab while it runs. See
+  [Generating with AI](/generating) for writing a good prompt.
+- **Blank**: start from a template (a stone cube, a cross like a flower, a flat item, or nothing) and build it yourself.
+- **Upload**: bring a Blockbench `.bbmodel` or a vanilla model `.json`. See
+  [Importing a model](#importing-a-model).
 
-You can also upload a `.bbmodel` from Blockbench or a vanilla model `.json`,
-or start from a stone cube and build by hand. **Edit with AI** and
-**Animate with AI** take a model you already have and a sentence about what
-to change.
+Generated models look like Minecraft: a few big cubes with the detail painted
+onto the faces, rather than hundreds of tiny cubes. A barrel is one cube with a
+rim painted on it.
 
-### What a generated model looks like
-
-There is one builder, and it makes models in **Minecraft's own look**: a few
-big cubes, every face painted, octagonal wheels — vehicles, furniture, props,
-anything that has to sit in the world and look like it belongs.
-
-The detail goes in the TEXTURE rather than in the geometry. Each face is
-painted at one texel per unit, so a barrel is one cube with a rim painted on it
-and a plank seam is pixels rather than more cubes. A jeep built this way is a
-jeep somebody could have built in Blockbench; the same jeep with three hundred
-cubes in it reads as a model of a jeep sitting in Minecraft rather than as part
-of it.
-
-**Editing goes through the same builder**, whatever made the model you are
-editing — so an edit to a model you uploaded or imported repaints it into this
-look as well as changing what you asked for.
+Once you have a model, **Edit with AI** on its page changes it from a sentence
+("make the roof red", "add a chimney"), and **Animate with AI** in the editor
+writes animations for it. Editing with AI repaints the model in the same
+generated style, even if you uploaded it.
 
 <Callout type="tip" title="Generation is a starting position">
-  A generated model is worth editing, not shipping. The loop that produces good
-  results is generate, look at it in game, fix the two things that are wrong,
-  look again.
+  The loop that gives good results: generate, look at it in game, fix the two
+  things that are wrong, look again.
 </Callout>
 
 ## The editor
 
-A Blockbench-style editor, split into five modes because the jobs are genuinely
-different: shaping is not painting, and neither is deciding how the thing
-sits in your hand.
+A Blockbench-style editor with five modes, chosen along the top:
 
 | Mode | For |
 | --- | --- |
-| **Edit** | Building the geometry: add, move, resize, rotate cubes; group them into bones |
-| **Paint** | Painting faces directly on the 3D model |
-| **Display** | How it looks in hand, in the GUI, on the ground, in an item frame, on a head |
-| **Render** | A dressed-up viewport for capturing a PNG of the model |
-| **Animate** | Keyframes and playback triggers; see [Animations](/animations) |
+| **Edit** | Building the shape: add, move, resize and rotate cubes, and group them into bones |
+| **Paint** | Painting straight onto the model in 3D |
+| **Display** | How it looks in a hand, in the inventory, on the ground, in an item frame, on a head |
+| **Render** | Capturing a PNG of the model on a backdrop |
+| **Animate** | Keyframes and when they play; see [Animations](/animations) |
 
 ## Edit mode
 
-The model is a list of **cubes** (Minecraft calls them elements). Each cube is
-a box with six faces, and each face points at a texture.
+A model is a list of **cubes** (Minecraft calls them elements). Each cube is a
+box with six faces, and each face shows part of a texture.
 
-Cube coordinates run from `-16` to `32` on each axis, with the block itself
-occupying `0..16`. Overhang is legal and often correct (antlers, wings, roof
-edges). Keep the visual centre of mass near the middle of the block so it sits
-well when placed.
+Positions are in pixels, 16 to a block. A cube can sit anywhere from `-16` to
+`32` on each axis, with the block itself at `0` to `16`, so a model can
+overhang its block by a full block on every side. Keep the bulk of it near the
+middle so it sits well when placed.
+
+Cubes can be turned to any angle, on more than one axis. Minecraft's own
+format only allows a few angles on one axis, so a model with other turns needs
+RP Engine to show them exactly; a plain exported pack shows the nearest angle
+it can.
 
 ### Hotkeys
 
-Defaults, all remappable in the editor's settings:
+Defaults, all changeable in the editor's settings:
 
 | Action | Key |
 | --- | --- |
@@ -92,236 +81,151 @@ Defaults, all remappable in the editor's settings:
 | Deselect | `Esc` |
 | Undo / redo | `Ctrl+Z` / `Ctrl+Y` |
 
-The rail also has a **Select** tool (no gizmo, just picking) and a **Pivot**
-tool for moving a bone's pivot point without moving its cubes, the one you
-reach for when a hinge rotates around the wrong spot.
+The tool rail also has a **Select** tool, for picking without a gizmo, and a
+**Pivot** tool, which moves a bone's pivot point without moving its cubes. Use
+it when a hinge turns around the wrong spot.
 
 ### Bones
 
 Select several cubes and group them into a **bone**: a named group with its
-own pivot point. Bones are what you animate: rotating a bone rotates
-everything in it around one pivot, which is how a door swings or a wing beats.
+own pivot point. Bones are what you animate. Turning a bone turns everything
+in it around one point, which is how a door swings or a wing flaps.
 
-A generated model arrives with this already done, parts named, grouped into
-bones, pivots sitting at the joints (a `left_front_wheel` pivots on its
-axle), so Animate mode has real handles without any regrouping.
+A generated model arrives already grouped, with named parts and pivots at the
+joints (a front wheel pivots on its axle), so it's ready to animate.
 
-<Callout type="note">
-  Bones are stored as an extra `groups` field on the model, in the same shape
-  Blockbench uses. Vanilla Minecraft ignores it, so grouping never breaks an
-  exported pack.
-</Callout>
+Bones are saved in the same `groups` field Blockbench uses. Vanilla Minecraft
+ignores it, so grouping never breaks an exported pack.
 
 ### UVs
 
-Which part of a texture lands on which face is normally handled for you: you
-think in faces and materials, not texture coordinates. There is a UV panel in
-Edit mode for when you genuinely need it, but no ordinary workflow should
-depend on it.
+Which part of a texture lands on which face is normally handled for you. The
+UV panel in Edit mode is there for when you need exact control.
 
 ## Paint mode
 
-Paint straight onto the model in 3D. For anything fiddlier than a colour
-correction, open the full [pixel editor](/blocks) from here, same
-texture, proper tools, and it comes back when you're done.
+Paint straight onto the model in 3D. For anything fiddlier than a quick
+touch-up, open the texture in the full [pixel editor](/blocks) from here; it
+comes back when you're done.
 
 ## Display mode
 
-Minecraft renders a model differently in each context, and each context gets
-its own rotation, translation and scale override:
+Minecraft draws a held or displayed model differently in each place, and each
+place has its own rotation, position and scale:
 
-- **First person** / **third person**
-- **Left and right hand**
+- **First person** and **third person**, in each hand
 - **On a head**
-- **Dropped item**: lying on the ground
+- **On the ground**, as a dropped item
 - **Item frame**
 - **Shelf**
-- **GUI**: the inventory icon
+- **GUI**, the inventory icon
 
-Unset slots inherit the vanilla block defaults, so you only touch the ones
-that look wrong. There's a player rig in the preview (Steve or Alex, or your
-own skin) so a held model can be judged against a body rather than against
-empty space.
+Slots you leave alone use the vanilla defaults, so only change the ones that
+look wrong. The preview has a player (Steve, Alex or your own skin) so you can
+judge a held model against a body.
 
 <Callout type="tip">
-  The GUI slot is worth caring about more than it seems: for an item-carrier
-  model, the inventory icon is how players find your thing at all.
+  Take care over the GUI slot. The inventory icon is how players find your
+  model at all.
 </Callout>
+
+**Model scale**, also in the editor, resizes the model itself, so every copy
+is that size in the exported pack too.
 
 ## Render mode
 
-The same viewport dressed for showing off: pick a backdrop (transparent, solid,
-gradient, or a real Minecraft sky with a grass ground), frame or spin the
-model, and capture a PNG. Transparent backdrops produce genuinely transparent
-captures, which is what you want for a Discord post or a shop listing.
+The same viewport set up for screenshots. Pick a backdrop (Transparent,
+solid colours including a green screen, gradients, or a Minecraft sky and
+grass), frame or spin the model, and capture a PNG. A transparent backdrop
+gives a PNG with a real transparent background, ready for a Discord post or a
+store listing.
 
 ## Importing a model
 
 Two formats upload:
 
-- **`.bbmodel`** (Blockbench) keeps its element names, its groups (which
-  arrive as bones), its animations and its embedded textures, so a rigged
-  Blockbench model comes in ready to animate rather than as bare geometry.
-- **`.json`** (a vanilla block model) is the format an exported pack already
-  uses, so it goes straight in as geometry.
+- **`.bbmodel`** (Blockbench) keeps its cube names, its groups (as bones), its
+  animations, its textures and its rotations, so a rigged Blockbench model
+  arrives ready to animate.
+- **`.json`** (a vanilla block model) comes in as geometry.
 
-A model too big for Minecraft's legal model box is scaled down to fit
-automatically.
+A model too big for Minecraft's model box is scaled down to fit.
 
 <Callout type="warning">
-  Cubes only. The vanilla model format has no meshes, so mesh geometry can't
-  survive the trip; a model built out of meshes arrives without them.
+  Cubes only. Minecraft's model format has no meshes, so mesh geometry in a
+  Blockbench file doesn't come across.
 </Callout>
 
 ## Seeing it in game
 
-Minecraft has no "add a model" for Resource Packs. A pack can only change how
-something that already exists looks, so every custom model rides on a vanilla
-item or block. That choice is the model's **carrier**, and it's the single most
-consequential setting on a model:
+A resource pack can't add new items or blocks to Minecraft. It can only change
+how existing ones look. So every model rides on a piece of vanilla **paper**:
+the pack tells the game to draw that paper as your model. The Add asset sheet
+calls this the **Display Entity** carrier.
 
-| Carrier | How it works | Limit |
-| --- | --- | --- |
-| **Item** (default) | A paper item with a custom model. Looks right in hand, in the GUI and in item frames, and is placeable on servers running our plugin | Effectively unlimited |
-| **Full block** (legacy) | Replaces a vanilla full block's appearance, e.g. a crate | Limited slots |
-| **Partial block** (legacy) | Same, on a non-full vanilla block, e.g. a sink or a TV | Very limited slots |
+Placing the model in the world needs [RP Engine](/testing/plugin) on the
+server. The test server has it.
 
-The two legacy carriers place like normal blocks without any plugin, but you
-run out of vanilla blocks to borrow. The item carrier has no such ceiling,
-which is why it's the default; the trade is that *placing* it needs the plugin.
+1. **Sync** the pack to yourself.
+2. On the model's page, under **Get in-game**, press **Give in-game** (or copy
+   the give command).
+3. **Right-click a block** to place it. It appears on the block you clicked,
+   facing the way you were looking.
+4. **Punch it** to pick it back up. A model with an "On left click" animation
+   can't be punched up; see [Animations](/animations).
 
-With the item carrier: sync the pack, take the give command from the model's
-page (or press **Give in-game**, which hands you the item where you're
-playing). **Right-click a block to place it**: the model appears centred on
-the block you clicked, facing the way you were, and the item is consumed.
-**Punch it to pick it back up**, unless the model has a left-click animation
-trigger, which makes it unbreakable on purpose (see
-[Animations](/animations)).
+A placed model is a display entity, not a block. It doesn't fill a block
+space or stop water, and it stays put across server restarts. Block
+protection plugins don't necessarily cover it, so check that on a public
+server.
 
-A placed model is not a block; it's a display entity, or several for an
-animated model. It doesn't occupy a block space or stop water, placements
-survive a restart, and your world's block protection doesn't cover it: a
-plugin that stops players breaking blocks won't necessarily stop them
-punching your models, worth checking on a public server.
+### Choosing what it gives
 
-### How big it stands
+The **Get in-game** card has a few options that ride on the item, so you can
+give different copies of one model different settings:
 
-The give card has a **Size** dropdown, from an eighth up to eight times. It
-resizes the model at *placement*, not in the pack — so one model gives you a
-desk ornament and a landmark without editing anything, and two copies of the
-same model can stand side by side at different sizes.
-
-The size rides on the item, like the animation choice does. It grows from the
-base, so a bigger model stands on the block you placed it against instead of
-sinking into it, and the punchable area grows with it. Break it and the item
-that drops remembers its size.
-
-<Callout type="note">
-  Size only applies to the item carrier — the legacy block carriers are real
-  blocks, and a block is one block. The dropdown isn't shown for them.
-
-  To change the size of the model *itself*, so every copy is that big and the
-  pack ships it that way, use **Model scale** in the editor instead.
-</Callout>
+- **Size**: from ⅛ to 8 times. The model grows from its base, so a big one
+  stands on the block rather than sinking into it. The dropped item remembers
+  its size.
+- **Plays**: shown when the model has two or more triggered animations, to
+  pick which one this copy uses. See [Animations](/animations#triggers).
 
 ### Vehicles driving into it
 
-Under the give card is **Placed behaviour**, with one checkbox: *Make this
-model collidable with vehicles*. It's on for every model, and it decides
-whether a vehicle from this pack — or any vehicle on that server — stops at a
-placed copy of it or drives straight through.
+Under the card, **Placed behaviour** has one checkbox: **Make this model
+collidable with vehicles**. It's on by default. When on, vehicles stop at a
+placed copy of the model, tested against its actual cubes: a car can drive
+between the legs of a table or under an archway, and a long fence stops it
+along its whole length. A rotated slab works as a ramp, stairs are climbed a
+step at a time, and anything low enough to be a kerb is driven over.
 
-It needs saying because a placed model collides with nothing on its own. What
-you see is a display entity, which has no collision at all, so before this a
-car went through your fence, your statue and your parked chair as if none of
-them were there. Ticked, RP Engine tests a vehicle against **the model's own
-cubes** — the same ones you built in the editor — and nothing is written to the
-world to do it.
-
-That means it is shaped like the model rather than boxed around it: you can
-drive between the legs of a table, under an archway, and through a doorway you
-modelled, and a long fence stops you along its whole length rather than only in
-the middle. It works at whatever angle the piece was placed, and a piece scaled
-up in the give card collides at the size it is drawn.
-
-Cubes you rotated in the editor keep their angle, so a diagonal handrail
-collides along the rail rather than filling the box around it — and a rotated
-slab behaves as a **ramp** a vehicle drives up. Stairs work the same way: each
-tread is climbed in turn, up to a block at a time.
-
-<Callout type="note" title="It doesn't change anything for players">
-  Walking through the model is a separate setting and lives on the server, not
-  here — it needs a real block behind the piece. This one only stops vehicles.
-</Callout>
-
-Anything low enough to be a kerb is climbed rather than refused, and a model a
-vehicle can climb also holds it up: a rug is driven over, and a row of platform
-models is a bridge you can drive across. Untick it for the pieces that should
-have no effect at all — a painted road marking, a manhole cover, a decal.
-
-The change reaches your server on the next **Sync**. It isn't shown for a model
-you've converted into a vehicle: a vehicle is spawned rather than placed, so
-there's no placed copy for anything to hit.
-
-### Choosing the block
-
-Pick **Block** as the carrier and the Studio lists every vanilla block a model
-can borrow, in two groups:
-
-- **Fixed**: end rod, lantern, soul lantern. Each of these carries several
-  models at once (one per facing or hanging state), and a placed model always
-  sits the way you built it.
-- **Directional**: anvils, ladder, stonecutter, grindstone, lectern,
-  campfires, fence gates. One model each, and Minecraft turns it to face the
-  way you place it, exactly as it turns the real block.
-
-Leave it on **Auto** and the Studio takes the first block that's free, fixed
-ones first. In the Add asset sheet, a block the pack has already spent is
-greyed out; ask for one anywhere else and you get told it's taken rather than
-quietly landing somewhere else. Free a block by deleting the model holding it,
-or by moving that model to another carrier from its **Get in-game** panel.
-
-<Callout type="note">
-  Legacy carriers aren't deprecated so much as narrow. If you're making a
-  handful of building blocks for a survival server with no plugins, they're
-  the right call.
-</Callout>
+Turn it off for flat pieces a vehicle should ignore, like a rug, a manhole
+cover or a road marking. It doesn't affect players, who walk through placed
+models unless the server sets otherwise. The change reaches the server on the
+next Sync. It isn't shown for a model that's been converted into a
+[vehicle](/vehicles).
 
 ## Exporting
 
-A model leaves as JSON, in the vanilla block-model format, under
-`assets/minecraft/models/`. What wires it up depends on the carrier:
+A model is exported as a JSON file in Minecraft's block-model format, with
+its textures beside it. An item definition for paper points at it, so paper
+with the right item data draws as your model. The give command on the model's
+page produces that item.
 
-- **Item carrier**: an item definition at `assets/minecraft/items/paper.json`
-  that dispatches on custom model data, so a piece of paper given with the
-  right tag renders as your model. The give command on the model's page is the
-  matching half.
-- **Block carriers**: a blockstate file plus the block model, so the vanilla
-  block you borrowed renders as your model wherever it's placed.
-
-Textures the model paints with are exported alongside it and pointed at by
-name, which is why moving a model between packs carries its textures too.
-
-<Callout type="warning" title="Animations don't survive a Java export">
-  Keyframes and bones are stored as extra fields on the model JSON. Vanilla
-  ignores fields it doesn't recognise, so the pack is perfectly valid and the
-  model just sits there, static. Playback needs our plugin. See
+<Callout type="warning" title="Animations need RP Engine">
+  Keyframes and bones are saved in fields vanilla ignores. The pack is still
+  valid, but the model stands still unless RP Engine is playing it. See
   [Animations](/animations).
 </Callout>
 
 ## On Bedrock
 
-Geometry converts: the `.mcpack` carries a real Bedrock entity with your model
-as its geometry, and animations come across as native Bedrock keyframes rather
-than being dropped. Turns past the five angles a Java model allows come across
-exactly, since a Bedrock cube can hold any turn.
+Models convert to Bedrock. The `.mcpack` carries each model as a Bedrock
+entity, with your animations as native Bedrock animations, and cube rotations
+come across exactly.
 
-Something has to put that entity in the world, and on a server it is
-[RP Engine](/rp-engine/bedrock), which draws every placed model for Bedrock
-players near it. A `.mcpack` installed on its own has the models defined and
-nothing to place them.
-
-Two things stay Java-side. A model placed as a **block** (a note block wearing
-your model) shows to Bedrock players as the plain vanilla block. And the item a
-model's give command hands out shows with the model's icon on Bedrock only on
-Minecraft 1.21.4 and newer, where the item can say which model it is.
+Something still has to put that entity in the world. On a server that's
+[RP Engine](/rp-engine/bedrock), which draws placed models for Bedrock players
+near them. A `.mcpack` installed on its own has the models defined but nothing
+to place them. The give item shows the model's icon on Bedrock only on
+Minecraft 1.21.4 and newer.

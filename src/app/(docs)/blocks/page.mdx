@@ -6,167 +6,146 @@ export const metadata = {
 
 # Blocks
 
-A block texture is a PNG that **replaces a vanilla block you pick**. That's the
-whole mechanism, and it's why there's no such thing as adding a block: a
-Resource Pack can change how stone looks, but it cannot give the game a
-seventeenth kind of stone.
+A block texture changes how a vanilla block looks. You pick the block it
+replaces (stone, oak planks, diamond ore) and every copy of that block in the
+world shows your art instead.
+
+A resource pack can only change how existing blocks look. It can't add a new
+kind of block. If you want something with its own shape, make a
+[model](/models) instead.
 
 ## Making one
 
-Normally you describe it and generate it. That's the fast way to a draft worth
-editing, and most of this page is what you do to it afterwards.
+Open a pack, press **Add asset** and pick **Block**. There are three ways in:
+
+- **Generate**: describe it and the AI draws it.
+- **Blank**: opens the editor with an empty canvas, or a copy of the vanilla
+  block to repaint.
+- **Upload**: use a PNG you already have.
+
+All three ask for the **Block to replace**. Textures that only skin a custom
+model are made from inside the model editor instead, and replace nothing.
 
 <Card title="Generating with AI" href="/generating" icon="sparkles">
   How to write a prompt that gives you something worth finishing.
 </Card>
 
-The same **Add** flow also takes an upload of existing art, or gives you an
-empty transparent grid to draw on. All three land in the same editor, and all
-three ask which vanilla block you're replacing.
+### Size
 
-Textures that only exist to skin a custom [model](/models) are made from inside
-the model editor instead, and replace nothing.
+| Size | When to use it |
+| --- | --- |
+| **16×16** | Vanilla's own resolution, and the default. Sits naturally next to vanilla blocks |
+| **32×32**, **64×64** | "HD" packs. More room for detail, and four or sixteen times the pixels to finish |
+| **Custom** | Any square size, up to 256 when drawing from blank |
 
-## In the editor
+<Callout type="note" title="Generated blocks are drawn at 16×16">
+  The AI always paints a block at 16×16, vanilla's resolution. If you pick a
+  bigger size, that drawing is scaled up without blurring, so it looks the same
+  in game. Use the extra pixels to add detail by hand.
+</Callout>
 
-The pixel editor opens full-screen from a block, and from the model editor when
-you want to paint a face properly rather than dab at it in 3D.
+Once you have a draft, the block's page has **Regenerate** (same prompt, new
+attempt) and **Edit with AI** (describe one change, keep the rest).
+
+## The pixel editor
+
+The pixel editor opens full screen from a block, and from the model editor
+when you want to paint a face properly.
 
 ### Tools
 
-The rail on the left, with its hotkeys:
-
 | Tool | Key | Notes |
 | --- | --- | --- |
-| Pencil | `B` | The default. Paints the active colour |
+| Pencil | `B` | Paints the active colour |
 | Eraser | `E` | Paints transparency, not white |
-| Fill | `F` | Flood-fills contiguous same-coloured pixels |
+| Fill | `F` | **Connected** fills touching pixels; **Global** fills every pixel of that colour. **Tolerance** sets how close a colour has to be |
 | Pick colour | `I` | Samples a pixel into the active colour |
-| Line | `L` | Click-drag from one point to another |
-| Rectangle | `R` | Filled or outline |
-| Ellipse | — | Filled or outline |
-| Select | `S` | Marquee for moving or clearing a region |
+| Line | `L` | Drag from one point to another |
+| Rectangle | `R` | Tick **Filled shape** for a solid one |
+| Ellipse | | Filled or outline, like the rectangle |
+| Select | `S` | Select a region to move, copy (`Ctrl+C`), paste (`Ctrl+V`) or delete |
+| Text | `T` | Stamps words in Minecraft's font. They become ordinary pixels |
 
-Undo and redo are `Ctrl+Z` / `Ctrl+Y` and cover the whole stack, layers
-included.
+Undo and redo are `Ctrl+Z` and `Ctrl+Y`, and cover layers too.
+
+The tool options panel also has:
+
+- **Brush size**, 1 to 8 pixels. Line and rectangle use it too.
+- **Alpha** lock, which only paints over pixels that already have colour.
+- **Mirror X** and **Mirror Y**, which paint the mirrored copy of every stroke.
+  Both together give four-way symmetry.
 
 <Callout type="tip">
-  The eraser producing *transparency* rather than white matters more than it
-  sounds. A block texture with white where it should be see-through renders as
-  a solid white block in game, not a hole.
+  The eraser makes pixels see-through, not white. On a block that should be
+  solid, a transparent pixel shows as a hole, so fill gaps with colour.
 </Callout>
-
-### Brush options
-
-- **Brush size**: any tool that paints uses it, including line and
-  rectangle, so you can draw a 2px outline in one pass.
-- **Mirror X / Mirror Y**: paints the mirrored counterpart of every stroke.
-  Both at once gives you four-way symmetry, which is how most tileable
-  textures and nearly all radially symmetric icons should be drawn.
 
 ### Layers
 
-Textures are layered, topmost first, and flattened on save. Layers can be
-renamed (double-click), reordered, hidden and deleted.
+Layers are listed topmost first and flattened when the texture is saved. You
+can rename them (double-click), reorder, hide and delete them, and nudge or
+rotate a layer's contents with the arrows under the list.
 
-The workflow this is for: keep the AI's draft on a bottom layer, paint your
-corrections above it, and delete the draft when you no longer need it. You
-never lose the original by painting over it.
+A good habit: keep the AI's draft on the bottom layer and paint your fixes on a
+layer above it, so you can always go back.
 
-## Resolution
+The editor saves when you press **Save**. **Export PNG** downloads the image.
 
-You choose it when you add the texture: **16×16**, **32×32**, **64×64**, or a
-custom square up to 256. The editor then works at that native size, so a 64×64
-texture really is 64 pixels of paintable detail.
+## Per-face blocks
 
-- **16×16** is what vanilla Minecraft uses. Pick it when you want your work to
-  sit next to vanilla blocks without looking sharper than they do.
-- **32 and up** is the "HD pack" end. More room for detail, and more work:
-  four times the pixels at 32, sixteen times at 64.
+A full-cube block doesn't have to look the same on every side. On the block's
+page, the **Faces** card shows each face, and each can have its own texture.
+Click a face to generate it, edit it, or reset it to the base texture.
 
-<Callout type="note" title="Generation draws at your resolution">
-  A generated texture is drawn as pixel art at the size you picked, not
-  upscaled from something smaller, so a 64×64 draft really uses its 64 pixels.
-  The higher you go, the more of it you'll want to finish by hand; pixel art
-  at 16 forgives roughness that 64 shows plainly.
-</Callout>
+Blocks that vanilla already textures in parts (logs, sandstone, deepslate)
+show their own parts instead, such as **Top**, **Bottom** and **Sides**.
+Blocks that aren't simple cubes (stairs, flowers, doors) don't have a Faces
+card; retexture them as a single texture.
 
-## Per-face textures
+**Edit** on a block opens the block editor: a **Block** tab with the block in
+3D, plus one tab per face. On the Block tab you paint directly on the cube
+(drag to paint, drag empty space to orbit). Double-click a face, or click its
+tab, to open it in the pixel editor. A face's menu has **Apply to all faces**,
+which copies it onto every side. The block editor saves as you go.
 
-A texture that replaces a full-cube vanilla block (stone, planks, wool,
-concrete, ores…) doesn't have to look the same on every side. On the block's
-page, the **Faces** card shows all six faces, and each one can have its own
-texture: generate it from a prompt, open it in this editor to finish by
-hand, or remove it to fall back to the base texture. This is exactly how
-vanilla builds its own multi-face blocks (grass, furnaces, crafting tables).
-
-Editing a block opens the **block editor**: a tab bar with the block in 3D
-("Block") plus one tab per face. On the Block tab you paint directly on the
-cube (left-drag strokes, drag empty space to orbit) with the same brush,
-fill, line and picker tools as the model editor's paint mode. Double-click a
-face (or click its tab) to open it in the 2D pixel editor. Everything
-autosaves. A face that doesn't have its own texture yet gets one on the
-spot, seeded from what it currently looks like in game, and **Apply to all
-faces** copies the open face's texture onto the whole block.
-
-<Callout type="note" title="Faces are a full-cube, Java-side thing">
-  Blocks that are already multi-textured in vanilla (logs, sandstone,
-  bookshelves) or aren't simple cubes don't offer the Faces card; retexture
-  their individual vanilla textures instead. And a Bedrock export currently
-  carries only the base texture; the per-face split is Java-only for now.
-</Callout>
-
-<Callout type="warning" title="Some blocks randomly rotate when placed">
-  A few natural blocks (stone, dirt, sand, netherrack and friends) get a
-  random rotation each time they're placed, to break up repetition. Their
-  top/bottom faces are safe, but a distinct north/south/east/west face will
-  point a different way on each placed block. Building blocks (planks,
-  wool, concrete, bricks) don't rotate and keep all six faces exactly where
-  you put them.
+<Callout type="warning" title="Some blocks rotate randomly when placed">
+  Stone, dirt, sand, netherrack and a few other natural blocks are given a
+  random rotation each time they're placed, to hide repetition. Their top and
+  bottom are safe, but a distinct north, south, east or west face points a
+  different way on each block. Building blocks (planks, wool, concrete,
+  bricks) don't rotate.
 </Callout>
 
 ## Seeing it in game
 
-Sync the pack to a linked player and every copy of that block in the world
-changes at once. There's no command and nothing to place: you replaced a block
-the game already has, so it's already everywhere it was.
+[Sync](/testing/plugin) the pack to a linked player and every copy of that
+block changes at once. **Give in-game** on the block's page hands you some to
+place.
 
-That makes blocks the easiest thing to judge in game and the one most worth
-judging there. A texture that reads beautifully at 8× zoom in the editor can
-turn to noise in a wall of itself.
+Blocks are worth judging in the world rather than in the editor: a texture that
+looks great zoomed in can turn into noise in a wall of itself.
 
 <Callout type="tip">
   On [our test server](/testing/test-server), `/floor <block>`, `/time` and
-  `/weather` change what your texture is sitting against. Judging it on white
-  concrete, then grass, then at night takes half a minute and tells you more
-  than any amount of staring at the editor.
+  `/weather` change what your block sits against. Try it on grass, on white
+  concrete and at night.
 </Callout>
 
 ## Exporting
 
-In the exported `.zip`, a block texture is an ordinary PNG at
+In the exported `.zip`, a block texture is a PNG at
 `assets/minecraft/textures/block/<name>.png`, named after the vanilla block it
-replaces. Nothing else is needed: the game already looks in that exact place,
-which is why a plain texture pack has no JSON in it at all.
+replaces. Minecraft already looks there, so a plain reskin needs no other
+files.
 
-Two things ride along when they apply:
+A per-face block also gets a block model under `assets/minecraft/models/block/`
+that maps each face to its texture. Studio writes it from the Faces card.
 
-- **Per-face blocks** also get a block model under
-  `assets/minecraft/models/block/`, which is what maps each face to its own
-  texture. You don't manage that file; it's written from what the Faces card
-  shows.
-- **See-through blocks** carry a render type, so glass stays glass rather than
-  rendering as an opaque block with a strange outline.
-
-The resolution you worked at is the resolution in the file, and a 64×64 pack
-installs exactly like a 16×16 one. Nothing in the pack records which you chose.
+The size you worked at is the size in the file. A 64×64 pack installs the same
+way as a 16×16 one.
 
 ## On Bedrock
 
-Block reskins convert. Java's `textures/block/<name>.png` becomes Bedrock's
-`textures/blocks/<name>.png` in the `.mcpack`, so a pack of reskins works on
-both editions from one export. Where Bedrock calls a block something else
-(`oak_planks` is `planks_oak`, `white_wool` is `wool_colored_white`), the
-export uses Bedrock's name.
-
-Per-face blocks currently carry only their base texture across.
+Block reskins carry over to the Bedrock `.mcpack`, renamed where Bedrock calls
+a block something else (`oak_planks` is `planks_oak`, `white_wool` is
+`wool_colored_white`). Per-face blocks carry only their base texture.

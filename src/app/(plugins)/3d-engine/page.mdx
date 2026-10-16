@@ -9,30 +9,29 @@ export const metadata = {
 3D Engine puts real 3D models into vanilla Minecraft. Drop a `.glb`, `.gltf`
 or `.obj` file into a folder on your server, run `/3d reload`, and it is in the
 game: the actual mesh, with its own textures and animations, not a blocky
-remake of it. Furniture, statues, vehicles, props and creatures, anything you
-can download from Sketchfab or export from Blender.
+remake. Furniture, statues, vehicles, props and creatures, anything you can
+download from Sketchfab or export from Blender.
 
-The plugin bakes every file into item models drawn by core shaders, builds a
-resource pack from them and sends it to players as they join. Players install
-nothing.
+The plugin bakes each file into a form the game can draw, builds a resource
+pack from them and sends it to players as they join. Players install nothing.
 
 ## Requirements
 
-- **Spigot or Paper on Minecraft 26.3**, on **Java 21**. The shaders and the
-  pack format are that version's, so the players need to be on 26.3 too.
-- On Paper, models that walk use Paper's mob pathfinding; on Spigot they use a
-  path search of the engine's own. Everything else is the same on both.
+- **Spigot or Paper on Minecraft 26.3**, with **Java 21**. Players need to be
+  on 26.3 too.
+- Models that walk use Paper's mob pathfinding on Paper and the engine's own
+  path search on Spigot. Everything else is the same on both.
 
 ## Installing
 
 <Steps>
   <Step title="Get the jar">
-    [Download 3DEngine.jar](https://cdn.resourcepack.ai/3DEngine.jar), or get it
-    from [SpigotMC](https://www.spigotmc.org/resources/139510/). That link is
-    always the current release.
+    [Download 3DEngine.jar](https://cdn.resourcepack.ai/3DEngine.jar) (always
+    the current release), or get it from
+    [SpigotMC](https://www.spigotmc.org/resources/139510/).
   </Step>
   <Step title="Drop it in and start the server">
-    `3DEngine.jar` into `plugins/`. On first start it makes:
+    Put it in `plugins/`. On first start it makes:
 
     ```
     plugins/3DEngine/
@@ -44,117 +43,91 @@ nothing.
     ```
   </Step>
   <Step title="Let players reach the pack">
-    The plugin serves its pack over HTTP on port **8163**. Open that port, and
-    set `pack.url` in `config.yml` to the address players reach it on:
+    The plugin serves its pack over HTTP on port **8163**. Open that port and
+    set `pack.url` in `config.yml` to the address players can reach:
 
     ```yaml
     pack:
       url: "http://play.example.com:8163"
     ```
 
-    Left empty, players are sent this server's own IP, which is rarely what
-    they can reach. The console warns you on startup when it is empty.
+    Left empty, players are sent the server's own IP, which they often cannot
+    reach. The console warns you about this on startup.
   </Step>
   <Step title="Add a model">
     Put a model file in `plugins/3DEngine/models/` and run `/3d reload`. Then
-    look at a block and `/3d place <model>`.
+    look at a block and run `/3d place <model>`.
   </Step>
 </Steps>
 
-## How players get the pack
+## The resource pack
 
 Every `/3d reload` builds a new pack, writes it to `plugins/3DEngine/pack.zip`
-and serves it from the plugin's own web server. Players get it as they join,
-and everybody online is sent the new one whenever a reload changes it. The
-pack's address includes its hash, so a client never keeps a stale copy.
-
-| Key | Default | What it does |
-|---|---|---|
-| `pack.host` | `true` | Serve the pack from this server over HTTP |
-| `pack.port` | `8163` | The port it is served on |
-| `pack.bind` | empty | The address to listen on. Empty is all of them |
-| `pack.url` | empty | The address players download it from |
-| `pack.send` | `true` | Send it to players as they join |
-| `pack.required` | `false` | Kick players who decline it |
-| `pack.prompt` | empty | The message on the download prompt |
-| `pack.format` | `[97, 1]` | The pack format. Leave it alone unless you know why |
-| `pack.description` | `3D Engine models` | The pack's description |
+and serves it. Players get it as they join, and everyone online is sent the new
+one when a reload changes it.
 
 **Already sending your own pack?** Set `pack.send: false` and merge
-`plugins/3DEngine/pack.zip` into yours after every reload. `/3d pack` re-sends
-the engine's pack to you, for checking it arrived.
+`pack.zip` into yours after every reload. `/3d pack` sends you the engine's
+pack again, to check it arrives.
 
 <Callout type="warning" title="The pack replaces some of the game's shaders">
   Models are drawn by core shaders, so the pack replaces the game's `block`,
-  `entity`, `item` and `terrain` shaders. If you add any
-  [shader effects](#shader-effects), it also replaces the `text` shader.
+  `entity`, `item` and `terrain` shaders, and also `text` when you have any
+  [shader effects](#shader-effects).
 
   Only one pack can replace a given shader. If another pack on the same client
-  replaces any of these, whichever is higher in the list wins and the other's
-  drawing silently breaks. That includes other plugins that draw with the
-  `text` shader, such as RP Engine's shader objects. The models' own item
-  models are in a `3dengine` namespace and override nothing vanilla.
+  replaces one of these, whichever is higher in the list wins and the other's
+  drawing breaks. That includes other plugins that use the `text` shader, such
+  as RP Engine's shader objects. The models themselves live in a `3dengine`
+  namespace and override nothing vanilla.
 </Callout>
 
 ## Adding models
 
-**Formats:** `.glb`, `.gltf` and `.obj`. An `.obj` file's `.mtl` and textures,
-and a `.gltf` file's `.bin` and textures, go beside it.
+- **Formats:** `.glb`, `.gltf` and `.obj`. Put an `.obj` file's `.mtl` and
+  textures, or a `.gltf` file's `.bin` and textures, beside it.
+- **Names:** a model's name is its path under `models/`, lower case, without
+  the extension: `models/furniture/armchair.glb` is `furniture/armchair`.
+- **Sketchfab downloads go in as they come.** Drop the `.zip` into the models
+  folder and the next reload unpacks it into a folder of the same name. A
+  `scene.gltf` (what every Sketchfab download contains) takes its folder's name,
+  and its `.yml` is `scene.yml` beside it. Delete the unpacked folder to unpack
+  the zip again.
+- **Baking is cached.** A reload only re-bakes models whose file, `.yml` or
+  detail settings changed. It runs off the main thread, and `/3d reload`
+  reports how many models and effects are ready, which failed and why, and how
+  big the pack is.
 
-**Where:** anywhere under `plugins/3DEngine/models/`, in folders if you like.
-A model's name is its path in that folder, lower case, without the extension:
-`models/furniture/armchair.glb` is `furniture/armchair`.
-
-**Sketchfab downloads go in as they come.** Drop the `.zip` into the models
-folder and the next reload unpacks it into a folder of the same name. A file
-called `scene.gltf`, which is what every Sketchfab download contains, takes
-its folder's name instead, and its `.yml` is `scene.yml` beside it. Delete
-the unpacked folder to unpack the zip again.
-
-**Baking is cached.** A reload only re-bakes a model whose file, `.yml` or
-detail settings changed, so a restart with nothing new is quick. Baking runs
-off the main thread, and `/3d reload` reports how many models and effects are
-ready, any that failed and why, and how big the pack came out.
-
-`/3d list` shows every model with its height and states, and any that failed.
-`/3d info <model>` adds its width, points, seats, hitboxes and what it costs
-the client.
+`/3d list` shows every model with its height and states. `/3d info <model>`
+adds its width, points, seats, hitboxes and what it costs the client.
 
 ## Placing models
 
-| How | |
-|---|---|
-| `/3d place <model> [scale]` | Puts it on the block you look at, facing you |
-| `/3d give <model> [player]` | A model item: right-click a block to put the model there |
+`/3d place <model> [scale]` puts a model on the block you look at, facing you.
+`/3d give <model> [player]` gives a model item: right-click a block to put the
+model there. The item shows the model as its icon and is not used up. Placed
+models are saved with the world.
 
-Both are **saved with the world** and come back after a restart. The model
-item shows the model itself as its icon and is not used up, so one item places
-as many as you like. A player without `3dengine.place` can hold one, but using
-it places nothing and tells them they need that permission.
+To change a placed model, look at it (within eight blocks) and use `/3d remove`,
+`/3d scale <n>`, `/3d rotate <degrees>`, `/3d state <state>` or
+`/3d sit [seat]`.
 
-**Changing a placed model.** Look at it (within eight blocks) and:
-
-| Command | |
-|---|---|
-| `/3d remove` | Takes it away |
-| `/3d scale <n>` | Resizes it. `1` is its normal size |
-| `/3d rotate <degrees>` | Turns it |
-| `/3d state <state>` | Plays one of its animation states |
-| `/3d sit [seat]` | Sits you in it, in a named seat or the nearest free one |
-
-**Sitting down.** Right-clicking a model that has seats sits you in the nearest
-free one, if you have `3dengine.ride` (everyone does by default). Sneak to get
-off. Right-clicking while sneaking never sits you down.
+**Sitting down.** Right-click a model with seats to sit in the nearest free one
+(everyone has `3dengine.ride` by default). Sneak to get off. Right-clicking
+while sneaking never sits you down.
 
 ## The model's .yml
 
-Every model file can have a `.yml` of the same name beside it:
-`armchair.glb` and `armchair.yml`. **Every key is optional.** A file with no
-`.yml` comes in at its own size, with one looping state per animation in the
-file (or a single still one if it has none).
+Any model file can have a `.yml` of the same name beside it: `armchair.glb` and
+`armchair.yml`. **Every key is optional.** Without one, a model comes in at its
+own size with one looping state per animation in the file (or a single still
+one).
 
-Positions **in blocks** (seats, hitboxes) are measured from the middle of the
+Positions in blocks (seats, hitboxes) are measured from the middle of the
 model's base: `x` to its right, `y` up, `z` forward.
+
+Any key 3D Engine doesn't use is kept for plugins to read, so an addon can keep
+its own settings beside a model.
 
 ### Size and placement
 
@@ -168,13 +141,13 @@ icon-scale: 1          # how big it is drawn as an item icon; fitted if left out
 ```
 
 `hide` is for the extras a downloaded file often carries: a ground plane, a
-backdrop, a camera rig. Everything under a hidden node goes with it.
+backdrop, a camera. Everything under a hidden node goes with it.
 
 ### States and animation
 
-A **state** is an animation the model can settle into and loop: idle, walk,
-open. Without a `states:` block every clip in the file becomes one, named after
-the clip in lower case.
+A **state** is an animation the model loops: idle, walk, open. Without a
+`states:` block every clip in the file becomes one, named after the clip in
+lower case.
 
 ```yaml
 default-state: idle
@@ -197,29 +170,27 @@ transitions:
 | `sync-at` | | Or the exact ticks it can leave from |
 | `wait` | `false` | Wait for a sync point before leaving, rather than cutting at the nearest |
 | `pose` | | Bones turned (degrees) or moved on top of the clip |
-| `blend` | | Mix in another clip: `clip`, `weight` (0 to 1), and `at` (seconds into it) |
+| `blend` | | Mix in another clip: `clip`, `weight` (0 to 1) and `at` (seconds into it) |
 
-`default-state` is the state a model starts in. Left out, it is `idle` if
-there is one, or the first state.
+`default-state` is where a model starts: `idle` if there is one, otherwise the
+first state.
 
-A **transition** is a short blend from one state into another, baked from the
-pose the first leaves on. `a -> b` is one way, `a <-> b` both ways, and the map
-form takes `frames` and `both-ways: true`. Each lasts `transition-frames`
-ticks unless it says otherwise. Without a transition, a state change cuts
-straight across.
+A **transition** is a short blend from one state into another. `a -> b` is one
+way, `a <-> b` both ways, and the map form takes `frames` and `both-ways: true`.
+Each lasts `transition-frames` ticks (default 6) unless it says otherwise.
+Without one, a state change cuts straight across.
 
 **Animations from another file.** `animations-from: other.glb` drives this
-model with that file's clips, matched by bone name, and the other file is
-not loaded as a model of its own. `retarget: {translate: [Body]}` limits which
-bones' movement is carried over (by default, all of them), and `rebind: [Bone]`
-re-weights the vertices of a bone nothing animates onto their neighbours.
-`legs:` lists IK chains, `{chain: [Upper, Lower], target: IKFoot}`, that keep
-feet planted.
+model with that file's clips, matched by bone name, and the other file is not
+loaded as a model. `retarget: {translate: [Body]}` limits which bones' movement
+carries over (all by default), and `rebind: [Bone]` moves the vertices of a bone
+nothing animates onto its neighbours. `legs:` lists IK chains,
+`{chain: [Upper, Lower], target: IKFoot}`, that keep feet planted.
 
 ### Points
 
 Named places that follow a bone through every animation, such as a mouth or a
-hand, for plugins to hang things on:
+hand, for plugins to attach things to:
 
 ```yaml
 points:
@@ -230,7 +201,7 @@ points:
 
 ```yaml
 look:
-  bone: Head           # only the head turns, on its neck; leave out to turn the whole model
+  bone: Head           # only the head turns; leave out to turn the whole model
   with: [Jaw]          # more bones that turn with the head
   yaw: 70              # the most it turns either way, in degrees
   pitch: 35
@@ -239,13 +210,10 @@ look:
   states: [idle, sit]  # the states it looks in; all if left out
 ```
 
-`look: true` turns the whole model with the defaults above, and `look: Head`
-is the same with a head bone. A turning head is drawn as a second model, so it
-costs one more item model per animation.
-
-Rigs often hang the jaw, tongue or ears beside the head bone rather than under
-it. Any bone beside it whose vertices sit within the head's own space turns
-with the head anyway (the bake log names them); `with:` adds any it misses.
+`look: true` turns the whole model with these defaults, and `look: Head` does
+the same with a head bone. A turning head is drawn as a second model, so it
+costs one more item model per animation. Bones beside the head whose vertices
+sit inside it (a jaw, ears) turn with it anyway; `with:` adds any it misses.
 
 ### Seats and driving
 
@@ -264,16 +232,16 @@ drive:
 ```
 
 A seat's `at` is where the rider's hips go, or their feet with
-`pose: standing`. With a `bone` it rides that bone through every animation.
-A rider can click past the model they are sitting in.
+`pose: standing`. With a `bone` the seat follows that bone through every
+animation.
 
 With `drive:`, whoever sits in the driving seat steers: the model goes where
 they look while they hold forward. `drive: true` uses the defaults above. The
-**brain** is an invisible mob under the model that does the walking, and its
-size decides what gaps the model fits through.
+**brain** is an invisible mob under the model that does the moving, and its
+size decides which gaps the model fits through.
 
-If riders sit a little high or low on your server, `seats.height-offset` in
-`config.yml` moves every seat at once.
+If riders sit a little high or low, `seats.height-offset` in `config.yml`
+moves every seat at once.
 
 ### Hitboxes and solid models
 
@@ -283,20 +251,20 @@ hitboxes:
 solid: true
 ```
 
-Hitboxes are what make a model clickable, and they are **fitted to it** unless
-you write your own: one box, or a row of up to six along a long model, so a car
-can be clicked at either end. `hitbox: {at, width, height}` is a single box of
-your own, and `hitbox: false` makes the model unclickable.
+Hitboxes make a model clickable. Unless you write your own they are fitted to
+the model: one box, or a row of up to six along a long model, so a car can be
+clicked at either end. `hitbox: {at, width, height}` is a single box of your
+own, and `hitbox: false` makes the model unclickable.
 
-`solid: true` fills a placed model's boxes with barrier blocks, so nobody walks
-through a statue. Barriers go only in empty blocks, never where a rider sits,
-and are taken away when the model is removed, moved or resized. A model that
-moves is never solid.
+`solid: true` fills a placed model's boxes with barrier blocks so nobody walks
+through it. Barriers only go in empty blocks, never where a rider sits, and are
+removed when the model is removed, moved or resized. A model that moves is
+never solid.
 
 ### Held as an item
 
-`item: true` lets the model be held as an item. To set how it sits in each
-view, give it a map of display contexts, as a block model's `display` does:
+`item: true` lets the model be held. To set how it sits in each view, give a
+map of display contexts, as a block model's `display` does:
 
 ```yaml
 item:
@@ -318,44 +286,37 @@ locomotion:
   run-above: 0.13
 ```
 
-Each name defaults to the state of that name if the model has one. Plugins
-walk models through the [API](#developer-api).
-
-**Any other key** in the file is kept for plugins to read, so an addon can keep
-its own settings beside a model.
+Each name defaults to the state of that name, if there is one. Plugins make
+models walk through the [API](#developer-api).
 
 ## Detail and pack size
 
-Every model is simplified to a number of triangles and its texture to a width
-when it is baked. More is sharper, and makes the pack bigger and the game
-heavier for players. An animated model stores its whole mesh once per frame
-and its texture once per animation, so the texture is usually what makes a
-pack big.
+Each model is cut to a number of triangles, and its texture to a width, when it
+is baked. More is sharper, but makes the pack bigger and the game heavier for
+players. An animated model stores its whole mesh once per frame and its texture
+once per animation, so the texture is usually what makes a pack big.
 
-| Where | Wins over |
-|---|---|
-| `/3d quality <model> <triangles> [texture width]` | everything |
-| `triangles:` and `texture-width:` in the model's `.yml` | the server's defaults |
-| `quality.triangles` and `quality.texture-width` in `config.yml` | nothing: 20,000 and 512 |
+| Setting | Where | Wins over |
+|---|---|---|
+| `/3d quality <model> <triangles> [texture width]` | In game, saved to `quality.models` in `config.yml` | everything |
+| `triangles:` and `texture-width:` | The model's `.yml` | the server defaults |
+| `quality.triangles` and `quality.texture-width` | `config.yml` (20,000 and 512) | nothing |
 
-Nothing ever keeps more than `quality.max-triangles` (200,000) and
+Nothing keeps more than `quality.max-triangles` (200,000) or
 `quality.max-texture-width` (2,048).
 
-`/3d quality` with no arguments shows the defaults and every per-model
-setting; with a model it shows what that model has. Setting one re-bakes it
-straight away and is kept in `config.yml` under `quality.models`, so a plugin
-that re-copies its own model files cannot undo it. It reads `config.yml` from
-disk before saving, so anything you have changed in the file by hand is kept. `/3d quality <model> reset`
-takes it back to its own settings.
+`/3d quality` alone shows the defaults and every per-model setting; with a model
+it shows that model's. Setting one re-bakes it straight away. Because it lives
+in `config.yml`, a plugin that re-copies its own model files cannot undo it.
+`/3d quality <model> reset` goes back to the model's own settings.
 
 ## Shader effects
 
 An **effect** is a small GLSL program drawn into the world: a fireball, a puff
-of flame, a black hole. Put `.glsl` files in `plugins/3DEngine/effects/`, run
-`/3d reload`, and `/3d effect <name> [size]` puts one down where you look,
-`size` blocks across. `/3d effect` alone lists them, and `/3d effect clear`
-takes away every one put down by the command. They are not saved, so a restart
-clears them too.
+of flame, a black hole. Put `.glsl` files in `plugins/3DEngine/effects/` and run
+`/3d reload`. `/3d effect <name> [size]` puts one where you look, `size` blocks
+across. `/3d effect` alone lists them, and `/3d effect clear` removes every one
+the command put down. Effects are not saved, so a restart clears them too.
 
 An effect file defines one function, from a ray to a colour:
 
@@ -365,86 +326,58 @@ vec4 object(vec3 ro, vec3 rd, float t0, float t1, float time, vec3 light, inout 
 }
 ```
 
-It is checked before it reaches anybody's graphics card, and refused if it
-breaks a rule: no `while` or `do` loops, and every `for` loop needs a literal
-bound of at most 160; no preprocessor directives, uniforms, samplers, textures
-or `gl_` built-ins; no `main()` and no `discard` (return an alpha of 0
-instead); at most 20,000 characters. There can be up to 255 effects. The
-reload names any that were refused and why.
+Each file is checked before it reaches anybody's graphics card and refused if
+it breaks a rule. The reload names any that were refused and why.
+
+- No `while` or `do` loops. Every `for` loop needs a literal bound of at most 160.
+- No preprocessor directives, uniforms, samplers, textures or `gl_` built-ins.
+- No `main()` and no `discard` (return an alpha of 0 instead).
+- At most 20,000 characters, and up to 255 effects.
 
 <Callout type="note" title="Effects replace the text shader">
-  The `text` shader is only replaced when the effects folder has at least one
-  effect in it. Leave the folder empty if another plugin on your server needs
-  that shader.
+  The `text` shader is only replaced when the effects folder has an effect in
+  it. Leave the folder empty if another plugin on your server needs that
+  shader.
 </Callout>
 
 ## Commands
 
-`/3d`, or `/engine3d`. Each subcommand has its own [permission](#permissions),
-and `/3d` alone lists the ones you may use.
+`/3d`, or `/engine3d`. `/3d` alone lists the subcommands you may use. From the
+console, a player's name at the end runs a command as that player:
+`/3d effect fire 2 Steve`.
 
-| Command | What it does |
-|---|---|
-| `/3d list` | Every model, its height and states, and any that failed to bake |
-| `/3d place <model> [scale]` | Places a model on the block you look at, facing you. Saved with the world |
-| `/3d give <model> [player]` | A model item that places the model where it is used |
-| `/3d remove` | Takes away the model you look at |
-| `/3d scale <n>` | Resizes the model you look at |
-| `/3d rotate <degrees>` | Turns the model you look at |
-| `/3d state <state>` | Plays a state on the model you look at |
-| `/3d sit [seat]` | Sits you in the model you look at |
-| `/3d info [model]` | Size, states, points, seats, hitboxes, and what it costs the client |
-| `/3d quality [model] [triangles\|reset] [texture width]` | Shows the detail settings, or sets one model's and re-bakes it |
-| `/3d effect <name> [size]` | Puts down a shader effect. `/3d effect clear` takes them away |
-| `/3d reload` | Re-reads `config.yml`, re-bakes the models folder and re-sends the pack |
-| `/3d pack` | Re-sends you the pack |
-
-**From the console**, a player's name at the end of the command runs it as
-that player: `/3d effect fire 2 Steve`. The console's own permissions are what
-count.
+| Command | What it does | Permission |
+|---|---|---|
+| `/3d list` | Every model, its height and states, and any that failed to bake | `3dengine.list` |
+| `/3d place <model> [scale]` | Places a model on the block you look at | `3dengine.place.command` |
+| `/3d give <model> [player]` | A model item that places the model where it is used | `3dengine.give` (`.give.others` for another player) |
+| `/3d remove` | Removes the model you look at | `3dengine.remove` |
+| `/3d scale <n>` | Resizes it. `1` is normal size | `3dengine.scale` |
+| `/3d rotate <degrees>` | Turns it | `3dengine.rotate` |
+| `/3d state <state>` | Plays one of its states | `3dengine.state` |
+| `/3d sit [seat]` | Sits you in it, in a named seat or the nearest free one | `3dengine.sit` |
+| `/3d info [model]` | Size, states, points, seats, hitboxes and client cost | `3dengine.info` |
+| `/3d quality [model] [triangles\|reset] [texture width]` | Shows detail settings, or sets one model's and re-bakes it | `3dengine.quality` |
+| `/3d effect <name> [size]` | Puts down a shader effect. `/3d effect clear` removes them | `3dengine.effect` |
+| `/3d reload` | Re-reads `config.yml`, re-bakes the models folder and re-sends the pack | `3dengine.reload` |
+| `/3d pack` | Sends you the pack again | `3dengine.pack` |
 
 ## Permissions
 
-**One node per subcommand**, so you can hand out exactly the ones you want:
-whoever may resize a model is not necessarily whoever may re-bake the whole
-folder. Somebody without a command's node is told which one they need, and tab
-completion only offers what they may use.
+All op-only by default except `3dengine.ride`. Somebody without a command's
+node is told which one they need.
 
-`3dengine.admin` is a parent granting every command and placing with a model
-item, for a server that wants them all in one line. Nothing checks it
-directly.
+| Node | What it allows |
+|---|---|
+| The command nodes above | That command |
+| `3dengine.place` | Placing models with a model item from `/3d give`. A player without it can hold the item, but using it places nothing |
+| `3dengine.ride` | Sitting in a model's seats by right-clicking it. Everyone by default |
+| `3dengine.update` | Being told on joining that a newer 3D Engine is out |
+| `3dengine.admin` | Every command node and `3dengine.place`, but not `ride` or `update` |
 
-| Node | Default | What it allows |
-|---|---|---|
-| `3dengine.admin` | op | Every `/3d` command, and placing models with a model item |
-| `3dengine.list` | op | `/3d list`, every model and any that failed to load |
-| `3dengine.place.command` | op | `/3d place`, putting any model down where you look |
-| `3dengine.give` | op | `/3d give`, a model item for yourself |
-| `3dengine.give.others` | op | `/3d give <model> <player>`, a model item for somebody else (on top of `3dengine.give`) |
-| `3dengine.remove` | op | `/3d remove`, taking away the model you look at |
-| `3dengine.scale` | op | `/3d scale`, resizing the model you look at |
-| `3dengine.rotate` | op | `/3d rotate`, turning the model you look at |
-| `3dengine.state` | op | `/3d state`, switching the animation of the model you look at |
-| `3dengine.sit` | op | `/3d sit`, sitting in a seat of the model you look at, by name |
-| `3dengine.info` | op | `/3d info`, a model's size, states, seats and hitboxes |
-| `3dengine.quality` | op | `/3d quality`, seeing or changing how detailed a model is baked (re-bakes it) |
-| `3dengine.effect` | op | `/3d effect`, putting down or clearing shader effects |
-| `3dengine.reload` | op | `/3d reload`, baking the models folder again |
-| `3dengine.pack` | op | `/3d pack`, having the resource pack sent to you again |
-| `3dengine.place` | op | Placing models with a model item (from `/3d give`) |
-| `3dengine.ride` | everyone | Sitting in a model's seats by right-clicking it |
-| `3dengine.update` | op | Being told on joining when a newer 3D Engine is on SpigotMC |
-
-`3dengine.admin` grants everything above it in the table and
-`3dengine.place`, but **not** `3dengine.ride` or `3dengine.update`: riding is
-everyone's already, and update notices are a preference rather than a power.
-
-**Why `/3d place` is `3dengine.place.command`.** `3dengine.place` already meant
-using a model item, and a server that hands those items to players should not
-find that it also lets them put down any model they like, anywhere.
-
-3D Engine checks ordinary Bukkit permissions, so LuckPerms and anything else
-that provides them works:
+`3dengine.place.command` (any model, anywhere) is separate from
+`3dengine.place` (using an item you were given) so you can hand out model items
+without handing out `/3d place`.
 
 ```
 /lp group builder permission set 3dengine.give true
@@ -454,50 +387,30 @@ that provides them works:
 
 ## Configuration
 
-`plugins/3DEngine/config.yml`. Edit it and run `/3d reload`, and the changes
-take effect, except for `pack.host`, `pack.port` and `pack.bind`: the pack
-server is started with the server, so those need a restart, and the reload
-tells you when one of them has changed. If the file has a mistake in it and
-can't be read, the reload says so and keeps the settings it already had, and
-`/3d quality` refuses to save rather than write over it. Saving keeps the
-file's comments.
+`plugins/3DEngine/config.yml`. `/3d reload` applies changes, except
+`pack.host`, `pack.port` and `pack.bind`, which need a restart (the reload
+tells you). If the file has a mistake, the reload says so and keeps the
+settings it had, and `/3d quality` refuses to save over it.
 
-```yaml
-pack:
-  host: true
-  port: 8163
-  bind: ""
-  url: ""                # e.g. http://play.example.com:8163
-  send: true
-  required: false
-  prompt: ""
-  format: [97, 1]
-  description: "3D Engine models"
-
-quality:
-  triangles: 20000
-  texture-width: 512
-  max-triangles: 200000
-  max-texture-width: 2048
-  models: {}             # per model, written by /3d quality
-
-seats:
-  height-offset: 0.0     # raise (or, negative, lower) every seated rider
-
-telemetry: true
-update-check: true
-```
-
-Two switches concern what the plugin connects to:
-
-- **`update-check`** asks SpigotMC every six hours whether a newer 3D Engine is
-  out, and if so tells the console and anybody with `3dengine.update`.
-- **`telemetry`** is an anonymous usage count: every 30 seconds, a random id
-  the plugin made up the first time it started, how many players are online,
-  and the names of installed plugins that depend on 3D Engine, sent to
-  resourcepack.ai. No address, server name, player names or content.
-
-Set either to `false` to turn it off.
+| Key | Default | What it does |
+|---|---|---|
+| `pack.host` | `true` | Serve the pack from this server over HTTP |
+| `pack.port` | `8163` | The port it is served on |
+| `pack.bind` | empty | The address to listen on. Empty is all of them |
+| `pack.url` | empty | The address players download it from |
+| `pack.send` | `true` | Send it to players as they join |
+| `pack.required` | `false` | Kick players who decline it |
+| `pack.prompt` | empty | The message on the download prompt |
+| `pack.format` | `[97, 1]` | The pack format. Leave it alone |
+| `pack.description` | `3D Engine models` | The pack's description |
+| `quality.triangles` | `20000` | Default triangles per model |
+| `quality.texture-width` | `512` | Default texture width |
+| `quality.max-triangles` | `200000` | The most any model may keep |
+| `quality.max-texture-width` | `2048` | The widest any texture may be |
+| `quality.models` | `{}` | Per-model settings, written by `/3d quality` |
+| `seats.height-offset` | `0.0` | Raise (or, negative, lower) every seated rider, in blocks |
+| `update-check` | `true` | Ask SpigotMC every six hours for a newer version, and tell the console and anyone with `3dengine.update` |
+| `telemetry` | `true` | An anonymous usage count sent to resourcepack.ai every 30 seconds: a random id, the number of players online and the names of plugins that depend on 3D Engine. No addresses, server names, player names or content |
 
 ## Developer API
 
@@ -518,20 +431,20 @@ engine.whenReady(() -> {
 ```
 
 `whenReady` runs once every model is baked, and again after every
-`/3d reload`, so a plugin can respawn what it drew against the new models. A
-plugin can copy its own model files into `engine.modelsFolder()` in its
-`onEnable`: the first bake waits for the first tick.
+`/3d reload`, so you can respawn what you drew against the new models. A plugin
+can copy its own model files into `engine.modelsFolder()` in `onEnable`: the
+first bake waits for the first tick.
 
-| | |
+| Type | What it is |
 |---|---|
-| `Engine3D` | Models and instances; `spawn` (not saved) and `place` (saved); `mover`; `item(model, state)`, an item that looks like the model; `effect`, `particle` and the effect variants |
+| `Engine3D` | Models and instances: `spawn` (not saved), `place` (saved), `mover`, `item(model, state)` for an item that looks like the model, and `effect`, `particle` and their variants |
 | `Model` | A baked model: its states, points, seats, height, and the extra keys from its `.yml` |
-| `ModelInstance` | One model in the world: change state through its transitions, find where a point is on any frame, scale, seat riders, look at things, turn hitboxes on and off |
+| `ModelInstance` | One model in the world: change state, find where a point is on any frame, scale, seat riders, look at things, turn hitboxes on and off |
 | `Mover` | Legs for a model: an invisible mob that follows, goes to a place, faces, and plays walk, run and turn to match its speed |
-| `EffectInstance`, `Particle` | Shader effects placed in the world, and ones the engine flies |
+| `EffectInstance`, `Particle` | Shader effects placed in the world, and ones the engine moves |
 
-`Engine3D.instance(entity)` finds the model any of its entities belongs to:
-its display, its head, a hitbox, a seat or its brain.
+`Engine3D.instance(entity)` finds the model any of its entities belongs to: its
+display, head, a hitbox, a seat or its brain.
 
 ### Events
 
@@ -547,7 +460,7 @@ All in `ai.resourcepack.engine3d.api.event`:
 | `ModelSpawnEvent` / `ModelRemoveEvent` | A model is put down / taken away | |
 
 A model has no health of its own: what a hit does is up to you.
-[3D Pets](/3d-pets) is an addon built this way, on nothing but this API.
+[3D Pets](/3d-pets) is an addon built on nothing but this API.
 
 ## Credits
 

@@ -1,16 +1,49 @@
 export const metadata = {
   title: "Plugin API",
   description:
-    "Drive items, models, emotes, vehicles, icons, sounds, HUD overlays and dialogs from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
+    "Drive items, models, emotes, vehicles, 3D armour, icons, sounds, HUD overlays and dialogs from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
 };
 
 # Plugin API
 
 Your own Spigot or Paper plugin can give a custom item, place a model, play an
-emote, park a vehicle and switch it off, put an icon in a message, open a
-dialog with your own values on it, and cancel any of those when your rules say
-no. Every snippet here is in Java and Kotlin — pick one and the whole of the
-docs follows you.
+emote, dress a player in 3D armour, park a vehicle and switch it off, put an
+icon in a message, open a dialog with your own values on it, and cancel any of
+those when your rules say no. Every snippet is shown in Java and Kotlin; pick
+one and the rest of the docs follows your choice.
+
+This page matches **RP Engine 0.2.8**, the current release.
+
+## Setting up
+
+RP Engine is not published to a Maven repository. Download `RPEngine.jar` from
+[resourcepack.ai/rp-engine](https://resourcepack.ai/rp-engine) and compile
+against the file. Use `compileOnly`: the server already has the plugin, and a
+shaded second copy breaks class loading.
+
+<CodeTabs labels={["Groovy", "Kotlin"]}>
+
+```groovy
+dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT'
+    compileOnly files('libs/RPEngine.jar')
+}
+```
+
+```kotlin
+dependencies {
+    compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly(files("libs/RPEngine.jar"))
+}
+```
+
+</CodeTabs>
+
+RP Engine runs on Java 17 and Minecraft 1.19.4 or newer, so target Java 17 if
+you want your plugin to load everywhere the engine does.
+
+In your `plugin.yml`, add `softdepend: [RPEngine]` so you load after it, or
+`depend: [RPEngine]` if your plugin can't work without it.
 
 ## Getting in
 
@@ -22,46 +55,48 @@ Everything hangs off the plugin instance.
 RPEnginePlugin engine =
     (RPEnginePlugin) Bukkit.getPluginManager().getPlugin("RPEngine");
 
-engine.items();      // custom items
-engine.models();     // models, and the ones standing in your worlds
-engine.emotes();     // emotes and movement sets
-engine.vehicles();   // vehicles, and the ones standing in your worlds
-engine.sounds();     // custom sounds
-engine.icons();      // icons, and putting one into text
-engine.overlays();   // HUD overlays: show one, hide one, feed it values
-engine.dialogs();    // dialogs: open one, feed it values, read player settings
-engine.registry();   // everything this server holds, by id
+engine.items();         // custom items
+engine.models();        // models, and the ones standing in your worlds
+engine.emotes();        // emotes and movement sets
+engine.vehicles();      // vehicles, and the ones standing in your worlds
+engine.armor();         // 3D armour sets, and putting them on people
+engine.sounds();        // custom sounds
+engine.icons();         // icons, and putting one into text
+engine.overlays();      // HUD overlays: show one, hide one, feed it values
+engine.dialogs();       // dialogs: open one, feed it values, read player settings
+engine.registry();      // everything this server holds, by id
+engine.registration();  // adding content of your own
 ```
 
 ```kotlin
 val engine = Bukkit.getPluginManager().getPlugin("RPEngine") as RPEnginePlugin
 
-engine.items()      // custom items
-engine.models()     // models, and the ones standing in your worlds
-engine.emotes()     // emotes and movement sets
-engine.vehicles()   // vehicles, and the ones standing in your worlds
-engine.sounds()     // custom sounds
-engine.icons()      // icons, and putting one into text
-engine.overlays()   // HUD overlays: show one, hide one, feed it values
-engine.dialogs()    // dialogs: open one, feed it values, read player settings
-engine.registry()   // everything this server holds, by id
+engine.items()          // custom items
+engine.models()         // models, and the ones standing in your worlds
+engine.emotes()         // emotes and movement sets
+engine.vehicles()       // vehicles, and the ones standing in your worlds
+engine.armor()          // 3D armour sets, and putting them on people
+engine.sounds()         // custom sounds
+engine.icons()          // icons, and putting one into text
+engine.overlays()       // HUD overlays: show one, hide one, feed it values
+engine.dialogs()        // dialogs: open one, feed it values, read player settings
+engine.registry()       // everything this server holds, by id
+engine.registration()   // adding content of your own
 ```
 
 </CodeTabs>
 
-Add `softdepend: [RPEngine]` to your `plugin.yml` so you load after it.
-
 <Callout type="warning" title="What is API and what is not">
-  Everything in `ai.resourcepack.engine.api` is supported. **Nothing in
-  `ai.resourcepack.engine.core` is**, and anything there may change in any
+  Everything in `ai.resourcepack.engine.api` (and `api.event`) is supported.
+  Nothing in `ai.resourcepack.engine.core` is, and it can change in any
   release, including a patch.
 </Callout>
 
 ## IDs
 
-One `namespace:path` ID for everything, and it is an ordinary Minecraft
-resource location. `parse` answers empty rather than throwing, so an ID out of
-somebody's config is a message and not a stack trace.
+Everything has one `namespace:path` ID, an ordinary Minecraft resource
+location. `parse` returns empty rather than throwing, so a bad ID in somebody's
+config becomes a message, not a stack trace.
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -76,9 +111,8 @@ val ruby = ContentId.parse("mypack:ruby").orElseThrow()
 </CodeTabs>
 
 **Store IDs, never what they resolve to.** An icon's codepoint moves when
-content changes and an item's model is derived from its ID — the ID is the only
-stable reference in the system, and everything else is worked out from it at
-the moment it is needed.
+content changes and an item's model is derived from its ID. The ID is the only
+stable reference.
 
 ## Items
 
@@ -98,53 +132,60 @@ val isRuby: Boolean = engine.items().`is`(hand, ruby)
 
 </CodeTabs>
 
-Identity lives in the stack's persistent data, not its name or its model. An
-item renamed at an anvil is still itself, and a vanilla diamond somebody called
-"Ruby" is still not one.
+Identity lives in the stack's persistent data, not its name or model. An item
+renamed in an anvil is still itself, and a vanilla diamond somebody named
+"Ruby" is not one. `create` is main thread only; `ids()` and `info()` are safe
+from any thread.
 
 ## Models
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
 ```java
-engine.models().place(location, "golem", PlaceOptions.defaults());
+engine.models().place(location, "golem", PlaceOptions.defaults());  // a Studio model
+engine.models().place(location, tree, PlaceOptions.defaults().placer(player)); // an item's place: block
 engine.models().itemFor("golem", ItemOptions.defaults());
 engine.models().near(location, 16);   // what is standing around here
 engine.models().at(entity);           // is this entity part of a model?
 ```
 
 ```kotlin
-engine.models().place(location, "golem", PlaceOptions.defaults())
+engine.models().place(location, "golem", PlaceOptions.defaults())  // a Studio model
+engine.models().place(location, tree, PlaceOptions.defaults().placer(player)) // an item's place: block
 engine.models().itemFor("golem", ItemOptions.defaults())
-engine.models().near(location, 16)   // what is standing around here
-engine.models().at(entity)           // is this entity part of a model?
+engine.models().near(location, 16.0)  // what is standing around here
+engine.models().at(entity)            // is this entity part of a model?
 ```
 
 </CodeTabs>
 
-A `Placement` is a handle on a model standing in a world: ask it what it is,
-tell it to play an animation, remove it.
+Placing by item `ContentId` does exactly what a player placing that item does:
+hitbox, seat, light, storage, states, animated rig and the item's `place`
+actions. With a placer set, `ModelPlaceEvent` fires first. It returns empty
+when the item has no `place:` block, the block is occupied, or a listener
+cancelled it.
 
-What a pack's `place:` block said is a `ModelInfo`, read-only. Beside the
-facing, scale, seat, light and the rest, `storage()` is the container the piece
-is, as a `StorageSpec` (type, rows, title, sounds), or empty; `jukebox()` the
-disc player it is (volume, pitch, permission, the model it wears while
-playing); and `states()` the looks a click cycles it through, with `nextState`,
-`lightIn` and `solidIn` answering what each index means; and `connects()` the
-look it takes at each place in a row of its kind. The engine handles the clicks
-itself; a `ModelInteractEvent` cancelled before that leaves
-the piece as it was. `grow()` is what it turns into over time, and growing
-fires neither `ModelBreakEvent` nor `ModelPlaceEvent`, because nobody broke or
-placed anything. See [Working furniture](/rp-engine/furniture).
+A `Placement` is a handle on a model standing in a world: `play` an animation,
+`stop`, `remove(dropItem)`, read `playhead()` (how far into its animation it
+is) and `seek(seconds)` to drive that clock yourself. `bind` and `unbind` put a
+model on an entity that isn't ours, such as an NPC.
+
+What a pack's `place:` block said is a read-only `ModelInfo`: facing, scale,
+seat and light, plus `storage()` (a `StorageSpec`: type, rows, title, sounds),
+`jukebox()`, `states()` with `nextState`, `lightIn` and `solidIn`, and
+`grow()`. The engine handles the clicks itself; cancel `ModelInteractEvent` to
+stop one. Growing fires neither `ModelBreakEvent` nor `ModelPlaceEvent`. See
+[Working furniture](/rp-engine/furniture).
 
 ## Emotes
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
 ```java
-engine.emotes().play(player, "wave");            // solo
+engine.emotes().play(player, "wave");              // solo
 engine.emotes().play(lead, "hug", List.of(other)); // with a cast
 engine.emotes().canPerform(player);
+engine.emotes().isEmoting(player.getUniqueId());
 engine.emotes().stop(player);
 ```
 
@@ -152,31 +193,57 @@ engine.emotes().stop(player);
 engine.emotes().play(player, "wave")               // solo
 engine.emotes().play(lead, "hug", listOf(other))   // with a cast
 engine.emotes().canPerform(player)
+engine.emotes().isEmoting(player.uniqueId)
 engine.emotes().stop(player)
 ```
 
 </CodeTabs>
 
 <Callout type="warning" title="A cast is moved, so ask them first">
-  An emote with a cast teleports the people it names. If your plugin plays one,
-  having asked them is your job — the engine's own `/emote` does that through
-  an invitation, and `play` does not.
+  An emote with a cast teleports the people it names. The engine's own `/emote`
+  sends an invitation first; `play` does not, so asking is your job.
 </Callout>
 
 `EmoteResult` carries a typed reason rather than a sentence, so you write the
-words in your own palette and your own language.
+message in your own words and language.
 
-A worn rig can be kept on another animation's clock: `engine.emotes().seek(player, seconds)`
-every tick, fed from a placement's `playhead()`, poses the rig at that moment
-of its emote. That is how a vehicle keeps a paddler's arms on the paddle
-across a loop wrap.
+### Putting a rig on somebody yourself
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.emotes().wear(player, "rowing");   // again to swap, null to take off
+engine.emotes().face(player, 90f);        // point the body; null follows their look
+engine.emotes().seek(player, seconds);    // pose the rig at this moment of its emote
+engine.emotes().seekProp(player, "skate_right", clock); // drive one carried prop's clock
+```
+
+```kotlin
+engine.emotes().wear(player, "rowing")    // again to swap, null to take off
+engine.emotes().face(player, 90f)         // point the body; null follows their look
+engine.emotes().seek(player, seconds)     // pose the rig at this moment of its emote
+engine.emotes().seekProp(player, "skate_right", clock) // drive one carried prop's clock
+```
+
+</CodeTabs>
+
+`wear` is a movement set where you, not the player's legs, decide what the rig
+wears. Moving doesn't end it, and calling it again swaps without restarting.
+`Emotes.BUILT_IN_SITTING` and `BUILT_IN_STANDING` work on any pack.
+
+- `face` is for a passenger whose body belongs to a seat. Call it every tick
+  with the seat's direction. It only affects a rig you put on with `wear`.
+- `seek`, called every tick with a placement's `playhead()`, keeps a rig in
+  step with a model's animation (a paddler's arms on a paddle).
+- `seekProp` drives a carried prop by your own clock, such as a wheel that
+  turns with distance travelled. It survives a swap to another emote carrying
+  the same prop.
 
 ### Carrying a rig on a seat of your own
 
 A worn rig follows its wearer by being teleported every tick, which the client
-glides toward — for a rider moving fast on something of yours, a rig that
-trails its seat. Mount the rig's displays on the seat instead and the client
-draws them wherever the seat is:
+smooths out, so on anything fast it trails behind. Mount the rig's displays on
+your seat instead and the client draws them wherever the seat is:
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -192,22 +259,70 @@ val lift = engine.emotes().rigOriginOffset()             // blocks above the fee
 
 </CodeTabs>
 
-Every one of those displays hangs off one point, `rigOriginOffset()` above the
-rider's feet, so put your seat's passenger position there. Read the number
-rather than copying it: it follows the size the engine draws a player at.
+Every display hangs off one point, `rigOriginOffset()` above the rider's feet,
+so put your seat's passenger position there. Read the number rather than
+copying it, as it follows the size the engine draws players at.
 
 <Callout type="warning" title="Mount with a packet, not addPassenger">
-  The engine keeps teleporting every display every tick, and a Bukkit teleport
-  of a passenger dismounts it. A client-side passengers packet is unaffected.
-  That packet is the vehicle's **whole** list: include whoever really sits
-  there, and send it again when the server sends its own and to anybody who
-  starts seeing the seat.
+  The engine teleports every display every tick, and a Bukkit teleport of a
+  passenger dismounts it. Send a client-side passengers packet instead. That
+  packet is the vehicle's **whole** list: include whoever really sits there,
+  resend it when the server sends its own, and send it to anybody who starts
+  seeing the seat.
 </Callout>
 
-The ids change — putting a rig on spawns every display, and a swap to an emote
-carrying different models spawns those again. `EmoteRigSpawnEvent` fires each
-time with the new list, so mount there rather than once. It fires for every
-rig, so check the player is yours.
+The ids change: putting a rig on spawns every display, and swapping to an emote
+with different carried models spawns those again. `EmoteRigSpawnEvent` fires
+each time with the new list, so mount there. It fires for every rig, so check
+the player is yours.
+
+### Rebuilding the rigs
+
+A player's rig wears their skin, and rigs are baked into a pack. The engine
+rebakes when a new skin arrives but only sends that build to whoever joins
+next. To make everybody see everybody's current skin now (a minigame dressing
+players in emotes), call `engine.reloadRigs()` on the main thread. On 1.20.3+,
+where packs stack, that resends only the small rig pack and fires
+`RigPackBuildEvent`; on older versions it is a full `reload()`.
+
+## 3D armour
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+ContentId santa = ContentId.parse("christmas:santa").orElseThrow();
+
+engine.armor().available();                           // false before 1.21.4
+engine.armor().info(santa);                           // its name and pieces
+engine.armor().create(santa, ArmorPiece.HELMET);      // one piece, as an item
+ArmorResult result = engine.armor().wear(player, santa); // the whole set, now
+engine.armor().wearing(player);                       // which set each worn piece is from
+engine.armor().strip(player);                         // every 3D piece off
+```
+
+```kotlin
+val santa = ContentId.parse("christmas:santa").orElseThrow()
+
+engine.armor().available()                            // false before 1.21.4
+engine.armor().info(santa)                            // its name and pieces
+engine.armor().create(santa, ArmorPiece.HELMET)       // one piece, as an item
+val result = engine.armor().wear(player, santa)       // the whole set, now
+engine.armor().wearing(player)                        // which set each worn piece is from
+engine.armor().strip(player)                          // every 3D piece off
+```
+
+</CodeTabs>
+
+A set from a content folder is `namespace:path`; one pushed from Studio is
+`studio:<id>`. Each piece is an ordinary item that goes on by hand like armour,
+so `wear` is a shortcut for all four. Whatever was in a slot goes back to the
+player (or drops at their feet if their inventory is full) and is listed in
+`ArmorResult.displaced()`. `strip` removes only 3D pieces and gives them to
+nobody. `ArmorResult` has a reason: `WORN`, `UNKNOWN_SET` or `UNSUPPORTED`.
+
+A set pushed from Studio is only drawn for players holding that push's pack.
+Main thread only, except `available`, `ids` and `info`. See
+[3D armour](/rp-engine/armour).
 
 ## Sounds
 
@@ -227,11 +342,10 @@ engine.sounds().playFrom(entity, id)   // everybody nearby hears it follow this 
 
 </CodeTabs>
 
-All three use the sound's declared category, volume and pitch; overloads let
-you replace volume and pitch. `playFrom` is the moving-source form for engines,
-creatures and anything else where a fixed coordinate would leave the sound
-behind. Playing methods are main thread only; `ids()` and `info()` are safe
-from any thread.
+All three use the sound's declared category, volume and pitch, and each has an
+overload that takes `volume` and `pitch`. Use `playFrom` for anything that
+moves. Playing is main thread only; `ids()` and `info()` are safe from any
+thread.
 
 ## HUD overlays
 
@@ -259,15 +373,13 @@ engine.overlays().showing(player)                // what they have on
 </CodeTabs>
 
 An overlay made in Studio has the id `studio:<id>`, where `<id>` is the one on
-its card on the pack page.
-
-There is a `hide` rather than a duration. To show one for five seconds,
-schedule the hide; to show one until a fight ends, hide it when the fight ends.
+its card on the pack page. There is no duration: to show one for five seconds,
+schedule the `hide`.
 
 ### Feeding it values
 
-An overlay's labels and progress bars can print `{name}` placeholders. **Any
-name works, and yours wins.**
+An overlay's labels and progress bars can print `{name}` placeholders. Any name
+works.
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -285,32 +397,55 @@ engine.overlays().value(player, "stamina")       // what you last set
 
 </CodeTabs>
 
-A placeholder is looked up in three places, and the first answer wins:
+A placeholder is looked up in this order, and the first answer wins:
 
-1. **Whatever you set.** A plugin that publishes a number means that number, so
-   it is never overruled by a built-in with the same name.
-2. **The built-ins**, such as `{health}`, `{food}` and `{level}`. The full list
-   is on the [HUD overlays](/rp-engine/hud) page.
-3. **PlaceholderAPI**, if the server has it.
+1. Whatever you `set`. A built-in with the same name never overrules it.
+2. The built-ins: `player`, `name`, `displayname`, `uuid`, `world`, `x`, `y`,
+   `z`, `direction`, `health`, `health_max`, `health_percent`, `food`, `air`,
+   `level`, `xp`, `xp_points`, `xp_needed`, `ping`, `gamemode`, `online`,
+   `max_online`, `time`, `day`. See [HUD overlays](/rp-engine/hud).
+3. PlaceholderAPI, if the server has it.
 
 A name none of them knows draws as nothing rather than as `{name}`.
 
-Values are **per player**, not per overlay: `stamina` means the same thing to
-every overlay on that player's screen. A **progress bar** reads the same names,
-so a stamina bar out of 100 needs only the one `set` call above. They are the
-same values [dialogs](#dialogs) print, so a number you publish for a HUD is
-already on every dialog that asks for it.
+Values are per player, not per overlay, and a progress bar reads the same
+names, so a stamina bar out of 100 needs only the one `set` call. They are also
+the values [dialogs](#dialogs) print.
 
-**`set` and `value` are safe from any thread.** They only record the value, and
-the next redraw (within about a second and a half) picks it up, so setting six
-values in a row costs one redraw. `show`, `hide` and `hideAll` draw, so they are
-main thread only.
+`set` and `value` are safe from any thread. They only record the value; the
+next redraw (within about a second and a half) picks it up, so six `set` calls
+in a row cost one redraw. `show`, `hide` and `hideAll` are main thread only.
+
+### Laying a value out
+
+To build a line from several pieces (a kill feed: name, weapon icon, name), use
+the engine's own measurements:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+int nameWidth = engine.overlays().width("Steve");  // pixels the cursor moves
+String gap  = engine.overlays().space(5);          // five pixels of nothing
+String back = engine.overlays().space(-12);        // twelve pixels back, to draw over
+```
+
+```kotlin
+val nameWidth = engine.overlays().width("Steve")   // pixels the cursor moves
+val gap = engine.overlays().space(5)               // five pixels of nothing
+val back = engine.overlays().space(-12)            // twelve pixels back, to draw over
+```
+
+</CodeTabs>
+
+`width` knows vanilla's letters, every icon in the pack and the spaces `space`
+makes. Both work in any text drawn in the default font.
 
 ## Dialogs
 
 A [dialog](/dialogs) is a screen of its own, such as a store, a settings menu
-or a punish menu, on Minecraft 1.21.6 and newer. Server owners draw them in
-Studio, and your plugin decides when one opens and what values are on it.
+or a punish menu, on Minecraft 1.21.6 and newer. Server owners make them in
+Studio or in a `dialogs/` folder; your plugin decides when one opens and what
+values are on it.
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -318,6 +453,7 @@ Studio, and your plugin decides when one opens and what values are on it.
 engine.dialogs().show(player, "studio:shop");
 engine.dialogs().close(player);
 engine.dialogs().ids();                        // what this server has
+engine.dialogs().info(id);                     // name, command, settings it declares
 engine.dialogs().supported();                  // false before 1.21.6
 engine.dialogs().canShow(player, id);          // would show get as far as the client?
 ```
@@ -326,6 +462,7 @@ engine.dialogs().canShow(player, id);          // would show get as far as the c
 engine.dialogs().show(player, "studio:shop")
 engine.dialogs().close(player)
 engine.dialogs().ids()                         // what this server has
+engine.dialogs().info(id)                      // name, command, settings it declares
 engine.dialogs().supported()                   // false before 1.21.6
 engine.dialogs().canShow(player, id)           // would show get as far as the client?
 ```
@@ -335,9 +472,19 @@ engine.dialogs().canShow(player, id)           // would show get as far as the c
 A dialog made in Studio has the id `studio:<id>`, where `<id>` is the one in its
 editor, and each page after the first is `studio:<id>.<page>`.
 
-`show` returns false rather than throwing: the server is older than 1.21.6, there
-is no such dialog, the player is offline, or they are not holding the pack the
-dialog's picture is in. `canShow` checks all of that before you try.
+`show` returns false rather than throwing when the server is older than 1.21.6,
+there is no such dialog, the player is offline, or they don't hold the pack the
+dialog's picture is in. `canShow` checks all of that first. What it can't
+promise is that the game accepts the dialog's JSON; a refusal is logged to the
+console.
+
+A dialog can declare a command players open it with (`/shop`). The engine
+registers it; `DialogInfo.command()` and `permission()` say what it is.
+
+A dialog opens straight away even if it was pushed a moment ago, because the
+engine sends the whole dialog. `pending()` only tells you whether its id is in
+the server's registry yet, which matters only to a datapack or command block of
+your own that names it.
 
 ### Values on it
 
@@ -361,7 +508,8 @@ engine.dialogs().show(staff, "studio:punish", mapOf("target" to suspect.name))
 
 </CodeTabs>
 
-Or publish a value once, for every dialog and HUD that prints it:
+Or publish a value once, for every dialog and HUD that prints it. These are the
+same values `overlays().set` publishes, one set per player:
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -379,11 +527,8 @@ engine.dialogs().value(player, "coins")         // what you last set
 
 </CodeTabs>
 
-**These are the same values `overlays().set` publishes.** There is one set per
-player, so `coins` means the same thing on a HUD and in a store.
-
-A [list](/dialogs#lists-the-server-fills) — rows drawn in Studio, one per item —
-is filled the same way, all at once:
+A [list](/dialogs#lists-the-server-fills) (rows drawn in Studio, one per item)
+is filled all at once:
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -401,29 +546,32 @@ engine.dialogs().listRows(player, "warps", listOf(mapOf("" to "Spawn", "note" to
 
 </CodeTabs>
 
-It sets `warps_1`, `warps_2`… and `warps_count`, and takes away the items a
-longer list set before; rows past the end are hidden, clicks and all. A list
-given when the dialog opens, `warps=Spawn,Shop,Arena`, does the same for that
-opening alone.
+It sets `warps_1`, `warps_2` and so on plus `warps_count`, and clears items a
+longer list set before. Rows past the end are hidden, clicks and all. The
+command that opens a dialog can pass a list too, `warps=Spawn,Shop,Arena`, for
+that opening only.
 
-A placeholder is looked up in five places, and the first answer wins:
+A placeholder is looked up in this order, and the first answer wins:
 
-1. **What you handed to `show`.**
-2. **The player's own settings**, which is what a bound switch or slider shows.
-   See [Player settings](#player-settings) below.
-3. **What you published with `set`.**
-4. **The built-ins**, the same ones a HUD has: `{player}`, `{health}`, `{world}`
-   and the rest, all about the player the dialog is shown to.
-5. **PlaceholderAPI**, if the server has it.
+1. What you passed to `show` (case-insensitive).
+2. What you published with `set` (or `overlays().set`).
+3. The built-ins, the same ones a HUD has, all about the player viewing it.
+4. PlaceholderAPI, if the server has it.
+5. The player's own [settings](#player-settings).
 
-A name none of them knows is left as written, so a dialog that happens to say
-`{VIP}` is not rewritten. Formatting codes are taken out of a value. On the
-screen, a value is kept to the characters the game's small font draws (anything
-else becomes `?`) and is cut short with "…" when it would not fit its line.
+Settings come last because players change them themselves with a command. A
+setting can never stand in for a real value, but a setting that shares a name
+with anything above shows that value instead, so give settings names of their
+own.
+
+A name nothing answers is left as written, so a dialog that says `{VIP}` stays
+as it is. Formatting codes are removed from values. On a Studio dialog's
+screen, a value is limited to characters the game's small font draws (others
+become `?`) and is cut short with "…" if it doesn't fit its line.
 
 **A dialog is drawn once, as it opens.** A value that changes while it is on
-screen shows the next time it opens, and `reopen` opens it again on purpose,
-with the values it was opened with, after a click on it changed something:
+screen shows next time. Call `reopen` after a click changed something; it opens
+the dialog again with the values it was opened with:
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -443,9 +591,9 @@ engine.dialogs().reopen(player)    // the store again, with the new balance on i
 
 </CodeTabs>
 
-The server is not told when a player closes a dialog, so `reopen` opens it
-whether it is still on their screen or not. Call it in answer to a click, not
-on a timer.
+The server isn't told when a player closes a dialog, so `reopen` opens it
+whether it is still on screen or not. Call it in answer to a click, not on a
+timer.
 
 ### Player settings
 
@@ -460,25 +608,81 @@ plugin:
 engine.dialogs().setting(player, "show_sidebar");            // Optional: "on" or "off"
 engine.dialogs().setSetting(player, "show_sidebar", "off");  // as if they clicked it
 engine.dialogs().setSetting(player, "show_sidebar", null);   // back to the default
+engine.dialogs().info(id).map(DialogInfo::variables);        // {"show_sidebar": ["on", "off"]}
 ```
 
 ```kotlin
 engine.dialogs().setting(player, "show_sidebar")             // Optional: "on" or "off"
 engine.dialogs().setSetting(player, "show_sidebar", "off")   // as if they clicked it
 engine.dialogs().setSetting(player, "show_sidebar", null)    // back to the default
+engine.dialogs().info(id).map(DialogInfo::variables)         // {"show_sidebar": ["on", "off"]}
 ```
 
 </CodeTabs>
 
-Settings are kept on the player, across restarts, and PlaceholderAPI reads the
-same value as `%rpengine_var_show_sidebar%`. A name is lower-case letters,
-digits and `_`, up to 32 characters, and a value is letters, digits, `_`, `.`
-and `-`. A player keeps at most 64 settings, and `setSetting` returns false for
-anything outside that. Your plugin may set any name, not only one a dialog
-shows. Nothing reopens on its own, so call `reopen` if they are looking at it.
+Settings are stored on the player and survive restarts. PlaceholderAPI reads
+them as `%rpengine_var_<name>%`. Limits:
 
-**`set` and `value` are safe from any thread.** Everything else here touches a
-player and is main thread only.
+| | |
+| --- | --- |
+| Name | lower-case letters, digits and `_`, up to 32 characters |
+| Value | letters, digits, `_`, `.` and `-`, up to 32 characters |
+| Per player | 64 settings |
+
+`setSetting` returns false for anything outside those. Your plugin may set any
+name, not only one a dialog declares. Nothing reopens on its own, so call
+`reopen` if they're looking at it.
+
+### Your own container in a dialog
+
+A Studio dialog can have a grid of item slots showing a container "from a
+plugin", by name. Register one under that name and the grid shows your
+inventory for whoever opens it, and lets them move items in and out where the
+grid allows it:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.dialogs().container("bank", new DialogContainer() {
+    @Override
+    public Inventory inventory(Player viewer) {
+        return banks.of(viewer);
+    }
+
+    @Override
+    public boolean mayPlace(Player viewer, int slot, ItemStack stack) {
+        return !stack.getType().name().endsWith("SHULKER_BOX");
+    }
+
+    @Override
+    public void changed(Player viewer) {
+        banks.save(viewer);   // after every move that touched it
+    }
+});
+```
+
+```kotlin
+engine.dialogs().container("bank", object : DialogContainer {
+    override fun inventory(viewer: Player): Inventory = banks.of(viewer)
+
+    override fun mayPlace(viewer: Player, slot: Int, stack: ItemStack): Boolean =
+        !stack.type.name.endsWith("SHULKER_BOX")
+
+    override fun changed(viewer: Player) {
+        banks.save(viewer)    // after every move that touched it
+    }
+})
+```
+
+</CodeTabs>
+
+The engine reads your inventory as each dialog opens and writes to it as each
+move happens, on the main thread. A move reads both slots at that moment, so a
+stale screen can't duplicate items. `DialogSlotMoveEvent` fires before every
+move in any container.
+
+`set` and `value` are safe from any thread. Everything else in dialogs touches
+a player and is main thread only.
 
 ## Vehicles
 
@@ -504,8 +708,7 @@ engine.vehicles().isRiding(uuid)         // safe from any thread
 
 </CodeTabs>
 
-A `Vehicle` is a handle on one standing in a world, occupied or not: what it
-is, where it is going, who is aboard, and the switches a plugin turns.
+A `Vehicle` is a handle on one standing in a world, occupied or not:
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -535,110 +738,19 @@ car.pointOn(-0.7, 0.6, 1.5)    // where a point on the bodywork is, in the world
 
 </CodeTabs>
 
-### Building a vehicle the engine does not have
+`submersion()` is a depth; `VehicleState.SUBMERGED` only means "in a water
+block", which a puddle also is. A vehicle whose `medium` isn't `water` floods
+and stops in water; whether that wrecks it is up to you.
 
-A skateboard is pushed rather than throttled, tucks for speed, lies down on
-command and rides walls. None of that is in the format and none of it needs to
-be: the handle exposes the pieces.
-
-<CodeTabs labels={["Java", "Kotlin"]}>
-
-```java
-Vehicle board = engine.vehicles().of(player).orElseThrow();
-VehicleInput keys = board.input();          // what the driver is pressing, this tick
-if (keys.forward()) board.nudge(2.2);       // a kick, along the heading
-board.dress(player, "myplugin_push");       // wear this over the seat's states
-board.dressVariant(player, "goofy");        // ...in this rider's own variant
-board.holdOccupant(player, true);           // sneak means something else now
-board.spin(-360);                           // mid-air, it carries
-board.wallRiding();                         // is it on a wall right now?
-```
-
-```kotlin
-val board = engine.vehicles().of(player).orElseThrow()
-val keys = board.input()                    // what the driver is pressing, this tick
-if (keys.forward()) board.nudge(2.2)        // a kick, along the heading
-board.dress(player, "myplugin_push")        // wear this over the seat's states
-board.dressVariant(player, "goofy")         // ...in this rider's own variant
-board.holdOccupant(player, true)            // sneak means something else now
-board.spin(-360)                            // mid-air, it carries
-board.wallRiding()                          // is it on a wall right now?
-```
-
-</CodeTabs>
-
-**`input()` is the same demand the physics read**, so your idea of "the driver
-pressed forward" and the engine's are on the same tick. Where the keys cannot
-be read at all (Spigot, or before 1.21.4) `keys()` is false and only
-`throttle()` means anything.
-
-**The sneak key is not free.** You can read it, but sneak is Minecraft's
-dismount — so without `holdOccupant` you see the key on the tick your rider is
-already stepping into the road. Ask for the hold ONCE, when they get on: the
-dismount happens on the tick the key goes down, earlier than your next tick
-task. The engine still lets a short TAP of it through as an ordinary
-dismount, and lets go by itself once the vehicle stops, so a held rider is
-never trapped whatever your plugin does or forgets to do.
-
-**`dressVariant` is for a per-person fact a seat cannot know.** A seat's
-`animations:` is written once for everybody; a stance, a handedness or a team
-belongs to the rider. The variant is applied to whatever the seat's table
-names — `moving` becomes `moving_goofy` — and falls back per emote, so a set
-that mirrors the two states worth mirroring and leaves the rest alone works.
-
-### Moving the vehicle's own model
-
-`dress` is for the rider's body. **`perform` is the same door for the
-vehicle's**: it plays one of the MODEL's animations instead of whatever its
-`animations:` table says.
-
-<CodeTabs labels={["Java", "Kotlin"]}>
-
-```java
-bike.perform("wheelie");   // the whole bike tips back about the rear axle
-// ... count your ticks ...
-bike.rest();               // back to the state table, wheels where they were
-```
-
-```kotlin
-bike.perform("wheelie")    // the whole bike tips back about the rear axle
-// ... count your ticks ...
-bike.rest()                // back to the state table, wheels where they were
-```
-
-</CodeTabs>
-
-A bike's wheelie, a barspin, a digger's arm coming down: motion that belongs to
-the model and is decided by a plugin rather than by which of six words
-describes how fast the thing is going. A vehicle with no `animations:` at all
-can be given one this way, so a pack need not have anticipated your trick.
-
-**It loops for as long as it is set**, exactly as a state's animation does,
-whatever the animation itself was authored as — so the length of a trick is
-yours to time: set it, count your ticks, `rest()`. That is the same shape as
-wearing an emote for the length of a kick, and it is deliberately not a
-one-shot with a callback: there is no tick you could be told about that you
-were not already having.
-
-**A performed animation runs on real time**, even on a vehicle with
-[`animation-follows-speed`](/rp-engine/vehicles#a-wheel-should-turn-because-the-vehicle-moved).
-That link exists so a wheel turns because the vehicle moved, and a trick is not
-a wheel — a barspin that ran at a quarter speed because the rider was braking
-into it would be the mechanism showing through. The speed-driven playhead is
-put aside while it holds and picked up where it was on `rest()`, so the wheels
-do not jump when the trick ends.
-
-One animation at a time, because a rig has one clock — the same rule the state
-table lives under. An animation that has to keep the wheels turning while it
-plays has to turn them itself.
+Vehicle definitions can carry `addons:` blocks for your plugin. Read yours with
+`vehicle.info().addon("my-addon")`; the engine passes it through untouched.
 
 ### Fuel, and anything else that stops a vehicle going
 
-`setEnabled(false)` is the switch. A disabled vehicle ignores its driver,
-coasts to a halt where it is and stays there — it still falls if it was in
-the air and still floats on water, and people get in and out of it as normal.
-The flag is written on the chassis, so a car that ran dry is still dry after
-a restart.
+`setEnabled(false)` is the switch. A disabled vehicle ignores its driver and
+coasts to a halt, still falls and floats, and people get in and out as normal.
+The flag is saved on the chassis, so a car that ran dry is still dry after a
+restart.
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -680,58 +792,158 @@ for (vehicle in burners) {
 
 </CodeTabs>
 
-`data()` is the chassis's persistent data — the tank, the owner, the price
-paid — and it survives everything the vehicle survives. `uniqueId()` is the
-chassis's id and is the one stable key: the seats and the model are rebuilt
-on every chunk load with new ids each time, so never remember those.
+`data()` is the chassis's persistent data and survives everything the vehicle
+does. `uniqueId()` is the chassis's id and the one stable key: seats and model
+entities get new ids on every chunk load, so never store those.
 
-`setSpeedLimit` is the softer version, for a damaged engine or a road with a
-limit: a lower top speed, with braking and reversing scaled to match. An
-aircraft limited below its takeoff speed cannot take off, which is the honest
-consequence. Deliberately not remembered — keep it in `data()` yourself if it
-should be. `stop()` is a wall: dead this tick, throttle reset, still answering
-its driver afterwards.
+| Method | What it does | Saved? |
+| --- | --- | --- |
+| `setEnabled(boolean)` | Ignores the driver and coasts to a halt | Yes |
+| `setSpeedLimit(bps)` | Lower top speed, braking and reverse scaled to match. An aircraft limited below takeoff speed can't take off | No |
+| `setHandling(speed, turn)` | Scales what it can do, as fractions of its definition | No |
+| `setDamage(VehicleDamage)` | Per-wheel condition, engine power and steering pull, read by the handling model | No |
+| `setDescent(bps)` | An aircraft comes down at this rate whatever it's doing. 0 holds height, negative clears it | No |
+| `setPosture(pitch, roll)` | A drawn lean on top of the physics | No |
+| `stop()` | Dead this tick, like hitting a wall | |
 
-<Callout type="note" title="Who may get in is an event, not a method">
-  There is no `setLocked`. "Is this your car" is a rule about your server, so
-  it is `VehicleEnterEvent` — cancel it and they stay standing beside the
-  door. `VehicleExitEvent` cannot be cancelled: a player who could not be let
-  out would be a player who is trapped, and a race that has not finished is
-  better served by putting them back with `seat`.
-</Callout>
-
-## Shipping content in your own jar
-
-An addon carries its models, items, vehicles and emotes as an ordinary
-[content folder](/rp-engine/content) inside its own jar, under
-`resources/content/<namespace>/`, and installs it on enable:
+Re-apply the unsaved ones when you pick a vehicle up again (after a chunk load
+or restart). `VehicleDamage.NONE` is the vehicle exactly as its pack defines
+it:
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
 ```java
-if (AddonContent.install(this, engine, "skateboards")) {
-    engine.reload();   // only when something actually changed
-}
+car.setDamage(VehicleDamage.builder()
+        .wheel(VehicleCorner.FRONT_LEFT, 0)     // torn off
+        .wheel(VehicleCorner.REAR_LEFT, 0.45)   // buckled
+        .enginePower(0.7)
+        .steeringPull(-3)                       // pulls left
+        .build());
 ```
 
 ```kotlin
-if (AddonContent.install(this, engine, "skateboards")) {
-    engine.reload()    // only when something actually changed
-}
+car.setDamage(VehicleDamage.builder()
+        .wheel(VehicleCorner.FRONT_LEFT, 0.0)   // torn off
+        .wheel(VehicleCorner.REAR_LEFT, 0.45)   // buckled
+        .enginePower(0.7)
+        .steeringPull(-3.0)                     // pulls left
+        .build())
 ```
 
 </CodeTabs>
 
-A `.version` stamp beside the files says which build last wrote them, so
-restarting on the same jar copies nothing and reloads nothing — a reload
-rebuilds every pack on the server, which is not a thing to do on every boot
-for files that have not changed. A new build overwrites its own files and only
-its own: whatever the server owner added to that folder stays, because the
-folder is theirs to extend.
+A wheel runs from 1 (sound) to 0 (gone). Damage is not health and never
+changes the art; the engine has no opinion on how much punishment a vehicle
+takes. That is yours to track in `data()`.
 
-Catch the `IOException` and disable your plugin over it. Content that did not
-install is items that do not exist, and failing loudly at boot beats a command
-that says nothing an hour later.
+<Callout type="note" title="Who may get in is an event, not a method">
+  There is no `setLocked`. Cancel `VehicleEnterEvent` and they stay standing.
+  `VehicleExitEvent` can't be cancelled, so a player is never trapped; to keep
+  somebody in a race, put them back with `seat`.
+</Callout>
+
+### Collisions and parts
+
+`VehicleImpactEvent` fires once per meaningful collision (`cause()`: `VEHICLE`,
+`WORLD` or `LANDING`). `first()` and, for a vehicle pair, `second()` each carry
+the velocity before and the change, the contact normal, closing speed, impulse,
+spin change, `area()` (which side took it) and `contactOffset()` (where on the
+vehicle, in its own frame: `x` right, `y` up from its base, `z` forward). A zero
+offset means the engine can't say where. For `WORLD` impacts it is a face, not a
+point.
+
+To react:
+
+- `applyImpulse(deltaVelocity, spinDelta)` changes the physical response;
+  `velocity()` reads it.
+- `scuff(area, contact, amount)` adds a persistent scrape (amount 0 to 1, at
+  most ten marks; a repeat hit in the same place deepens the mark).
+- `parts()` lists an animated model's bones, `partOffset(name)` says where one
+  sits, and `detachPart(name, velocity, spin, despawnTicks)` knocks it off.
+  `detachedParts()` is saved on the chassis.
+- `showStatus(text)` borrows the vehicle's action-bar line for a moment.
+
+### Building a vehicle the engine does not have
+
+A skateboard is pushed rather than throttled, tucks for speed and spins in the
+air. None of that is in the format, but the handle exposes the pieces:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+Vehicle board = engine.vehicles().of(player).orElseThrow();
+VehicleInput keys = board.input();          // what the driver is pressing, this tick
+if (keys.forward() && board.groundSpeed() < 7) {
+    board.nudge(2.2);                       // a kick: +2.2 blocks/s along the heading
+    board.dress(player, "myplugin_push");   // wear this emote over the seat's states
+}
+if (board.is(VehicleState.AIRBORNE) && keys.left()) board.spin(-360);
+board.undress(player);                      // back to the seat's own table
+board.dressVariant(player, "goofy");        // this rider's own variant of every state
+board.turnOccupant(player, 270.0);          // face a different way from the seat; null resets
+board.holdOccupant(player, true);           // sneak no longer dismounts while moving
+board.wallRiding();                         // is it on a wall right now?
+```
+
+```kotlin
+val board = engine.vehicles().of(player).orElseThrow()
+val keys = board.input()                    // what the driver is pressing, this tick
+if (keys.forward() && board.groundSpeed() < 7) {
+    board.nudge(2.2)                        // a kick: +2.2 blocks/s along the heading
+    board.dress(player, "myplugin_push")    // wear this emote over the seat's states
+}
+if (board.`is`(VehicleState.AIRBORNE) && keys.left()) board.spin(-360.0)
+board.undress(player)                       // back to the seat's own table
+board.dressVariant(player, "goofy")         // this rider's own variant of every state
+board.turnOccupant(player, 270.0)           // face a different way from the seat; null resets
+board.holdOccupant(player, true)            // sneak no longer dismounts while moving
+board.wallRiding()                          // is it on a wall right now?
+```
+
+</CodeTabs>
+
+- `input()` is the same input the physics read, on the same tick. Where keys
+  can't be read (Spigot, or before 1.21.4) `keys()` is false and only
+  `throttle()` means anything. Nothing in the engine acts on sprint, so it's
+  yours to use.
+- `dressVariant` turns `moving` into `moving_goofy` and so on, falling back to
+  the plain emote where no variant exists.
+- **Sneak is Minecraft's dismount.** Call `holdOccupant` once, when they get
+  on: the dismount happens before your next tick task could react. A held rider
+  can still get off by tapping sneak, and the hold stops applying once the
+  vehicle is below half a block a second, so nobody is ever trapped. Tell
+  riders what the key does now.
+
+### Moving the vehicle's own model
+
+`dress` is for the rider. `perform` plays one of the **model's** animations
+instead of whatever its `animations:` table says:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+bike.perform("wheelie");   // the whole bike tips back about the rear axle
+// ... count your ticks ...
+bike.rest();               // back to the state table, wheels where they were
+```
+
+```kotlin
+bike.perform("wheelie")    // the whole bike tips back about the rear axle
+// ... count your ticks ...
+bike.rest()                // back to the state table, wheels where they were
+```
+
+</CodeTabs>
+
+It works on a vehicle with no `animations:` at all. A performed animation loops
+until you call `rest()`, so you time the trick. It runs on real time even on a
+vehicle with
+[`animation-follows-speed`](/rp-engine/vehicles#a-wheel-should-turn-because-the-vehicle-moved),
+and the wheels pick up where they were afterwards. One animation plays at a
+time, so a trick that needs the wheels turning must turn them itself.
+
+Every vehicle handle method is main thread only. `ids`, `info` and `isRiding`
+are safe anywhere.
 
 ## Icons in your own text
 
@@ -748,13 +960,11 @@ val line = engine.icons().format(config.getString("welcome"))
 </CodeTabs>
 
 Every `:namespace:id:` becomes its picture. An ID naming nothing is left
-exactly as written, so text never silently loses a chunk of itself.
+exactly as written.
 
-**An animated icon is animated by you redrawing it.** Each frame is a character
-of its own, and the engine does not run a shader that flips between them, so
-`format` and `character` give the **first** frame: right for anything you send
-once, and stable, so a saved message keeps its picture. For text you send again
-and again, ask for the frame that is showing now:
+**An animated icon is animated by you redrawing it.** Each frame is its own
+character, so `format` and `character` give the first frame, which is right for
+anything you send once. For text you send repeatedly, ask for the current frame:
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -772,48 +982,50 @@ engine.icons().characterNow(id).ifPresent { frame -> bar.setTitle("$frame Boss")
 
 </CodeTabs>
 
-`IconInfo` says what an icon is: `frames()` (1 for a still picture),
-`animated()`, `fps()`, `loops()`, `frameAt(elapsedMillis)` for the arithmetic,
-and `character(frame)` / `codepoint(frame)` for one frame (from 0, each the
-codepoint after the last). A frame lasts `1000 / fps` milliseconds, so redrawing
-once a tick shows every frame of anything up to 20 fps. A looping icon is timed
-from the epoch and a one-shot from server start.
+`IconInfo` has `frames()` (1 for a still), `animated()`, `fps()`, `loops()`,
+`frameAt(elapsedMillis)`, and `character(frame)` / `codepoint(frame)` for one
+frame (from 0). Redrawing once a tick shows every frame of anything up to 20
+fps. A looping icon is timed from the epoch, a one-shot from server start. The
+PlaceholderAPI form `%rpengine_icon_<namespace:id>%` is always the current
+frame.
 
-`IconInfo.aliases()` and `permission()` are what the pack said about typing the
-icon in chat. The engine's own chat handling honours both; `format` does not,
-because a config file is not somebody typing.
+`IconInfo.aliases()` and `permission()` apply to players typing the icon in
+chat. `format` ignores both.
 
 ## Events
 
-All cancellable unless the row says otherwise.
+All in `ai.resourcepack.engine.api.event`, and cancellable unless the row says
+otherwise.
 
 | Event | When |
 |---|---|
-| `ContentLoadEvent` | Content finished loading and the packs are built. **Listen to this before touching anything else** — a reload replaces every definition on the server. Not cancellable |
+| `ContentLoadEvent` | Content finished loading and the packs are built. A reload replaces every definition, so rebuild anything you cached here. `cause()` is `STARTUP` or a reload. Not cancellable |
 | `PackSendEvent` | A pack went out to a player. Not cancellable |
-| `ItemUseEvent` | A custom item was clicked. Cancelling cancels the vanilla use too |
+| `RigPackBuildEvent` | The emote rigs were rebaked: on every content load, or alone for a new skin or `reloadRigs()`. `alone()` and `separate()` say which. Not cancellable |
+| `ItemUseEvent` | A custom item was right- or left-clicked. Cancelling cancels the vanilla use too |
 | `ModelPlaceEvent` | A model is about to be put down |
-| `ModelBreakEvent` | A model is about to be broken. Carries a drop flag, separate from cancelling |
+| `ModelBreakEvent` | A model is about to be broken. Has a drop flag separate from cancelling |
 | `ModelInteractEvent` | A placed model was right-clicked |
 | `ModelAnimationEvent` | A model is about to play an animation |
-| `ModelAnimationEndEvent` | One ended — finished, replaced or stopped. The half you need to do anything in sequence. Not cancellable |
-| `ModelSeatEvent` | Somebody is about to sit on a chair, a seat bone, **or a vehicle seat**. Cancelling leaves them standing |
-| `VehicleEnterEvent` | Somebody is about to get into a vehicle — fires after `ModelSeatEvent` for the same seat, with the vehicle and the seat attached. "Is this your car" lives here |
-| `VehicleExitEvent` | Somebody got out, or was taken out. Carries why — dismounted, ejected, quit, reloaded, removed, unloaded, shutdown. Not cancellable. `RELOADED` is followed by them being put back a tick later, with no enter event |
-| `VehicleMoveEvent` | A vehicle is about to move — once per tick, only while it is going somewhere. Cancelling stops it dead, like a wall. The event for a region it may not enter; **not** the event for fuel, which is `setEnabled` |
-| `VehicleBailEvent` | A bad landing is about to throw a rider off a vehicle that asked for bailing. Cancelling leaves them aboard and takes nothing off them — which is how a server switch for it is written without editing the pack |
-| `VehicleStateEvent` | What a vehicle is doing changed — set off, stopped, took off, went under. The same set that drives its animation, on the change rather than every tick. Not cancellable |
-| `ModelBindEvent` | A model is going on an entity, or coming off one — a MythicMobs boss, an NPC, anything that is not ours |
-| `EntityDeathEvent` | A custom entity died. Bukkit's own event carries the drops; this one says what it was. Not cancellable |
-| `PlayerLiquidEvent` | Somebody went into one of your liquids, or came out of one. Fires on the crossing, not every second. Not cancellable |
+| `ModelAnimationEndEvent` | One ended: finished, replaced or stopped. Not cancellable |
+| `ModelSeatEvent` | Somebody is about to sit on a chair, a seat bone or a vehicle seat |
+| `ModelBindEvent` | A model is going on, or coming off, an entity that isn't ours (a boss, an NPC) |
+| `VehicleEnterEvent` | Somebody is about to get into a vehicle. Fires after `ModelSeatEvent` for the same seat |
+| `VehicleExitEvent` | Somebody got out or was taken out, with the reason: dismounted, ejected, quit, reloaded, removed, unloaded, shutdown. After `RELOADED` they're put back a tick later with no enter event. Not cancellable |
+| `VehicleMoveEvent` | A vehicle is about to move (once per tick, only while moving). Cancelling stops it like a wall. Use it for regions, not fuel |
+| `VehicleStateEvent` | What a vehicle is doing changed: set off, stopped, took off, went under. Not cancellable |
+| `VehicleImpactEvent` | A vehicle hit another vehicle, the world, or the ground. See [Collisions and parts](#collisions-and-parts). Not cancellable |
+| `VehicleBailEvent` | A bad landing is about to throw a rider off. Cancelling keeps them aboard |
+| `EntityDeathEvent` | A custom entity died. Bukkit's event has the drops; this one says what it was. Not cancellable |
+| `PlayerLiquidEvent` | Somebody went into or came out of one of your liquids. Not cancellable |
 | `EmoteStartEvent` | An emote is about to start |
-| `EmoteEndEvent` | An emote ended. Carries why — finished, stopped, moved, damaged, quit, shutdown |
-| `EmoteRigSpawnEvent` | A rig's displays were spawned — it was put on, or a swap replaced its carried models. Carries the new entity ids, for re-mounting them. Not cancellable |
+| `EmoteEndEvent` | An emote ended, with the reason: finished, stopped, moved, damaged, quit, shutdown |
+| `EmoteRigSpawnEvent` | A rig's displays were spawned. Carries the new entity ids. Not cancellable |
+| `DialogSlotMoveEvent` | A player is about to move a stack in a dialog's item slots, from one slot (`inv/5`, `ender/3`, `api.bank/0`) to another |
 
 **The engine decides whether something can physically happen, never whether it
-is allowed to.** Region protection, plot ownership, an event world where
-nothing may be built: those are rules about your server, which the engine
-cannot see. That is what these events are for.
+is allowed to.** Region protection, plot ownership and event worlds are rules
+about your server, and these events are where you enforce them.
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -824,6 +1036,11 @@ public void onPlace(ModelPlaceEvent event) {
         event.setCancelled(true);
     }
 }
+
+@EventHandler
+public void onLoad(ContentLoadEvent event) {
+    menus.rebuild();
+}
 ```
 
 ```kotlin
@@ -833,20 +1050,7 @@ fun onPlace(event: ModelPlaceEvent) {
         event.isCancelled = true
     }
 }
-```
 
-</CodeTabs>
-
-<CodeTabs labels={["Java", "Kotlin"]}>
-
-```java
-@EventHandler
-public void onLoad(ContentLoadEvent event) {
-    menus.rebuild();
-}
-```
-
-```kotlin
 @EventHandler
 fun onLoad(event: ContentLoadEvent) {
     menus.rebuild()
@@ -855,35 +1059,70 @@ fun onLoad(event: ContentLoadEvent) {
 
 </CodeTabs>
 
-Everything the API can answer is answerable by then, on a reload as much as at
-startup — so anything your plugin cached and derived from content is rebuilt
-here.
-
-<Callout type="warning" title="A plugin loading after RP Engine misses the first one">
-  `STARTUP` has been and gone before your listener exists. Do not work around
-  that with a delayed task: ask the API directly in your own `onEnable`, and
-  use the event for every reload after it.
+<Callout type="warning" title="A plugin loading after RP Engine misses the first load">
+  The `STARTUP` event has already fired before your listener exists. Don't work
+  around it with a delayed task: query the API in your own `onEnable`, and use
+  the event for reloads after that.
 </Callout>
 
 ### Priority
 
-Every one of these is read **after all handlers have run** — the engine calls
-the event, then asks whether anything cancelled it. So priority does not order
-you against the engine, only against other plugins listening to the same event.
-Listen at `NORMAL` unless you are deliberately arbitrating with another plugin,
-and treat `MONITOR` as read-only: a cancel there still counts, which makes it a
-cancel nobody downstream can see coming.
+The engine reads every one of these events after all handlers have run, so
+priority only orders you against other plugins. Listen at `NORMAL` unless you
+are deliberately arbitrating with another plugin, and treat `MONITOR` as
+read-only (a cancel there still counts).
 
-Where priority does matter is vanilla's own events. The engine listens to those
-at `LOW` with `ignoreCancelled = true`, so a plugin that cancels a
-`PlayerInteractEvent` at `LOWEST` stops a custom item's use before RP Engine
-ever sees the click — which is usually exactly what a protection plugin wants.
+Vanilla's own events are different. The engine listens to those at `LOW` with
+`ignoreCancelled = true`, so cancelling a `PlayerInteractEvent` at `LOWEST`
+stops a custom item's use before RP Engine sees the click, which is usually
+what a protection plugin wants.
+
+## Shipping content in your own jar
+
+An addon carries its models, items, vehicles and emotes as an ordinary
+[content folder](/rp-engine/content) inside its jar, under
+`resources/content/<namespace>/`, and installs it on enable:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+try {
+    if (AddonContent.install(this, engine, "skateboards")) {
+        engine.reload();   // only when something actually changed
+    }
+} catch (IOException e) {
+    getLogger().severe("Could not install content: " + e.getMessage());
+    getServer().getPluginManager().disablePlugin(this);
+}
+```
+
+```kotlin
+try {
+    if (AddonContent.install(this, engine, "skateboards")) {
+        engine.reload()    // only when something actually changed
+    }
+} catch (e: IOException) {
+    logger.severe("Could not install content: ${e.message}")
+    server.pluginManager.disablePlugin(this)
+}
+```
+
+</CodeTabs>
+
+It copies into `plugins/RPEngine/content/<namespace>/` and returns true only
+when something changed, so restarting on the same jar copies and reloads
+nothing. A reload rebuilds and resends every pack, so don't call it otherwise.
+
+A new build updates its own files and leaves everything else alone. If the
+server owner edited one of your shipped files, that edit survives the update:
+the console names the file and says to delete it to take the new version. Use
+your plugin's name as the namespace, and put RP Engine in `depend`.
 
 ## Registering content from code
 
-A plugin can add content of its own rather than shipping a folder. Claim a
-namespace, register against the handle you get back, and the pack builder picks
-it up on the next build.
+A plugin can add content directly instead of shipping a folder. Claim a
+namespace, define into the handle you get back, and the pack builder picks it
+up on the next build.
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -893,7 +1132,7 @@ ClaimResult claim = engine.registration()
 
 claim.namespace().ifPresent(ns -> {
     ns.define(ContentKind.ITEM, "ruby");
-    // ... and release() it when your plugin disables
+    // ... and ns.release() when your plugin disables
 });
 ```
 
@@ -903,24 +1142,20 @@ val claim = engine.registration()
 
 claim.namespace().ifPresent { ns ->
     ns.define(ContentKind.ITEM, "ruby")
-    // ... and release() it when your plugin disables
+    // ... and ns.release() when your plugin disables
 }
 ```
 
 </CodeTabs>
 
-The handle is what proves ownership: a plugin holding `myplugin` cannot define
-`otherpack:thing` by accident or on purpose, so two sources loading at once
-cannot corrupt each other's half of the ID space. `release()` drops the
-namespace and everything in it, which is also the only reload granularity there
-is — a namespace is replaced whole or not at all.
-
-Content from a plugin is not a second-class source. It lands in the same
-registry, under the same ID rules, and the pack builder cannot tell it from a
-hand-written folder.
+If the claim fails, `reason()` says why and `heldBy()` who has it. Holding
+`myplugin` can't define `otherpack:thing`, so two sources can't overwrite each
+other. `release()` drops the namespace and everything in it. Content from a
+plugin goes into the same registry under the same rules as a hand-written
+folder.
 
 ## Threading
 
-Reads that ask what the server **holds** — `ids`, `info`, the whole of
-`ContentRegistry` — are safe from any thread. Anything touching a player, an
-entity or a world is main thread only, and says so on the method.
+Reads about what the server holds (`ids`, `info`, all of `ContentRegistry`)
+are safe from any thread. Anything touching a player, an entity or a world is
+main thread only, and its javadoc says so.

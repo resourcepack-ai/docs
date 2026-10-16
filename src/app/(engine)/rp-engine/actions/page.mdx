@@ -1,10 +1,14 @@
 export const metadata = {
   title: "Making items do things",
   description:
-    "Triggers and a closed list of verbs — messages, sounds, effects, commands and cooldowns — with an event for everything else.",
+    "Triggers and a closed list of steps (messages, sounds, effects, commands, cooldowns, dialogs) with an event for everything else.",
 };
 
 # Making items do things
+
+`actions:` makes an item do something when it is used: play a sound, send a
+message, give an effect, run a command. You pick a trigger (such as a
+right-click) and list the steps to run, in order.
 
 ```yaml
 wand:
@@ -19,14 +23,11 @@ wand:
       - console: "effect give {player} minecraft:levitation 3"
 ```
 
-A trigger holds a **list of steps**, run in order. Each step is one key, so it
-needs its own `-`.
+Each step is one key with its own `-`.
 
-<Callout type="warning" title="The mistake that costs an afternoon">
-  Two keys in one list entry is a missing dash. YAML is perfectly happy with
-  it, and the second verb silently never runs. RP Engine refuses a step with
-  two keys and names both of them at load, because in game the symptom is
-  identical to the feature not working.
+<Callout type="warning" title="One key per dash">
+  Two keys in one list entry means a dash is missing. YAML accepts it, so RP
+  Engine reports it as a load error naming both keys, and that step is skipped.
 </Callout>
 
 ## Triggers
@@ -46,15 +47,15 @@ needs its own `-`.
 | `interact` | Right-clicked where it stands, as a placed model or a custom block |
 | `remove` | Punched out or mined by a player, as a placed model or a custom block |
 
-`break` fires after the item is already gone and cannot be cancelled — that is
-vanilla's shape, not ours. It is still worth having for the sound and the
-message.
+`break` runs after the item is already gone, so it cannot be cancelled. It is
+still useful for a sound or a message.
+
+There is no trigger for putting armour on or taking it off.
 
 ## The thing in the world
 
-The last three are about the piece standing in the world rather than the stack
-in somebody's hand, which is what a furniture click command is in every other
-content plugin:
+`place`, `interact` and `remove` are about a placed model or custom block
+standing in the world, rather than the item in someone's hand. A doorbell:
 
 ```yaml
 doorbell:
@@ -68,16 +69,15 @@ doorbell:
       - console: "say {player} is at the door"
 ```
 
-A custom block takes the same `actions:` in its own definition, since its id is
-the item that places it. On `interact`, `cancel` stops what the click would
-otherwise do: a seat is not sat on, and nothing is placed against the block.
-`place` and `remove` run once it is down or gone and cannot be cancelled. A
-`take` in any of the three does nothing, because the click is on the piece and
-not on whatever the player is holding. Written on an item with no `place:`
-block, they are a load warning, since they can never fire.
-
-There is deliberately no `wear`/`unwear`: Spigot has no equip event, and the
-alternatives are a Paper dependency or polling everybody's armour every tick.
+- A custom block takes the same `actions:` in its own definition.
+- On `interact`, `cancel` stops what the click would otherwise do: nobody sits,
+  nothing opens, and nothing is placed against the block.
+- `place` and `remove` run once the piece is down or gone, so they cannot be
+  cancelled.
+- `take` does nothing in these three, because the click is on the piece, not
+  the item in the player's hand.
+- On an item with no `place:` block, these triggers are a load warning, since
+  they can never fire.
 
 ## Steps
 
@@ -87,66 +87,56 @@ alternatives are a Paper dependency or polling everybody's armour every tick.
 | `broadcast` | The same, to everybody |
 | `actionbar` | A line above their hotbar |
 | `console` | Runs a command as the console |
-| `run` | Runs a command as the user, with their own permissions |
-| `sound` | `mypack:chime`, or a vanilla key. Optional volume and pitch |
-| `effect` | `SPEED 10 2` — type, seconds, level. Level is 1-based |
-| `particle` | `flame 12 0.3` — type, count, spread. At the block or piece the action is about, or at the user for a held item |
+| `run` | Runs a command as the player, with their own permissions |
+| `sound` | `mypack:chime`, or a vanilla key like `minecraft:block.anvil.land`. Optional volume and pitch after it |
+| `effect` | `SPEED 10 2`: type, seconds, level. Level 1 is the first level |
+| `particle` | `flame 12 0.3`: type, count, spread. See below |
 | `give` | `mypack:ruby 3`. What will not fit drops on the floor |
 | `take` | Takes this many off the stack |
-| `cancel` | Cancels the vanilla use of the item |
-| `cooldown` | Seconds. **Stops the run** if it has not been that long |
-| `permission` | Stops the run unless they have it |
+| `cancel` | Cancels the item's vanilla use |
+| `cooldown` | Seconds. **Stops the rest of the list** if it has not been that long |
+| `permission` | Stops the rest of the list unless the player has this permission |
+| `dialog` | `mypack:menu`, then any `name=value` pairs. Opens a [dialog](/dialogs) for the player. Needs Minecraft 1.21.6 |
 
-**`console` and `run` are different on purpose.** `console` is how an action
-reaches something the player may not do themselves; `run` is how it does
-something *as* them, with their permissions checked.
+**`console` or `run`.** `console` can do things the player is not allowed to do
+themselves. `run` acts as the player and checks their permissions.
 
-**`cooldown` stops the rest of the list**, so put a `message` before it and the
-refusal says something:
+**`cooldown` stops the list**, so put a `message` before it if you want the
+refusal to say something:
 
 ```yaml
     right_click:
-      - message: "&7You steady yourself…"
+      - message: "&7You steady yourself..."
       - cooldown: 30
       - message: "&bAgain!"
 ```
 
-**`cancel` is what stops the vanilla use.** A wand built on a bucket fills with
-water without it.
+**`cancel` stops the vanilla use.** Without it, a wand built on a bucket still
+fills with water.
 
-**`particle` takes the game's own names**, `flame` or `happy_villager`, and
-the older spellings from before Minecraft 1.20.5 renamed most of them work too,
-on either side of that change. Count defaults to 8 and spread to 0.3 blocks. A
-particle that needs something more (a colour, a block to be made of) draws
-nothing.
+**`particle`** takes the game's own names, such as `flame` or
+`happy_villager`; names from before Minecraft 1.20.5 renamed them work too.
+Count defaults to 8 (up to 200) and spread to 0.3 blocks. Particles appear at
+the block or piece the action is about, or at the player for a held item. A
+particle that needs extra data, such as a colour or a block, draws nothing.
 
-A step that cannot run is skipped and the rest still run — a misspelled potion
-costs that line, not the command after it.
+A step that cannot run is skipped and the rest still run, so a misspelled
+potion costs only that line.
 
 ## Text
 
-Anything you write can carry `{player}`, `{uuid}`, `{world}`, `{x}`, `{y}`,
-`{z}`, and any PlaceholderAPI placeholder if that plugin is installed.
+Any text can include `{player}`, `{uuid}`, `{world}`, `{x}`, `{y}`, `{z}`, and
+any [PlaceholderAPI](/rp-engine/placeholderapi) placeholder if that plugin is
+installed.
 
 ```yaml
       - broadcast: "&e{player} found the shrine at {x} {y} {z}"
 ```
 
-## Where this stops
+## Going further
 
-<Callout type="note" title="This is not scripting and will not become it">
-  There is no branching, no state and no expressions here. The moment there is
-  an `if` it is a programming language, and one nobody chose to design — you
-  would be writing code in YAML, without a debugger, in a plugin that is not a
-  scripting engine.
-
-  Anything past these verbs is a plugin's job, and
-  [`ItemUseEvent`](/rp-engine/api) is what it listens to: the ID, the stack,
-  the click and the block. Cancel that event and the vanilla use is cancelled
-  too — **and the item's own actions do not run either**, because the event is
-  the stronger statement of the two.
-</Callout>
-
-There is also no `gun`, `vehicle` or `music_disc` here, for the same reason.
-Those are whole games rather than item properties, and a half-opinionated gun
-is something every server then has to fight.
+Actions have no conditions, variables or branching, and that is deliberate.
+For anything more, write a small plugin that listens for
+[`ItemUseEvent`](/rp-engine/api), which carries the item ID, the stack, the
+click and the block. Cancelling that event cancels the vanilla use and stops
+the item's own actions running.

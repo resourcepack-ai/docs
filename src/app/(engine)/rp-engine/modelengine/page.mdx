@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Moving from Model Engine",
   description:
-    "Drop a folder of Model Engine blueprints into RP Engine and they load — the bone names already mean the same thing.",
+    "Drop a folder of Model Engine blueprints into RP Engine and they load, with the bone names meaning what they meant there.",
 };
 
 # Moving from Model Engine
@@ -34,29 +34,27 @@ the ID, the same rule as every other category: `bosses/dragon.bbmodel` is
 `mypack:dragon`. Uppercase or spaces in a file name are refused rather than
 folded, and the load says which file.
 
-## Why there is nothing to convert
+## Nothing to convert
 
-Model Engine's content format *is* the `.bbmodel` files: the save file carries
-the geometry, the bones and the animations, and there is no YAML beside it to
-translate. RP Engine reads Blockbench projects directly for the same reason, so
-a blueprint is already in a format it understands.
+A Model Engine blueprint is a Blockbench `.bbmodel` file, holding the geometry,
+bones and animations, and RP Engine reads `.bbmodel` files directly.
 
-**The bone names already mean the same thing**, because they are Model Engine's
-names, adopted deliberately so a rig you already have — or bought — works here
-without being re-authored:
+**The bone names mean the same thing**, because RP Engine uses Model Engine's
+naming. A rig you made or bought works without being re-authored:
 
 | Bone | What it does |
 |---|---|
 | `h_head` | Turns to look at whatever its mob is targeting |
 | `hi_head` | The same, and every bone under it inherits it |
-| `b_wing` | A [sub-hitbox](/rp-engine/bones) — the mob is hit on the wing you aimed at |
+| `b_wing` | A [sub-hitbox](/rp-engine/bones): the mob is hit on the wing you aimed at |
 | `ob_wing` | The same, turning with the bone |
 | `p_seat1` | Somewhere to sit |
 | `mount` | Where the driver sits |
 | `tag_name` | Where a name floats |
 
 Animations come across too: a looping animation loops, and a one-shot plays
-when the piece is right-clicked. What each one is called is what
+when the placed piece is right-clicked. Blockbench's loop, hold and once
+settings are kept as authored. What each one is called is what
 [`/rp` and the API](/rp-engine/playback) play it by.
 
 ## What is different
@@ -66,20 +64,18 @@ own right, spawned with `/meg`; in RP Engine every model belongs to an
 [item](/rp-engine/items), which is what makes one ID work as a thing you hold,
 a thing you [place](/rp-engine/models) and a thing a
 [mob wears](/rp-engine/mobs). Dropping a blueprints folder in creates that item
-for you — a plain one, on paper. Write your own under the same ID in `items/`
+for you: a plain one, on paper. Write your own under the same ID in `items/`
 if you want more than that, and yours wins; the load still mentions the clash,
 so a blueprint shadowed by accident does not go unnoticed.
 
 **MythicMobs mechanics have different names.** Theirs are `model`, `state` and
-`unmodel`; ours are `rpmodel`, `rpanimate` and `rpunmodel` — see
-[MythicMobs](/rp-engine/mythicmobs). Deliberately different, so a server can
-run both plugins while it moves over, rather than having two plugins fight for
-one mechanic name.
+`unmodel`; RP Engine's are `rpmodel`, `rpanimate` and `rpunmodel` (see
+[MythicMobs](/rp-engine/mythicmobs)). Because the names differ, a server can
+run both plugins while it moves over.
 
 <Callout type="note" title="What a .bbmodel cannot carry">
-  Meshes — convert them to cubes in Blockbench first — and rotations beyond one
-  axis at one of -45, -22.5, 0, 22.5 or 45 degrees. Both are limits of the
-  Minecraft model format rather than of the reader, and Model Engine works
-  around them with its own renderer. A rig built for that renderer may need
-  simplifying.
+  Meshes are dropped (convert them to cubes in Blockbench first), and a cube's
+  rotation is snapped to one axis at -45, -22.5, 0, 22.5 or 45 degrees. Both
+  are limits of Minecraft's model format, which Model Engine works around with
+  its own renderer, so a rig built for that renderer may need simplifying.
 </Callout>

@@ -6,107 +6,102 @@ export const metadata = {
 
 # Items
 
-An item is a **flat sprite**: the picture Minecraft draws in a hand, a hotbar
-slot, an inventory and an item frame. It's the same pixel art as a block
-texture, aimed at a different surface.
+An item sprite is the flat picture Minecraft draws for an item: in your hand,
+in the hotbar, in an inventory and in an item frame. It's pixel art, like a
+block texture, drawn for a different place.
 
-<Callout type="note" title="3D items are models">
-  If you want something with depth, that's a [model](/models) on the paper
-  carrier, not an item. Choosing **3D** in the Add asset sheet takes you to the
-  model editor instead, and the sprite you see in the grid afterwards is that
-  model's icon.
+<Callout type="note" title="Want depth? Pick 3D">
+  Choosing **3D** under **Shape** makes a [model](/models) instead of a sprite,
+  and opens the model editor. See [Models](/models).
 </Callout>
 
-## Three kinds, and the choice matters
+## Three kinds
 
-Minecraft has no "add an item" for Resource Packs, so every sprite attaches to
-an item the game already has. How it attaches decides who sees it:
+A resource pack can't add a brand new item to the game, so every sprite is
+attached to an item that already exists. How it's attached decides who sees it:
 
-| Kind | What it changes | Cost |
+| Kind | What changes | Trade-off |
 | --- | --- | --- |
-| **Reskin** | Every copy of that vanilla item, for anyone with the pack | The vanilla item is gone. One reskin per item, per pack |
-| **Variant** | Only items handed out with this variant's tag. Plain ones keep their normal look | Needs Minecraft 1.21.4+, and a command to hand one out |
-| **Custom item** | Nothing vanilla. A new-looking item that rides on paper | Needs the give command, like any carried model |
+| **Reskin** (Applies to: **Base Item**) | Every copy of that vanilla item, for everyone with the pack | The vanilla look is gone. One reskin per item, per pack |
+| **Variant** (Applies to: **Custom**) | Only copies handed out with this variant's tag. Ordinary ones look normal | Needs Minecraft 1.21.4 or newer, and a command to hand one out |
+| **Custom item** (item: **Custom**) | Nothing vanilla. A new-looking item carried on paper | Needs a give command, like any carried model |
 
-A reskin is the right call for a texture pack: you want every iron sword in the
-world to look like yours. A variant is the right call for a server: you want
-*your* quest item to look special and everyone else's paper to stay paper.
+Use a reskin for a texture pack: every iron sword in the world looks like
+yours. Use a variant or a custom item on a server: your quest item looks
+special and everyone else's sword stays a sword.
 
-<Callout type="warning" title="A reskin replaces, it doesn't add">
-  Reskinning `bread` means the pack has no ordinary bread left in it. That's
-  Minecraft's model, not ours. If you need both, use a variant.
-</Callout>
+The "tag" a variant uses is **custom_model_data**, a value stored on an item
+stack that the pack reads to decide which picture to draw. Studio sets it up
+for you and puts it in the give command.
 
 ## Making one
 
-Describe it and generate it, the same box every other asset starts in:
+Open a pack, press **Add asset** and pick **Item**. Choose the **Item to
+reskin** (or **Custom** for a custom item), then how it **Applies to**, and
+keep **Shape** on **2D**.
 
-> a rune-etched iron key, cold blue glow along the teeth
+Then either:
 
-Pick the vanilla item it attaches to, or leave it custom. Sprites are 16×16 by
-default, which is what vanilla is, and can go up to 256 for a higher-resolution
-pack. You can also upload art you already have, or start from a blank grid and
-draw the whole thing.
+- **Generate**: describe it, for example "a rune-etched iron key, cold blue
+  glow along the teeth". See [Generating with AI](/generating).
+- **Blank**: draw it yourself in the pixel editor.
+- **Upload**: bring a PNG you already have.
 
-See [Generating with AI](/generating) for what makes a prompt land.
+| Size | Notes |
+| --- | --- |
+| **16×16** | Vanilla's resolution |
+| **32×32** | The default for a generated sprite |
+| **64×64** | Higher-resolution packs |
+| **Custom** | 16 to 128 when generating, up to 256 when drawing from blank |
+
+On the item's page, **Regenerate** tries the same prompt again and **Edit with
+AI** changes one thing about the sprite you have, which is usually what you
+want when only a detail is wrong.
 
 ## In the editor
 
-Item sprites open in the same [pixel editor](/blocks) as blocks, with the
-same tools, layers and palette. Two habits worth having:
+Sprites open in the same [pixel editor](/blocks#the-pixel-editor) as blocks,
+with the same tools and layers. Two habits help:
 
-- **Keep the outline dark and unbroken.** An item is seen at 16 pixels against
-  a bright inventory background and a dark hotbar, and the outline is what
-  stops it dissolving into either.
-- **Leave the outer row alone where you can.** Items are drawn small and
-  overlapping stack numbers; art that runs to the very edge of the frame reads
-  as clipped.
-
-**Edit with AI** takes the sprite you have and a sentence about what to change,
-rather than starting over, which is usually what you want after one detail is
-wrong.
+- **Keep the outline dark and unbroken.** An item is seen small, against both
+  a light inventory and a dark hotbar, and the outline stops it disappearing
+  into either.
+- **Leave a little room at the edges.** The stack count is drawn over the
+  bottom-right corner, and art that runs to the very edge looks clipped.
 
 ## Seeing it in game
 
-Sync the pack to a linked player and the sprite is live. For a variant or a
-custom item there's also a give command on the item's page, and an **in-game**
-button beside it that hands you the item in game without you copying
-anything:
+[Sync](/testing/plugin) the pack to a linked player and the sprite is live. A
+reskin needs nothing else: every copy of that item already shows it.
+
+For a variant or a custom item, the item's page has the give command and a
+**Give in-game** button that hands you one directly. A variant's command looks
+like this:
 
 ```
 /give @p iron_sword[minecraft:custom_model_data={strings:["quest_blade"]},minecraft:item_name="Quest Blade"]
 ```
 
-A reskin needs no command at all. It's already on every copy of that item.
-
-See [Our test server](/testing/test-server) for the push itself.
-
 ## Exporting
 
-In the exported `.zip`, a sprite is a plain PNG at
-`assets/minecraft/textures/item/<name>.png`, which is exactly where vanilla
-looks for it. That's the whole mechanism for a reskin: no JSON, no command, no
-plugin. Drop the pack in `resourcepacks` and the item looks different.
+In the exported `.zip`, a sprite is a PNG at
+`assets/minecraft/textures/item/<name>.png`, which is where vanilla looks. For
+a reskin that's all there is.
 
 Variants and custom items also get an item definition under
-`assets/minecraft/items/`, which is what maps the tag on a given item to the
-sprite. Those two need the pack **and** the command; the sprite alone changes
-nothing until something hands out a tagged item.
+`assets/minecraft/items/`, which maps the custom_model_data tag to the sprite.
+They need the pack **and** a command: the sprite alone changes nothing until
+something hands out a tagged item.
 
-<Callout type="note" title="The item folder is not the block folder">
-  `textures/item/` and `textures/block/` are different directories to the game,
-  and a sprite filed in the wrong one silently does nothing at all: no error,
-  no checkerboard, just an unchanged item. Studio files them for you; it's
-  worth knowing if you're hand-editing an exported pack.
+<Callout type="note" title="If you edit an exported pack by hand">
+  `textures/item/` and `textures/block/` are different folders to the game. A
+  sprite in the wrong one does nothing at all, with no error. Studio files them
+  correctly for you.
 </Callout>
 
 ## On Bedrock
 
-Sprites convert. Each one lands in the `.mcpack` under the name Bedrock uses
-for that item, so a reskin works on Bedrock the same way it does on Java. Most
-names are the same in both editions; where they differ (`golden_apple` is
-`apple_golden` on Bedrock, `wooden_sword` is `wood_sword`) the export renames
-it for you.
-
-Variants don't: the tag mechanism is Java's, and Bedrock has no equivalent to
-dispatch on. A custom item's sprite comes across as its model's icon.
+Reskins carry over to the Bedrock `.mcpack`, renamed where Bedrock uses a
+different name (`golden_apple` is `apple_golden`, `wooden_sword` is
+`wood_sword`). Variants don't: custom_model_data is Java-only. A custom item
+comes across as its model's icon.

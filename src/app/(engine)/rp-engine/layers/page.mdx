@@ -6,7 +6,13 @@ export const metadata = {
 
 # Layers and masks
 
+A layer lets one animation play on top of another, such as a wave over a walk.
+A mask limits an animation to part of a model, such as the upper body. Both
+are set per animation in the item's `place:` block, next to the
+[playback settings](/rp-engine/playback):
+
 ```yaml
+  place:
     animations:
       walk:  { mode: loop, layer: 0 }
       wave:  { mode: once, layer: 1, bones: [torso], blend: 0.2 }
@@ -14,48 +20,30 @@ export const metadata = {
 
 ## Layers
 
-**Layer 0 is the base** — a walk cycle, an idle — and only one plays at a time.
-Anything above it composes **on top**, so a wave on layer 1 plays over whichever
-gait is running rather than replacing it.
+`layer: 0` is the base: a walk cycle or an idle. Only one base animation plays
+at a time, and starting another replaces it.
 
-One animation per layer, which is what a layer is: waving twice replaces the
-first wave and leaves the walk alone.
+Anything on layer 1 or higher plays on top of whatever is running, so a wave on
+layer 1 plays over the walk rather than replacing it. Each layer holds one
+animation, so waving again replaces the first wave and leaves the walk alone.
 
-Nothing needs to know about this to use it. `/rp` and the API play an animation
-by name, and an animation that names a layer goes on that layer — because
-whether something plays *over* or *instead* is a property of the animation, not
-of the call.
+Plugins and commands play an animation by name; the layer comes from these
+settings, so nothing that plays it needs to know about layers.
 
 ## Masks
 
-**`bones:`** is what makes a layer partial.
+`bones:` limits the animation to the bones you name and everything attached
+under them. `bones: [torso]` moves the torso and the arms and head hanging off
+it, which is what "upper body only" usually means. Name the parent bone rather
+than listing every limb. Bone names are whatever you called them in
+Blockbench.
 
-```yaml
-      wave: { layer: 1, bones: [torso] }
-```
-
-Naming a bone reaches **everything hanging off it**, so `bones: [torso]` moves
-the arms with it — which is what "upper body only" means in practice, and why
-you name the parent rather than listing every limb.
-
-A model's bone names are whatever you called them in Blockbench.
+A bone is either in the mask or not. There is no partial strength per bone; if
+you need the shoulder at half strength and the hand at full, author that into
+the animation itself.
 
 ## Weight
 
-**`weight:`** scales how far the layer moves what it touches, from 0 to 1. Half
-a wave is a smaller wave.
-
-It applies to the animation's values rather than to the finished pose: rotation
-and position are scaled toward zero, and scale toward **1**, because 1 is what
-"no scaling" is — half of a bone scaled to 2 is 1.5, not 1.
-
-## What this does not do
-
-<Callout type="note" title="A layer is all-or-nothing per bone">
-  A bone is either in the mask or it is not. There is no per-bone weight curve,
-  no falloff from the masked bone outward, and no way to say "the shoulder at
-  half strength and the hand at full".
-
-  If you need that, the honest answer today is two animations authored the way
-  you want them, rather than one the engine is asked to blend cleverly.
-</Callout>
+`weight:` (0 to 1) scales how far the animation moves what it touches. Half a
+wave is a smaller wave. Rotation and position are scaled toward zero and scale
+toward 1, so a bone scaled to 2 at half weight ends up at 1.5.

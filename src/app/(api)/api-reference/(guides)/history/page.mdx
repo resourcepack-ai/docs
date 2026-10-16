@@ -5,30 +5,30 @@ export const metadata = {
 
 # Key history
 
-Every key keeps a record of what it did. Press **History** on a key at
-[studio.resourcepack.ai/developers](https://studio.resourcepack.ai/developers) to see
-it: each generation, pack creation and export, with what it cost.
+Every key keeps a record of the work it did. On
+[studio.resourcepack.ai/developers](https://studio.resourcepack.ai/developers),
+press **History** on a key to see each action with its pack, asset and cost.
+The button appears once the key has done something.
 
 | Recorded | Not recorded |
 | --- | --- |
 | Generating anything | Polling a job |
-| Creating a pack | Listing packs or assets |
-| Exporting a pack | Downloading an asset file |
+| Uploading an asset | Listing packs or assets |
+| Creating a pack | Downloading an asset file |
+| Importing a pack | |
+| Exporting a pack | |
 
-The split is on purpose. You're told to poll every couple of seconds and a model
-takes minutes, so logging every request would bury the four lines that matter
-under a hundred saying "still generating".
+Reads aren't recorded because a polling loop would bury the few lines that
+matter under hundreds of "still generating" checks.
 
-Credits are the amount **actually settled**, not what was reserved up front — so
-a generation that failed and refunded shows no cost at all, and a long model run
-shows its real price once it lands.
+The cost shown is what was **actually charged**, not what was reserved up
+front. A generation that failed and was refunded, one covered by your own BYOK
+key, and a free action all show no cost.
 
-Revoking a key keeps its history. That's the point: the question after a leak is
-what the key did.
+Revoking a key keeps its history.
 
 <Callout type="warning" title="If a key leaks">
-  Revoke it immediately from the Developers page — a revoked key stops
-  authenticating on the next request. Then read its history to see what it did
-  while it was out. Creating a replacement is a separate action; keys can't mint
-  other keys, so a leaked key can't extend its own life.
+  Revoke it from the Developers page. A revoked key stops working on the next
+  request. Then read its history to see what it did while it was out. Keys
+  can't create other keys, so a leaked key can't extend its own life.
 </Callout>

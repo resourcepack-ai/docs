@@ -8,24 +8,23 @@ export const metadata = {
 
 RP Engine runs on **Paper or Spigot 1.19.4 or newer**, on Java 17 or newer.
 
-Everything works on a current server. On an older one, most of the plugin works
-exactly the same and a few things are reduced — never silently. The plugin
-checks your server's version at startup and prints what it cannot do and what
-you get instead, so you never have to work out from the docs whether a feature
-reached you.
+Everything works on a current server. On an older one most of the plugin works
+the same and a few things are reduced. At startup the plugin checks your
+server's version and prints what it cannot do and what you get instead.
+
+Older than 1.19.4 is not supported at all: the plugin refuses to start,
+because placed models are display entities, which do not exist before 1.19.4.
 
 <Callout type="note" title="If you can choose, choose 1.20.3 or newer">
-  1.19.4 is supported because that is where the entities placed models are made
-  of arrived. But the two losses you would most notice — stacked bundles, and
-  models that glide when they move — both sit just below 1.20.3, so those four
-  versions buy back more than any other four.
+  The two losses you would notice most, stacked bundles and models that glide
+  when they move, are both below 1.20.3. For dialogs, choose 1.21.6 or newer.
 </Callout>
 
 ## What always works
 
 These do not change with your version at all:
 
-- **Custom items** — their models, textures, names, lore, permissions and actions
+- **Custom items**: their models, textures, names, lore, permissions and actions
 - **Custom blocks**, including hardness and the right tool
 - **Models** you place, sit on, animate and bind to entities
 - **Emotes**, including worn sets and held items
@@ -40,19 +39,17 @@ These do not change with your version at all:
 |---|---|---|
 | Stacking several packs on a player | 1.20.3 | One pack at a time; a player due more than one bundle gets only the last. A server using a single bundle is unaffected. |
 | Smithing templates and armour trims | 1.20 | Smithing recipes use the old two-slot table, so their template is not asked for, and trim recipes do nothing. |
-| Models that glide when they move | 1.20.2 | A model that moves — a walking emote, a bound model following its entity — jumps between positions instead of gliding. Models that stay put are identical. |
+| Models that glide when they move | 1.20.2 | A model that moves (a walking emote, a bound model following its entity) jumps between positions instead of gliding. Models that stay put are identical. |
 | Per-item stack size, food and durability | 1.20.5 | Those options are reported at load and not applied. The item is otherwise itself. |
 | Any item wearable as armour | 1.21.2 | Only materials that are already armour can be worn. |
 | Per-item armour artwork | 1.21.4 | Worn armour draws with vanilla artwork. |
-| Item models addressed by name | 1.21.4 | Items are addressed by an allocated number instead — see below. |
+| Item models addressed by name | 1.21.4 | Items are addressed by an allocated number instead. See below. |
 | Tinted water and lava | 1.21.6 | Liquids keep their vanilla colour. Everything else about a custom liquid works. |
 | Dialogs | 1.21.6 | Dialogs do not open: the game has no dialog screen before this. A [screen](/rp-engine/screens) is the older way to do the same job, and works everywhere. |
 | Player heads in dialogs | 1.21.9 | A Studio dialog's live player head is left empty. The rest of the dialog, its live words included, works as usual. |
-| Reading a driver's movement keys | Paper 1.21.4 | Vehicles are driven with the mouse: look where you want to go, right-click to speed up a notch, left-click to slow down or reverse. Steering follows your look on every version, so a vehicle handles the same — only the throttle differs. Needs Paper; a Spigot server gets this on any version. |
+| Driving vehicles with the movement keys | Paper 1.21.4 | Vehicles are driven with the mouse: the vehicle steers toward where you look, right-click speeds up a notch, left-click slows down or reverses. The driver cannot look around while driving. Spigot always gets these mouse controls, whatever its version. |
 
 ## Below 1.21.4, items are numbered
-
-This is the one difference worth understanding rather than just reading.
 
 From 1.21.4 an item's model is chosen by its **id**: `mypack:ruby` is written
 straight onto the item, and the pack has a file at that path. Nothing is
@@ -73,14 +70,15 @@ things follow:
 - **Your base item's own look can change.** Below 1.21.4 a custom model is a
   predicate inside the base material's own model file, which replaces vanilla's
   copy of it. RP Engine reproduces vanilla for the ordinary cases, but a few
-  items — a bow, a compass, a crossbow, a shulker box — have models it cannot
+  items (a bow, a compass, a crossbow, a shulker box) have models it cannot
   reconstruct. Build a custom item on one of those and the build warns you: the
   item works, but plain bows may look wrong for everybody on the server. Use a
   simpler material like `PAPER` or `STICK`, or run 1.21.4.
 
 ## The pack format
 
-You do not set it. RP Engine reads your server's version and writes the right
+The pack format is the number in a resource pack that tells the client which
+Minecraft version it was made for. You do not set it. RP Engine reads your server's version and writes the right
 `pack_format` into the built pack.
 
 `config.yml` still has a `pack.format` key, commented out. It exists for one
@@ -90,12 +88,11 @@ it, update the plugin, then remove it again.
 
 ## What the plugin tells you
 
-On a current server, nothing — a plugin that prints a paragraph every start
-teaches you to skip its output. On an older one, it names each reduced feature,
-the version it would need, and what you get instead:
+On a current server, nothing. On an older one, it names each reduced feature,
+the version it needs, and what you get instead:
 
 ```
-[RPEngine] Running on Minecraft 1.20.1, so 7 features are reduced:
+[RPEngine] Running on Minecraft 1.20.1, so 10 features are reduced:
 [RPEngine]   - Multiple resource packs per player (needs 1.20.3). Players hold one
              pack at a time, so a player due more than one bundle gets only the last
              of them and the rest do not arrive. Swapping bundles still works and
@@ -105,13 +102,14 @@ the version it would need, and what you get instead:
              addressed by an allocated number instead. The engine keeps that
              allocation itself, but two packs built by different people can no
              longer be installed side by side without it.
-[RPEngine]   - Models that glide when they move (needs 1.20.2). A model that moves
-             jumps between positions about five times a second instead of gliding.
-             Models that stay put look exactly the same.
+[RPEngine]   - Per-item stack size, food and durability (needs 1.20.5). ...
+...
 ```
 
-On 1.21.4 it is one line, about tinted liquids. On 1.21.6 and up it says
-nothing at all.
+On 1.21.4 and 1.21.5 it lists three (tinted liquids, dialogs, player heads in
+dialogs). On 1.21.6 to 1.21.8 it lists one, player heads in dialogs. On 1.21.9
+and newer it says nothing. Vehicle controls on Spigot are not listed; the
+startup log and `/rp info` describe which controls vehicles use.
 
 Individual items say so too, naming the item and the option, so an option that
 could not be applied is never a mystery:
@@ -119,7 +117,8 @@ could not be applied is never a mystery:
 ```
 [RPEngine] mypack:ruby: max-stack needs Minecraft 1.20.5 and this server is
            older. An item's stack size, food values and durability are whatever
-           its base material's are.
+           its base material's are. Those options are reported as unsupported
+           at load rather than applied.
 ```
 
 ## Everything here is about your server's version

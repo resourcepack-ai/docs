@@ -29,7 +29,7 @@ temp-ban and ban, and every button does exactly what the matching command does.
     get it from [SpigotMC](https://www.spigotmc.org/resources/139570/), and put
     it in `plugins/`. Then start the server.
   </Step>
-  <Step title="That is it">
+  <Step title="Open the panel">
     Its screens install themselves into Dialog Engine on the first start, in
     `plugins/DialogEngine/drawn/punishments/`. Type `/punish` and a player's
     name.
@@ -92,8 +92,8 @@ vanilla and other plugins.
 
 ## Permissions
 
-Every node has its own command or option, so you can hand out exactly the ones
-a rank needs. All are op-only by default, except the last three.
+Every command and option has its own node, so you can hand out exactly the
+ones a rank needs. All are op-only by default, except the last two.
 
 | Node | Allows |
 |---|---|
@@ -109,7 +109,7 @@ a rank needs. All are op-only by default, except the last three.
 | `punishments.revoke` | `/punishments revoke`, and Revoke in the history |
 | `punishments.notify` | Hearing silent punishments and staff-only announcements |
 | `punishments.update` | Being told on joining that a newer version is out |
-| `punishments.staff` | All of the above |
+| `punishments.staff` | All of the above except `punishments.update` |
 | `punishments.admin` | `/punishments reload`, and everything in `punishments.staff` |
 | `punishments.exempt` | Cannot be punished by players. Off by default |
 | `punishments.limit.helper`, `.limit.moderator` | The caps under `limits:` in `config.yml`. Off by default |

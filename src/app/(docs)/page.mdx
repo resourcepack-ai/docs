@@ -1,111 +1,113 @@
 export const metadata = {
   title: "Introduction",
   description:
-    "What ResourcePack AI is, how the Studio, the test server and the plugin fit together, and where to start.",
+    "What ResourcePack AI is, what a pack can hold, how you test it in Minecraft, and where to start.",
 };
 
 # ResourcePack AI
 
-ResourcePack AI is a browser-based editor for Minecraft resource packs. You
-describe what you want in plain English (a block, an item, a GUI, a 3D model,
-a chat icon or a sound), refine what comes back in the editors, then test it on
-a real Minecraft server before anyone else sees it.
+ResourcePack AI is a web app for making Minecraft resource packs. A resource
+pack is the folder of textures, models and sounds that changes how the game
+looks and sounds. You describe what you want in plain words, the AI makes a
+first version, you finish it in the editors, and then you try it in Minecraft
+on a real server.
+
+The app is called **Studio**, and it runs in your browser at
+[studio.resourcepack.ai](https://studio.resourcepack.ai). There's nothing to
+install.
 
 <CardGroup>
   <Card title="Quickstart" href="/quickstart" icon="rocket">
-    Go from an empty pack to a block you can stand next to in game.
+    From an empty pack to a block you can stand next to in game.
   </Card>
   <Card title="Our test server" href="/testing/test-server" icon="server">
-    Join play.resourcepack.ai and stand next to what you made.
+    Join <ServerAddress /> and see what you made.
   </Card>
 </CardGroup>
-
-## How the pieces fit
-
-Most of your time is spent in the Studio. The rest exists so that what you make
-lands in Minecraft while you're standing in it: no zip to build, nothing to
-upload anywhere, and on Java nothing to rejoin. You press Sync and the pack
-changes around you.
-
-| Piece | Where it runs | What it does |
-| --- | --- | --- |
-| **Studio** | [studio.resourcepack.ai](https://studio.resourcepack.ai) | Your packs, the editors, and AI generation |
-| **Test server** | <ServerAddress /> | A lobby and a private world to try a pack in |
-
-Nothing here replaces Minecraft's own pack format. What you
-[export](/exporting) is an ordinary Resource Pack, same folders, same JSON,
-same PNGs, so it works anywhere a pack works, with or without us.
 
 ## What a pack can hold
 
+Every pack has a tab for each of these. All of them can be generated, started
+blank, and most can be uploaded from files you already have.
+
 <CardGroup cols={3}>
   <Card title="Models" href="/models" icon="boxes">
-    Cubes, bones and painted faces in a Blockbench-style 3D editor.
+    3D objects built from cubes, edited in a Blockbench-style editor.
+  </Card>
+  <Card title="Vehicles" href="/vehicles" icon="gauge">
+    Models people can ride: seats, handling, sounds and effects.
   </Card>
   <Card title="Blocks" href="/blocks" icon="blocks">
-    Pixel art for any vanilla block, generated or drawn by hand.
+    New textures for any vanilla block.
   </Card>
   <Card title="Items" href="/items" icon="item">
-    Sprites that reach a player's hand, hotbar and inventory.
+    Flat item sprites or 3D items, for the hand and the inventory.
+  </Card>
+  <Card title="Armour" href="/armor" icon="wrench">
+    Reskinned vanilla armour sets, or 3D armour.
   </Card>
   <Card title="GUIs" href="/guis" icon="gui">
-    Reskinned chests, furnaces and the other inventory screens.
+    Restyled chests, furnaces, the inventory and other screens.
+  </Card>
+  <Card title="Dialogs" href="/dialogs" icon="gui">
+    Screens a server opens over the game, with real buttons.
+  </Card>
+  <Card title="HUD" href="/hud" icon="image">
+    Hearts, hunger, the hotbar and the crosshair.
+  </Card>
+  <Card title="Shaders" href="/shaders" icon="sparkles">
+    Sharp shapes, labels and bars drawn over the screen or in the world.
   </Card>
   <Card title="Icons" href="/icons" icon="brush">
-    Bitmap glyphs you can type into chat, signs and books.
+    Small pictures you can type into chat, signs and books.
   </Card>
   <Card title="Sounds" href="/sounds" icon="sound">
-    Effects that replace a vanilla noise or add a new event.
+    Sound effects that replace a vanilla one or add a new one.
   </Card>
 </CardGroup>
 
-Models can also be **animated**: keyframed in the editor, and played back in
-game on triggers like right-click or a player walking near. That part needs
-our plugin, since vanilla Minecraft has no notion of an animated block model.
-See [Animations](/animations).
+Models can also be **animated**, and players can have **emotes**: a wave, a
+dance, or a whole set of movements they wear while they walk around. See
+[Animations](/animations) and [Emotes in RP Engine](/rp-engine/emotes).
 
-## Testing live in Minecraft
+## Testing it in Minecraft
 
-**Our test server** (<ServerAddress />) gives you a lobby and a private
-sandbox world that's kept between visits. Nothing to install. Best for
-checking how something reads from a few blocks away. You run `/permlink`
-once and never again: after that, Sync is the whole loop. Press it on any
-pack, as often as you want, and it arrives where you're standing.
+You don't have to export anything to see your work in game. Join our test
+server (<ServerAddress />, Java or Bedrock), link your account once with
+`/permlink`, and from then on the **Sync** button in Studio sends the pack
+straight to you while you stand there. The [Quickstart](/quickstart) walks
+through it.
 
-{/* Held back with the your-server page (2026-08-08) — restore together.
-- **Your own server** runs our plugin, and that's the same thing again on your
-  own map. Everything the test server does, it does: pack pushes, placed
-  models, the animation engine, sounds and GUIs, all of it. A player runs
-  `/rp sync` with a code from the Studio and then it's the same Sync button.
-  Best when you want your real world, your real builds, and your friends
-  standing in it with you.
-*/}
+Some things a resource pack can't do by itself: place a model and have it
+animate, drive a vehicle, play an emote, open a custom screen. Those need
+[RP Engine](/testing/plugin), our server plugin. The test server already runs
+it, and you can install it on your own Paper or Spigot server.
 
-<Callout type="note" title="This is for building, not for shipping">
-  Linking is how *you* and the people building with you see a pack while it's
-  being made. It isn't how a public server hands its packs to hundreds of
-  players; that's an exported `.zip` in `server.properties`, the ordinary way,
-  and it needs nothing of ours installed. See [Exporting a pack](/exporting).
+<Callout type="note" title="Java and Bedrock">
+  Bedrock players can join, link and receive packs too. Bedrock only accepts
+  a pack while joining, so applying one disconnects you and reconnects you
+  automatically, which takes a few seconds.
 </Callout>
 
-<Callout type="note" title="Java and Bedrock are both supported">
-  Bedrock players join, link and get pushed packs like anyone else. The one
-  difference is on their side: Bedrock only accepts a Resource Pack while
-  joining, so applying one bounces them out and straight back in, a few
-  seconds, handled for them. Studio shows which edition a linked player is on.
-</Callout>
+## When it's finished
+
+A pack you [export](/exporting) is an ordinary resource pack: the same
+folders, JSON and PNGs the game expects. It works anywhere a pack works,
+including on a server that has nothing of ours installed. You can export a
+Java `.zip`, a Bedrock `.mcpack`, or content for server plugins such as
+ItemsAdder, Nexo, Oraxen, CraftEngine and ModelEngine.
 
 ## Where to go next
 
 <CardGroup>
-  <Card title="Quickstart" href="/quickstart" icon="rocket">
-    The five-minute version of all of the above.
-  </Card>
   <Card title="Generating with AI" href="/generating" icon="sparkles">
-    How to write a prompt that gives you something worth editing.
+    What each type costs, and how to write a prompt that works.
+  </Card>
+  <Card title="Packs" href="/packs" icon="boxes">
+    Organising a pack, its versions and its settings.
   </Card>
   <Card title="Exporting a pack" href="/exporting" icon="download">
-    Taking a finished pack somewhere that isn't Minecraft.
+    Taking a finished pack anywhere a resource pack goes.
   </Card>
   <Card title="Join the Discord" href="https://resourcepack.ai/discord" icon="plug">
     Questions, bug reports, and what other people are building.

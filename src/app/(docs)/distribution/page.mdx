@@ -6,36 +6,38 @@ export const metadata = {
 
 # Distribution
 
-Point your Minecraft server at a pack once. From then on everyone who joins
-gets it — built for the version *they* are running — and you can see who
-actually took it.
+Distribution sends your pack to everyone who joins your Minecraft server, built
+for the version *they* are running, and shows you who actually took it. You
+bind your server to a pack once, then publish whenever the pack is ready.
 
-This is different from [testing](/testing/test-server), which pushes a pack to
-one player so you can look at it. Distribution is the pack your server runs.
+This is different from [testing](/testing/plugin), which pushes a pack to one
+player while you build it. Distribution is the pack your server runs.
+
+You need [RP Engine](/testing/plugin) on the server.
 
 ## Setting it up
 
 <Steps>
   <Step title="Serve a pack">
-    Open **Distribution** in the sidebar and press **Serve a pack**, then pick
-    which of your packs the server should hand its players.
+    Open **Distribution** in the sidebar, press **Serve a pack**, and choose
+    which pack the server should hand its players.
   </Step>
   <Step title="Bind your server">
-    The modal gives you an eight-digit code. On your server, as an operator,
-    with [the plugin](https://cdn.resourcepack.ai/RPEngine.jar)
-    installed, run:
+    You get an eight-digit code, good for 30 minutes. On your server, as an
+    operator (or anyone with `rpengine.distribute`), run:
 
     ```
     /rp distribute 12345678
     ```
 
-    Your server remembers this. It picks up everything you publish afterwards
-    on its own, with no restart and nothing to re-upload.
+    The server remembers this. It picks up everything you publish afterwards
+    on its own, with no restart. `/rp distribute off` unbinds it. A pack can
+    be bound to up to 10 servers.
   </Step>
   <Step title="Publish">
-    Press **Publish** at the top right, tick the Minecraft versions you want to
-    support, and confirm. Every ticked version is built up front, so a joining
-    player never waits for a zip.
+    Press **Publish**, tick the Minecraft versions you want to support, and
+    confirm. Every ticked version is built up front, so a joining player never
+    waits.
   </Step>
 </Steps>
 
@@ -43,56 +45,57 @@ Players get the pack the next time they join.
 
 ## Versions
 
-You choose which versions to support; we never guess. Each one is built as its
-own download with its own hash, because a Minecraft server hands the client a
-URL *and* a hash, so one file cannot quietly serve everybody.
+You choose which versions to support; nothing is guessed. Each version is its
+own download, and the server picks one for each player as they join:
 
-Which build each player gets is decided on your server, as they join:
+- On an ordinary server, everyone is on the server's version.
+- With [ViaVersion](https://viaversion.com) installed, players can be on many
+  versions at once, and each gets the matching build.
+- Bedrock players joining through Geyser get the Bedrock build, if your pack
+  has anything Bedrock can use. See [Exporting › Bedrock](/exporting#bedrock).
 
-- On an ordinary server, every player is on the server's own version, so
-  there is one answer.
-- **With [ViaVersion](https://viaversion.com) installed**, players can be on
-  many different versions at once, and each one is matched individually.
-- Bedrock players connecting through Geyser get the Bedrock build, if your
-  pack has anything Bedrock can use: models, reskins, sounds, armour or icons.
-  See [what converts](/exporting#on-bedrock).
+A player on a version you haven't ticked is **served nothing and recorded**, so
+they show up in the version breakdown and you can tick that version and
+publish again.
 
-Someone joining on a version you haven't ticked is **served nothing, and
-recorded** — they show up in the version breakdown so you can tick that version
-and publish, rather than never hearing about it.
-
-<Callout type="note" title="Very new versions">
-  A Minecraft version we haven't added yet is reported as unrecognised rather
-  than guessed at, because a pack built for the wrong version loads in game and
-  renders nothing with no error to explain it. Those players start working when
-  we add the version — you don't need to do anything.
+<Callout type="note" title="Brand-new Minecraft versions">
+  A version we haven't added yet is reported as unrecognised rather than
+  guessed at, because a pack built for the wrong version loads and then draws
+  nothing. Those players start working once we add it; you don't need to do
+  anything.
 </Callout>
 
 ## Publishing again
 
 There is **one live release**. Publishing again builds your ticked versions
-fresh and replaces it, and the previous build is removed.
+fresh and replaces it, and the previous build is removed. There's no rollback.
 
-Your pack in the editor is deliberately *not* what your players get. Publishing
-is an explicit act, so saving a half-finished edit can never push a broken pack
-onto a live server.
+What your players get is the last thing you published, not what's in the
+editor right now, so saving a half-finished edit never reaches a live server.
 
 ## What you can see
 
-The Distribution page shows serves per day over the last 30, which versions
-your players are on, every recent join, and each bound server with the last
+The Distribution page shows serves per day over the last 30 days, which
+versions your players are on, recent joins, and each bound server with the last
 time it served somebody.
 
-**Declined is worth watching.** A player's client can refuse a server pack
-without ever showing them a prompt — it's a per-server setting called *Server
-Resource Packs*, and most people have never heard of it. A high decline rate is
-usually that, not people saying no.
+**Watch the Declined count.** A client can refuse server packs without the
+player ever seeing a prompt (the *Server Resource Packs* setting in the
+server list), and most people don't know it's there. A high decline rate is
+usually that.
 
-Player names and UUIDs come from your own server. If it runs in offline mode
-those UUIDs can be forged, so unique-player counts there are an estimate.
+Player names and UUIDs come from your server. On an offline-mode server UUIDs
+can be faked, so unique-player counts there are an estimate.
+
+## Who can publish
+
+On your own packs, you. A [collaborator](/collaborators) can see the
+Distribution numbers with that section, but publishing needs the **Publish to
+servers** capability, which is never included in the Editor preset. On a
+[team](/teams), owners and admins can publish; members can't.
 
 ## Limits
 
-Every plan can distribute. The free plan serves up to 50 unique players a
-month, counted across the packs you own; every paid plan serves unlimited
-players. Your current usage is on the Distribution page.
+Every plan can distribute. Starter serves up to 50 unique players a month,
+counted across the packs you own. Creator, Studio and Team are unlimited. Your
+current usage is on the Distribution page.
