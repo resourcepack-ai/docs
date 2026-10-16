@@ -114,6 +114,23 @@ removes `/emote`, for a server that already has one from another plugin.
 
 Players get in by right-clicking a seat. See [Vehicles](/rp-engine/vehicles).
 
+## 3D objects
+
+3D objects need Minecraft 1.21.4 or newer. Every verb except `spawn` acts on
+the nearest object, and each has its own node, `rpengine.object.<verb>`.
+
+| Command | What it does | Permission |
+|---|---|---|
+| `/rp objects` | Every [3D object](/rp-engine/objects), with its states and sequences | `rpengine.objects` |
+| `/rp object spawn <id> [size] [x y z]` | Put one down in front of you, or at those coordinates | `rpengine.object.spawn` |
+| `/rp object state <state>`, `replay` | Put it into a state, or play its state again | `rpengine.object.state`, `.replay` |
+| `/rp object play <sequence>`, `stop` | Run or stop one of its sequences | `rpengine.object.play`, `.stop` |
+| `/rp object move`, `turn`, `size`, `seed` | Move, turn or resize it, or change its seed | `rpengine.object.move`, `.turn`, `.size`, `.seed` |
+| `/rp object remove [all]` | Take it away, or every one | `rpengine.object.remove` |
+
+`rpengine.object` grants every verb. See [3D objects](/rp-engine/objects#commands)
+for the arguments.
+
 ## 3D armour
 
 | Command | What it does | Permission |

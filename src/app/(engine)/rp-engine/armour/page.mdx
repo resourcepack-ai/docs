@@ -101,6 +101,7 @@ santa:
   name: "Santa Suit"     # optional; the ID when left out
   model: armor_santa     # assets/models/armor_santa.bbmodel; the ID when left out
   displays: false        # optional, default true; see below
+  shader-helmet: true    # optional, default false; see below
 ```
 
 That is the set `mypack:santa`. The model is a `.bbmodel` project built on
@@ -119,10 +120,36 @@ set. A group inside a bone (a `cape` inside `body`) rides that bone. A group
 with any other name is a load warning. Cubes and groups can be rotated any way
 you like.
 
+### Meshes and shader helmets
+
+Needs RP Engine 0.2.10 or newer.
+
+**Mesh elements** from Blockbench's mesh tool are read too, as quads and
+triangles. Triangulate any face with more than four corners, or it is left
+out with a warning. A mesh can be any shape (smooth surfaces, thin locks of
+fur), and a texel with alpha below 0.1 is cut out, so strands painted on a
+quad read as hair.
+
+Only the client's shaders can draw a mesh (see below), so:
+
+- A set with meshes wants `displays: false`. Viewers shown display entities
+  see it without its meshes.
+- A mesh on the head needs `shader-helmet: true`.
+- Mesh faces are not nudged apart the way cube faces are, so keep two of them
+  out of one plane.
+- Each bone costs one armour layer per four faces, drawn every frame. A few
+  hundred faces per bone is a lot.
+
+**`shader-helmet: true`** hands the helmet to the shaders too, instead of the
+game drawing it as a head item. It can then be anything the body can (any
+turn, meshes), but a player on a version the shaders don't cover sees no
+helmet at all.
+
 ## How 3D armour is drawn
 
 - **The helmet** is drawn by the game, as an item on the head. It follows the
-  head exactly, on every client.
+  head exactly, on every client. With `shader-helmet: true` the shaders draw it
+  instead.
 - **On Minecraft 26.1 and 26.2**, the pack's shaders draw the rest of the set as
   part of the player's body, so it never lags and also shows on armour stands.
   RP Engine checks each viewer's version (through ViaVersion when it is

@@ -13,6 +13,11 @@ on [Commands](/rp-engine/commands), beside each command.
 `rpengine.admin` grants every command node, including the `.others` nodes
 below. It is a convenience: nothing checks it directly.
 
+`/rp object` has a node per verb (`rpengine.object.spawn`,
+`rpengine.object.play` and so on), all granted by `rpengine.object`, so you can
+let players run an object's sequences without letting them place new ones. See
+[3D objects](/rp-engine/objects#permissions).
+
 Everything defaults to op, except these, which every player has:
 
 | Node | What it allows |
