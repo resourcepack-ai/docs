@@ -87,6 +87,13 @@ export const nav: NavGroup[] = [
         keywords: ["animate", "keyframe", "trigger", "rig", "loop", "right click"],
       },
       {
+        title: "Emotes",
+        href: "/emotes",
+        description: "Player animations: generated or keyed by hand, with models, other players, or worn while moving.",
+        keywords: ["emote", "dance", "wave", "player animation", "cast", "prop", "movement group",
+          "walk cycle", "idle", "sprint", "sneak", "worn"],
+      },
+      {
         title: "Vehicles",
         href: "/vehicles",
         description: "A model with a job: seats, handling, an animation per state, sounds and effects.",

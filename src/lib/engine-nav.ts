@@ -246,6 +246,13 @@ export const engineNav: EngineGroup[] = [
           "passenger", "driver", "flight", "takeoff", "scale", "particles", "fuel"],
       },
       {
+        title: "3D objects",
+        href: "/rp-engine/objects",
+        description: "Shader objects in the world: states, moves, turns and scripted sequences.",
+        keywords: ["object", "shader", "3d", "black hole", "portal", "state", "sequence", "spawn",
+          "move", "turn", "size", "seed"],
+      },
+      {
         title: "Liquids",
         href: "/rp-engine/liquids",
         description: "Real water or lava with your rules applied inside a box.",
