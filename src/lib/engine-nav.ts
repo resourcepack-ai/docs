@@ -379,6 +379,13 @@ export const engineNav: EngineGroup[] = [
       //     "wheelie", "barspin", "tailwhip", "truck driver", "bunnyhop", "perform"],
       // },
       {
+        title: "Portals",
+        href: "/rp-engine/portals",
+        description: "Rings of sparks you see through to the other side and walk through, placed by command.",
+        keywords: ["addon", "portal", "portals", "teleport", "window", "see through", "gateway", "travel",
+          "/portals", "26.2"],
+      },
+      {
         title: "Paintball",
         href: "/rp-engine/paintball",
         description: "5v5 paintball: one hit and you are out for three seconds, most kills when the clock runs out wins.",

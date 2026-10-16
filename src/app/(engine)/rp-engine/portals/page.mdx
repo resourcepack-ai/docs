@@ -1,0 +1,160 @@
+export const metadata = {
+  title: "Portals",
+  description:
+    "An addon for RP Engine: rings of sparks you can see through to the other side, and walk through, placed by command.",
+};
+
+# Portals
+
+An **addon** for [RP Engine](/rp-engine): a plugin that installs into the
+engine and adds one thing, rather than a pack you author yourself. Drop it in
+beside the engine and it brings its own content with it.
+
+This one opens portals: a ring of sparks with a window in the middle onto
+somewhere else. You see the far side through it as you walk up, with its own
+blocks, sky, clouds and light, and you come out of the other ring still moving
+the way you were. Right-click a portal to shut it down to a small glowing ball,
+and again to open it.
+
+## Installing
+
+Portals needs **Paper 26.2** with players on **Java Edition 26.2** (the window
+is drawn by the game's own shaders, through a resource pack, and that part is
+written for 26.2), and **RP Engine 0.2.10** or newer, which draws the ring. No
+client mods. Bedrock players do not see portals.
+
+Drop `RPE-portals.jar` in `plugins/` beside `RPEngine.jar` and start the
+server. Its content (the ring, its sounds and the shaders that draw the window)
+installs itself into `plugins/RPEngine/content/portals/` on first boot, and the
+engine reloads once to pick it up.
+
+The window is drawn with the game's own block textures, which a server does not
+have, so on first start the plugin downloads the Minecraft client jar for your
+server's version from Mojang, once, into `plugins/RPEPortals/cache/`. Set
+`textures.download: false` to skip that, and every block is drawn in a flat
+colour instead.
+
+## Placing portals
+
+1. Stand where you want your portals to lead, facing the way you want to come
+   out, and run `/portals mark`.
+2. Go anywhere else, in the same world or another, and run `/portals place`. A
+   pair opens: one ring a few blocks in front of you, facing you, and the other
+   at your mark.
+3. Walk into the ring. You come out of the other one.
+
+`/portals place` again moves your pair: a player has one pair at a time
+(`pairs-per-player` in the config), and placing another takes the oldest away.
+
+| Command | What it does |
+|---|---|
+| `/portals mark` | Your portals lead here, coming out facing the way you face |
+| `/portals place [size]` | Open a pair in front of you, leading to your mark. A size (2 to 12 blocks across) needs `portals.place.size` |
+| `/portals toggle` | Open or shut the portal you are looking at |
+| `/portals remove [all]` | Take away the portal you are looking at, or all of yours |
+| `/portals list` | Your pairs and where they lead |
+| `/portals open <world> <x y z yaw> <x y z yaw> [size]` | A pair at set places, for staff and command blocks |
+| `/portals closeall` | Take away every portal on the server |
+| `/portals reload` | Re-read `config.yml` |
+
+`/portal` works too. Right-click a portal to open or shut it, and sneak and
+right-click it to take it away.
+
+## Permissions
+
+Every command has its own node, and so does every option that reaches past
+your own portals.
+
+| Node | What it allows | Default |
+|---|---|---|
+| `portals.mark` | `/portals mark` | Everyone |
+| `portals.place` | `/portals place` | Everyone |
+| `portals.place.size` | Choosing a ring's size | Operators |
+| `portals.place.unlimited` | More pairs at once than `pairs-per-player` | Operators |
+| `portals.place.otherworld` | A mark in another world | Everyone |
+| `portals.toggle` | Opening and shutting your own portals | Everyone |
+| `portals.toggle.others` | Opening and shutting anybody's | Operators |
+| `portals.remove` | Taking away your own portals | Everyone |
+| `portals.remove.others` | Taking away anybody's | Operators |
+| `portals.list` | `/portals list` | Everyone |
+| `portals.travel` | Walking through a portal | Everyone |
+| `portals.open` | `/portals open` | Operators |
+| `portals.closeall` | `/portals closeall` | Operators |
+| `portals.reload` | `/portals reload` | Operators |
+| `portals.debug` | `/portals debug` | Operators |
+
+`portals.player` hands out everything a player needs and `portals.admin`
+everything; nothing checks either directly. Negate `portals.travel` to make
+portals something to look through only.
+
+## Configuration
+
+`plugins/RPEPortals/config.yml`:
+
+```yaml
+portal:
+  # Diameter in blocks. The hole is 80% of it.
+  size: 5.8
+  # How far in front of you a portal opens, in blocks.
+  distance: 3.5
+  # Seconds a pair stays open before it closes itself. 0 keeps it open.
+  lifetime: 0
+  # How many pairs one player can have at once. Placing another takes the oldest away.
+  pairs-per-player: 1
+
+# Download the client jar from Mojang once, for the block textures in the window.
+textures:
+  download: true
+
+sounds:
+  open: portals:portal_open
+  loop: portals:portal_loop
+  close: portals:portal_close
+  volume: 1.5
+```
+
+Every message the plugin sends is under `messages:` in the same file, in
+MiniMessage.
+
+## What you see through one
+
+The window shows the blocks on the far side, ray-traced by the game's text
+shader from maps the plugin sends: 128 blocks across, 63 deep and 28 tall in
+full detail, with the block textures, plants, water, the biome's grass and leaf
+colours, the light, and the game's own ambient occlusion. Beyond that the land
+carries on for a few hundred blocks in coarser columns, treetops included, then
+the sky, drawn with the game's own sky colours and the very clouds the far side
+has, where it has them. Through a portal to the Nether you see its fog and its
+light.
+
+It shows **blocks only**: players, mobs and dropped items on the far side are
+not in the window. What is drawn is read as the far side changes, a slice at a
+time, so a block placed over there appears within a second or so.
+
+Two limits worth knowing:
+
+- **One mod of the text shader at a time.** The window is drawn by the game's
+  text shader, which a resource pack can replace only once. Another plugin that
+  replaces it too (RP Engine's own HUD shader objects, for one) and only one of
+  them works.
+- **It costs frame rate up close.** The window is a stack of maps in invisible
+  item frames, each drawn by the game. A shut portal, or one seen from behind,
+  draws nothing.
+
+## For plugin developers
+
+Portals has its own API: open pairs anywhere at any size, shut and open them,
+and listen for every open, toggle, removal and crossing.
+
+```java
+PortalsApi api = PortalsApi.get();
+api.open(
+        PortalPlace.standing(spawnGround, 180f),
+        PortalPlace.standing(arenaGround, 0f),
+        PortalOptions.builder().size(9).lifetimeSeconds(60).build());
+```
+
+Add `depend: [RPEPortals]` (or `softdepend`) to your `plugin.yml` and compile
+against the Portals jar. The events are `PortalOpenEvent`, `PortalToggleEvent`,
+`PortalRemoveEvent` and `PortalTravelEvent`, all cancellable; the last can also
+send the traveller somewhere else.
