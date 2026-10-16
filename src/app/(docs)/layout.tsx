@@ -22,7 +22,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
       <SiteHeader />
       <div className="pt-(--topbar-h)">
         <div className="mx-auto flex max-w-[100rem] px-4 sm:px-6">
-          <aside className="border-line hidden w-(--sidebar-w) shrink-0 lg:block lg:border-r">
+          <aside data-nav-rail className="border-line hidden w-(--sidebar-w) shrink-0 lg:block lg:border-r">
             <div className="sticky top-(--topbar-h) max-h-[calc(100dvh-var(--topbar-h))] overflow-y-auto py-9 pr-5">
               <NavTree />
             </div>

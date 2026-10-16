@@ -141,10 +141,11 @@
 /* Ask AI (components/ask-ai.tsx) sits BESIDE the page on a wide screen rather
    than over it, so a page an answer links to can be read with the conversation
    still open. The panel sets data-ask-ai on <html>; the page makes room for it
-   and gives up the "On this page" rail, which is what the space was. Below lg
-   the panel covers the page instead, as the nav drawer does. */
+   and gives up the "On this page" rail, and below 2xl its nav as well, so the
+   article keeps a readable width beside a panel this wide. Below lg the panel
+   covers the page instead, as the nav drawer does. */
 :root {
-    --ask-w: 25rem;
+    --ask-w: 32.5rem;
 }
 @media (min-width: 64rem) {
     html[data-ask-ai="open"] body {
@@ -154,6 +155,11 @@
         right: var(--ask-w);
     }
     html[data-ask-ai="open"] [data-toc] {
+        display: none;
+    }
+}
+@media (min-width: 64rem) and (max-width: 95.99rem) {
+    html[data-ask-ai="open"] [data-nav-rail] {
         display: none;
     }
 }

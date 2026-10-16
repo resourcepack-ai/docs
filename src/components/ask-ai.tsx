@@ -1,14 +1,14 @@
 "use client";
 
 import {
-  ArrowRight,
   ArrowUp,
-  Check,
-  Copy,
-  FileText,
+  Boxes,
+  Download,
   MessageCircle,
+  Monitor,
+  Package,
   Plus,
-  User,
+  TriangleAlert,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -26,9 +26,11 @@ import { CodeBlock, languageOf } from "@/components/ask-ai-code";
 import { cn } from "@/lib/utils";
 
 /**
- * "Ask the docs": a side panel that answers questions from these docs. On a
- * wide screen it sits beside the page rather than over it (globals.css), so a
- * page an answer links to opens with the conversation still there.
+ * "Ask the docs": a side panel that answers questions from these docs, each
+ * answer set like a docs page of its own (an eyebrow, the question as its
+ * heading, a callout for the catch, Read next cards). On a wide screen it sits
+ * beside the page rather than over it (globals.css), so a page an answer links
+ * to opens with the conversation still there.
  *
  * The answering happens on help.resourcepack.ai, which reads the same docs
  * (as llms-full.txt) and the public download list, and nothing else: it has
@@ -55,10 +57,17 @@ const STORAGE_KEY = "rpai-ask-ai";
 const MAX_QUESTION = 1000;
 const DOCS_ORIGIN = "https://resourcepack.ai/docs";
 
+/** A page an answer used: a docs page, or one section of one (`section`). */
+interface Source {
+  title: string;
+  section?: string;
+  url: string;
+}
+
 interface Turn {
   question: string;
   answer?: string;
-  sources?: { title: string; url: string }[];
+  sources?: Source[];
   notice?: string;
   error?: string;
   /** The conversation the service filed this under; sent back so follow-ups join it. */
@@ -243,6 +252,34 @@ function inline(text: string, onNavigate: () => void): ReactNode[] {
   return out;
 }
 
+/**
+ * The one catch in an answer, set as the docs' own callout. The help bot is
+ * asked to write it as a blockquote whose first words are bold (the title),
+ * so any other reader of the same answer, Discord included, just sees a quote.
+ */
+function Callout({
+  text,
+  onNavigate,
+}: {
+  text: string;
+  onNavigate: () => void;
+}) {
+  const title = /^\*\*([^*]+?)\*\*\s*/.exec(text);
+  return (
+    <div className="text-prose flex gap-2.5 rounded-[10px] border border-[#4a3d1f] bg-[#2a2416] px-3.5 py-[0.7rem] text-[0.845rem] leading-[1.6]">
+      <TriangleAlert className="text-amber mt-[3px] size-[15px] shrink-0" />
+      <div className="min-w-0">
+        {title && (
+          <b className="text-foreground mb-px block font-semibold">
+            {title[1].replace(/[.:]$/, "")}
+          </b>
+        )}
+        {inline(title ? text.slice(title[0].length) : text, onNavigate)}
+      </div>
+    </div>
+  );
+}
+
 function Markdown({
   text,
   onNavigate,
@@ -252,6 +289,7 @@ function Markdown({
 }) {
   const blocks: ReactNode[] = [];
   const lines = text.split("\n");
+  const starts = /^\s*(\d+[.)]|[-*•]|>)\s?/;
   let i = 0;
   let key = 0;
   while (i < lines.length) {
@@ -266,6 +304,19 @@ function Markdown({
       blocks.push(<CodeBlock key={key++} code={body.join("\n")} lang={lang} />);
       continue;
     }
+    if (/^\s*>/.test(line)) {
+      const quote: string[] = [];
+      while (i < lines.length && /^\s*>/.test(lines[i]))
+        quote.push(lines[i++].replace(/^\s*>\s?/, ""));
+      blocks.push(
+        <Callout
+          key={key++}
+          text={quote.join(" ").trim()}
+          onNavigate={onNavigate}
+        />,
+      );
+      continue;
+    }
     const listKind = /^\s*\d+[.)]\s/.test(line)
       ? "ol"
       : /^\s*[-*•]\s/.test(line)
@@ -273,14 +324,15 @@ function Markdown({
         : null;
     if (listKind) {
       const items: string[] = [];
-      const itemPattern = listKind === "ol" ? /^\s*\d+[.)]\s+/ : /^\s*[-*•]\s+/;
+      const itemPattern =
+        listKind === "ol" ? /^\s*\d+[.)]\s+/ : /^\s*[-*•]\s+/;
       while (i < lines.length && itemPattern.test(lines[i]))
         items.push(lines[i++].replace(itemPattern, ""));
       const List = listKind;
       blocks.push(
         <List
           key={key++}
-          className={`${listKind === "ol" ? "list-decimal" : "list-disc"} space-y-1 pl-5`}
+          className={`${listKind === "ol" ? "list-decimal" : "list-disc"} space-y-1 pl-[1.125rem]`}
         >
           {items.map((item, n) => (
             <li key={n}>{inline(item, onNavigate)}</li>
@@ -298,9 +350,13 @@ function Markdown({
       i < lines.length &&
       lines[i].trim() &&
       !lines[i].startsWith("```") &&
-      !/^\s*(\d+[.)]|[-*•])\s/.test(lines[i])
+      !starts.test(lines[i])
     ) {
       para.push(lines[i++].replace(/^#{1,6}\s+/, ""));
+    }
+    if (para.length === 0) {
+      // A line the rules above did not take (a lone ">" or "-"): show it as text.
+      para.push(lines[i++]);
     }
     blocks.push(
       <p key={key++}>
@@ -313,57 +369,95 @@ function Markdown({
       </p>,
     );
   }
-  return <div className="space-y-2.5">{blocks}</div>;
+  return (
+    <div className="flex flex-col gap-2.5 [&_strong]:text-foreground [&_strong]:font-semibold">
+      {blocks}
+    </div>
+  );
 }
 
 // --- The panel ---------------------------------------------------------------
 
-/** Starting points for an empty panel, grouped the way the docs are. */
-const EXAMPLES: { group: string; questions: string[] }[] = [
+/** Starting points for an empty panel, as the docs' own cards. */
+const EXAMPLES: {
+  Icon: typeof Download;
+  title: string;
+  detail: string;
+  question: string;
+}[] = [
   {
-    group: "Studio",
-    questions: [
-      "How do I export a pack for Bedrock?",
-      "Can I import a Blockbench model?",
-    ],
+    Icon: Download,
+    title: "Export a pack for Bedrock",
+    detail: "What converts, and what needs a server",
+    question: "How do I export a pack for Bedrock?",
   },
   {
-    group: "RP Engine",
-    questions: [
-      "What's the latest RP Engine, and where do I get it?",
-      "How do players get my pack when they join?",
-    ],
+    Icon: Monitor,
+    title: "Test a pack on a real server",
+    detail: "Join the test server, or sync to your own",
+    question: "How do I test my pack on a real server?",
   },
   {
-    group: "Testing",
-    questions: ["How do I try my pack on a real server?"],
+    Icon: Package,
+    title: "Get the latest RP Engine",
+    detail: "Version, download and where to find it",
+    question: "What's the latest RP Engine, and where do I get it?",
+  },
+  {
+    Icon: Boxes,
+    title: "Import a Blockbench model",
+    detail: "Bring a .bbmodel into a pack",
+    question: "Can I import a Blockbench model?",
   },
 ];
 
 /** Wide enough that the panel sits beside the page (see globals.css) rather than over it. */
 const BESIDE_THE_PAGE = "(min-width: 64rem)";
 
-function SourceList({
+const EYEBROW =
+  "text-brand font-mono text-[0.69rem] tracking-[0.1em] uppercase";
+
+/** What a page without a section is, for the small line above its title. */
+function sourceKind(url: string): string {
+  if (url.startsWith(DOCS_ORIGIN)) return "Docs";
+  if (url.endsWith(".pdf")) return "PDF";
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "Link";
+  }
+}
+
+/** "Read next": the pages the answer used, as the cards at the foot of a docs page. */
+function ReadNext({
   sources,
   onNavigate,
 }: {
-  sources: { title: string; url: string }[];
+  sources: Source[];
   onNavigate: () => void;
 }) {
   return (
-    <div className="border-border flex flex-col overflow-hidden rounded-[10px] border">
-      {sources.map((source) => (
-        <AnswerLink
-          key={source.url}
-          href={source.url}
-          onNavigate={onNavigate}
-          className="border-line text-prose hover:bg-muted flex items-center gap-2.5 border-t px-3 py-2 text-[0.8rem] no-underline transition-colors first:border-t-0"
-        >
-          <FileText className="text-faint size-3.5 shrink-0" />
-          <span className="min-w-0 truncate">{source.title}</span>
-          <ArrowRight className="text-faint ml-auto size-3.5 shrink-0" />
-        </AnswerLink>
-      ))}
+    <div className="flex flex-col gap-2">
+      <span className="text-faint font-mono text-[0.66rem] tracking-[0.1em] uppercase">
+        Read next
+      </span>
+      <div className="grid gap-2.5 sm:grid-cols-2">
+        {sources.map((source) => (
+          <AnswerLink
+            key={source.url}
+            href={source.url}
+            onNavigate={onNavigate}
+            className="border-border text-foreground flex flex-col gap-0.5 rounded-[10px] border px-3.5 py-[0.7rem] text-[0.875rem] font-medium no-underline transition-colors hover:border-[#45453d]"
+          >
+            <span className="text-faint text-[0.72rem] font-normal">
+              {source.section ? source.title : sourceKind(source.url)}
+            </span>
+            <span className="leading-snug">
+              {source.section ?? source.title}
+            </span>
+          </AnswerLink>
+        ))}
+      </div>
     </div>
   );
 }
@@ -383,18 +477,16 @@ export function AskAi() {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
-  const [copied, setCopied] = useState<number | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const latestRef = useRef<HTMLDivElement>(null);
   const turnstileBox = useRef<HTMLDivElement>(null);
   const turnstileToken = useTurnstile(turnstileBox);
 
+  // A new turn is read from its heading down, like a page, not from the bottom.
   useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [turns, busy]);
+    latestRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [turns.length]);
 
   // While open, the page makes room for the panel (globals.css). Escape closes.
   useEffect(() => {
@@ -487,16 +579,6 @@ export function AskAi() {
     inputRef.current?.focus();
   }
 
-  async function copy(index: number, answer: string) {
-    try {
-      await navigator.clipboard.writeText(answer);
-      setCopied(index);
-      setTimeout(() => setCopied((c) => (c === index ? null : c)), 1500);
-    } catch {
-      // No clipboard permission: nothing to report that would help.
-    }
-  }
-
   return (
     <>
       <button
@@ -529,14 +611,14 @@ export function AskAi() {
         createPortal(
           <section
             aria-label="Ask the docs"
-            className="border-border bg-card fixed inset-y-0 right-0 z-50 flex w-full flex-col [animation:rpin_.22s_ease] lg:w-(--ask-w) lg:border-l"
+            className="border-border bg-background fixed inset-y-0 right-0 z-50 flex w-full flex-col [animation:rpin_.22s_ease] lg:w-(--ask-w) lg:border-l lg:shadow-[-24px_0_48px_rgba(0,0,0,0.25)]"
           >
-            <div className="border-line flex h-[3.25rem] shrink-0 items-center gap-2.5 border-b pr-2.5 pl-4">
+            <div className="border-line text-muted-foreground flex h-[2.875rem] shrink-0 items-center gap-2 border-b pr-2.5 pl-5 text-[0.8rem] sm:pl-7">
               <MessageCircle
-                className="text-primary-ink size-4"
+                className="text-primary-ink size-[15px]"
                 strokeWidth={2}
               />
-              <span className="text-[0.9rem] font-semibold">Ask the docs</span>
+              <span>Ask the docs</span>
               <div className="ml-auto flex items-center gap-0.5">
                 {turns.length > 0 && (
                   <button
@@ -544,7 +626,7 @@ export function AskAi() {
                     onClick={reset}
                     aria-label="New conversation"
                     title="New conversation"
-                    className="text-muted-foreground hover:text-foreground hover:bg-muted grid size-[30px] place-items-center rounded-[7px] transition-colors"
+                    className="hover:text-foreground hover:bg-muted grid size-[30px] place-items-center rounded-[7px] transition-colors"
                   >
                     <Plus className="size-4" />
                   </button>
@@ -553,7 +635,7 @@ export function AskAi() {
                   type="button"
                   onClick={close}
                   aria-label="Close"
-                  className="text-muted-foreground hover:text-foreground hover:bg-muted grid size-[30px] place-items-center rounded-[7px] transition-colors"
+                  className="hover:text-foreground hover:bg-muted grid size-[30px] place-items-center rounded-[7px] transition-colors"
                 >
                   <X className="size-4" />
                 </button>
@@ -562,103 +644,98 @@ export function AskAi() {
 
             <div
               ref={scrollRef}
-              className="flex flex-1 flex-col gap-[1.375rem] overflow-y-auto px-[1.125rem] py-5"
+              className="flex flex-1 flex-col overflow-y-auto px-5 py-[1.625rem] sm:px-7"
             >
               {turns.length === 0 && (
-                <div>
-                  <h3 className="mt-1 mb-1.5 text-[1.125rem] font-semibold tracking-[-0.01em]">
-                    What do you want to know?
-                  </h3>
-                  <p className="text-muted-foreground mb-[1.125rem] leading-[1.55]">
-                    Answers come from these docs and the download pages. It
-                    can&apos;t see your account or your packs.
+                <div className="flex flex-col gap-4">
+                  <span className={EYEBROW}>Ask the docs</span>
+                  <h2 className="-mt-2 text-[1.5rem] leading-tight font-semibold tracking-[-0.015em] text-balance">
+                    What are you trying to do?
+                  </h2>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Ask in your own words. You get an answer written from these
+                    pages, with the pages to read next.
                   </p>
-                  {EXAMPLES.map(({ group, questions }) => (
-                    <div key={group} className="mb-4 flex flex-col gap-0.5">
-                      <span className="text-faint mb-1.5 font-mono text-[0.66rem] tracking-[0.1em] uppercase">
-                        {group}
-                      </span>
-                      {questions.map((question) => (
-                        <button
-                          key={question}
-                          type="button"
-                          onClick={() => send(question)}
-                          className="text-prose hover:bg-muted -mx-2.5 flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[0.845rem] transition-colors"
-                        >
-                          {question}
-                          <ArrowRight className="text-faint ml-auto size-3.5 shrink-0" />
-                        </button>
-                      ))}
-                    </div>
-                  ))}
+                  <div className="grid gap-2.5">
+                    {EXAMPLES.map(({ Icon, title, detail, question }) => (
+                      <button
+                        key={title}
+                        type="button"
+                        onClick={() => send(question)}
+                        className="border-border bg-card flex items-start gap-3 rounded-[10px] border px-3.5 py-3 text-left transition-colors hover:border-[#45453d]"
+                      >
+                        <Icon className="text-brand mt-0.5 size-4 shrink-0" />
+                        <span>
+                          <b className="mb-0.5 block text-[0.875rem] font-medium">
+                            {title}
+                          </b>
+                          <span className="text-muted-foreground text-[0.78rem]">
+                            {detail}
+                          </span>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
               {turns.map((turn, n) => (
-                <div key={n} className="flex flex-col gap-3">
-                  <div className="text-foreground flex gap-2.5 text-[0.94rem] leading-snug font-semibold">
-                    <span className="bg-muted text-muted-foreground mt-px grid size-5 shrink-0 place-items-center rounded-full">
-                      <User className="size-3" strokeWidth={2.25} />
-                    </span>
-                    <span className="min-w-0 break-words whitespace-pre-wrap">
-                      {turn.question}
-                    </span>
-                  </div>
-                  <div className="flex min-w-0 flex-col gap-3.5 pl-[1.875rem]">
-                    {turn.notice && (
-                      <p className="text-amber text-[0.78rem] leading-snug">
-                        {turn.notice}
-                      </p>
-                    )}
-                    {turn.answer !== undefined && (
-                      <>
-                        <div className="text-prose text-[0.875rem] leading-[1.65] break-words">
-                          <Markdown text={turn.answer} onNavigate={onNavigate} />
-                        </div>
-                        {turn.sources && turn.sources.length > 0 && (
-                          <SourceList
-                            sources={turn.sources}
-                            onNavigate={onNavigate}
-                          />
-                        )}
-                        <div className="text-faint flex gap-3.5 text-[0.75rem]">
-                          <button
-                            type="button"
-                            onClick={() => copy(n, turn.answer ?? "")}
-                            className="hover:text-muted-foreground flex items-center gap-1.5 transition-colors"
-                          >
-                            {copied === n ? (
-                              <Check className="size-3.5" />
-                            ) : (
-                              <Copy className="size-3.5" />
-                            )}
-                            {copied === n ? "Copied" : "Copy"}
-                          </button>
-                        </div>
-                      </>
-                    )}
-                    {turn.error && (
-                      <p className="text-destructive text-[0.82rem]">
-                        {turn.error}
-                      </p>
-                    )}
-                    {turn.answer === undefined &&
-                      !turn.error &&
-                      busy &&
-                      n === turns.length - 1 && <Thinking />}
-                  </div>
-                </div>
+                <article
+                  key={n}
+                  ref={n === turns.length - 1 ? latestRef : undefined}
+                  className={cn(
+                    "flex scroll-mt-4 flex-col gap-4",
+                    n > 0 && "border-line mt-8 border-t pt-8",
+                  )}
+                >
+                  <span className={EYEBROW}>
+                    {turn.error ? "No answer" : "Answer"}
+                  </span>
+                  <h2 className="-mt-2 text-[1.5rem] leading-tight font-semibold tracking-[-0.015em] break-words text-balance">
+                    {turn.question}
+                  </h2>
+                  {turn.notice && (
+                    <p className="text-amber text-[0.78rem] leading-snug">
+                      {turn.notice}
+                    </p>
+                  )}
+                  {turn.answer !== undefined && (
+                    <div className="text-prose text-[0.906rem] leading-[1.7] break-words">
+                      <Markdown text={turn.answer} onNavigate={onNavigate} />
+                    </div>
+                  )}
+                  {/* Sections only, two at most: the service already picks them
+                      that way, and a conversation saved before it did is held
+                      to the same rule. */}
+                  {(turn.sources ?? []).some((s) => s.section) && (
+                    <ReadNext
+                      sources={(turn.sources ?? [])
+                        .filter((s) => s.section)
+                        .slice(0, 2)}
+                      onNavigate={onNavigate}
+                    />
+                  )}
+                  {turn.error && (
+                    <p className="text-destructive text-[0.875rem]">
+                      {turn.error}
+                    </p>
+                  )}
+                  {turn.answer === undefined &&
+                    !turn.error &&
+                    busy &&
+                    n === turns.length - 1 && <Thinking />}
+                </article>
               ))}
             </div>
 
             <form
-              className="border-line flex shrink-0 flex-col gap-2 border-t px-3.5 py-3"
+              className="shrink-0 px-5 pt-3.5 pb-4 sm:px-7"
               onSubmit={(event) => {
                 event.preventDefault();
                 send(draft);
               }}
             >
-              <div className="bg-background flex flex-col gap-2.5 rounded-xl border border-[#45453d] pt-2.5 pr-2.5 pb-2 pl-3 focus-within:border-[#5b5b51]">
+              <div className="bg-card flex min-h-11 items-end gap-2.5 rounded-[22px] border border-[#45453d] py-[7px] pr-[7px] pl-[18px] focus-within:border-[#5b5b51]">
                 <textarea
                   ref={inputRef}
                   autoFocus
@@ -672,35 +749,31 @@ export function AskAi() {
                       send(draft);
                     }
                   }}
-                  placeholder="Ask about Studio, RP Engine or a plugin"
+                  placeholder={
+                    turns.length ? "Ask a follow-up" : "Ask a question"
+                  }
                   aria-label="Ask a question"
-                  className="placeholder:text-faint max-h-32 min-h-[1.375rem] resize-none bg-transparent text-[0.875rem] outline-none [field-sizing:content]"
+                  className="placeholder:text-faint max-h-32 min-h-[1.375rem] flex-1 resize-none self-center bg-transparent text-[0.875rem] outline-none [field-sizing:content]"
                 />
-                <div className="flex items-center gap-2">
-                  <span className="text-faint hidden font-mono text-[0.66rem] sm:inline">
-                    Enter to send · Shift+Enter for a new line
-                  </span>
-                  <button
-                    type="submit"
-                    disabled={busy || !draft.trim()}
-                    aria-label="Send"
-                    className="bg-primary ml-auto grid size-[30px] shrink-0 place-items-center rounded-lg text-white transition-opacity disabled:opacity-35"
-                  >
-                    <ArrowUp className="size-4" strokeWidth={2.4} />
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  disabled={busy || !draft.trim()}
+                  aria-label="Send"
+                  className="bg-primary grid size-[30px] shrink-0 place-items-center rounded-full text-white transition-opacity disabled:opacity-35"
+                >
+                  <ArrowUp className="size-4" strokeWidth={2.4} />
+                </button>
               </div>
               <div ref={turnstileBox} />
-              <p className="text-faint px-0.5 text-[0.72rem] leading-[1.45]">
-                Answers can be wrong; the linked page is right. Account or
-                billing?{" "}
+              <p className="text-faint mt-2 text-center text-[0.72rem]">
+                Can be wrong; the pages are right. Account help is in{" "}
                 <a
                   href="https://resourcepack.ai/discord"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-muted-foreground underline underline-offset-2"
+                  className="text-primary-ink underline underline-offset-2"
                 >
-                  Open a Discord ticket
+                  Discord
                 </a>
                 .
               </p>
