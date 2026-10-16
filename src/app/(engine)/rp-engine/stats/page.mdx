@@ -1,16 +1,13 @@
 export const metadata = {
   title: "Stats and components",
   description:
-    "Damage, durability, enchantments and food — the vanilla numbers that stop a custom sword hitting like a stick.",
+    "Damage, durability, enchantments and food: the vanilla numbers that stop a custom sword hitting like a stick.",
 };
 
 # Stats and components
 
-An item is a vanilla item wearing a different model, which is what makes the
-whole ID scheme work — and it leaves a custom sword built on a stick hitting
-exactly as hard as a stick.
-
-These are the vanilla components that fix that:
+A custom item behaves like the vanilla item under it, so a sword built on a
+stick hits as hard as a stick. These settings change the numbers:
 
 ```yaml
 sword:
@@ -23,27 +20,21 @@ sword:
     - attack_speed: -2.4
     - max_health: { amount: 4, operation: add, slot: hand }
   food: { nutrition: 6, saturation: 7.2, always: false }
+  flags: [HIDE_ENCHANTS, HIDE_ATTRIBUTES]
 ```
 
-<Callout type="note" title="These are real item components">
-  The game applies them, other plugins read them, and an item that leaves your
-  server in somebody's inventory keeps them. Nothing here needs RP Engine
-  installed to work — which is the test for whether something belongs in this
-  list at all.
-</Callout>
+These are real item components. The game applies them, other plugins can read
+them, and the item keeps them even on a server without RP Engine.
 
 ## Names are vanilla's
 
-`sharpness`, `unbreaking`, `attack_damage`, `max_health` — unprefixed, because
-that is what is written on the wiki you are reading them off. Anything the
-server's own registries know is accepted.
+Use the names from the Minecraft wiki, without a `minecraft:` prefix:
+`sharpness`, `unbreaking`, `attack_damage`, `max_health`. Anything the server
+knows is accepted.
 
-**A name that resolves to nothing is a console line the first time the item is
-given, not an error at load.** Those registries need a running server to ask,
-and the definition parser deliberately runs without one. Each stat is skipped
-on its own: an item that comes out with three of its four enchantments is
-traceable, and one that refuses to exist because of a typo in the fourth is
-not.
+A name that matches nothing is reported once in the console when the item is
+first given, not when the pack loads, and only that one setting is skipped. The
+rest of the item still works.
 
 ## Attributes
 
@@ -67,12 +58,12 @@ The long form adds an operation and a slot:
 | `multiply_base` | Adds a fraction of the base value |
 | `multiply` | Multiplies the total |
 
-`slot` is where it applies: `hand`, `head`, `chest`, `legs`, `feet`, or `any`.
+`slot` is where the item has to be for it to apply: `hand`, `head`, `chest`,
+`legs`, `feet` or `any`.
 
 ## Durability
 
-`durability:` replaces the material's own maximum. A material that cannot be
-damaged — paper, a block — is warned about rather than silently doing nothing.
+`durability:` replaces the material's own maximum.
 
 ## Food
 
@@ -80,8 +71,14 @@ damaged — paper, a block — is warned about rather than silently doing nothin
   food: { nutrition: 6, saturation: 7.2, always: false }
 ```
 
-`nutrition` is half-drumsticks. `always: true` lets it be eaten on a full
-stomach, the way a golden apple can.
+`nutrition` is in half-drumsticks. `always: true` lets it be eaten on a full
+hunger bar, like a golden apple.
+
+<Callout type="note" title="Minecraft 1.20.5 or newer">
+  `durability`, `food`, `stack` and `glow` are item components that arrived in
+  1.20.5. On an older server they are skipped with a console warning, and the
+  item uses its material's own values.
+</Callout>
 
 ## Hiding lines of the tooltip
 
@@ -89,30 +86,26 @@ stomach, the way a golden apple can.
   flags: [HIDE_ENCHANTS, HIDE_ATTRIBUTES]
 ```
 
-Vanilla's item flags, by the names Bukkit gives them (`HIDE_ENCHANTS`,
-`HIDE_ATTRIBUTES`, `HIDE_UNBREAKABLE`, `HIDE_DYE`...), in either case. A flag
-this server's version does not have is one console line when the item is
-first given, and `HIDE_POTION_EFFECTS` and `HIDE_ADDITIONAL_TOOLTIP`, the
-names before and after 1.20.5, are each read as the other.
+These are Bukkit's item flag names (`HIDE_ENCHANTS`, `HIDE_ATTRIBUTES`,
+`HIDE_UNBREAKABLE`, `HIDE_DYE` and so on), in either case. `HIDE_POTION_EFFECTS`
+and `HIDE_ADDITIONAL_TOOLTIP` (its name from 1.20.5) are treated as the same
+flag. A flag your server's version does not have is a console warning, not an
+error.
 
-## Flags beside them
+## Wearing and keeping
 
 ```yaml
 crown:
   material: GOLDEN_APPLE
-  hat: true                # right-click to wear it, any item at all
+  hat: true                # right-click to wear it on your head
   keep-on-death: true      # survives dying
 ```
 
-**`hat`** is the click that saves a drag — vanilla already lets anybody wear
-anything by dragging it into the helmet slot. A head that is already wearing
-something is left alone rather than swapped: a click that quietly removes your
-helmet mid-fight is worse than one that does nothing.
+- **`hat`**: right-clicking puts the item on your head. If you are already
+  wearing something there, nothing happens.
+- **`keep-on-death`**: the item stays with the player when they die and is
+  given back when they respawn, without turning on `keepInventory` for the
+  whole server.
 
-**`keep-on-death`** takes the item out of the drops and gives it back when the
-player respawns. Vanilla has no per-item keep flag, and `keepInventory` is
-all-or-nothing for a whole server.
-
-There is a third flag for one specific job: `liquid: mypack:acid` makes the item
-a bucket of that [liquid](/rp-engine/liquids), which places a block of it and
-grows the pool that carries its rules.
+`liquid: mypack:acid` makes the item a bucket of that
+[liquid](/rp-engine/liquids).

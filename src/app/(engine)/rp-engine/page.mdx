@@ -6,24 +6,23 @@ export const metadata = {
 
 # RP Engine
 
-RP Engine adds things to Minecraft that Minecraft does not have: swords with
-their own models, chairs you can sit in, emotes your players wear, custom
-sounds, icons that work in chat, artwork behind your menus, recipes, mobs and
-liquids.
+RP Engine is a plugin for Spigot and Paper servers (Minecraft 1.19.4 and newer)
+that adds things vanilla Minecraft does not have: swords with their own
+models, chairs you can sit in, emotes, custom sounds, icons in chat, artwork
+behind your menus, recipes, mobs, vehicles and liquids.
 
-You write each one as a few lines of YAML in a folder on your server. The
-plugin turns that folder into a resource pack, hands it to everybody who joins,
-and makes the content real on the server side.
+You describe each one in a few lines of YAML in a folder on your server. The
+plugin turns that folder into a resource pack (the zip of textures, models and
+sounds a Minecraft client downloads), sends it to every player who joins, and
+makes the content work on the server side.
 
-It builds the pack itself. There is no zip to make, nowhere to upload it, and
-no step where you run a command and then go and find the output.
+You never build or upload a zip yourself. The plugin builds the pack and
+serves it.
 
-<Callout type="note" title="ResourcePack AI Studio is optional">
-  You can drive RP Engine entirely from files on disk and never open a browser.
-  [Studio](https://studio.resourcepack.ai) makes the art and can push it
-  straight to a running server, which is faster — but it is one source of
-  content among several, not a requirement. Anything that only worked with
-  Studio in the picture would be a bug.
+<Callout type="note" title="Studio is optional">
+  RP Engine works entirely from files on disk. [Studio](https://studio.resourcepack.ai)
+  makes the art with AI and can push it straight to a running server, which is
+  faster, but you never need it.
 </Callout>
 
 ## What it can hold
@@ -31,29 +30,30 @@ no step where you run a command and then go and find the output.
 | Content | What it is |
 |---|---|
 | [Custom blocks](/rp-engine/blocks) | A block you place, mine and stand on |
-| [Items](/rp-engine/items) | Sprites or 3D models, wearable as [armour](/rp-engine/armour), carrying real [vanilla stats](/rp-engine/stats) |
-| [Actions](/rp-engine/actions) | A closed list of verbs, on nine triggers |
+| [Items](/rp-engine/items) | Sprites or 3D models, wearable as [armour](/rp-engine/armour), with real [vanilla stats](/rp-engine/stats) |
+| [Actions](/rp-engine/actions) | What an item does when it is used, hit with, and so on |
 | [Models](/rp-engine/models) | Put down, [sat on](/rp-engine/placement-options), [animated](/rp-engine/animation), [worn by a mob](/rp-engine/mobs) |
-| [Emotes](/rp-engine/emotes) | Worn or performed, alone or with a cast |
+| [Emotes](/rp-engine/emotes) | Worn or performed, alone or with other players |
 | [Sounds](/rp-engine/sounds) | Real sound events, with subtitles |
-| [Icons](/rp-engine/icons) | Pictures that behave like letters, anywhere text renders |
-| [GUIs](/rp-engine/screens) | A picture drawn behind a container window |
-| [HUD](/rp-engine/hud) | Overlays drawn over the game itself |
+| [Icons](/rp-engine/icons) | Pictures that behave like letters, anywhere text shows |
+| [GUIs](/rp-engine/screens) | A picture drawn behind a chest-style menu |
+| [HUD](/rp-engine/hud) | Overlays drawn over the game screen |
 | [Recipes](/rp-engine/recipes) | Crafting, cooking, stonecutting, smithing, brewing, anvils |
 | [Entities](/rp-engine/entities) | A real mob wearing a model |
-| [Liquids](/rp-engine/liquids) | Pools with rules about who is in them |
+| [Vehicles](/rp-engine/vehicles) | Cars, boats and aircraft players drive |
+| [Liquids](/rp-engine/liquids) | Pools with their own rules |
 
-## The two ideas worth knowing
+## Two ideas worth knowing
 
-**One ID for everything, and it is the reference.** `mypack:ruby` is the item,
-the model path, and what goes into the stack's persistent data. Nothing is
-allocated, there is no numbers file to keep in sync, and nothing can drift out
-of step with anything else. **Store IDs, never what they resolve to.**
+**One ID for everything.** `mypack:ruby` is the item, the path to its model
+and what is stored on the item stack. There are no numbers to allocate or keep
+in sync. If you refer to content from another plugin's config, store the ID.
+See [IDs and namespaces](/rp-engine/ids).
 
-**A bundle is what a player is holding.** A pack is built per bundle rather
-than one per server, and a player can hold several stacked on top of each other
-— so a lobby pack and a dungeon pack can be different things, and swapping is
-instant because the client already has both.
+**Players can hold several packs at once.** Content is built into
+[bundles](/rp-engine/bundles), and on 1.20.3 and newer a player can hold more
+than one, so a lobby pack and a dungeon pack can be separate. Swapping back to
+a bundle a player already has is instant.
 
 ## Where to go next
 
@@ -64,10 +64,10 @@ instant because the client already has both.
   <Card title="The content folder" href="/rp-engine/content">
     How a pack is laid out on disk.
   </Card>
-  <Card title="Items" href="/rp-engine/items">
-    The kind of content everything else hangs off.
+  <Card title="Commands" href="/rp-engine/commands">
+    Every command and the permission it needs.
   </Card>
-  <Card title="PlaceholderAPI" href="/rp-engine/placeholderapi">
-    Every placeholder, for scoreboards and menus.
+  <Card title="Configuration" href="/rp-engine/config">
+    Every setting in config.yml.
   </Card>
 </CardGroup>

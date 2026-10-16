@@ -1,54 +1,51 @@
 export const metadata = {
   title: "Citizens",
   description:
-    "An NPC that keeps its model across the despawn and respawn Citizens does on every chunk unload.",
+    "Give a Citizens NPC one of your models, and keep it through chunk unloads, respawns and restarts.",
 };
 
 # Citizens
 
-RP Engine hooks into Citizens so an NPC can wear one of your models and keep
-it — through a chunk unloading, a respawn, and a server restart.
+With Citizens installed, an NPC can wear one of your
+[models](/rp-engine/models) and keep it through a chunk unloading, a respawn,
+`/npc reload` and a server restart.
+
+Look at the NPC and run:
 
 ```
-/npc select
 /rp bind mypack:shopkeeper
 ```
 
-That is the whole thing. There is no trait to add by hand and nothing to
-configure.
+There is no trait to add by hand and nothing to configure. `/rp unbind`, looking
+at the NPC, takes the model off for good.
 
-## What needed solving
-
-Binding an NPC always worked — a Citizens NPC is an ordinary Bukkit entity, so
-[`/rp bind`](/rp-engine/mobs) has been able to dress one since binding existed.
-
-What did **not** work is the NPC being despawned and respawned, which Citizens
-does on a chunk unload, a `/npc reload` and a server restart. The entity that
-comes back is a new one, and the model went with the old one — so an NPC dressed
-on Monday was bare by Tuesday, with nothing to say why.
-
-<Callout type="note" title="So the model is written down against the NPC">
-  Binding an NPC adds an `rpmodel` trait carrying the ID. Citizens saves it with
-  everything else it knows about that NPC, and RP Engine puts the model back the
-  moment the new entity exists.
-
-  `/rp unbind` clears it, so an NPC told to take its model off does not put it
-  back on at the next respawn.
+<Callout type="note" title="Player-shaped NPCs need the .others node">
+  Most Citizens NPCs are player entities, so binding one counts as putting a
+  model on another player and needs `rpengine.bind.others` (and
+  `rpengine.unbind.others` to take it off) as well as `rpengine.bind`. Ops have
+  both. See [Permissions](/rp-engine/permissions#pointing-a-command-at-somebody-else).
 </Callout>
+
+## How it stays on
+
+Citizens removes an NPC's entity and makes a new one whenever its chunk
+unloads, on `/npc reload` and on restart. Binding an NPC also adds an
+`rpmodel` trait to it holding the model's ID. Citizens saves the trait with the
+NPC, and RP Engine puts the model back on each time the NPC spawns.
 
 ## What the NPC keeps
 
-Everything. Its skin, its name, its pathing, its commands, its traits, its uuid
-as far as Citizens is concerned. RP Engine makes the vanilla body invisible and
-hangs a model off it; take the model off and the NPC is exactly what it was.
+Everything: its skin, name, pathing, commands, traits and identity. RP Engine
+hides the vanilla body and attaches the model; take the model off and the NPC
+is exactly what it was.
 
 ## Animating one
+
+From your own plugin, through the [API](/rp-engine/api):
 
 ```java
 models.animate(npc.getEntity(), "wave");
 ```
 
-There is no Citizens-side trigger for it, because Citizens has no skill tree to
-hang one on. If you want an NPC that waves when somebody walks up, that is your
-own plugin listening for whatever "walks up" means on your server — see
-[the plugin API](/rp-engine/api).
+Citizens has no skill system to trigger animations from, so deciding when an
+NPC waves is up to your plugin.

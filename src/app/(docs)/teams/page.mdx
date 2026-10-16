@@ -6,211 +6,155 @@ export const metadata = {
 
 # Teams
 
-A **team** is a shared workspace: every pack it owns belongs to everybody on it,
-everybody spends from one pool of AI Credits, and it all arrives on one invoice.
+A **team** is a shared workspace. Every pack it owns belongs to everybody on it,
+everybody spends from one pool of AI Credits, and it's all on one invoice.
 
-It's the other half of [Collaborators](/collaborators), not a bigger version of
-it. A collaborator is somebody you let into **one pack**, with a chosen slice of
-it. A team is the arrangement where that stops making sense — five people who
-work on everything together, where granting each of them access to eleven packs
-one at a time is the friction rather than the safety.
+It's different from [Collaborators](/collaborators). A collaborator is somebody
+you let into **one pack**, with a chosen slice of it. A team is for people who
+work on everything together, where inviting each of them to every pack one at a
+time would be a chore.
 
 <Callout type="note">
-  Both still exist and they don't overlap. Somebody **on** the team gets every
-  team pack automatically. Somebody **outside** it can still be invited to a
-  single team pack as an ordinary collaborator, with the same sections and
-  capabilities as anywhere else — and they don't use up a seat.
+  The two work together. Everyone **on** the team gets every team pack
+  automatically. Someone **outside** it can still be invited to a single team
+  pack as a collaborator, and doesn't take a seat.
 </Callout>
 
 ## What it costs
 
-**$30 per seat, per month.** Minimum two seats, because everything a team adds
-is about there being somebody else.
+**$30 per seat, per month**, with a minimum of two seats and a maximum of 50.
 
-Each seat adds **1,000 AI Credits a month** to the shared pool. A five-seat team
-gets 5,000 a month between them, spent by whoever needs them — there is no
-per-person allowance to run out of while somebody else's goes unused.
+| | Per seat |
+| --- | --- |
+| AI Credits added to the pool each month | 1,000 |
+| Packs | 20 (so a two-seat team has 40) |
+| Distribution players | Unlimited |
 
-Top-ups are **40% off** on a team, the best rate in the product. Only the owner
-can buy them.
+The credits are one shared pool, spent by whoever needs them. Top-ups are
+**40% off** on a team, the best rate there is; only the owner can buy them.
 
 <Callout type="note">
-  **A seat doesn't replace a plan of your own.** The two bill separately and you
-  can hold both — your own packs run on your own plan, the team's packs run on
-  the team's, and the switcher decides which one you're working in. Nothing
-  about your account changes when you join a team.
+  **A seat doesn't replace your own plan.** They bill separately and you can
+  hold both. Your own packs run on your plan, the team's packs on the team's.
 </Callout>
 
 ## Switching between your packs and the team's
 
-Bottom-left of the sidebar, where your name and credit balance are. Click it and
-you get a list: **Personal**, then every team you're on.
+Click your name and credit balance at the bottom left of the sidebar. The list
+shows **Personal** and every team you're on.
 
-Whatever you pick is the context everything else follows. The pack list, the
-**New pack** button, the credit balance in the corner, the limits — all of them
-mean "yours" or "the team's" depending on which one is selected.
+Whatever you pick decides what the rest of the app shows: the pack list, the
+**New pack** button, the credit balance and the limits all follow it.
 
-**A pack is created in whichever context is active and stays there.** Make a pack
-while you're in the team and it's the team's from the moment it exists, listed
-for everybody. Make one in your personal context and it's yours alone. There is
-no moving a pack between the two yet.
+**A pack belongs to the context it was made in.** Make one while the team is
+selected and it's the team's, visible to everybody on it. Make one in Personal
+and it's yours. Packs can't be moved between the two.
 
 ## Roles
 
-<CardGroup cols={3}>
-  <Card title="Owner" icon="wallet">
-    Everything an admin can do, plus billing: seats, top-ups, cancelling. One
-    per team, and only the owner can hand it to somebody else.
-  </Card>
-  <Card title="Admin" icon="users">
-    Invite and remove people, change roles, publish packs, delete packs.
-  </Card>
-  <Card title="Member" icon="brush">
-    Full edit on every team pack, and spends from the pool.
-  </Card>
-  <Card title="Viewer" icon="eye">
-    Opens every team pack and changes nothing — no editing, no generating, no
-    exporting. For clients and contractors.
-  </Card>
-</CardGroup>
+| Role | Can |
+| --- | --- |
+| **Owner** | Everything an admin can, plus billing: seats, top-ups, automatic top-ups, cancelling. One per team |
+| **Admin** | Invite and remove people, change roles, set limits, publish and delete packs, manage keys and webhooks, see Activity and Billing |
+| **Member** | Edit, generate, sync and export in every team pack, spending from the pool |
+| **Viewer** | Open every team pack and change nothing: no editing, generating, syncing or exporting. For clients and contractors |
 
-Membership **is** the grant — there is nothing to configure per person, which is
-most of the point. A member sees every section of every team pack and can edit,
-generate, sync and export in all of them. The two things reserved for admins are
-the ones that are hard to undo: **publishing** a pack to somebody's players, and
-**deleting** one.
+Membership is the access: there's nothing to set up per person. Admins keep
+the two actions that are hard to undo, **publishing** a pack to players with
+[Distribution](/distribution) and **deleting** a pack.
 
 ## Seats
 
-You buy seats, then fill them. Removing somebody frees their seat immediately and
-that seat can be refilled at no extra cost.
+You buy seats, then fill them. Removing a person frees their seat at once, and
+you can give it to someone else at no extra cost.
 
 <Callout type="note">
-  **An empty seat is still a paid seat.** Removing a person doesn't reduce your
-  bill — the seat is yours for the rest of the month you've paid for. Reducing
-  the number of seats is a separate thing you do on the team's page.
+  **An empty seat is still a paid seat.** Removing a person doesn't lower your
+  bill. Reducing the seat count is a separate step on the team's Billing page.
 </Callout>
 
-Changing the seat count is deliberately not symmetrical:
-
-- **Adding a seat** takes effect straight away. You're charged the prorated part
-  of the month, and the extra 1,000 credits land in the pool.
-- **Removing a seat** can happen either way. **Now** takes effect immediately
-  and refunds nothing — which is exactly why no credits come back out of the
-  pool either; you paid for the month, you keep the month. **At renewal** keeps
-  the seats you've already paid for until the period ends, then drops to the
-  new number. Unless you specifically want the smaller number reflected today,
-  at renewal is the one you want.
+- **Adding a seat** takes effect straight away. Your card is charged the
+  prorated rest of the month (the confirmation shows the exact amount), and
+  the pool gets the same share of that seat's 1,000 credits. The full 1,000
+  arrives at renewal.
+- **Removing a seat** offers **Now** or **At renewal**. Neither refunds
+  anything, so pick **At renewal** unless you want the lower number today.
 
 ## Inviting somebody
 
-Open the team's page and invite them by email. Invitations last **fourteen days**
-and can be withdrawn at any time.
+On the team's **Members** page, invite them by email. Invitations last **seven
+days** and can be withdrawn at any time. An outstanding invitation holds a seat,
+so you can't send more invitations than you have free seats.
 
-An invitation holds a seat while it's outstanding, so you can't invite four
-people to a two-seat team and let them race for it.
+Inviting by email always says "invitation sent", whether or not the address has
+an account, so nobody can use the box to find out who's signed up.
 
-<Callout type="note">
-  Inviting by email always says "invitation sent", whether or not that address
-  already has an account here — the same rule as a pack invitation, and for the
-  same reason. Otherwise the box would tell anybody who typed an address whether
-  its owner has a resourcepack.ai account.
-</Callout>
+## Limiting someone to certain packs
 
-## Limiting somebody to certain packs
+An admin can restrict a member or viewer to chosen packs from the members list.
+Nobody is restricted by default.
 
-An admin can restrict a member or viewer to a chosen set of packs, from the
-members list. By default nobody is restricted, and that's the normal way to run
-a team — being on it is the access.
-
-<Callout type="note">
-  It's an allowlist, so a pack made **after** you set the restriction isn't one
-  they can see. That's deliberate: a contractor shouldn't silently gain access
-  to next month's project. Admins and owners can't be restricted, because
-  managing every pack is what being an admin means.
-</Callout>
+It's an allowlist: a pack made **after** you set it isn't included, so a
+contractor doesn't quietly gain next month's project. Admins and the owner
+can't be restricted.
 
 ## Spend limits
 
-An admin can cap what any one person takes out of the pool in a billing period.
-Set it from the members list on the team's page; leave it blank for no limit,
-which is the default.
+An admin can cap how many credits one person takes from the pool in a billing
+period, from the members list. Blank means no limit, which is the default.
+Everyone can see their own limit and how much of it they've used. The owner
+can't be limited.
 
-Everybody can see their own limit and how much of it they've used, so nobody
-finds out about a cap by being refused halfway through a generation.
+## API keys and your own OpenAI key
 
-<Callout type="note">
-  **The owner can't be limited.** They hold the card, so a cap on them is one
-  they could lift in a click — a limit that only pretends to bind is worse than
-  none at all.
-</Callout>
+Both follow the context you're in.
 
-## Your own API key, and your own OpenAI key
+- **API and MCP keys** made on the Developers page while the team is selected
+  belong to the team: they spend the pool and reach the team's packs. Only
+  admins can create and revoke them. If someone leaves, every team key they
+  held stops working. A key made in Personal never reaches a team's packs.
+  See the [API reference](/api-reference).
+- **Your own OpenAI key**: an admin can store one for the team, and 3D model
+  generation and edits in team packs then run on it instead of the pool. A
+  team pack always uses the team's key, never a member's personal one.
 
-Both work per context, the same way packs and credits do.
+## Activity
 
-**API and MCP keys** — create one on the Developers page while you're in the
-team and it belongs to the team:
-it spends the pool and reaches the team's packs, rather than dying with whoever
-made it. Admins only, to create and to revoke. If somebody leaves the team,
-every team key they were holding stops working immediately. A key made outside
-the team is the other way round: it reaches your own packs and the ones shared
-with you, never a team's.
+The team's **Activity** page, for admins and the owner, has two tabs:
 
-**Your own OpenAI key** — a team can store one, and then anything that can run
-on it costs the pool nothing. Admins can set it. A team pack always uses the
-team's key, never a member's personal one.
+- **Audit log**: invitations, joins and removals, role changes, ownership
+  transfers, limits and pack restrictions, seat changes and top-ups, keys,
+  packs created, published or deleted, and team renames.
+- **Spend**: credits each person has used this billing period, and how many
+  actions that was.
 
-## Activity and spend
-
-Every team has an **Activity** page with two tabs, and everybody on the team can
-read both.
-
-**Audit log** — who invited whom, who changed a role, who published or deleted a
-pack, when the seat count moved, who set a spend limit, who changed the team's
-API keys, who renamed it. Written as things happen, so it's a record rather
-than a reconstruction.
-
-**Spend** — how many credits each person has used this billing period, and how
-many actions that was. This is the answer to "where did the pool go", which is
-the question a shared balance creates.
-
-Viewers don't get this page — it's the team's billing history and everybody's
-addresses, and a viewer can't spend the pool in the first place.
-
-Both tabs have an **Export CSV** button, which gives you the entire history
-rather than what's on screen — the version to hand whoever reconciles the
-invoice.
+**Export CSV** downloads either, for all time or a date range you choose, and
+the audit log can be filtered by kind of action.
 
 ## Automatic top-ups
 
-The pool running out stops everybody at once, and only the owner can fix it. So
-the owner can set a floor and an amount: when the shared balance drops below the
-floor, we buy that many credits on the team's card and carry on.
-
-Capped at three automatic purchases per billing period, so a mistake can't run
-away with your card, and every one of them emails the owner and lands in the
-audit log. A team whose plan has lapsed is never charged.
+When the pool runs out, everybody stops at once. The owner can set a floor and
+an amount (500 to 20,000 credits): when the balance drops below the floor,
+that many credits are bought on the team's card. At most three automatic
+purchases happen per billing period, each one emails the owner and appears in
+the audit log, and a team whose plan has lapsed is never charged.
 
 ## Webhooks
 
-Admins can point the team's activity at a URL — everything the audit log
-records gets POSTed there as JSON, which is how you get it into Slack, Discord
-or your own tooling. Add them on the team's **Settings** page; a team can have
-several (up to five), each with its own signing secret shown once when you add
-it. Every event is delivered to all of them.
+Admins can send everything the audit log records to a URL, as JSON, to get it
+into Discord, Slack or your own tools. Add up to five on the team's
+**Settings** page. Each has its own signing secret, shown once when you add it,
+and every event goes to all of them.
 
 ### The request
 
-Each event is a `POST` with a JSON body and these headers:
+Each event is a `POST`:
 
 ```
 Content-Type: application/json
 User-Agent: resourcepack.ai-webhook/1
 X-RPAI-Signature: sha256=<hex>
 ```
-
-The body is one event:
 
 ```json
 {
@@ -224,24 +168,20 @@ The body is one event:
 }
 ```
 
-- **`type`** is the action — the same vocabulary the audit log and the CSV
-  export use (`member.joined`, `member.role_changed`, `seat.changed`,
-  `pack.published`, and so on).
-- **`actor`** is the account id that did it, or `null` for a system event.
-- **`target`** and **`detail`** vary by type: `target` is what it happened to
-  (a pack name, the person a role changed for), `detail` is any extra fields
-  that type carries, or `null`.
-- **`id`** is unique per delivery — use it to dedupe, since delivery is
-  at-least-once in spirit rather than exactly-once.
-- **`at`** is when it was sent, ISO 8601.
+| Field | Meaning |
+| --- | --- |
+| `type` | The action, using the audit log's names (`member.joined`, `member.role_changed`, `seat.changed`, `pack.published` and so on) |
+| `actor` | The account id that did it, or `null` |
+| `target` | What it happened to, such as a pack or a person |
+| `detail` | Extra fields for that type, or `null` |
+| `id` | Unique per event, and the same across your webhooks. Use it to spot duplicates |
+| `at` | When it was sent, ISO 8601 |
 
 ### Verifying the signature
 
-`X-RPAI-Signature` is `sha256=` followed by the hex **HMAC-SHA256** of the
-**raw request body**, keyed with your signing secret. Compute the same over the
-bytes you received and compare — if they don't match, it isn't from us. Verify
-against the raw body, not a re-serialized copy of the parsed JSON, or a
-re-ordered key will fail a signature that was actually valid.
+`X-RPAI-Signature` is `sha256=` plus the hex **HMAC-SHA256** of the **raw
+request body**, keyed with your signing secret. Compute it over the bytes you
+received, not a re-serialized copy of the parsed JSON.
 
 ```js
 import { createHmac, timingSafeEqual } from "node:crypto";
@@ -256,27 +196,19 @@ function verify(rawBody, header, secret) {
 
 ### Delivery
 
-`https` only, and we won't POST to loopback or private-network addresses. Each
-attempt times out after five seconds, and **delivery is best effort with no
-retry** — a receiver that's down loses that event rather than blocking the
-action that produced it. If you need a guaranteed complete record, the CSV
-export is it. The **Settings** card shows the last delivery's status so you can
-tell whether your endpoint is answering.
+HTTPS only, never to loopback or private-network addresses, and redirects
+aren't followed. Each attempt times out after five seconds and **is not
+retried**: if your endpoint is down, that event is lost. The CSV export is the
+complete record. The **Settings** card shows the last delivery's status.
 
-## Leaving, and what happens to the packs
+## Leaving
 
-Anybody except the owner can leave a team from its page, and an admin can remove
-anybody except the owner.
+Anyone except the owner can leave from the team's page, and an admin can remove
+anyone except the owner. To leave as the owner, first press **Make owner** on
+someone in the members list: billing moves to them and you become an admin.
 
-If you're the owner and you want to leave, hand the team over first: open the
-members list and press **Make owner** on somebody. Seats, top-ups and
-cancelling all move to them, and you become an admin.
+**Packs stay with the team.** Nobody takes a pack with them when they leave.
 
-**The packs stay with the team.** They were never one person's — a pack made in a
-team context belongs to the team from the moment it's created, so somebody
-leaving takes nothing with them and there's nothing to hand over.
-
-If the team's plan lapses, nothing is deleted. The packs stay, everybody keeps
-their access, and whatever credits the pool had accumulated stay in it — what
-stops is making new things, exactly as it would for a personal account that
-lapsed to Starter.
+If the team's plan lapses, nothing is deleted. Packs and access stay, and so do
+the credits in the pool; only new paid work stops, as it would for a personal
+account.

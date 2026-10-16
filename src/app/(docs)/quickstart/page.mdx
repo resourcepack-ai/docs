@@ -5,12 +5,13 @@ export const metadata = {
 
 # Quickstart
 
-One full loop: make a pack, generate something into it, look at it in
-Minecraft.
+This page takes you round the whole loop once: make a pack, generate a block
+into it, and see it in Minecraft.
 
 <Callout type="note" title="You'll need">
-  A ResourcePack AI account, and Minecraft: **Java or Bedrock**. Nothing to
-  install for either.
+  A free ResourcePack AI account, and Minecraft: **Java or Bedrock**. You don't
+  need to install anything. The free plan comes with 50 AI credits a month,
+  and a block texture costs 10.
 </Callout>
 
 ## Make something
@@ -18,94 +19,82 @@ Minecraft.
 <Steps>
   <Step title="Create a pack">
     Open [studio.resourcepack.ai](https://studio.resourcepack.ai) and create a
-    pack. A pack is the container for everything else you make (models,
-    blocks, items, GUIs, icons and sounds), and it's the unit you export and
-    test. The Studio starts you with a name and icon; use the dice to
-    randomize both, or upload your own image.
+    pack. Give it a name, and optionally a description and an icon. A pack
+    holds everything you make, and it's what you test and export.
   </Step>
   <Step title="Press Add asset">
-    Two choices, in this order. First **how you want to start**:
+    The sheet that opens has a row of tabs across the top for **what** you're
+    making: Model, Block, Item, Armor, GUI, Dialog, HUD, Icon, Sound, Emote
+    and Shader. Under them you choose **how** to start:
 
-    | Option | What it is |
+    | Option | What it does |
     | --- | --- |
-    | **Generate** | Describe it and the AI makes it |
-    | **Draw** | A blank grid, or a stone cube, and you do the work |
-    | **Upload** | Art you already have |
+    | **Generate** | You describe it and the AI makes it |
+    | **Blank** | Opens the editor with nothing in it |
+    | **Upload** | Uses files you already have |
 
-    Then **what you're making**: Block, Model, Item, GUI, Icon or Sound. A few
-    combinations don't exist (you can't draw a sound), and the fields
-    underneath change with the type. See
-    [Generating with AI](/generating) for the detail.
+    Pick the **Block** tab and **Generate**.
   </Step>
   <Step title="Describe what you want">
-    Pick **Generate**, then say what you want in a sentence. Be specific about
-    material and wear, not about pixels:
+    Choose the vanilla block to replace (stone, oak planks, anything), then
+    describe the new look in a sentence. Talk about the material and its
+    wear, not about pixels:
 
     > weathered copper roof tiles, blue-green patina, strong diagonal grain
 
-    A block, item, icon or sound comes back in seconds. A model takes minutes
-    instead: **the builder** plans it and constructs it cube by cube, painting
-    its materials as it goes, and you can leave the tab while it works.
-
-    See [Generating with AI](/generating) for what makes a prompt land.
+    The cost is shown next to the **Generate** button before you press it. A
+    block takes a minute or two. Bigger things take longer: a 3D model takes
+    a few minutes, and you can leave the tab while it works. See
+    [Generating with AI](/generating) for every type and what it costs.
   </Step>
   <Step title="Edit it">
-    Nothing generated is final, and that's the point: generation is a faster
-    starting position than an empty grid, not a finished product.
-
-    Blocks, items and icons open in the [pixel editor](/blocks); models open
-    in the [model editor](/models), which has separate modes for shaping
-    geometry, painting it, positioning it in hand, and animating it.
+    What comes back is a starting point, not the finished thing. Click it to
+    open its editor and fix what isn't right. Blocks, items and icons open in
+    the [pixel editor](/blocks), and models in the [model editor](/models).
   </Step>
 </Steps>
 
 ## See it in Minecraft
 
-The fastest route is our test server: no plugin, no setup.
+The quickest way is our test server. It already runs everything a pack needs.
 
 <Steps>
-  <Step title="Join play.resourcepack.ai">
-    Java or Bedrock, same address. Take the portal for a private sandbox of
-    your own, which is kept between visits, or use the shared sandbox up
-    front for a quick look.
+  <Step title="Join the test server">
+    Connect to <ServerAddress /> from Java or Bedrock. Go through the portal
+    for a private world of your own, which is kept between visits.
   </Step>
-  <Step title="Link your account, once ever">
-    On your account page, under **Minecraft account**, press **Get link
-    code**, then run it in game:
+  <Step title="Link your account (once)">
+    In Studio, open your account page. Under **Minecraft account**, press
+    **Get link code**, then type the command it shows in game:
 
     ```
     /permlink 48213097
     ```
 
-    That's the last code you'll type. From here on, the Studio knows who you are
-    on the server.
+    You only do this once. After that, Studio knows which player is you.
   </Step>
-  <Step title="Push">
-    Hit **Sync** on the pack and it goes straight to your client. Nothing is
-    downloaded, zipped or uploaded by you. On Java the pack swaps in where
-    you're standing; on Bedrock you're bounced out and back in for a few
-    seconds, because Bedrock only takes a pack while joining.
+  <Step title="Press Sync">
+    Press **Sync** on the pack and it goes straight to your game. On Java the
+    new textures appear where you're standing. On Bedrock you're disconnected
+    and reconnected for a few seconds, because Bedrock only accepts a pack
+    while joining.
   </Step>
-  <Step title="Iterate">
-    Change something in the Studio, push again, look again. Most of the work is in
-    how many times you go round this loop, not in getting it right first time.
+  <Step title="Go round again">
+    Change something in Studio, press Sync, look again. Good packs come from
+    going round this loop a lot, not from getting it right first time.
   </Step>
 </Steps>
 
-{/* Held back with the your-server page (2026-08-08) — restore together.
-<Callout type="tip" title="Own server instead?">
-  Any Paper or Spigot server can run our plugin and take pushes the same way.
-  There it's a per-pack `/rp sync` code rather than a one-off permalink; see
-  [Your own server](/testing/your-server).
+<Callout type="tip" title="Your own server">
+  To test on your own Paper or Spigot server instead, install
+  [RP Engine](/testing/plugin). It takes pushes from Studio the same way.
 </Callout>
-*/}
 
 ## Export it (optional)
 
-You never have to do this to test; the loop above never touches a file. But a
-finished pack is an ordinary Minecraft Resource Pack, and you can take it with
-you: export Java `.zip` or Bedrock `.mcpack`. The `.zip` goes in your
-`resourcepacks` folder:
+You never need a file to test. When the pack is done, export it as a Java
+`.zip` or a Bedrock `.mcpack` from the pack page. To use the `.zip` in your
+own game, put it in your `resourcepacks` folder:
 
 ```bash
 # Windows
@@ -118,6 +107,8 @@ you: export Java `.zip` or Bedrock `.mcpack`. The `.zip` goes in your
 ~/.minecraft/resourcepacks
 ```
 
-There's no runtime dependency on us in the exported file. It keeps working
-if you never open the Studio again. The exception is animated models, which need
-our plugin to play back; see [Animations](/animations).
+Then turn it on under **Options → Resource Packs**. The exported pack doesn't
+depend on us and keeps working if you never open Studio again. The exceptions
+are the things vanilla Minecraft can't do on its own, such as animated models,
+vehicles and emotes, which need RP Engine on the server. See
+[Exporting a pack](/exporting).

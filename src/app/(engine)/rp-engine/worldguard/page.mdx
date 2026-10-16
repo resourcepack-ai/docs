@@ -1,21 +1,14 @@
 export const metadata = {
   title: "WorldGuard",
   description:
-    "Two region flags for placing models and using custom items, built on events the engine already fired.",
+    "Two region flags to stop players placing models or using custom items in your WorldGuard regions.",
 };
 
 # WorldGuard
 
-RP Engine hooks into WorldGuard to keep custom content out of the places your
-regions already protect: a spawn where nobody may put models down, an arena
-where custom items do nothing.
-
-RP Engine has no protection of its own and is not trying to grow any. It knows
-whether something can physically happen, never whether it is allowed to, so a
-server with regions says where using content is allowed the same way it says
-where building is.
-
-Two region flags, if WorldGuard is installed:
+With WorldGuard installed, RP Engine adds two region flags, so you can keep
+custom content out of places you already protect: a spawn where nobody may put
+models down, an arena where custom items do nothing.
 
 ```
 /rg flag spawn rpengine-place deny
@@ -27,38 +20,27 @@ Two region flags, if WorldGuard is installed:
 | `rpengine-place` | Putting a model down, and breaking one |
 | `rpengine-use` | Using a custom item |
 
-Both **allow** by default, so installing WorldGuard changes nothing until you
-set one.
+Both allow by default, so installing WorldGuard changes nothing until you set
+one. Players with WorldGuard's region bypass are not stopped.
 
-## It fails open
-
-<Callout type="note" title="Anything that goes wrong allows">
-  A flag that never registered, an exception, WorldGuard not answering, a
-  player with bypass — all of them allow.
-
-  A protection hook that failed **closed** would lock a server out of its own
-  content the moment anything went wrong with it, which is a worse outcome than
-  an unguarded region. You would find out from players who cannot place
-  anything anywhere, with a stack trace nobody saw.
+<Callout type="note" title="If something goes wrong, it allows">
+  If a flag failed to register or WorldGuard throws an error, the action is
+  allowed. A broken hook never locks your players out of their content
+  everywhere.
 </Callout>
-
-## Why this needed no engine change
-
-The whole integration is a listener cancelling
-[events](/rp-engine/api) RP Engine already fired: `ModelPlaceEvent`,
-`ModelBreakEvent`, `ItemUseEvent`.
-
-That is what those events are for. A region check baked into placement would
-have locked every other protection plugin out of the same decision — and the
-same events are why GriefPrevention, a claims plugin or your own rule can do
-exactly what WorldGuard does here, without waiting for us.
 
 ## Placement already respects protection
 
-Separately from the flags: **a placement asks the server whether that player
-could have placed a block there.**
+Even without the flags, placing a model asks the server whether that player
+could have placed a block there. So spawn protection and most claim plugins
+already apply, with nothing to configure.
 
-So spawn protection, world protection and most claim plugins already apply with
-nothing configured. The flags are for the case where you want models and items
-treated differently from blocks — a region where building is fine but statues
-are not.
+The flags are for treating models and items differently from blocks: a region
+where building is fine but statues are not.
+
+## Other protection plugins
+
+The flags work by cancelling RP Engine's `ModelPlaceEvent`,
+`ModelBreakEvent` and `ItemUseEvent`. Any other plugin, such as a claims
+plugin or your own, can listen for the same [events](/rp-engine/api) and do
+the same.

@@ -6,22 +6,21 @@ export const metadata = {
 
 # Bedrock and Geyser
 
-RP Engine hooks into [Geyser](https://geysermc.org/) to hand Bedrock players a
-pack of their own, so they see your custom items with your art rather than the
-plain vanilla item underneath.
+[Geyser](https://geysermc.org/) lets Bedrock Edition players (phones,
+consoles, Windows) join a Java server. When **Geyser-Spigot** runs on the same
+server, RP Engine builds a Bedrock pack (`.mcpack`) from your content every
+time it builds the Java pack, and sends it to Bedrock players as they join.
+They see your custom items with your art instead of the plain vanilla item
+underneath.
 
-If **Geyser-Spigot** is on the server, the engine builds a Bedrock `.mcpack`
-from your content every time it builds the Java pack, and serves it to every
-Bedrock player as they join. There is nothing to configure; it is detected and
-used. The console says what went into it:
+There is nothing to configure. The console says what went into the pack:
 
 ```
 [RPEngine] Bedrock pack built: 12 items, 3 models, 4 sounds, 6 icons, 2 armour pieces.
 ```
 
-It is built from your default bundle (`default-bundle` in `config.yml`), since
-that is the one every player is given. It lands beside the Java zip in
-`plugins/RPEngine/output/`.
+It is built from your default bundle (`default-bundle` in `config.yml`) and
+saved beside the Java zip in `plugins/RPEngine/output/`.
 
 ## What crosses over
 
@@ -32,10 +31,10 @@ that is the one every player is given. It lands beside the Java zip in
 - **Armour** on those items, on the body, from the same equipment texture.
 - **Placed models.** Each piece is drawn for Bedrock players within 48 blocks
   as a native entity, at its size and facing, with its animations playing on
-  their own client. A model that paints with the game's own textures gets them
-  baked in: the engine downloads them once, in the background, and builds the
-  pack again when they arrive, so a Bedrock player who joined in those first
-  seconds sees a checkerboard on that model until they next join.
+  their own client. A model that uses the game's own textures gets them baked
+  in. The plugin downloads them once, in the background, the first time; a
+  Bedrock player who joins in those first seconds sees a checkerboard on that
+  model until they next join.
 - **Sounds.** A sound plays on Bedrock under the same id it plays under on
   Java, so actions and commands that play `mypack:laser` work for everyone. A
   file in `overrides/` that replaces a vanilla sound is added under the name
@@ -45,8 +44,8 @@ that is the one every player is given. It lands beside the Java zip in
 
 ## What does not
 
-**Emotes and vehicles.** Both are rigs of display entities the server moves,
-and Geyser does not draw display entities.
+**Emotes and vehicles.** Both are built from display entities, which Geyser
+does not draw.
 
 **Custom blocks.** A [custom block](/rp-engine/blocks) is a vanilla block in a
 state nothing else uses, and Bedrock players see that vanilla block.
@@ -55,8 +54,8 @@ state nothing else uses, and Bedrock players see that vanilla block.
 with a display entity riding it, so a Bedrock player sees neither. It can still
 be hit where it stands.
 
-**Custom screens, HUD overlays and dialogs.** All three are drawn through the
-Java font or the Java dialog system, and Bedrock has neither.
+**Custom screens, HUD overlays and dialogs.** All three rely on Java-only
+font and dialog features.
 
 **A handful of vanilla sounds** that Bedrock plays itself rather than by name.
 Most vanilla sounds can be replaced on both editions.
@@ -73,10 +72,10 @@ it happens.
 
 A pack pushed from Studio with `/rp sync` includes a Bedrock build whenever a
 player receiving it is on Bedrock, and a pack served through Studio's
-distribution always has one when anything in it can cross. The engine hands that build to them the only way Bedrock allows: a
-Bedrock client takes packs only while joining, so it is transferred back to the
-same server and served the pack on the way in. It takes a few seconds and the
-sync survives it.
+distribution always has one when anything in it can cross. A Bedrock client
+only accepts packs while joining, so the player is moved back onto the same
+server and given the pack on the way in. It takes a few seconds, and the sync
+survives it.
 
 Placed Studio models then show up for Bedrock players as native entities, drawn
 when a player comes within 48 blocks and taken away when they move off. Their
@@ -84,16 +83,12 @@ animations play on the player's own client from the pack's keyframes, started
 by the same triggers as on Java.
 
 [3D armour](/rp-engine/armour#3d-armour-from-studio) from Studio is drawn on
-the body for Bedrock players too, as long as the pieces were handed out with
-`/rp armor give` or `/rp armor wear` by RP Engine 0.1.66 or newer.
+the body for Bedrock players too, when the pieces were handed out with
+`/rp armor give` or `/rp armor wear`.
 
 ## Designing for both
 
-The rule that works: **make the item carry the meaning, and the model carry the
-delight.** Bedrock draws most of what Java does now, but not screens, the HUD,
-dialogs, emotes, vehicles, custom blocks or custom entities, so a menu that only
-exists as a custom screen is a menu Bedrock players never see.
-
-If your server is Java-first and Bedrock is a bonus, none of this matters much.
-If Bedrock is a real part of your player base, it is worth knowing which of
-your content is decoration and which is information.
+If many of your players are on Bedrock, put anything they need to know in
+something that crosses over, such as an item's name and lore or chat. Bedrock
+players never see a menu that only exists as a custom screen, the HUD, a
+dialog, an emote, a vehicle, a custom block or a custom entity.

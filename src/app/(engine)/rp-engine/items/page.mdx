@@ -1,14 +1,15 @@
 export const metadata = {
   title: "Items",
   description:
-    "A vanilla item wearing a different model — the kind of content everything else hangs off.",
+    "A vanilla item wearing a different model: the kind of content everything else hangs off.",
 };
 
 # Items
 
-An item is **a vanilla item wearing a different model**. It stacks, it burns in
-lava, it goes in a hopper, and every other plugin sees a real `ItemStack`.
-Nothing about it is a pretend item.
+A custom item is a vanilla item with your own name, texture or 3D model on it.
+Because it is a real vanilla item underneath, it stacks, burns in lava, goes in
+a hopper, and every other plugin sees an ordinary item. Furniture, blocks and
+armour all start as items.
 
 ```yaml
 # items/gems.yml
@@ -17,24 +18,28 @@ ruby:
   name: "&cRuby"
   lore: ["&7Warm to the touch."]
   texture: item/ruby       # defaults to item/<id>
-  stack: 16
-  glow: true
+  stack: 16                # largest stack
+  glow: true               # the enchanted shimmer, without an enchantment
   unbreakable: true
 ```
 
-`material` is what it *is* when nothing else is looking — pick it for
-behaviour. A `PAPER` ruby is inert; a `DIAMOND_SWORD` one swings like a sword.
+`material` decides how the item behaves, so pick it for that. A `PAPER` ruby
+does nothing when used; a `DIAMOND_SWORD` one swings like a sword. Names and
+lore take `&` colour codes.
 
-`/rp give mypack:ruby` puts one in your hand. `/rp items` lists them.
+`/rp give mypack:ruby` gives you one. `/rp items` lists them all.
+
+`stack` and `glow` need Minecraft 1.20.5 or newer; on an older server they are
+ignored with a console warning.
 
 ## The texture
 
-Falls out of the ID. `mypack:ruby` looks for
-`assets/textures/item/ruby.png` with nothing pointing at it, and `texture:`
-overrides that if you want two items sharing one picture.
+With no `texture:` and no `model:`, `mypack:ruby` uses
+`assets/textures/item/ruby.png`. `texture:` points somewhere else, for example
+to let two items share one picture. It can also be a full resource location,
+such as `minecraft:item/custom/ruby`.
 
-A texture nobody shipped is a build warning naming the path, rather than a
-purple-and-black square in game with nothing to trace it back to.
+A missing texture is a build warning that names the path it looked for.
 
 ## 3D items
 
@@ -46,18 +51,45 @@ sword:
   model: sword             # assets/models/sword.bbmodel
 ```
 
-**Both forms work**, and the project file is the one to use:
+Two file types work:
 
-- **`sword.bbmodel`** — what Blockbench *saves*. Its textures are inside it, so
-  the model is one file you can hand to somebody, and there is no export step
-  to forget.
-- **`sword.json`** — what Blockbench *exports*. Cubes only: no bones and no
-  keyframes, so [an animated model](/rp-engine/animation) must be saved rather
-  than exported.
+- **`sword.bbmodel`**: the project Blockbench saves. Its textures are inside
+  it, so the model is one file. Use this one.
+- **`sword.json`**: a Java model exported from Blockbench, with its PNGs beside
+  it. It has no bones or keyframes, so [an animated model](/rp-engine/animation)
+  must be the `.bbmodel`.
 
-Source that an item consumed is dropped from the built pack. Source nothing
-referenced is kept, because it is probably a shared parent something else
-inherits from.
+The game's models only allow a cube to be rotated on one axis, by -45, -22.5,
+0, 22.5 or 45 degrees, so other rotations are snapped to the nearest of those.
+Meshes are left out: convert them to cubes first.
+
+`model:` can also name a model by resource location
+(`model: minecraft:item/custom/lamp`), or be written into the item directly:
+
+```yaml
+pick:
+  material: IRON_PICKAXE
+  model:
+    parent: minecraft:item/handheld
+    textures: { layer0: mypack:item/pick }
+```
+
+### A different model in first person
+
+`first-person:` is a second model, written any of the same ways as `model:`,
+that is drawn only in the holder's own first-person view. Everyone else, and
+the inventory, see `model:`. It suits an aimed gun, where the sights should
+fill the view:
+
+```yaml
+rifle_aimed:
+  material: PAPER
+  model: rifle
+  first-person: rifle_sights
+```
+
+Needs Minecraft 1.21.4 or newer. On an older server the normal model is used in
+first person too, with a warning.
 
 ## Borrowing another item's model
 
@@ -67,10 +99,8 @@ ruby_sword:
   copy-model: mypack:sword
 ```
 
-An item that copies generates nothing of its own — the files already exist
-under the ID it borrowed, and writing them twice would be two definitions
-fighting over one path. Useful for a set of items that look alike and behave
-differently.
+The item wears `mypack:sword`'s model without a copy of the files, which suits
+a set of items that look alike and behave differently.
 
 ## Permissions
 
@@ -80,24 +110,22 @@ wand:
   permission: mypack.wand
 ```
 
-Checked when the item is **used**, not when it is given or held. A permission
-that stopped somebody holding an item would mean taking it out of their
-inventory, which is a thing to do to somebody's stuff rather than a decision an
-engine makes.
+Checked when the item is **used** (clicked, or placed if it is furniture), not
+when it is given or held. A player without it is told "You cannot use that."
 
 ## Where to go next
 
 <CardGroup>
-  <Card title="Armour" href="/rp-engine/armour">
-    Any item worn on a body, with its own art.
-  </Card>
   <Card title="Stats and components" href="/rp-engine/stats">
-    Damage, durability, enchantments and food.
+    Damage, durability, enchantments, food, and flags like `hat`.
   </Card>
   <Card title="Actions" href="/rp-engine/actions">
     Making an item do something when it is used.
   </Card>
-  <Card title="Models" href="/rp-engine/models">
+  <Card title="Armour" href="/rp-engine/armour">
+    Any item worn on a body, with its own art.
+  </Card>
+  <Card title="Placing a model" href="/rp-engine/models">
     A `place:` block turns an item into something you can put down.
   </Card>
 </CardGroup>

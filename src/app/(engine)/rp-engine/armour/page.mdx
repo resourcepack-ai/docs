@@ -1,12 +1,12 @@
 export const metadata = {
   title: "Armour",
   description:
-    "Any item worn on a body with its own art, on vanilla's own equipment path.",
+    "Any item worn on a body with its own art, on vanilla's own equipment path, plus 3D armour sets.",
 };
 
 # Armour
 
-Any item can be worn, with art of your own:
+Any item can be worn, with your own art drawn on the player's body:
 
 ```yaml
 crown:
@@ -15,26 +15,19 @@ crown:
   armor: head              # head | chest | legs | feet
 ```
 
-Ship one texture, and which one depends on the slot:
+Ship one texture, at a path that depends on the slot:
 
-- `armor: legs` → `assets/textures/entity/equipment/humanoid_leggings/<id>.png`
-- anything else → `assets/textures/entity/equipment/humanoid/<id>.png`
+- `armor: legs`: `assets/textures/entity/equipment/humanoid_leggings/<id>.png`
+- any other slot: `assets/textures/entity/equipment/humanoid/<id>.png`
 
-## Leggings are a different layer
+Leggings use their own, narrower sheet in the game, so art drawn for the main
+sheet does not line up on legs. That is why each slot asks for exactly one
+texture.
 
-Not a second one. The game draws leggings from their own narrower sheet at
-their own proportions, so art drawn for the wide sheet puts a belt buckle on
-somebody's knee.
+## Using art from somewhere else
 
-That is why a slot asks for exactly one texture: declaring both layers would
-name a file your pack has no reason to ship, and shipping the wrong one is a
-mistake you only see on a player.
-
-## Art kept somewhere else
-
-If the picture lives elsewhere in your pack, name it with `armor-art` and the
-build serves it at the right path for you. It takes the same reference as
-`texture:`, a path under `assets/textures/`:
+`armor-art` takes a texture path under `assets/textures/` (or a resource
+location) and the build puts it at the right equipment path for you:
 
 ```yaml
 ruby_leggings:
@@ -44,117 +37,123 @@ ruby_leggings:
 ```
 
 An old-style armour layer sheet is exactly the picture the game wants: layer 1
-(body and boots) for every slot but legs, layer 2 for legs. A file you put at
-the equipment path yourself wins. This is how armour from
+for every slot except legs, layer 2 for legs. A file you put at the equipment
+path yourself wins over `armor-art`. This is how armour from
 [ItemsAdder](/rp-engine/itemsadder) and [Nexo or Oraxen](/rp-engine/nexo-oraxen)
-is worn without moving a file.
+is worn without moving files.
 
-## This replaces the old tricks
+`armor-texture` names an equipment texture directly instead, including
+vanilla's:
 
-<Callout type="note" title="Vanilla's own equipment path, since 1.21.4">
-  An item declares an `equippable` component naming an asset, and the asset
-  names the layer the game draws it from. It is the same mechanism vanilla
-  armour uses.
+```yaml
+crown:
+  material: PAPER
+  armor: head
+  armor-texture: minecraft:gold   # the game's own gold armour
+```
 
-  It replaces both of the old workarounds outright. **Dyed leather** spends a
-  colour that can then never be used for anything else on the server, and looks
-  wrong on every other item. **Armour trims** are stuck in the trim palette and
-  limited to what the trim system can draw. Neither is needed, and neither is
-  supported alongside this.
-</Callout>
-
-<Callout type="warning" title="This page needs Minecraft 1.21.4">
-  Everything here is the equipment path, and that arrived in 1.21.4. On an
-  older server the plugin says so at startup and:
-
-  - **below 1.21.2**, only materials that are already armour can be worn at all,
-    so `armor:` on a stick does nothing;
-  - **on 1.21.2 and 1.21.3**, any item can be worn but draws with vanilla
-    artwork.
-
-  The item still works either way — it is the picture on the body that is
-  missing, and each build names the armour that will draw with vanilla art.
-  See [Minecraft versions](/rp-engine/versions).
-</Callout>
+`namespace:name` means the PNG at
+`assets/<namespace>/textures/entity/equipment/<layer>/<name>.png`.
 
 ## The model and the armour are separate
 
-`model:` is what the item looks like **in a hand or a chest**. `armor:` is what
-it looks like **on a body**. A crown can be a 3D model in your hand and a flat
-texture on your head, and usually is — they are drawn by different parts of the
-game and neither can substitute for the other.
+`model:` is what the item looks like in a hand or a chest. `armor:` is what it
+looks like on a body. A crown can be a 3D model in your hand and a flat texture
+on your head; the game draws the two separately. An item with `armor:` and no
+`model:` looks like its vanilla material in the inventory and wears your art.
 
-An item with `armor:` and no `model:` is a vanilla-looking item that draws
-custom armour, which is a perfectly ordinary thing to want.
+<Callout type="warning" title="Needs Minecraft 1.21.4">
+  Custom armour art uses vanilla's equipment system, which arrived in 1.21.4.
+  On an older server the item still works, the plugin says which case you are
+  in at startup, and each build lists the armour that will look vanilla:
+
+  - **below 1.21.2**, only materials that are already armour can be worn, so
+    `armor:` on a stick does nothing;
+  - **on 1.21.2 and 1.21.3**, any item can be worn but shows vanilla artwork.
+
+  See [Minecraft versions](/rp-engine/versions).
+</Callout>
 
 ## 3D armour from Studio
 
-Everything above is flat: the game draws worn armour as two layers on its own
-body shape, and nothing in a resource pack changes that shape. A
-[3D armour set from Studio](/armor#3d-armour) is built from cubes instead, and
-the engine is what puts it on a body. Sync the pack and it is there:
+Flat armour is a texture on the player's body shape. A
+[3D armour set from Studio](/armor#3d-armour) is built from cubes instead
+(pauldrons that stand off the shoulder, a crown taller than the head), and RP
+Engine puts it on the player. Sync the pack and use:
 
 ```
+/rp armor                              # list the sets
 /rp armor wear studio:hazmat_suit      # put the whole set on
-/rp armor give studio:hazmat_suit      # or hand over the four pieces
+/rp armor give studio:hazmat_suit      # or hand over the pieces
+/rp armor self                         # see your own pieces in F5
 ```
 
-The four pieces are ordinary items. Wear them however you wear armour —
-shift-click, drag into a slot, a dispenser — and take them off the same way.
+The pieces are ordinary items. Wear them however you wear armour (shift-click,
+drag into a slot, a dispenser) and take them off the same way.
 
-### How it is drawn
+## 3D armour in your content folder
 
-On Minecraft 26.1 and 26.2 the pack draws the whole set for itself, as part of
-the player's body, and the engine leaves those players alone: it asks each
-viewer's version (through ViaVersion when it is installed) and spawns nothing
-for a client that already draws the armour. Everyone else gets the set the way
-below.
+You can also make a set yourself in Blockbench and put it in `armor3d/`:
 
-- **The helmet is drawn by the game.** Any item in the head slot is rendered on
-  the head from its own model, and the helmet's model is built for exactly that.
-  It turns with the head frame for frame, on every client, and nobody ever sees
-  their own helmet in first person.
-- **Everything else is display entities**, one per piece of a limb, posed every
-  other tick onto where the game is drawing that limb. The walk cycle, the body
-  turning after the head, crouching, riding, the swing when you hit something,
-  and an arm raised for an item, a bow or a shield are all worked out the way
-  the client works them out, from the same movement.
+```yaml
+# armor3d/costumes.yml
+santa:
+  name: "Santa Suit"     # optional; the ID when left out
+  model: armor_santa     # assets/models/armor_santa.bbmodel; the ID when left out
+  displays: false        # optional, default true; see below
+```
 
-A few things follow from that, and they are worth knowing before a player finds
-them:
+That is the set `mypack:santa`. The model is a `.bbmodel` project built on
+Blockbench's player template: feet at y = 0, the front facing +Z, 16 units to a
+block. Put cubes in groups named after the bone they ride:
 
-- **Swimming, crawling, gliding and sleeping put the body pieces away** and
-  bring them back when you stand up. The game turns the whole body for those,
-  and chasing it would be a second renderer for moments nobody stands still in.
-- **You don't see your own body pieces by default.** In first person the game
-  draws none of your body, so all you would get is a torso of armour hanging
-  under the camera. `/rp armor self` shows them to you, in F5 and in first
-  person, until you turn it off or leave. Your copy is placed ahead of you by
-  your own ping, because your client draws your body before the server has
-  heard where it went; it catches up for a moment whenever you start, stop or
-  turn sharply.
-- **Anyone who can't see you can't see your armour either** — a vanished
-  moderator stays vanished, and so does somebody an emote has swapped for a rig.
-- **A set is a handful of entities per player** wearing one — roughly ten to
-  forty depending on how it was built. They are never saved and never
-  collide with anything.
+| Group | Piece |
+|---|---|
+| `head` | Helmet |
+| `body`, `right_arm`, `left_arm` | Chestplate |
+| `waist`, `right_leg`, `left_leg` | Leggings |
+| `right_foot`, `left_foot` | Boots |
 
-<Callout type="warning" title="Needs RP Engine 0.1.61, 1.21.4, and a Studio push for now">
-  `/rp armor` arrived in RP Engine 0.1.61. A set's art is named by a string
-  `custom_model_data`, which arrived in 1.21.4; below that `/rp armor` says so
-  and nothing is drawn. Sets come from a Studio push today — a hand-written 3D
-  set in your content folder isn't supported yet.
+A piece with no cubes is not part of the set, so a crown alone is a one-piece
+set. A group inside a bone (a `cape` inside `body`) rides that bone. A group
+with any other name is a load warning. Cubes and groups can be rotated any way
+you like.
+
+## How 3D armour is drawn
+
+- **The helmet** is drawn by the game, as an item on the head. It follows the
+  head exactly, on every client.
+- **On Minecraft 26.1 and 26.2**, the pack's shaders draw the rest of the set as
+  part of the player's body, so it never lags and also shows on armour stands.
+  RP Engine checks each viewer's version (through ViaVersion when it is
+  installed) and spawns nothing extra for these players.
+- **Every other viewer** sees the body pieces as display entities, posed onto
+  the player's limbs as they walk, swing, crouch and ride. A set with
+  `displays: false` skips these, so other versions see only the helmet. Use
+  that when your server only admits 26.1 and 26.2.
+
+What to expect with display entities:
+
+- Swimming, crawling, gliding and sleeping hide the body pieces until you stand
+  up again.
+- You do not see your own body pieces unless you turn on `/rp armor self`.
+- Anyone who cannot see you cannot see your armour either, so vanished staff
+  stay vanished.
+- A set is roughly ten to forty entities per player wearing it. They are never
+  saved and never collide with anything.
+
+<Callout type="note" title="Needs Minecraft 1.21.4">
+  3D armour pieces are named with a string `custom_model_data`, which arrived in
+  1.21.4. On an older server the sets still load and are checked, nothing is
+  built into the pack, and `/rp armor` says why.
 </Callout>
 
 ## On Bedrock
 
-Flat armour on your items reaches Bedrock players through
-[Geyser](/rp-engine/bedrock): the Bedrock pack draws it on the body from the
-same equipment texture.
+Flat armour reaches Bedrock players through [Geyser](/rp-engine/bedrock),
+drawn from the same equipment texture.
 
-3D armour from Studio does too. The Bedrock pack a Studio sync or distribution
-sends carries each piece as Bedrock's own kind of worn model, and the engine
-tells Geyser which pieces are which. It only knows a piece it handed out
-itself: a piece from before 0.1.66, or from a plain `/give`, shows as
-paper on Bedrock until it is given again with `/rp armor give` or
-`/rp armor wear`.
+3D armour from Studio does too: the Bedrock pack carries each piece as a
+Bedrock worn model. RP Engine only recognises pieces it handed out itself, so a
+piece from a plain `/give` shows as paper on Bedrock until it is given again
+with `/rp armor give` or `/rp armor wear`.

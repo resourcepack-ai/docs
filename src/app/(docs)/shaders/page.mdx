@@ -6,7 +6,9 @@ export const metadata = {
 
 # Shaders
 
-Shaders come in two kinds, picked with the **2D / 3D** switch on the Shader tab:
+A shader asset is drawn by a small program in your resource pack rather than
+by a flat picture. Shaders come in two kinds, picked with the **2D / 3D**
+switch on the Shader tab:
 
 - **2D: shapes over the screen (HUD-style).** Most of this page.
 - **3D: objects in the world.** A black hole, a soap bubble, a ball of fire:
@@ -83,7 +85,7 @@ Paint layers can be hidden, renamed (double-click), reordered, duplicated,
 merged down, cleared or deleted. With the **Select** tool, dragging on paint
 picks up that layer and moves it.
 
-Pixel text stamped with the brush is just pixels. For text that changes in
+Pixel text stamped with the brush is ordinary pixels. For text that changes in
 game, add a **Label** instead.
 
 ### Components
@@ -156,8 +158,8 @@ settings.
   a 640 by 360 screen and scales with the real one, so a rectangle as wide as
   that is as wide as any screen. Round shapes scale by the shorter side and stay
   round.
-- **Paint** keeps a box of its own, set under **Paint area**, and is placed on
-  the screen the way the whole canvas used to be.
+- **Paint** keeps a box of its own, set under **Paint area**, which is placed
+  on the screen like a normal canvas.
 
 The buttons above the canvas show the object on four common screen sizes, so
 you can check that everything keeps its place.
@@ -202,8 +204,8 @@ An object does nothing until something shows it. There are three ways.
   require a permission.
 - **A command**: `/rp shader studio:<id> [player]` shows it, and
   `/rp shader clear` takes them all off. `/rp shaders` lists every shader on the
-  server. The id is on the object's card on the pack page. These arrived in RP
-  Engine 0.1.57; on an older version, `/rp hud studio:<id>` does the same.
+  server. The id is on the object's card on the pack page. These need the
+  `rpengine.shader` permissions, which are op by default.
 - **A plugin**: `overlays().show(player, "studio:<id>")` and
   `overlays().hide(...)`. See [the RP Engine API](/rp-engine/api#hud-overlays).
 
@@ -222,13 +224,11 @@ object on your screen straight away.
   and titles, whichever bar it is sent through. A tint over the whole screen
   tints the hotbar too. Its shapes are worked out for every pixel of the screen,
   every frame, so a handful is fine and fifty is worth thinking twice about.
-- **Right- and centre-pinned labels need a current RP Engine.** On 0.1.57 or
-  older they start at their point instead of ending or centring on it.
 - **Only players who have your pack see it.** RP Engine only sends an object to
   players holding the pack it came from, so nobody else gets a row of
   missing-character boxes.
 - **Minecraft 1.19.4 to 26.2.** The text shader is rebuilt for each version the
-  pack might be loaded on.
+  pack might be loaded on. 26.3 isn't supported yet.
 - **Not in the ItemsAdder export.** That format has to leave the pack's font to
   ItemsAdder, and a shader object is drawn through it.
 
@@ -274,28 +274,49 @@ Set the **Size** (from a quarter of a block to 64 blocks across), then either:
 
 - **Copy /summon** and run the command where you stand, with the pack applied.
   **No plugin is needed**: it is a plain vanilla command, so it works on any
-  server or in single player. The object appears just above you.
+  server or in single player. The object appears above you and always
+  faces the camera.
 - **Place in game** puts it in front of you on the server the pack is
   [synced](/testing/plugin) to, at its stored size. Sync the pack first.
 
 Once placed it behaves like any entity: it stays where it is, blocks in front
 of it hide it, and killing it removes it.
 
-### Bubbles and glass
+### Driving it from a server
 
-A bubble is drawn by the game itself, refracting the world behind it. That
-needs a **26.2** pack and **Improved Transparency** turned on in the player's
-Video Settings. Without it, players see a faint outline. On 26.2 with Improved
-Transparency, blocks that cut through any 3D object also get a bright edge
-where they meet it.
+With [RP Engine](/rp-engine) **0.2.10 or newer**, a server can control each
+placed object: switch it between the looks (states) its code defines, such as
+a portal opening and closing, and move, turn and resize it smoothly. Sequences
+of those steps can be written in RP Engine's `objects/` content folder.
+
+| Command | Does |
+| --- | --- |
+| `/rp objects` | Lists the objects the server has |
+| `/rp object spawn <id> [size] [x y z]` | Places one in front of you, or at those coordinates |
+| `/rp object state <name>`, `replay <name>` | Puts the nearest object into a state, or restarts it |
+| `/rp object play <sequence>`, `stop` | Runs or stops a sequence on the nearest object |
+| `/rp object move`, `turn`, `size`, `seed` | Moves, turns or resizes the nearest object |
+| `/rp object remove [all]` | Takes it away |
+
+Each verb has its own permission, `rpengine.object.<verb>`, all granted by
+`rpengine.object`, and every verb works from a command block. A driven object
+needs a 26.2 pack and a server on Minecraft 1.21.4 or newer.
+
+### Bubbles, glass and black holes
+
+Some objects bend the world behind them: a bubble refracts it, and a black hole
+pulls it into a curve. That needs a **26.2** pack and **Improved Transparency**
+turned on in the player's Video Settings. Without it, a bubble shows as a faint
+outline. On 26.2 with Improved Transparency, blocks that cut through any 3D
+object also get a bright edge where they meet it.
 
 ### 3D limits
 
-- **What it draws is all it can change.** It can't bend or distort the world
-  behind it (the bubble on 26.2 is the exception), and it casts no shadow.
+- **What it draws is all it can change.** Apart from the bending above, it
+  can't distort the world behind it, and it casts no shadow.
 - **Fog doesn't reach it**, so a distant object stays as bright as a near one.
-- **It always faces the same way**, whichever way the summoned entity is
-  turned.
+- **A summoned object always faces the camera.** Only one placed and driven by
+  RP Engine can be turned.
 - **It needs your pack.** Players without it don't see the object.
 - **Not in the Bedrock or ItemsAdder exports.**
 

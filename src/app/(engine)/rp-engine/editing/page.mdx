@@ -6,97 +6,94 @@ export const metadata = {
 
 # Editing in a browser
 
+`/rp edit` opens something from your server's content folder in the editors
+at [resourcepack.ai](https://resourcepack.ai), and writes your changes back to
+the file on your server when you are done.
+
 ```
 /rp edit mypack:chair
 ```
 
-You get a link. It opens that thing in the right editor at
-[resourcepack.ai](https://resourcepack.ai), on the file in your own content
-folder. Move the cubes around, paint the texture, press **Send to server**, and
-`assets/models/chair.bbmodel` on your machine changes and reloads.
+You get a link in chat. It opens that thing in the right editor. Move the
+cubes, paint the texture, press **Send to server**, and
+`assets/models/chair.bbmodel` on your server changes and the content reloads.
 
-**No account, no sign-in, nothing to install.** The link works once and lasts
+No account, no sign-in, nothing to install. The link works once and lasts
 three hours.
 
-## One argument
+## What it opens
 
-You do not tell it what kind of thing you are editing, because it already
-knows. An ID is unique across everything this server holds — see
-[IDs and namespaces](/rp-engine/ids) — so `mypack:chair` is exactly one thing.
+You give it only the ID. The plugin works out which editor to use:
 
 | What the ID is | Where it opens |
 | --- | --- |
-| An item with a `model:` | The model editor — geometry, paint, display, animation |
+| An item with a `model:` | The model editor: geometry, paint, display, animation |
 | An item with no `model:` | The pixel editor, on its sprite |
-| A vehicle | The vehicle editor — seats, handling, effects |
+| A vehicle | The vehicle editor: seats, handling, effects |
 
-An ID that is something else — a sound, a screen, a recipe — is answered by
-name rather than by a list. Those have no editor yet.
+Other kinds of content (sounds, screens, recipes) have no editor yet, and the
+command tells you so. The ID tab-completes, and only things that can be opened
+are offered.
 
 ```
 /rp edit           the links you have open, and how long they have left
 /rp edit close     end them
 ```
 
-The ID completes on tab, and only what can actually be opened is offered, so
-you never have to remember one.
+## Nothing changes until you press Send to server
 
-## Nothing changes until you press the button
-
-The editor saves as you work — that is how a browser editor has to behave — and
-**none of that reaches your server.** Your files change once, when you press
-**Send to server**, and that is when the content folder reloads.
-
-So you can open a link, try something, decide against it, and close the tab.
-Nothing happened.
+The editor saves your work as you go, but none of that reaches your server.
+Your files change once, when you press **Send to server**. If you try
+something and change your mind, close the tab and nothing has happened.
 
 ## What crosses, and what does not
 
-Only the thing you named: one model and the textures it uses, one texture, or
-one vehicle's settings. Not your pack, not your other content, not your
-config.
+Only the thing you named: one model and its textures, one texture, or one
+vehicle's settings. Not the rest of your pack, and not your config.
 
-The link is the credential. Anybody who has it can edit that one thing for the
-next three hours, so treat it the way you would treat any other link with a
-token in it — and `/rp edit close` ends it early.
+The link is the key. Anybody who has it can edit that one thing until it
+expires, so do not paste it anywhere public. `/rp edit close` ends it early.
 
 ## Models
 
 A model comes back as the same kind of file it went out as.
 
-A **`.bbmodel`** — the Blockbench project, which is what
-[the models page](/rp-engine/models) recommends you save — comes back as a
-`.bbmodel`, with the geometry, the bones, the animations and the art all still
-inside the one file. Everything Blockbench cares about and the plugin does not
-read is left exactly as it was: your display settings, your texture names, your
-meta block.
+A `.bbmodel` (the Blockbench project, which [Models](/rp-engine/models)
+recommends) comes back as a `.bbmodel`, with its geometry, bones, animations
+and art still in one file. Anything Blockbench keeps that the plugin does not
+read, like display settings and texture names, is left as it was.
 
-An **exported `.json`** comes back as a `.json`, with its PNGs written beside it
-where they already live.
+An exported `.json` comes back as a `.json`, with its PNGs written beside it
+where they already were. A texture you add in the editor goes into your item's
+texture folder.
 
-A texture you add in the editor is written into your item's own texture folder,
-and the model points at it.
+A model written inline in the item's YAML, or one named by a resource location
+(`minecraft:item/...`), is not a file in your pack's `assets/models/`, so it
+cannot be opened.
 
 <Callout type="note" title="Your original is never half-replaced">
-The plugin converts the file it is about to write and reads it back before it
-saves anything. If the result would not load as the model you edited, it
-refuses and says so in chat rather than writing it. Every write also goes to a
-scratch file and is moved into place, so a crash or a full disk cannot leave
-half a model where a whole one was.
+  The plugin checks the file it is about to write loads as a model before
+  saving anything, and refuses in chat if it would not. Each write goes to a
+  temporary file first and is then moved into place, so a crash or a full disk
+  cannot leave half a model behind.
 </Callout>
 
 ## Vehicles
 
-The vehicle editor is where seat positions stop being
-arithmetic: you drag a figure onto the seat and it is where somebody sits.
+In the vehicle editor you drag a figure onto a seat, and that is where
+somebody sits.
 
-Your `vehicles/*.yml` is edited in place, **and only the one entry**. The other
-vehicles in the file, the blank lines and your comments between them are all
-left exactly as they were. Comments *inside* the vehicle you edited do go — an
-editor has replaced the values they were annotating.
+Only that vehicle's entry in your `vehicles/*.yml` is rewritten. Other
+vehicles in the file, blank lines and comments between them are left alone.
+Comments inside the edited vehicle are lost.
 
-The model rides along so the seats have real bodywork to sit in, but the
-geometry is read-only there. Open the item it wears to change that.
+The vehicle's model is shown so the seats have bodywork to sit in, but it is
+read-only there. Open the item it wears to change its shape.
+
+## Textures
+
+The pixel editor opens square PNGs up to 256×256. An animated strip (a tall
+image with a `.mcmeta` file beside it) is refused rather than squashed.
 
 ## Turning it off
 
@@ -104,28 +101,20 @@ geometry is read-only there. Open the item it wears to change that.
 # config.yml
 edit:
   enabled: true
-  url: "https://studio.resourcepack.ai"
 ```
 
-Set `enabled: false` and `/rp edit` says so instead of doing anything.
-Everything else in the plugin works exactly the same.
+Set `enabled: false` and `/rp edit` says it is switched off instead of doing
+anything.
 
-`rpengine.edit` is the permission, and it is a real one: whoever holds it can
-rewrite files in your content folder from a browser. It is granted by
-`rpengine.admin` along with everything else — see
-[Permissions](/rp-engine/permissions).
-
-## Textures have to be square
-
-A texture the editor can open is a square PNG, up to 256×256. An animated strip
-— a tall image with a `.mcmeta` beside it — is refused by name rather than
-squashed into a square and handed back broken.
+`rpengine.edit` is the permission, and it is a serious one: whoever holds it
+can rewrite files in your content folder from a browser. It defaults to op.
+See [Permissions](/rp-engine/permissions).
 
 ## This is not the same as Sync
 
-[`/rp sync`](/rp-engine/commands) pushes a pack **from** a ResourcePack AI
-account **to** a player on your server, so you can look at something before it
-ships. It needs an account and a pairing code.
+[`/rp sync`](/rp-engine/commands#studio) sends a pack from a Studio account to
+a player on your server, so you can try it before it ships. It needs an
+account and a pairing code.
 
-This is the other direction and needs neither: your content folder is the
-source, and what comes back lands in it.
+`/rp edit` goes the other way and needs neither: your content folder is the
+source, and your changes land back in it.

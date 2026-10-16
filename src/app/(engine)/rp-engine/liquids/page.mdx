@@ -1,50 +1,61 @@
 export const metadata = {
   title: "Liquids",
   description:
-    "Real water or lava with your rules applied to whoever is inside a marked-out box.",
+    "Real water or lava with your rules applied to whoever is inside a marked-out pool: acid, healing springs, cursed lakes.",
 };
 
 # Liquids
 
-<Callout type="warning" title="What a custom liquid is, and is not">
-  Minecraft has two fluids and a server cannot add a third. A custom liquid is
-  **real water or lava, wearing your texture, with your rules applied to whoever
-  is in it.** It genuinely behaves like a fluid because it is one — you swim in
-  it, boats float, it flows, other plugins see water.
+A custom liquid is a pool of acid, a healing spring or a cursed lake: an area
+of water or lava that does something to whoever is in it, and can have its own
+colour.
 
-  Two consequences, both worth knowing before you build around it: the
-  **texture is per-pack**, so every water on the server is drawn from the same
-  picture — what a liquid gets of its own is a **colour**; and what tells acid
-  from ocean is a **volume**, not the blocks in it.
+<Callout type="warning" title="What a custom liquid is">
+  Minecraft only has water and lava, and a server can't add a third fluid. A
+  custom liquid is real water or lava with your rules applied inside a box you
+  mark out. It behaves like a fluid because it is one: you swim in it, boats
+  float, it flows, and other plugins see water. What makes it acid is the box,
+  not the blocks.
 </Callout>
 
 ```yaml
 # liquids/acid.yml
 acid:
   base: water            # water | lava
-  color: "#3FBF4A"       # optional
+  color: "#3FBF4A"       # optional; keep the quotes
   effect: POISON
-  amplifier: 1
+  amplifier: 1           # 0 is level I, 1 is level II
   damage: 1.0            # per second
   fireproof: false
 ```
 
-There are two ways to make a pool: mark out water that is already there, or
-build the pond in the first place with a bucket. They make the same thing.
+| Field | Default | What it does |
+|---|---|---|
+| `base` | `water` | `water` or `lava`: what it really is |
+| `color` | none (the water keeps its colour) | Hex or a dye name. See [Colour](#colour) |
+| `effect` | none | A potion effect given while inside |
+| `amplifier` | 0 | The effect's level, counting from 0 (0 to 255) |
+| `damage` | 0 | Damage per second, on top of anything lava already does (0 to 100) |
+| `fireproof` | `false` | Whether a lava-based liquid stops burning you |
 
-## Marking out a pool
+## Making a pool
+
+There are two ways, and they make the same thing.
+
+### Mark out water that's already there
 
 ```
 /rp liquid corner              stand at one corner
-/rp liquid fill mypack:acid    stand at the opposite one
-/rp liquid clear               removes the pool you are standing in
-/rp liquid list                every pool, per world
+/rp liquid fill mypack:acid    stand at the opposite corner
+/rp liquid clear               remove the pool you're standing in
+/rp liquid list                every pool, by world
 ```
 
-The two corners define a box, and everything inside it that is the right fluid
-gets the rules.
+The two corners make a box, and everything inside it that is the right fluid
+follows the liquid's rules. Lakes are rarely rectangular, so use several boxes.
+Where boxes overlap, the oldest pool wins.
 
-## A bucket of it
+### Build it with a bucket
 
 ```yaml
 # items/acid_bucket.yml
@@ -53,80 +64,42 @@ acid_bucket:
   liquid: mypack:acid
 ```
 
-Right-click a block and it puts one source block down and makes that place
-count as the liquid. A block placed against a pool of the same liquid **joins
-it** rather than starting a second, so a pond built click by click carries one
-rule, not fifty — and two builders filling the same pond from opposite ends end
-up with one pool between them.
+Right-click a block and it places one source block and makes that spot part of
+the liquid. A block placed next to a pool of the same liquid joins it, so a pond
+built click by click (even by two people from opposite ends) ends up as one
+pool.
 
-What goes down is a real source block, so it flows. Water that runs out of the
-box is ordinary water: the colour and the rules stop at the pool, and a builder
-who wants a still pond digs a basin the way they would for vanilla water.
-
-## Why a box and not the blocks
-
-A lake is thousands of blocks that change shape as it flows. A per-block record
-would be wrong within a second of somebody breaking a bank, and would need
-rewriting every time the water moved.
-
-A box does not move. It is a few numbers per pool, it survives a restart, and
-the fluid inside it can do whatever fluids do.
-
-The cost is that a pool is rectangular and your lake probably is not. Use
-several overlapping boxes; a player is in whichever they are inside.
+It's a real source block, so it flows. Water that runs outside the pool is
+plain water, so dig a basin as you would for vanilla water.
 
 ## Colour
 
-`color:` takes `"#3FBF4A"`, `0x3FBF4A`, `3FBF4A` or one of the sixteen dye
-names — `RED`, `LIGHT_BLUE`, `LIME`. Quote the `#` form, or YAML reads the rest
-of the line as a comment and you get no colour and no complaint.
+`color:` takes `"#3FBF4A"`, `0x3FBF4A`, `3FBF4A`, or a dye name such as `RED`,
+`LIGHT_BLUE` or `LIME`. Quote the `#` form: without quotes, YAML treats it as a
+comment and you get no colour and no error.
 
-<Callout type="warning" title="A colour needs a restart, and it is approximate">
-  The game tints water **by biome**, which is the only knob it has for this.
-  RP Engine writes one biome per tinted liquid into a datapack in your world
-  folder (`datapacks/rpengine_liquids`) every time content loads, and **biomes
-  are registered when the server starts** — so a colour you added this session
-  does not exist until you restart. The pool works in the meantime; it is just
-  the wrong colour.
+The game can only tint water by biome, so RP Engine paints the pool with a biome
+of its own. That has some side effects:
 
-  Two more things follow from it being a biome. Biomes are stored per 4×4×4
-  cell, so a tinted pool has a rim of tinted water around it. And the client
-  blends biome colours across several blocks, so a pool under about 8 blocks
-  across never reaches its full colour — a player with biome blend turned up
-  sees less of it again.
-</Callout>
+- **A new colour needs a server restart.** The biomes go into a datapack in your
+  world folder (`datapacks/rpengine_liquids`) and the server only reads them at
+  startup. Until then the pool works but is the wrong colour.
+- **It bleeds a little.** Biomes are stored in 4×4×4 cells, so there's a rim of
+  tinted water round the pool.
+- **Small pools look paler.** The game blends biome colours over several blocks,
+  so a pool under about 8 blocks across never reaches its full colour, and
+  players with a high biome blend setting see even less.
+- **Colours come out muted**, because the tint is multiplied by vanilla's dark
+  water texture. A pack can ship a paler `water_still` texture to get brighter
+  colours, but that makes every ocean on the server pale too, so RP Engine won't
+  do it for you.
 
-<Callout type="note" title="Why the colour looks muted">
-  The tint is **multiplied by the water texture**, and vanilla's is a dark
-  blue-grey — so even `#2BE04A` lands as a murky green rather than the colour
-  you picked. That is the ceiling of the mechanism, not a setting: ItemsAdder
-  tints the same texture the same way and stops in the same place.
-
-  A pack *can* ship a paler `water_still` through `overrides/` and get vivid
-  colours out of it. RP Engine will not do that for you, because it would make
-  **every ocean on the server** pale to make one pond green — that is a
-  decision about somebody's whole world, not about a liquid.
-</Callout>
-
-Clearing a pool paints it back to the biome that was there when the pool was
-made. That is one biome for the whole box, which is all a pool records: a pool
-straddling two biomes comes back as the first of them.
+Clearing a pool paints it back to the biome that was there when it was made
+(one biome for the whole box).
 
 ## Doing more than an effect
 
-`effect` and `damage` are applied by the engine every second. Everything else a
-server means by acid — a title, a sound, a quest step — is a
-[`PlayerLiquidEvent`](/rp-engine/api#events), which fires when somebody goes
-into a pool and again when they come out rather than every second they stand
-there.
-
-## The rules
-
-| Field | What it does |
-|---|---|
-| `base` | `water` or `lava`. What it actually is |
-| `color` | What colour it is drawn, as hex or a dye name |
-| `effect` | A potion effect applied while inside |
-| `amplifier` | Its level, 1-based |
-| `damage` | Per second, on top of anything lava already does |
-| `fireproof` | Whether a lava-based liquid stops burning you |
+`effect` and `damage` are applied every second. For anything else (a title, a
+sound, a quest step), listen for
+[`PlayerLiquidEvent`](/rp-engine/api#events), which fires when someone goes
+into a pool and again when they come out.

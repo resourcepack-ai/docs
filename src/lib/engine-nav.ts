@@ -57,7 +57,7 @@ export const engineNav: EngineGroup[] = [
       {
         title: "Installing",
         href: "/rp-engine/install",
-        description: "The jar, what it needs, and your first item.",
+        description: "The jar, what your server needs, getting the pack to players, and your first item.",
         keywords: ["install", "setup", "jar", "1.19.4", "java 17", "first item", "quickstart"],
       },
       {

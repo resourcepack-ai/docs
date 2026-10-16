@@ -1,86 +1,81 @@
 export const metadata = {
   title: "Sounds",
   description:
-    "Custom sound events on a Spigot server — Ogg files, categories, and why a subtitle matters.",
+    "Custom sound events: Ogg files, volume categories, subtitles, and looping for vehicles.",
 };
 
 # Sounds
 
+Add your own sounds to the game. Each one becomes a real Minecraft sound
+event: it follows the player's volume sliders, shows a subtitle, and any plugin
+or command that takes a sound name can play it as `mypack:chime`.
+
 ```yaml
 # sounds/ambient.yml
 chime:
-  file: bells/chime    # assets/sounds/bells/chime.ogg. Defaults to the id.
+  file: bells/chime    # assets/sounds/bells/chime.ogg. Defaults to the id
   category: ambient    # which volume slider it obeys
   subtitle: "A chime rings"
   volume: 1.0
   pitch: 1.0
   stream: false        # true for anything long
-  length: 2.4          # seconds. Only needed by something that loops it
+  length: 2.4          # seconds. Only needed for looping
 ```
 
-These are **real sound events**, not a file played at somebody. They obey the
-volume sliders, they carry subtitles, they can be stopped by category, and any
-plugin or command that takes a sound key takes `mypack:chime`.
+| Field | Default | What it does |
+|---|---|---|
+| `file` | the sound's id | Path under `assets/sounds/`, without `.ogg`. With a namespace (`minecraft:custom/boom`) it means `assets/minecraft/sounds/custom/boom.ogg` |
+| `category` | `master` | Which volume slider controls it (see below) |
+| `subtitle` | none | The subtitle text |
+| `volume` | 1 | 0 to 10 |
+| `pitch` | 1 | 0.5 to 2 |
+| `stream` | `false` | Play from disk instead of memory. Use it for music and long ambience |
+| `length` | none | How long the file runs, in seconds (0 to 3600) |
 
 ## The file
 
-**Ogg Vorbis only.** An mp3 renamed to `.ogg` is silence in game with nothing
-to say why, so a missing or wrong file is a build error naming the path.
+**Ogg Vorbis only.** An mp3 renamed to `.ogg` plays as silence with no error in
+game, so a missing file fails the build with its path named.
 
-`file:` is relative to `assets/sounds/` and defaults to the ID, so a sound
-called `chime` finds `assets/sounds/chime.ogg` with nothing pointing at it.
-
-`stream: true` for anything long — music, ambience over about ten seconds. A
-streamed sound is decoded as it plays instead of held in memory, which is what
-stops a five-minute track costing every player who hears it.
-
-The build writes your namespace's `sounds.json` and English language file for
-you. If your pack ships its own as well, the two are merged rather than one
-replacing the other, and where both name the same sound the definition wins.
-
-## Length, and why anything loops
-
-`length:` is how long the file runs, in seconds, and it exists for one reason:
-**Minecraft has no looping sound.** A sound event is a one-shot, so anything
-that plays continuously is the server playing a short file again the moment it
-ends — a [vehicle's](/rp-engine/vehicles) engine note, today.
-
-Nothing here can measure your file, so this is you telling it. Leave it out and
-a vehicle plays the sound **once** when it enters that state; write it (any
-audio player will tell you the figure) and the sound loops for as long as the
-state lasts. Nothing else reads it, and a wrong figure is a gap or an overlap
-rather than an error.
+The build writes your namespace's `sounds.json` and English language file. If
+your pack ships its own as well, they are merged, and where both name the same
+sound this definition wins.
 
 ## Categories
 
-`category:` decides which slider in the audio settings turns it down.
+`category` decides which slider in the player's audio settings turns the sound
+down. Pick the one a player would reach for: someone who turns music down
+expects your background track to go quiet too.
 
 | Category | What it covers |
 |---|---|
-| `master` | Everything. Rarely the right answer |
-| `music` · `record` | Background music, and jukeboxes |
-| `weather` · `block` · `hostile` · `neutral` | Vanilla's own groupings |
-| `player` · `ambient` · `voice` | Footsteps, atmosphere, speech |
+| `master` | Everything. Rarely the right choice |
+| `music`, `record` | Background music, and jukeboxes |
+| `weather`, `block`, `hostile`, `neutral` | Vanilla's own groupings |
+| `player`, `ambient`, `voice` | Footsteps, atmosphere, speech |
 
-Pick the one a player would expect to reach for. Somebody who turns music down
-has said something about your ambient track too.
+An unknown category falls back to `master`, with a console warning.
 
 ## Subtitles
 
-```yaml
-  subtitle: "A chime rings"
-```
+Write one. Without a subtitle, players who play with subtitles instead of sound
+never know it happened.
 
-**Write one.** Without it your sound does not exist for anybody playing with
-subtitles instead of audio, which is more people than most server owners
-expect — and it costs one line.
+## Looping
+
+Minecraft can't loop a sound: every sound plays once. Anything that sounds
+continuous, like a [vehicle's](/rp-engine/vehicles) engine, is the server
+playing the file again as soon as it ends, and for that it needs to know how
+long the file is. Give it `length:` (any audio player shows the figure). Without
+it, a vehicle plays the sound once when it enters that state. A wrong figure
+gives a gap or an overlap, not an error.
 
 ## Playing one
 
 ```
-/rp sounds                     every sound this server holds
-/rp sound mypack:chime         play it at yourself
-/rp sound mypack:chime Steve   at somebody else
+/rp sounds                     every sound on this server
+/rp sound mypack:chime         play it to yourself
+/rp sound mypack:chime Steve   play it to somebody else
 ```
 
 From an [item action](/rp-engine/actions):
@@ -89,5 +84,6 @@ From an [item action](/rp-engine/actions):
       - sound: mypack:chime 1 1.2     # id, volume, pitch
 ```
 
-A vanilla key works there too — `minecraft:block.anvil.land` — so an action can
-reach the whole vanilla sound set without you redeclaring any of it.
+Vanilla sounds work there too (`minecraft:block.anvil.land`), with nothing to
+declare. Other plugins can use the id directly, for example
+`playSound(location, "mypack:chime", ...)`.

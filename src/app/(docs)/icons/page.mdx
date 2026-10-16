@@ -1,84 +1,76 @@
 export const metadata = {
   title: "Icons",
   description:
-    "Bitmap glyphs you can type into chat, signs and books: sizes, characters, and what ships in the exported pack.",
+    "Small pictures you can type into chat, signs, books and item names: sizes, characters, and what ships in the exported pack.",
 };
 
 # Icons
 
-An icon is a **bitmap glyph** bound to a character. Type that character
-anywhere Minecraft renders text (chat, signs, books, item names, holograms)
-and your image appears inline. It's how server icons, custom emotes and inline
-UI symbols are done.
-
-## Sizes
-
-Four presets, plus a custom height up to 256. The choice is about line height
-rather than quality:
-
-| Size | Behaviour |
-| --- | --- |
-| **8px** | Sits flush inside one line of text. The only size guaranteed not to spill |
-| **12px** | The default for chat: a readable icon with ascent 9 |
-| **16px** | Deliberately oversized; overlaps the lines above and below |
-| **32px** | Much more so |
-
-Minecraft's line pitch is about 9 pixels and the renderer does **not** reflow
-line spacing for taller glyphs. So 16 and 32 aren't bugs to be worked around;
-they're the Discord-style "big emoji" effect, and they overlap on purpose.
-
-<Callout type="tip">
-  Start with the 12px default for chat. Use 8px when an icon must stay strictly
-  inside one line, and reach for 16px or 32px when the glyph *is* the message.
-</Callout>
-
-## Characters
-
-Glyphs are assigned to codepoints in Unicode's **Private Use Area**
-(`U+E000`–`U+F8FF`), the block reserved for exactly this, so your glyph can
-never collide with a real character someone might type.
-
-Practically: you copy the character out of the Studio and paste it wherever you
-need it. It looks like a blank box everywhere except in a client with your pack
-loaded, which is expected.
-
-<Callout type="tip">
-  On [our test server](/testing/test-server), `/sidebar`, `/title`,
-  `/actionbar` and `/bossbar` take arbitrary text; paste a glyph into one to
-  see how it sits against real UI text rather than only in chat.
-</Callout>
+An icon is a small picture tied to a text character. Put that character
+anywhere Minecraft draws text (chat, signs, books, item names, scoreboards,
+holograms) and your picture appears in its place. It's how servers show rank
+badges, coins, custom emoji and little symbols inside messages.
 
 ## Making one
 
-Describe the icon and generate it ("a coin", "a crossed sword and shield",
-"a lightning bolt"), then finish it in the pixel editor. Uploading a PNG or
-starting from blank works too. An upload keeps its shape: type a width or a
-height (or pick a preset) and the other follows the picture's aspect ratio,
-up to 256 on either side. A
-picture already 32 pixels tall or less starts at its own size.
+Open a pack, press **Add asset** and pick **Icon**.
 
-<Callout type="note">
-  Glyphs are pixel art at small sizes, and legibility falls off a cliff below
-  about 6 pixels of actual detail. Silhouette first, detail second, the same
-  rule as a 16×16 block texture.
-</Callout>
+- **Generate**: describe it ("a gold coin", "a crossed sword and shield") and
+  finish it in the pixel editor.
+- **Blank**: draw it yourself.
+- **Upload**: bring a PNG. It keeps its shape: set a width or a height (or pick
+  a preset) and the other follows the picture. A picture 32 pixels tall or less
+  starts at its own size.
+
+Small pixel art is unforgiving: below about 6 pixels of real detail, an icon
+stops reading. Get the silhouette right first.
+
+### Size
+
+| Size | How it sits in text |
+| --- | --- |
+| **8px** | Fits inside one line of text. The only size guaranteed not to overlap |
+| **12px** | A readable chat icon that sits on the line |
+| **16px** | The default for Blank and Upload. Overlaps the lines above and below a little |
+| **32px** | The default for Generate. A big icon that overlaps neighbouring lines, like a large emoji |
+| **Custom** | Any width and height, up to 256 |
+
+Minecraft's lines of text are about 9 pixels apart and the game doesn't make
+room for taller icons, so 16 and 32 overlap on purpose. Use 8 or 12 when an
+icon has to stay inside its line.
+
+### Character
+
+Leave **Character** blank and Studio gives the icon a new character from
+Unicode's Private Use Area (`U+E000` to `U+F8FF`), a range no real text uses.
+Or type an existing character (`A`, `❤`) to replace it everywhere text is
+drawn, for everyone with the pack.
+
+A Private Use character shows as a blank box anywhere without your pack. That's
+expected.
 
 ## Seeing it in game
 
-Sync the pack, then paste the character somewhere the game draws text. Nothing
-has to be placed, given or triggered: a glyph is live the moment a player has
-the pack, in every message anyone sends.
+[Sync](/testing/plugin) the pack, then press **Send in-game** on the icon's
+page to get it in your chat, or copy the character from the page and paste it
+anywhere text appears. Nothing has to be placed or given: an icon works in
+every message the moment a player has the pack.
 
-That also makes icons the one asset kind you can test without touching the
-world at all. On [our test server](/testing/test-server), `/sidebar`, `/title`,
-`/actionbar` and `/bossbar` take arbitrary text.
+<Callout type="tip">
+  On [our test server](/testing/test-server), `/sidebar`, `/title`,
+  `/actionbar` and `/bossbar` take any text. Paste an icon into one to see how
+  it sits next to real game text.
+</Callout>
 
-A plugin sends one the same way it sends any other message:
+A plugin sends one like any other text:
 
 ```java
-// \uE012 is the icon's character; its page in the Studio shows yours.
-player.sendMessage(Component.text("\uE012 Quest complete"));
+//  is the icon's character. Its page in Studio shows yours.
+player.sendMessage(Component.text(" Quest complete"));
 ```
+
+On a server running [RP Engine](/rp-engine), players can also type icons by
+name; see [RP Engine icons](/rp-engine/icons).
 
 ## Exporting
 
@@ -89,33 +81,24 @@ assets/minecraft/textures/font/<name>.png
 assets/minecraft/font/default.json
 ```
 
-The PNG is the artwork; `default.json` is the **font provider**, which binds
-each image to its character and records the height and ascent that decide how
-the glyph sits on a line. Every icon in the pack shares that one file, which is
-why nothing here is per-icon.
+The PNG is the picture. `default.json` is the font file that ties each picture
+to its character and sets how high it sits on the line. Every icon in the pack
+shares it. It adds to the default font rather than replacing it, so ordinary
+text is untouched.
 
-Because it extends the default font rather than replacing it, ordinary text
-keeps rendering normally. A player without the pack sees a blank box where the
-character is, which is Minecraft's ordinary behaviour for a codepoint it has no
-glyph for.
-
-<Callout type="note" title="Characters are allocated per pack">
-  An icon copied into another pack usually keeps its character, but takes a new
-  one if that pack has already spent it. Re-copy the character from the icon's
-  page after moving it rather than reusing the old one.
+<Callout type="note" title="Characters are per pack">
+  An icon copied into another pack usually keeps its character, but gets a new
+  one if that pack already uses it. Copy the character from the icon's page
+  again after moving it.
 </Callout>
 
 ## On Bedrock
 
-Icons convert. Bedrock keeps its custom characters in glyph sheets of 256
-each, so the `.mcpack` draws every icon into the sheet for its character, and
-the same character you put in chat shows the same picture on Bedrock.
+Icons carry over to the `.mcpack`, and the same character shows the same
+picture on Bedrock. Two differences:
 
-Two differences to know about:
-
-- **Size is per sheet, not per icon.** Every icon on one sheet is drawn at the
-  same height, roughly a line of text, whatever height you gave it on Java.
-- **A sheet replaces Bedrock's own.** Bedrock keeps a few of its own button
-  prompts in the same character range, and a pack that ships a sheet replaces
-  it whole. On a server that shows custom icons this is normal, but it is why a
-  controller prompt can go blank for a Bedrock player.
+- **Every icon is about one line of text tall** on Bedrock, whatever size you
+  gave it.
+- **Bedrock uses part of the same character range for its own button prompts.**
+  A pack with icons replaces those, so a controller prompt can show blank for a
+  Bedrock player.

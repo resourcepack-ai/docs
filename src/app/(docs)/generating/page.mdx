@@ -1,124 +1,145 @@
 export const metadata = {
   title: "Generating with AI",
   description:
-    "Where generation lives, what each asset kind comes back as, and how to write a prompt worth the credits.",
+    "What you can generate, what each type costs and how long it takes, how to write a prompt, and how to get told when it's done.",
 };
 
 # Generating with AI
 
-Generation exists to get you past the blank grid. What comes back won't
-always be perfect, and that's fine: the editors are there for the finishing
-touches.
+Generation gets you past the empty canvas. You describe what you want, the AI
+makes a first version, and you finish it in the editor. It won't always be
+perfect, and it doesn't need to be.
 
 ## Where it lives
 
-Everything starts from **Add asset** on the pack page. First you choose how to
-start (**Generate**, **Draw** or **Upload**), then what you're making, and
-the fields underneath change with the type: which vanilla block or item you're
-replacing, a resolution for pixel art, an event name for a sound.
+Everything starts from **Add asset** on the pack page. The tabs along the top
+choose what you're making. Under them, **Generate**, **Blank** and **Upload**
+choose how you start. The fields below change with the type: which vanilla
+block or item you're replacing, a size for pixel art, a sound event name.
 
-Not every type is behind every option:
-
-| | Generate | Draw | Upload |
+| Type | Generate | Blank | Upload |
 | --- | --- | --- | --- |
-| **Block** | ✓ | ✓ | ✓ `.png` `.jpg` `.webp` |
-| **Model** | ✓ | ✓ | ✓ `.json` `.bbmodel` |
-| **Item** | ✓ | ✓ | ✓ `.png` `.jpg` `.webp` |
-| **GUI** | ✕ | ✓ | ✕ |
-| **Icon** | ✓ | ✓ | ✓ `.png` `.jpg` `.webp` |
-| **Sound** | ✓ | ✕ | ✓ `.ogg` |
+| **Model** | ✓ | ✓ | `.json` `.bbmodel` |
+| **Block** | ✓ | ✓ | `.png` `.jpg` `.webp` |
+| **Item** (2D or 3D) | ✓ | ✓ | `.png` `.jpg` `.webp` |
+| **Armor** (2D or 3D) | ✓ | ✓ | `.png`, or `.bbmodel` for 3D |
+| **GUI** | ✓ | ✓ | `.png` (256×256 sheet) |
+| **Dialog** | ✓ | ✓ | ✕ |
+| **HUD** | ✓ | ✓ | `.png` sheet |
+| **Icon** | ✓ | ✓ | `.png` `.jpg` `.webp` |
+| **Sound** | ✓ | ✓ | `.ogg` `.mp3` `.wav` |
+| **Emote** | ✓ | ✓ | ✕ |
+| **Shader** (2D or 3D) | ✓ | ✓ | ✕ |
 
-**GUIs can't be generated yet**: the AI isn't capable of drawing a good
-screen, and we're working on it. **Sounds can't be drawn**, since there's
-nothing to draw.
+An emote **Group** (a set of emotes a player wears while moving) is made from
+emotes you already have, so it's started blank. Vehicles aren't on this list
+because a vehicle starts as a model: see [Vehicles](/vehicles).
+
+If you can't think how to phrase it, press **Write a prompt for me**, say
+what you want in a few words, and it fills in the prompt box. That's free.
+
+## What it costs
+
+Generation is paid for in AI credits. The free plan gets 50 a month; paid plans
+get more. The estimate is always shown next to the **Generate** button before
+you press it, so the table below is a guide rather than a price list.
+
+| Type | Credits, about | Time, about |
+| --- | --- | --- |
+| Model, or a 3D item | 75 | 3–6 min |
+| Block | 10 (fixed) | 1–3 min |
+| Item (2D) | 5 | under 30 sec |
+| Icon | 5 | under 30 sec |
+| Sound | 7 per take | under 10 sec |
+| Armor | 45 | 2–5 min |
+| Armor (3D) | 150 | 12–26 min |
+| GUI | 40 | 2–12 min |
+| HUD | 2 per part you tick | 1–4 min |
+| Dialog | 30, plus 5 per extra page | 1–3 min |
+| Emote | 25 | 1–5 min |
+| Shader (2D) | 10 | under a minute |
+| Shader (3D) | 30 | 4–6 min |
+| Edit with AI, on a model | 10 | 1–5 min |
+
+Except where it says fixed, you're charged for what the run actually used, so
+it can come in a little under or over the estimate. **A generation that fails
+is refunded automatically.**
 
 ## Reference images
 
-Blocks, items, models and icons can take a **reference image** alongside the
-prompt: drop a picture on the Generate form and the AI
-works from it as well as your words. A model built from a reference picks up
-its shape and palette, which is often the shortest route to "like this, but
-Minecraft".
+Most types can take a **reference image** alongside the prompt: drop a picture
+on the Generate form and the AI works from it as well as from your words. A
+model built from a reference picks up its shape and colours, which is often
+the quickest way to get "like this, but Minecraft". Emotes and shaders don't
+take one.
 
 ## Writing a prompt
 
-Be specific about **material, colour and structure**. Be vague about pixels:
-the model can't count them for you, and asking it to will cost you the parts
-it's good at.
+Be specific about **material, colour and structure**. Don't describe pixels:
+the AI can't count them, and asking it to costs you the parts it's good at.
 
 | Good | Bad | Why |
 | --- | --- | --- |
-| *weathered copper roof tiles, blue-green patina, strong diagonal grain* | *a nice block, 4px border, dark at the bottom, make it pop* | Material and wear beat pixel instructions and "make it pop" |
-| *oak market stall, striped red canopy, crate of apples on the counter* | *a detailed medieval shop with lots of decorations* | Named parts give the builder something to build; "detailed" doesn't |
-| *golden key item, ornate bow, three teeth* | *cool key* | The parts you name are the parts you get |
-| *heavy iron door slamming, echo in a stone hall* | *scary sound* | Describe what's making the noise and where it happens |
-| *a red potion bottle glyph, thick dark outline* | *tiny detailed potion icon with sparkles and reflections* | At glyph sizes, detail turns to noise; silhouette first |
+| *weathered copper roof tiles, blue-green patina, strong diagonal grain* | *a nice block, 4px border, dark at the bottom, make it pop* | Material and wear beat pixel instructions |
+| *oak market stall, striped red canopy, crate of apples on the counter* | *a detailed medieval shop with lots of decorations* | Named parts give the builder something to build |
+| *golden key, ornate bow, three teeth* | *cool key* | The parts you name are the parts you get |
+| *heavy iron door slamming, echo in a stone hall* | *scary sound* | Say what makes the noise and where |
+| *a red potion bottle, thick dark outline* | *tiny detailed potion icon with sparkles and reflections* | At icon sizes, detail turns to noise |
 
-Some things worth naming explicitly:
+Things worth naming:
 
-- **The material.** "Oxidised copper" gets you further than "green metal".
+- **The material.** "Oxidised copper" gets further than "green metal".
 - **The wear.** New, weathered, cracked, mossy. This is most of what makes a
   texture look like it belongs in Minecraft.
-- **The structure.** Planks, tiles, bricks, panels, woven. Give the eye a
-  repeating unit.
-- **What it sits next to.** "reads next to deepslate" is a real constraint and
-  the model will use it.
+- **The structure.** Planks, tiles, bricks, panels. Give the eye a repeating
+  unit.
+- **What it sits next to.** "Reads next to deepslate" is a real instruction
+  and the AI will use it.
 
-<Callout type="tip">
-  Prompt for the thing, not for the fix. If a texture is close but too busy,
-  say "same block, fewer distinct colours, calmer surface" rather than trying
-  to describe the finished pixels.
-</Callout>
+If your pack has a **Style Guide**, the Generate form offers to use it, which
+keeps colours and style consistent across everything you make.
 
-## Iterating
+## Changing what came back
 
-You can send an existing asset back for another pass with a new instruction.
-For a texture, that pass sees the current pixel grid, so it edits rather than
-starts over. That's usually better than re-rolling the original prompt: you
-keep the palette and silhouette you already liked. For a model, **Edit with
-AI** is more targeted still: the builder inspects the model's structure
-first and changes only what the instruction asks, instead of regenerating
-the whole thing.
+Most generated assets have **Edit with AI** on their page: describe the change
+("same block, fewer colours, calmer surface") and it edits what's there rather
+than starting again, so you keep the colours and shape you liked. On a model it
+looks at the model's parts first and changes only what you asked for.
+**Regenerate** runs the original prompt again; the old version stays in the
+asset's AI history.
 
 <Callout type="warning">
-  Iterating still costs a generation, and a texture pass can drift. If you've
-  painted a texture by hand, duplicate it first: that path edits the whole
-  grid, not just the part you mentioned.
+  Edit with AI costs credits like any generation, and on a texture it can
+  change pixels you didn't mention. If you've painted something by hand,
+  duplicate it first.
 </Callout>
+
+Once the shape and colours are right, switch to the editor. Fixing eight
+pixels by hand takes fifteen seconds and gets you exactly what you meant;
+three more prompts take minutes and give you something slightly different each
+time.
 
 ## Notifications
 
-A model can take up to ten minutes, and you are not meant to sit and watch
-it. Turn on a notification and close the tab: anything that runs longer than
-two minutes gets one, and anything faster doesn't, since it lands while
-you're still looking at it. In practice that means models.
+You don't have to watch a model build. Turn on a notification and close the
+tab: anything that runs for more than two minutes sends one when it finishes
+or fails, with a link back to it.
 
-All three channels live on your
-[account page](https://studio.resourcepack.ai/account), under
-**Notifications**, and they're independent:
+The settings are on your [account page](https://studio.resourcepack.ai/account),
+under **Notifications**. Each channel is separate:
 
 | Channel | Needs |
 | --- | --- |
-| **Email** | The address on your account, verified |
-| **Discord** | Discord connected under Sign-in methods, and you in [our Discord](https://resourcepack.ai/discord) |
-| **In game** | Your Minecraft account linked; the message arrives where you're standing on <ServerAddress /> |
+| **Email** | A verified email address on your account |
+| **Discord** | Discord connected to your account, and you in [our Discord server](https://resourcepack.ai/discord) |
+| **In game** | Your Minecraft account linked; the message arrives on <ServerAddress /> |
 
-<Callout type="warning" title="The Discord DM needs both halves">
-  A bot can only message people it shares a server with; that's Discord's
-  rule, not ours. Connect Discord *and* join ours, or the switch sits there
-  looking on while no message ever arrives. If DMs still aren't landing,
-  check **Privacy Settings → Direct Messages** in the server.
+<Callout type="note" title="Discord messages need both">
+  A Discord bot can only message people it shares a server with. Connect
+  Discord and join ours, or no message arrives. If they still don't, check
+  that direct messages from server members are allowed in your Discord
+  privacy settings.
 </Callout>
 
-You're told about both outcomes, not just the good one: a model that failed
-after twenty minutes is exactly the thing you need to hear about, and the
-message links you to the Retry button. Failed generations refund their
-credits automatically. The in-game message isn't queued if you're offline;
-turn on email as well if you want one that waits for you.
-
-## Knowing when to stop generating
-
-The honest rule: once the silhouette and palette are right, switch to the
-editor. Hand-fixing eight pixels takes fifteen seconds and gets you exactly
-what you meant; three more prompts take two minutes and get you something
-slightly different each time.
+In-game messages aren't saved for later. If you're offline when it finishes,
+you won't get one, so turn on email too if you want a message that waits.

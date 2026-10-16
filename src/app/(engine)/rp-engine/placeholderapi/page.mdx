@@ -6,13 +6,13 @@ export const metadata = {
 
 # PlaceholderAPI
 
-RP Engine hooks into PlaceholderAPI so anything that reads a placeholder can
-ask it questions — what a player is holding, whether they hold a bundle, how
-much content this server has — and print the answer.
+PlaceholderAPI lets scoreboards, chat formats, holograms and menu plugins
+print live values. With PlaceholderAPI installed, RP Engine adds placeholders
+for what a player is holding, which bundle they have, how much content the
+server has, and more. There is nothing to enable and no expansion to
+download.
 
-A scoreboard, a chat format, a hologram and a menu plugin can none of them call
-an API, and all of them can read a placeholder. Install PlaceholderAPI and these
-appear — there is nothing to enable and no expansion to download.
+Yes/no answers are `true` or `false`.
 
 ## About the server
 
@@ -28,14 +28,13 @@ appear — there is nothing to enable and no expansion to download.
 | `%rpengine_entities%` · `%rpengine_recipes%` | Entities and recipes |
 | `%rpengine_emotes%` | How many emotes |
 
-These answer for the console and for an offline player too, since none of them
-is about anybody in particular.
+These work for the console and offline players too.
 
 ## About a player
 
 | Placeholder | What it answers |
 |---|---|
-| `%rpengine_bundle%` | The bundle they are wearing |
+| `%rpengine_bundle%` | The bundle they are seeing (the top one, if they hold several) |
 | `%rpengine_bundles%` | How many they hold |
 | `%rpengine_holding%` | The content ID in their hand, or empty |
 | `%rpengine_holding_name%` | The same without the namespace |
@@ -44,18 +43,18 @@ is about anybody in particular.
 | `%rpengine_seated%` | Whether they are sitting on a model |
 | `%rpengine_synced%` | Whether they are paired with Studio |
 | `%rpengine_sync_code%` · `%rpengine_sync_owner%` · `%rpengine_sync_size%` | Which pairing, whose, and how many are on it |
+| `%rpengine_var_<name>%` | A [dialog](/dialogs) setting the player chose with a switch or slider. Empty until they choose |
 
-An offline player gets an empty string rather than `false` — "no" would be a
-claim about somebody who is not there to have an answer.
+For an offline player these are empty.
 
 ## Asking a question
 
-Three take an argument:
+These take an argument:
 
 | Placeholder | What it answers |
 |---|---|
 | `%rpengine_holds_<bundle>%` | Whether this player holds that bundle |
-| `%rpengine_has_<namespace>:<id>%` | Whether this server has that content |
+| `%rpengine_has_<namespace>:<id>%` | Whether this server has that content (asked about an online player) |
 | `%rpengine_icon_<namespace>:<id>%` | That [icon](/rp-engine/icons), as the character to print. An animated one is the frame showing **now** |
 
 ```
@@ -64,23 +63,15 @@ Three take an argument:
 %rpengine_icon_mypack:dance%
 ```
 
-**The icon placeholder is where an animated icon animates.** A scoreboard, a
-tab list or a hologram asks again every time it redraws, and each answer is the
-next frame, so the icon moves as fast as that plugin refreshes. It answers for
-the console and offline players too, since it is about the icon rather than
-anybody. See [Animated icons](/rp-engine/icons#animated-icons) for where an
-icon does not move, and why.
+**Animated icons animate through the icon placeholder.** A scoreboard, tab
+list or hologram asks again each time it redraws, and each answer is the next
+frame, so the icon moves as fast as that plugin refreshes. It works for the
+console and offline players too. See
+[Animated icons](/rp-engine/icons#animated-icons).
 
-## They answer and never act
+## Good to know
 
-Every one of these is a lookup. A placeholder is evaluated wherever a string is
-rendered — several times a tick per player on a scoreboard — so nothing here
-builds a pack, walks the world, or writes anything.
-
-That is worth knowing if you are tempted to put one somewhere hot: you can.
-
-## A name that is not one of ours
-
-Renders as the text you typed, rather than as an empty string. A typo you can
-see is one you can fix; a placeholder that silently becomes nothing is a blank
-space on a scoreboard with no way to tell what was meant to be there.
+- Every placeholder is a quick lookup, so it is safe on a scoreboard that
+  refreshes every tick.
+- A placeholder name RP Engine does not know (a typo, or an icon that does not
+  exist) is printed as you typed it, so you can see the mistake.

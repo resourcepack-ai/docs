@@ -107,9 +107,8 @@ block is the block's `type`. Each has its own equivalent here:
 | a mushroom type | `base: mushroom_stem` |
 | Oraxen's `STAIR`, `SLAB`, `DOOR`, `TRAPDOOR`, `GRATE`, `BULB` | that [`shape:`](/rp-engine/blocks#stairs-slabs-doors-and-other-shapes), made from the block's textures (a door's `[bottom, top]`, a bulb's `[off, on]`), on **the same waxed copper Oraxen used**: `custom_variation` 1 to 4 is fresh, exposed, weathered, oxidized |
 
-A chorus block becomes a grate rather than chorus because chorus would need
-Paper to stop it updating, and would repaint the End's own chorus plants; a
-grate needs neither.
+A chorus block becomes a grate because chorus would need Paper to stop it
+updating, and would repaint the End's own chorus plants.
 
 What a block does comes across where there is an equivalent:
 
@@ -135,9 +134,8 @@ in Nexo's units (`5s`, `10t`) or Oraxen's milliseconds.
 
 ## What does not
 
-Each of these is a **warning naming the ID** when the pack loads, never a
-silence: a migration that quietly drops a third of somebody's pack is worse
-than one that refuses out loud.
+Each of these is a warning naming the ID when the pack loads, so nothing is
+dropped silently.
 
 <Callout type="warning" title="Most of a world does not come across">
   Block and furniture *definitions* translate. Most of what is already placed
@@ -200,7 +198,7 @@ to everyone.
 **Sounds that replace a vanilla one** (`minecraft:` ids and `replace: true`):
 put those in `overrides/sounds.json` instead.
 
-## Three things worth knowing
+## Good to know
 
 **Armour art stays where it is.** Both plugins pair a set's art with its
 pieces by name, `ruby_armor_layer_1.png` for the body and boots and `_2.png` for

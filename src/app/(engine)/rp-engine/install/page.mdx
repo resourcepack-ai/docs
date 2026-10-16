@@ -1,51 +1,59 @@
 export const metadata = {
   title: "Installing",
   description:
-    "Dropping the jar in, the version floor and why it is not negotiable, and your first item.",
+    "Dropping the jar in, what your server needs, making sure players can download the pack, and your first item.",
 };
 
 # Installing
+
+You need a **Spigot or Paper server on Minecraft 1.19.4 or newer**, running
+**Java 17 or newer**. Folia is not supported.
 
 <Steps>
   <Step title="Get the jar">
     <DownloadJar />
 
-    That link is always the current release and never moves, so it works in a
-    startup script or a Docker build too.
+    That link always points at the current release, so it works in a startup
+    script or a Docker build too.
   </Step>
   <Step title="Drop it in">
-    `RPEngine.jar` into `plugins/`, then start the server. It needs **Paper or
-    Spigot 1.19.4 or newer**, on **Java 17 or newer**.
+    Put `RPEngine.jar` in your server's `plugins/` folder and start the server.
   </Step>
   <Step title="Look at what it made">
     ```
     plugins/RPEngine/
       config.yml
-      content/      ← yours
+      content/      ← your packs go here
       output/       ← the built packs, rebuilt on every reload
     ```
   </Step>
+  <Step title="Let players download the pack">
+    The plugin serves the pack itself, on port `8181` by default. Players
+    outside your network can only download it if `host.public-address` in
+    `config.yml` is an address they can reach:
+
+    ```yaml
+    host:
+      port: 8181
+      public-address: "http://203.0.113.4:8181"   # your server's public IP or hostname
+    ```
+
+    Open that port in your firewall (or your host's panel), then restart. The
+    default, `127.0.0.1`, only works when you play on the same machine. See
+    [Configuration](/rp-engine/config#serving-the-pack).
+  </Step>
 </Steps>
 
-<Callout type="note" title="Everything works, and on an older server a few things are reduced">
-  RP Engine runs on 1.19.4 and up, and everything it does works on a current
-  server. Below 1.21.4 a handful of things are reduced — one pack at a time
-  below 1.20.3, no per-item stack sizes below 1.20.5, no custom armour art
-  below 1.21.4.
-
-  You do not have to look any of that up. The plugin checks your version at
-  startup and prints exactly what it cannot do and what you get instead.
-  [Minecraft versions](/rp-engine/versions) is the same list, written down.
+<Callout type="note" title="Older servers lose a few things, and the plugin tells you which">
+  Everything works on a current server. Below 1.21.4 a handful of features
+  are reduced: one pack at a time below 1.20.3, no per-item stack sizes below
+  1.20.5, no custom armour art below 1.21.4, no dialogs below 1.21.6. At
+  startup the plugin prints exactly what your version cannot do and what you
+  get instead. [Minecraft versions](/rp-engine/versions) has the full list.
 </Callout>
 
-<Callout type="note" title="You do not set the pack format">
-  `pack.format` used to be a number in `config.yml` that had to match your game
-  version by hand, and getting it wrong showed every player a "made for a
-  different version" warning with nothing in the log to say why. The plugin now
-  reads your server's version and writes the right number itself. The key is
-  still there, commented out, for the one case that needs it — see
-  [Minecraft versions](/rp-engine/versions#the-pack-format).
-</Callout>
+You do not set a pack format number. The plugin reads your server's version
+and writes the right one itself.
 
 ## Your first item
 
@@ -73,8 +81,8 @@ export const metadata = {
       name: "&cRuby"
     ```
 
-    That is `mypack:ruby`. The folder name is the namespace, the key is the ID,
-    and the texture path falls out of the ID — `assets/textures/item/ruby.png`
+    That is `mypack:ruby`. The folder name is the namespace and the key is the
+    ID. The texture is found from the ID, at `assets/textures/item/ruby.png`,
     with nothing pointing at it.
   </Step>
   <Step title="Reload and take one">
@@ -82,11 +90,13 @@ export const metadata = {
     /rp reload
     /rp give mypack:ruby
     ```
+
+    Players are asked to accept the pack when it is sent to them.
   </Step>
 </Steps>
 
-If the item is a purple-and-black square, the texture is not where the ID says
-it should be — `/rp reload` names every missing file in the console.
+If the item shows as a purple-and-black square, the texture is not where the
+ID says it should be. `/rp reload` names every missing file in the console.
 
 ## Where to go next
 

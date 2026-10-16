@@ -1,14 +1,15 @@
 export const metadata = {
   title: "Emotes",
   description:
-    "Animations played on the player rather than on a model — solo, with a cast, and worn as a movement set.",
+    "Animations played on the player rather than on a model: solo, with a cast, and worn as a movement set.",
 };
 
 # Emotes
 
-An emote is an animation played on **a player**, wearing their own skin. They
-disappear for its length, a rig of them dances in their place, and they are put
-back exactly where they were.
+An emote is an animation played on a player, in their own skin: a wave, a
+dance, a handshake. While it plays, the player is hidden and a copy of them
+(a rig) performs it in their place. When it ends they are put back exactly
+where they were.
 
 ```
 /emote wave
@@ -16,154 +17,135 @@ back exactly where they were.
 /emote stop
 ```
 
-Tab completion offers every emote the server holds, and once you have typed one
-that needs a partner it offers the players who could be it — and stops offering
-once the last slot is filled.
+Tab completion lists every emote on the server, and for an emote that needs a
+partner it offers the players who could join in.
 
 ## The rig is not the animation
 
-Two separate things, and mixing them up makes nothing about emotes make sense.
+These are two separate things:
 
-**The rig** is a model of *that player*, cut out of their skin. It is generated,
-never authored: nobody opens Blockbench to make a rig for Steve.
+- **The rig** is a model of that player, cut out of their skin. It is made
+  automatically, never drawn by hand.
+- **The animation** is keyframes, made once for everybody. It moves bones by
+  name, so the same wave fits every player.
 
-**The animation** is keyframes — a wave, a bow, a handshake — and is authored
-once, for everybody. It moves bones by name, so the same wave fits every player
-alive.
+A resource pack is built before anybody moves and can't fetch a live skin, so
+the pack has to carry a rig for every player who will emote. A player with no
+rig in the pack can't emote, and the command tells them so.
 
-That split is also why an emote needs a push. A resource pack is built and
-downloaded before anybody moves, and it cannot reach out to a live skin, so the
-pack has to **carry a baked rig for each player it was built for**. A player
-absent from that pack has no rig in it and cannot emote — which the command
-says out loud, rather than putting a Steve in their place.
+RP Engine bakes rigs itself from the skin of everyone who joins, so a server
+with no Studio pack still has them. Somebody joining for the first time shows
+as a default figure until the rebuild finishes (you often notice it when they
+sit in a seat or a vehicle). The rebuild starts straight away; the new pack
+goes to whoever joins next, and to players already online the next time
+they're sent a pack. It doesn't reload everyone's client the moment someone
+walks in.
 
-<Callout type="note" title="Somebody joined after the push">
-  That is the whole of it, and the fix is one more push. `Emotes.canPerform` is
-  the same question in Java.
-</Callout>
+| config.yml | Default | What it does |
+|---|---|---|
+| `emotes.bake-on-join` | `true` | Rebuild when someone new joins. Off, and `/rp reload` bakes whoever has arrived |
+| `emotes.player-commands` | `true` | Registers `/emote`. Off, and it's still there as `/rp emote` |
+| `emotes.cast-permission` | `rpengine.emote.cast` | Who may pull other players into an emote. Empty for no check |
 
-The engine bakes its own rigs too, from the skins of everybody who joins, so a
-server with no Studio pack at all still has them. A player it has never seen
-has nothing in the pack yet, which is why a brand-new arrival appears as the
-default rig for a moment — riding a vehicle or sitting in a seat is usually
-where somebody first notices it. It rebuilds at once, and anybody who
-arrives during that rebuild is covered by a single follow-up rather than
-costing one each. The new build goes to whoever joins next and to players
-already online the next time they are sent a pack anyway, rather than
-reloading everybody's client the moment somebody walks in; `emotes.bake-on-join: false` in
-[config.yml](/rp-engine/config) turns that off for a server that would rather
-pick its own moment, and `/rp reload` bakes whatever has arrived since.
+Baking rigs needs Minecraft 1.21.4 or newer. On older servers, rigs that arrive
+in a Studio push still work.
 
 ## Getting emotes onto a server
 
 Make them in [Studio](https://studio.resourcepack.ai), then push:
 
 <Steps>
-  <Step title="Sync">
-    In Studio, open your pack and hit **Sync**. It shows a pairing code.
-    In game: `/rp sync <code>`.
+  <Step title="Pair">
+    In Studio, open your pack and press **Sync** to get a pairing code. In
+    game, run `/rp sync <code>`.
   </Step>
   <Step title="Push">
-    Hit push in Studio. The pack arrives, the emotes with it, and the rigs are
-    baked for whoever is on that sync.
+    Push from Studio. The pack arrives with the emotes in it, and rigs are
+    baked for everyone on that sync.
   </Step>
   <Step title="Emote">
-    `/emote` and tab, and everything in the pack is there.
+    Type `/emote` and press Tab.
   </Step>
 </Steps>
 
-`/rp emotes` lists what the server is holding right now.
-
-### Models inside an emote
-
-An emote can carry a pack model as a prop. If only part of that model moves,
-Studio stores the motion as an ordinary animation on the model and names it in
-the emote manifest. RP Engine then renders the model as its normal multi-part
-rig and seeks it to the emote's playhead on every emote step. The player's bones and
-the model therefore share one clock: a lifted barbell stays in the lifter's
-hands instead of moving the whole bench or playing on an unrelated loop.
+`/rp emotes` lists what the server has right now. If somebody joined after the
+push, push again.
 
 ### Sharing a push
 
-A sync is one player's, so a second person testing the same pack would need a
-second code. Instead, put them on yours:
+A sync belongs to one player. To let someone else test the same pack, add them
+to yours:
 
-```
-/rp sync add Steve     they get /rp sync accept, or deny
-/rp sync who           who is on it
-/rp sync remove Steve  and the pack comes back off them
-/rp sync leave         if you are on somebody else's
-/rp sync stop          end yours, for everybody
-```
+| Command | What it does |
+|---|---|
+| `/rp sync add <player>` | Invites them; they accept or deny |
+| `/rp sync who` | Who is on your sync |
+| `/rp sync remove <player>` | Takes them off, and the pack comes off them |
+| `/rp sync leave` | Leaves somebody else's sync |
+| `/rp sync stop` | Ends your sync for everybody |
 
-It exists to answer "who else receives my pushes", so it lives as long as the
-sync does — there is nothing to disband and no ownership to hand on.
+### Models inside an emote
+
+An emote can carry a pack model as a prop: a chair, a sword, a barbell. If part
+of the model moves, it plays on the emote's own clock, so a lifted barbell
+stays in the lifter's hands.
 
 ## Emotes with a cast
 
-Some emotes take more than one person: a handshake, a hug, a high five. The
-lead names the others and everybody is teleported into position, turned to face
-correctly, and given their positions back at the end.
+Some emotes take more than one person, like a handshake or a hug. The lead
+names the others, and everyone is moved into position, turned to face each
+other, and put back afterwards. Nobody is moved until every participant and
+spot has been checked, and the emote ends for everyone at once.
 
-Nobody is moved until every participant and every destination has been checked,
-and the emote ends for everybody or for nobody.
+Invited players are asked first, with accept and deny buttons (they run
+`/emotereply`, which every player can use, so anyone can refuse).
 
-An invited player is asked first — `/emotereply accept` or `deny` — so nobody is
-dragged across the room by a stranger. That command is deliberately ungated: a
-player who cannot reply is a player who cannot refuse.
-
-`rpengine.emote.cast` is who may name a cast at all. `rpengine.emote.force`
-skips the invitation, for staff running an event.
+| Permission | What it allows |
+|---|---|
+| `rpengine.emote` | Play an emote |
+| `rpengine.emotes` | List emotes |
+| `rpengine.emote.cast` | Pull other players into an emote (they are still asked) |
+| `rpengine.emote.force` | Skip the invitation, for staff running an event |
 
 ## Movement sets
 
-A movement set is a group of emotes you **wear** rather than perform once — a
-walk, a run, an idle, applied for as long as you have it on. Wearing one is the
-same command:
+A movement set is a group of emotes you wear rather than play once: a walk, a
+run, an idle, used for as long as you have it on. You put one on the same way:
 
 ```
 /emote strut
 ```
 
-Groups and single emotes share one list of names and one name space, so nothing
-can collide and nothing has to be told apart to be typed.
+Groups and single emotes share one list of names, so they can't clash.
 
 ### Walk cycles follow the player, not the clock
 
-A walk is not a thing that happens over a second — it happens over a stride. So
-the walk, sprint and crouch-walk members of a set are played by **how far the
-player travelled**, not by how long they took: standing still, the legs stop;
-on soul sand they slow down; under a speed potion or a raised walk-speed
-attribute they keep up. The feet stay on the ground either way.
+Walk, sprint and crouch-walk cycles play according to how far the player has
+moved, not how much time has passed. Standing still, the legs stop; on soul
+sand they slow; with a speed potion they keep up. Feet don't slide.
 
-Author each cycle for Minecraft's ordinary pace and it plays exactly as you
-drew it, because that is the speed the engine divides by:
+Draw each cycle for Minecraft's normal pace and it plays as drawn:
 
-| State | Author it for |
+| State | Draw it for |
 |---|---|
 | Walk | 4.317 blocks per second |
 | Sprint | 5.612 blocks per second |
 | Crouch-walk | 1.295 blocks per second |
 
-Standing still, crouching in place and being off the ground are not gaits — an
-idle breathes at its own rate and a jump is on gravity's clock — so those three
-play at the rate they were drawn at, whatever the player is doing.
-
-Changing pace does not restart anything. The engine joins the new cycle at the
-point nearest the pose already on screen, so breaking into a run picks the run
-up mid-stride on the same leg, and eases between the two cycles rather than
-cutting.
+Idle, crouching in place and jumping play at their drawn speed. Changing pace
+doesn't restart anything: the engine picks up the new cycle on the same leg and
+blends between them.
 
 ## What stops an emote
 
-Being hit. Moving, in most cases. `/emote stop`. A plugin cancelling
-`EmoteStartEvent`, or calling `Emotes.stop`. When it ends, whatever invisibility
-the player already had comes back — minus the time the emote took, so an emote
-cannot be used to extend a potion.
+Being hit, moving (for most emotes), `/emote stop`, or a plugin
+(`EmoteStartEvent` can be cancelled, and `Emotes.stop` ends one). Any
+invisibility the player had before comes back afterwards, minus the time the
+emote took, so emotes can't stretch a potion.
 
 ## Hand-authored emotes
 
-A pack can carry emotes of its own in an `emotes/` folder, one file holding as
+A pack can carry its own emotes in an `emotes/` folder. One file can hold as
 many as you like, keyed by name:
 
 ```json
@@ -183,23 +165,41 @@ many as you like, keyed by name:
 }
 ```
 
-This is exactly what Studio's emote editor exports and a push carries, so the
-easy way to write one is to make it there and paste the entry. Hand-written is
-fine too, and YAML works as well as JSON. The bones are `head`, `body`,
-`rightArm`, `leftArm`, `rightLeg`, `leftLeg`, `rightForearm`, `leftForearm`,
-`rightShin` and `leftShin`; `root` moves the whole figure about the hip.
-Channels are `rotation` (degrees), `position` (pixels) and `scale`, and times
-are in seconds.
+This is exactly what Studio's emote editor exports, so the easy way is to make
+it there and paste the entry. YAML works as well as JSON.
+
+| Part | Values |
+|---|---|
+| Bones | `head`, `body`, `rightArm`, `leftArm`, `rightLeg`, `leftLeg`, `rightForearm`, `leftForearm`, `rightShin`, `leftShin`, and `root` (the whole figure, about the hip) |
+| Channels | `rotation` (degrees), `position` (pixels), `scale` |
+| Timing | `time` and `length` in seconds; `loop` repeats it |
 
 **Emote names are shared across the whole server**, not per pack, because
-`/emote wave` names an emote by its bare name. Two packs both defining `wave`
-is an error rather than two emotes, so prefix yours (`mypack_wave`) if other
-people will install your pack beside theirs.
+`/emote wave` uses the bare name. Two packs both defining `wave` is an error,
+so prefix yours (`mypack_wave`) if other people will install your pack.
+
+### Props
+
+Carry a model with `props`, beside `animators`:
+
+```json
+"props": [
+  { "id": "right", "modelId": "mypack:skate_right", "attach": "rightShin",
+    "offset": [2, -16, 0], "scale": 1 }
+]
+```
+
+| Field | What it is |
+|---|---|
+| `modelId` | One of your items (whatever wears the model you want) |
+| `attach` | A bone name, `root` for the whole body, or `none` to stay where it was put |
+| `offset` | Where the model's centre sits, in pixels from the rig's origin, which is a block above the feet |
+| `animator` | The prop's own motion, with the same channels as a bone |
+| `animation` | One of the model's own animations, played on the emote's clock |
 
 **BetterModel's player animations load as emotes too.** Drop its plugin folder
-in and every animation in `players/` becomes one, with its bones mapped onto
-these. See [Moving from BetterModel](/rp-engine/bettermodel) for the two places
-its rig differs.
+in and every animation in `players/` becomes one. See
+[Moving from BetterModel](/rp-engine/bettermodel).
 
-A hand-authored emote plays on the rigs the engine bakes itself, which needs
-Minecraft 1.21.4 or newer. On an older server it loads, and plays on nobody.
+Hand-authored emotes play on the rigs the engine bakes, which needs Minecraft
+1.21.4 or newer. On older servers they load but play on nobody.

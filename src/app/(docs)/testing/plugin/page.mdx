@@ -1,7 +1,7 @@
 export const metadata = {
   title: "The plugin",
   description:
-    "RP Engine — what it adds to a Paper or Spigot server, how to install it, and how to push a pack to yourself while you build.",
+    "RP Engine: what it adds to a Paper or Spigot server, how to install it, and how to push a pack to yourself while you build.",
 };
 
 # The plugin
@@ -10,15 +10,15 @@ Vanilla Minecraft can't do most of what a pack made here is for. It has no
 concept of an animated block model, no way to play an emote on a player, and
 no way for a server to hand one person a pack without handing it to everybody.
 
-**RP Engine** is the half that makes those work. It's what
-[our test server](/testing/test-server) runs — the models you see standing
-around and moving on <ServerAddress /> are this plugin doing it — and it's the
-same jar you can put on your own server.
+**RP Engine** is the server plugin that makes those work. It's what
+[our test server](/testing/test-server) runs (the models moving around on
+<ServerAddress /> are this plugin), and you can put the same jar on your own
+server.
 
 <Callout type="note" title="You don't need it to use a pack">
-  A pack made here is an ordinary resource pack. Export the `.zip`, point
-  `server.properties` at it, done — nothing of ours installed. The plugin is
-  for the things a resource pack alone can't do, which is the list below.
+  A pack made here is an ordinary resource pack. Export the `.zip` and point
+  `server.properties` at it, with nothing of ours installed. The plugin is for
+  the things a resource pack alone can't do, listed below.
 </Callout>
 
 ## What it adds
@@ -26,25 +26,24 @@ same jar you can put on your own server.
 | | Without the plugin | With it |
 | --- | --- | --- |
 | **Models** | The model renders, standing still | Place it, sit on it, pick it up, and it animates |
-| **Animations** | Nothing — the keyframes sit in fields vanilla ignores | Plays on loop, on click, or from your own plugin |
-| **Emotes** | Nothing | `/emote` plays one on a player, wearing their own skin — or puts on a movement set they keep while they carry on playing |
+| **Animations** | Nothing: vanilla ignores the keyframes | Plays on loop, on click, or from your own plugin |
+| **Emotes** | Nothing | `/emote` plays one on a player in their own skin, or puts on a movement set they keep while they play |
 | **Custom GUIs** | The art ships, but nothing opens a screen with it | `/rp screen` opens the screen with your art drawn over it |
 | **HUD overlays** | Same | `/rp hud` draws a meter or a frame over the world |
 | **Pack sounds** | `/playsound` works, if you're an operator | `/rp sound` works for anybody, so the person testing can hear their own sound |
 | **Live testing** | Re-export, re-upload, rejoin | Studio pushes a pack to one player in seconds |
 | **Distribution** | One pack for everybody, one version | Every player gets the build for the version they're on |
 
-It also does a good deal that has nothing to do with this site — items,
-recipes, entities, liquids, all written as YAML in a folder on your own
-server. That half is documented in [RP Engine](/rp-engine).
+It also works without Studio at all: items, recipes, entities, liquids and
+more, written as YAML in a folder on your server. That half is documented in
+[RP Engine](/rp-engine).
 
 ## Installing it
 
 <Callout type="note" title="Requirements">
   A Paper or Spigot server on **1.19.4 or newer**, running **Java 17+**, and
-  permission to install plugins on it. 1.19.4 is where display entities
-  arrived, and a placed model is one — so there's no build for 1.8, because the
-  features the plugin exists to deliver aren't there to use.
+  permission to install plugins on it. 1.19.4 is the version that added display
+  entities, which placed models are made of.
 
   Below 1.21.4 a few things are reduced rather than missing, and the plugin
   prints exactly which at startup. [Minecraft versions](/rp-engine/versions)
@@ -62,33 +61,46 @@ server. That half is documented in [RP Engine](/rp-engine).
     configuration.
   </Step>
   <Step title="Restart the server">
-    A `/reload` won't do it — plugin jars are only picked up on a real
-    restart. Check the console for the plugin's startup line.
+    `/reload` isn't enough; plugins are only loaded on a full restart. Check
+    the console for the plugin's startup line.
   </Step>
 </Steps>
 
 ## Using it
 
-Two things it does for a pack made here, and they're independent — a server
-can do either without the other.
+It does two separate things for a pack made here, and a server can use either
+without the other.
 
 ### Pushing a pack to one player
 
-For building. A player runs `/rp sync` with the 8-digit code Studio shows, and
-from then on **Sync** in the editor pushes the pack straight to them, in
-seconds, without anybody touching `server.properties`.
-`/rp sync add <player>` shares your pushes with the people building alongside
-you.
+For building. Press **Sync** on a pack in Studio and choose **Testing on your
+own server instead?** to get an eight-digit code. Run it in game:
 
-That's per player on purpose: it's how you and your builders see a pack while
-it's being made, not how a public server serves one.
+```
+/rp sync 12345678
+```
+
+From then on, **Sync** pushes the pack straight to you in seconds, without
+touching `server.properties`.
+
+| Command | What it does |
+| --- | --- |
+| `/rp sync <code>` | Pair yourself with a pack in Studio |
+| `/rp sync add <player>` | Share your pushes with someone building alongside you (they accept or deny) |
+| `/rp sync remove <player>` | Stop sharing with them |
+| `/rp sync who` | See who's in your sync |
+| `/rp sync leave` | Leave someone else's sync |
+| `/rp sync stop` | End your sync |
+
+`rpengine.sync` defaults to operators only; grant it to your builders. Syncing
+is per player on purpose: it's for seeing a pack while it's made, not for
+serving one to the public.
 
 ### Serving your published pack to everyone
 
-For launch. `/rp distribute <code>` ties the server to a pack from the
-Distribution tab, and from then on every joining player is served the build
-for the Minecraft version they're actually on. That's the
-[Distribution](/distribution) feature, and it needs no sync from anybody.
+For launch. `/rp distribute <code>` binds the server to a pack from
+**Distribution** in Studio, and from then on every joining player gets the
+build for their Minecraft version. See [Distribution](/distribution).
 
 ## Commands and permissions
 
@@ -102,15 +114,12 @@ The full table is on
 before you grant anything:
 
 **`/rp screen`, `/rp hud` and `/rp sound` each take an optional player**, so
-granting one lets that person draw a screen, an overlay or a sound onto
-somebody else's client. Grant them to the people building your pack, not to
-everyone.
+granting one lets that person put a screen, an overlay or a sound on someone
+else's client. Grant them to the people building your pack, not to everyone.
 
 **Nobody is pulled into an emote without agreeing.** `/emote <name> <player…>`
-asks everyone it names first, and `rpengine.emote.force` is what skips the
-asking — deliberately not a child of `rpengine.emote.cast`, because holding one
-is being allowed to ask and holding the other is not having to. See
-[Emotes](/rp-engine/emotes).
+asks everyone it names first. `rpengine.emote.force` skips the asking, and is
+not included in `rpengine.emote.cast`. See [Emotes](/rp-engine/emotes).
 
 ## Driving it from your own plugin
 

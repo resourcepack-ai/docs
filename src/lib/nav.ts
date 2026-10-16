@@ -154,7 +154,7 @@ export const nav: NavGroup[] = [
       {
         title: "Dialogs",
         href: "/dialogs",
-        description: "Minecraft 1.21.6's dialog screens, drawn as pack art, with buttons that run commands.",
+        description: "Minecraft's own dialog screens, designed in Studio: menus, shops and guides with buttons, item slots and pages.",
         keywords: [
           "dialog",
           "dialogue",

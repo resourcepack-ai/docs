@@ -1,101 +1,89 @@
 export const metadata = {
   title: "Permissions",
   description:
-    "One node per command, a second node for pointing one at somebody else, what defaults to what, and the three nodes that gate something other than a command.",
+    "One node per command, a second node for pointing one at somebody else, what defaults to what, and the nodes that gate something other than a command.",
 };
 
 # Permissions
 
-**One node per command**, always `rpengine.<subcommand>` — `rpengine.give`,
-`rpengine.purge`, `rpengine.sync`. No buckets: whoever may reload content is
-not necessarily whoever may purge every model within a hundred blocks, and a
-bucket is a guess about that which is wrong on some server.
+Every subcommand has its own node, always `rpengine.<subcommand>`:
+`rpengine.give`, `rpengine.purge`, `rpengine.sync` and so on. The full list is
+on [Commands](/rp-engine/commands), beside each command.
 
-`rpengine.admin` is a parent granting all of them, for a server that does not
-want to think about it. Nothing checks it directly.
+`rpengine.admin` grants every command node, including the `.others` nodes
+below. It is a convenience: nothing checks it directly.
 
-A command that can name another player has a **second node for doing that**:
-see [Pointing a command at somebody else](#pointing-a-command-at-somebody-else).
+Everything defaults to op, except these, which every player has:
 
-Everything defaults to `op`, except:
+| Node | What it allows |
+|---|---|
+| `rpengine.emote` | Playing an emote with `/emote` |
+| `rpengine.emotes` | Listing emotes |
+| `rpengine.chat.icons` | Typing `:wave:` in chat to draw an icon, when [chat icons](/rp-engine/config#icons-in-chat) are on |
+| `rpengine.var` | Changing your own dialog settings: what a click on a dialog's switch or slider runs |
+| `rpengine.page` | Turning a dialog to another page, or closing it: what a click on a paged dialog runs |
+| `rpengine.slot` | Moving an item in a dialog's item slots: what a click on such a slot runs |
+
+`var`, `page` and `slot` can do no more than the click that runs them: a
+setting must be one a dialog offers, a page one the dialog links to, a slot
+one the dialog has that exact click for. Taking them away breaks those clicks.
+
+## Nodes that are not a command
 
 | Node | Default | What it allows |
 |---|---|---|
-| `rpengine.emote` | everyone | Playing an emote |
-| `rpengine.emotes` | everyone | Listing them |
-| `rpengine.emote.cast` | op | Naming a cast. They are still asked |
-| `rpengine.emote.force` | op | Naming one **without** asking |
-| `rpengine.chat.icons` | everyone | Typing `:wave:` in chat |
-| `rpengine.var` | everyone | Changing your own dialog settings — what a click on a dialog's switch or slider runs |
-| `rpengine.page` | everyone | Turning a dialog to another of its pages — what a click on a paged dialog's sidebar runs |
+| `rpengine.emote.cast` | op | Pulling other players into an emote. They are still asked first |
+| `rpengine.emote.force` | op | Pulling other players in without asking them |
+| `rpengine.chat.icons` | everyone | Icons in chat, above |
+| `rpengine.update` | op | Being told on join when a newer RP Engine is out |
 
-`rpengine.var` and `rpengine.page` are everyone's because a click inside a
-dialog runs them as the player who clicked. Neither can do more than that
-click: a setting must be one some dialog offers, and a page one the dialog the
-player was shown links to. Taking them away breaks those clicks, not a back door.
+`rpengine.emote.force` is not a child of `rpengine.emote.cast`: being allowed
+to ask is not being allowed to skip asking. The node `emote.cast` checks can
+be changed with `emotes.cast-permission` in [`config.yml`](/rp-engine/config#emotes).
 
-`rpengine.emote.force` is deliberately not a child of `rpengine.emote.cast`.
-Holding one is being allowed to ask; holding the other is being allowed to skip
-the asking, and a server that granted the first has not agreed to the second.
+`rpengine.chat.icons` is not granted by `rpengine.admin`. Every other node
+here is.
 
-`rpengine.chat.icons` is deliberately **not** granted by `rpengine.admin`
-either. Admin means "every command", and a server that gives its ops every
-command has not thereby said only ops may use an emoji. It is one of three
-nodes that gate something other than a command — the emote pair above are the
-others.
+`rpengine.edit` deserves a moment before you grant it widely. It lets whoever
+holds it rewrite files in your content folder from a browser; see
+[Editing in a browser](/rp-engine/editing).
 
-`rpengine.edit` is the one worth a second look before you grant it widely.
-Every other node runs a command against content somebody already wrote;
-that one lets whoever holds it **rewrite files in your content folder from a
-browser** — see [Editing in a browser](/rp-engine/editing). It is an ordinary
-child of `rpengine.admin` and defaults to `op` like the rest, which is the
-right default; it is granting it to a wider group that deserves a moment.
-
-Individual content can carry its own node too — `permission:` on an item or a
-model — which is checked when it is used or placed rather than when it is held.
+Content can carry its own node too: `permission:` on an item or a model, which
+is checked when it is used or placed.
 
 ## Pointing a command at somebody else
 
 Nine commands can name another player. Naming yourself, or nobody, needs only
-the command's own node; naming **somebody else** also needs
+the command's own node. Naming somebody else also needs
 `rpengine.<command>.others`:
 
-| Node | Default | What it allows |
-|---|---|---|
-| `rpengine.sound.others` | op | Playing a custom sound to somebody else |
-| `rpengine.screen.others` | op | Opening a custom screen on somebody else |
-| `rpengine.hud.others` | op | Drawing or clearing a HUD overlay on somebody else |
-| `rpengine.shader.others` | op | Showing or clearing a shader object on somebody else |
-| `rpengine.dialog.others` | op | Opening a dialog on somebody else's screen |
-| `rpengine.var.others` | op | Changing somebody else's dialog settings |
-| `rpengine.armor.others` | op | Dressing somebody else in 3D armour, or handing them a set |
-| `rpengine.bind.others` | op | Putting a model on another player. A mob needs only `rpengine.bind` |
-| `rpengine.unbind.others` | op | Taking a bound model off another player |
+| Node | What it allows |
+|---|---|
+| `rpengine.sound.others` | Playing a custom sound to somebody else |
+| `rpengine.screen.others` | Opening a custom screen on somebody else |
+| `rpengine.hud.others` | Drawing or clearing a HUD overlay on somebody else |
+| `rpengine.shader.others` | Showing or clearing a shader object on somebody else |
+| `rpengine.dialog.others` | Opening a dialog on somebody else's screen |
+| `rpengine.var.others` | Changing somebody else's dialog settings |
+| `rpengine.armor.others` | Dressing somebody else in 3D armour, or handing them a set |
+| `rpengine.bind.others` | Putting a model on another player. A mob needs only `rpengine.bind` |
+| `rpengine.unbind.others` | Taking a bound model off another player |
 
-So a server can let every player open its menus for themselves
-(`rpengine.dialog`) without letting any of them push a menu onto everybody
-else's screen. A player without the node is told which one to ask for, and tab
-completion offers them only their own name.
+All default to op. So you can let every player open menus for themselves
+(`rpengine.dialog`) without letting them open one on anybody else's screen. A
+player without the node is told which one they need, and tab completion
+offers them only their own name.
 
-**The console and command blocks are never refused.** They have no self to act
-on, and they are how a server runs these commands for its players. A command run
-through `execute as <player>` is judged by whoever ran it, not by the player it
-runs as. `rpengine.admin` grants every `.others` node along with the rest.
-
-A cast is the one exception, because it already has its own pair:
-`rpengine.emote.cast` and `rpengine.emote.force`, above.
+The console and command blocks are never refused. A command run through
+`execute as <player>` is judged by whoever ran it, not by the player it runs
+as.
 
 ## Granting them
 
-RP Engine checks Bukkit permissions, so **whatever already provides them
-works** — LuckPerms, and anything else that plugs into Vault. There is no
-integration to install and nothing RP Engine needs to know about your setup.
+RP Engine uses ordinary Bukkit permissions, so LuckPerms or any other
+permissions plugin works with nothing extra to install.
 
 ```
 /lp group builder permission set rpengine.give true
 /lp group admin permission set rpengine.admin true
 ```
-
-A subcommand somebody cannot run is **not offered in tab completion**, so a
-player with a narrow grant sees a short, honest command rather than a long one
-that refuses most of itself.

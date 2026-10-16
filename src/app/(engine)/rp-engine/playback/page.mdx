@@ -1,14 +1,14 @@
 export const metadata = {
   title: "Controlling playback",
   description:
-    "Loop, hold or once — and the speed, priority and crossfade a server decides rather than a model.",
+    "Loop, hold or once, and the speed, priority and crossfade a server decides rather than a model.",
 };
 
 # Controlling playback
 
-Blockbench's own **loop / hold / once** comes across as authored. Everything
-else is a decision about your server rather than about the model, so it lives
-beside the piece:
+An [animation](/rp-engine/animation) plays exactly as it was made in
+Blockbench unless you say otherwise. To change how one plays on your server,
+name it under `animations:` in the item's `place:` block:
 
 ```yaml
 chair:
@@ -16,14 +16,15 @@ chair:
   model: chair
   place:
     animations:
-      spin:
+      spin:             # the animation's name in Blockbench
         mode: loop      # loop | hold | once, overriding the .bbmodel
         speed: 0.5      # half the authored speed
         priority: 10    # wins when two animations claim one trigger
         blend: 0.25     # seconds to ease in and out of it
 ```
 
-An animation nobody mentions plays exactly as authored.
+Leave out any setting to keep what the model says. The same block also takes
+`layer`, `weight` and `bones`; see [Layers and masks](/rp-engine/layers).
 
 ## What happens at the end
 
@@ -31,39 +32,32 @@ An animation nobody mentions plays exactly as authored.
 |---|---|
 | `loop` | Starts again |
 | `hold` | Stops on the last frame and stays there |
-| `once` | Plays and goes back to rest |
+| `once` | Plays, then goes back to rest |
 
-**`hold` is the one worth knowing.** A door, a lid, a drawbridge and a portcullis
-are all animations that should stop where they finished — without it they spring
-shut the moment they finish opening, because a one-shot that runs out goes back
-to rest.
+Use `hold` for a door, a lid or a drawbridge. Without it they spring shut the
+moment they finish opening.
+
+`mode` changes what happens at the end, not when an animation starts. That
+still comes from the Blockbench file: an animation set to Loop there plays on
+its own, and anything else plays on right-click.
 
 ## Speed
 
-`speed: 0.5` is half as fast; `2` is twice.
-
-It is here and not in a second Blockbench file because the same walk cycle is a
-stroll on one server and a sprint on another, and re-exporting a model to change
-its tempo is a bad trade.
+`speed: 0.5` is half as fast; `2` is twice as fast. The same walk cycle can be a
+stroll on one server and a sprint on another without editing the model.
 
 ## Priority
 
-Matters once a model has more than one animation on the same trigger. **Higher
-wins**; equal falls back to the order they appear in the file.
-
-Without it, the first claimant of a trigger wins and the second is unreachable —
-which is fine until you add a rare animation that should beat the common one.
+Matters when a model has more than one animation on the same trigger, for
+example two right-click animations. Higher wins; with equal priority, the one
+that comes first in the file wins.
 
 ## Blend
 
-`blend: 0.25` is the difference between a model that **snaps** between poses and
-one that moves.
+`blend:` is how many seconds the model takes to ease into and out of the
+animation, instead of snapping between poses. A quarter of a second suits most
+things. It is off unless you set it, because blending a quick flicker would
+smear it into nothing.
 
-A quarter of a second covers most things. It eases out as well as in — going
-back to rest is a transition too, so there is no separate setting for it.
-
-<Callout type="note" title="Why a crossfade needs to be asked for">
-  A blend is only correct if the two poses are far apart. Blending a
-  two-frame flicker would smear it into nothing, so it is off unless a model
-  asks, rather than on by default with a way to turn it off.
-</Callout>
+Blend does nothing on a [vehicle](/rp-engine/vehicles): a vehicle's animations
+always switch instantly when its state changes.

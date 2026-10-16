@@ -1,98 +1,93 @@
 export const metadata = {
   title: "HUD overlays",
   description:
-    "Something drawn over the game rather than behind a window — a mana bar, a compass, a vignette.",
+    "Pictures drawn over the game rather than behind a window: a mana bar, a compass, a vignette.",
 };
 
 # HUD overlays
 
-An overlay is drawn over the game rather than behind a window.
+An overlay is a picture drawn on top of the game view, like a mana bar, a
+compass or a frame round the screen. It sits in one of two places the game
+already draws text, so it needs no client mod.
 
 ```yaml
 # huds/overlays.yml
 mana:
+  file: mana             # assets/textures/gui/mana.png. Defaults to the id
   slot: action_bar       # action_bar | boss_bar
   height: 64
   ascent: 32
+  offset: 0
 ```
 
-`/rp hud mypack:mana` shows one; `/rp hud clear` takes it away.
+`/rp hud mypack:mana [player]` shows one and `/rp hud clear [player]` takes it
+away. `/rp screens` lists overlays along with screens.
 
-## The two slots
+| Field | Default | What it does |
+|---|---|---|
+| `slot` | `action_bar` | `action_bar` sits above the hotbar (where item names appear). `boss_bar` sits at the top of the screen |
+| `height` | 64 | How tall the picture is drawn, 1 to 256 |
+| `ascent` | 32 | How far up from the slot's line it is moved. Bigger is higher. Can't be more than `height` (it is capped, with a warning) |
+| `offset` | 0 | Horizontal shift, 0 to 512 |
 
-Both are places the game already draws text somewhere fixed, which is the whole
-trick: an overlay is a glyph placed into that text with enough negative space
-around it to land where you drew it.
+When several overlays are shown at once, the one shown most recently is the
+one you see.
 
-| Slot | Where it draws |
-|---|---|
-| `action_bar` | Above the hotbar. Vanilla uses it for item names |
-| `boss_bar` | The top of the screen, where a boss health bar goes |
+## Making it change
 
-There is no third slot, because there is no third piece of text the game will
-draw wherever you ask.
-
-## Height and ascent
-
-`height` is how tall the picture is drawn. `ascent` moves it up the screen from
-the slot's baseline — a bigger ascent is higher.
-
-An ascent **greater than the height** is refused by the client and takes the
-whole font down with it, so if every icon on your server vanishes at once, this
-is the first number to check.
-
-## What it is not
-
-An overlay's **picture** cannot know anything. A mana bar that empties is
-several overlays and something of yours choosing which to show — RP Engine draws
-whichever you ask for and has no opinion about mana.
-
-That "something of yours" is usually a scoreboard or menu plugin reading
+The picture itself is fixed. A mana bar that empties is several overlays, with
+something choosing which to show: usually a scoreboard or menu plugin using
 [a placeholder](/rp-engine/placeholderapi), or your own plugin calling the
-[API](/rp-engine/api).
+[API](/rp-engine/api#hud-overlays).
 
-Its **text** is a different matter — see below.
+## Live values in text
 
-## Live values in an overlay's text
+Any `{name}` in an overlay's text is filled in for each player just before it's
+sent. The first of these that knows the name wins:
 
-Any `{name}` in an overlay's text is filled per player, one tick before the line
-is sent. Three things are asked, in this order, and the first that answers wins:
-
-1. Whatever a plugin published with `overlays().set(player, name, value)` — or
-   with `dialogs().set`, which is the same set of values: a
-   [dialog](/dialogs#live-values) prints them too.
+1. A value a plugin set with `overlays().set(player, name, value)`. A
+   [dialog](/dialogs#live-values) shows the same values.
 2. The built-ins below.
-3. PlaceholderAPI, if the server has it — `{vault_eco_balance}` is
-   `%vault_eco_balance%` in braces. Nothing to install on our side.
+3. PlaceholderAPI, if installed: `{vault_eco_balance}` is `%vault_eco_balance%`
+   in braces.
 
-A name none of the three knows becomes empty rather than staying as `{name}`: a
-gap reads as "no value yet", where a brace reads as a broken pack.
+A name nobody knows becomes empty rather than showing `{name}`.
 
-| Placeholder | What it answers |
+| Placeholder | What it shows |
 |---|---|
-| `{player}` · `{displayname}` · `{uuid}` | Who they are |
-| `{health}` · `{health_max}` · `{health_percent}` | Hearts, rounded up |
-| `{food}` · `{air}` | Hunger out of 20, and seconds of breath left |
-| `{level}` · `{xp}` | Experience level, and progress to the next as a percentage |
-| `{xp_points}` · `{xp_needed}` | Experience points into this level, and how many the level takes |
+| `{player}`, `{name}`, `{displayname}`, `{uuid}` | Who they are |
+| `{health}`, `{health_max}`, `{health_percent}` | Health, rounded up |
+| `{food}`, `{air}` | Hunger out of 20, and seconds of breath left |
+| `{level}`, `{xp}` | Experience level, and progress to the next as a percentage |
+| `{xp_points}`, `{xp_needed}` | Points into this level, and how many the level takes |
 | `{ping}` | Latency in milliseconds |
-| `{world}` · `{x}` · `{y}` · `{z}` · `{direction}` | Where they are, and which way they face |
-| `{time}` · `{day}` | The world's 24-hour clock, and how many days it has run |
-| `{gamemode}` | Survival, Creative, … |
-| `{online}` · `{max_online}` | Players now, and the cap |
+| `{world}`, `{x}`, `{y}`, `{z}`, `{direction}` | Where they are, and which way they face |
+| `{time}`, `{day}` | The world's 24-hour clock, and how many days it has run |
+| `{gamemode}` | Survival, Creative, and so on |
+| `{online}`, `{max_online}` | Players online, and the limit |
 
 ## Shader overlays from Studio
 
-Studio's **Shaders** editor makes overlays with far more in them than one
-picture: freehand paint, smooth shapes, and labels, player heads and progress
-bars that update live. The [Shaders](/shaders) page covers making one.
+Studio's Shaders editor makes far richer overlays: freehand paint, smooth
+shapes, and labels, player heads and progress bars that update live. See
+[Shaders](/shaders) for making one.
 
-On the server they are overlays with the id `studio:<id>`, with commands of
-their own: `/rp shaders` lists them and `/rp shader studio:<id>` shows one
-(`/rp hud` still draws one too, and is the command before 0.1.57). Rules set
-in Studio show one with no command, and a
-plugin shows, hides and feeds it through the [API](/rp-engine/api#hud-overlays).
-They are only drawn for players holding the pack they came from.
+On the server they have the id `studio:<id>`. `/rp shaders` lists them and
+`/rp shader studio:<id> [player]` shows one (`/rp shader clear` hides it).
+Rules set in Studio can show one with no command, and a plugin can show, hide
+and feed it through the [API](/rp-engine/api#hud-overlays). They are only drawn
+for players who have the pack they came from.
 
-When several overlays are shown at once, the most recently shown one is the one
-you see.
+### Shipping one in a content folder
+
+A Studio HUD exported as JSON can live in a content folder too:
+
+```yaml
+# huds/huds.yml
+hud:
+  json: mypack/huds/hud.json   # path under the content folder
+```
+
+Its glyphs and shader go in the pack's `resourcepack/` folder, and Studio's
+exporter writes both. A boss-bar HUD whose picture uses its own font needs
+**Paper**; on Spigot use the action bar.

@@ -6,7 +6,7 @@ export const metadata = {
 
 # Seats, light and surfaces
 
-Four more things a `place:` block can say.
+Four more things a [`place:`](/rp-engine/models) block can say.
 
 ```yaml
 chair:
@@ -21,59 +21,57 @@ chair:
 
 ## Sitting
 
-`seat:` is how far above the model's base a player's backside goes, in blocks.
+`seat:` is the height of the seat's surface above the model's base, in blocks.
 A dining chair is about `0.5`, a bar stool nearer `1.1`, a log on the ground
-`0.25` — it is per model, because furniture is any height.
+`0.25`.
 
-A seat is not always in the middle of a piece — a bench, a car, an L-shaped
-sofa — so it can be three numbers instead of one:
+A seat is not always in the middle of a piece (a bench, an L-shaped sofa), so it
+can be three numbers instead of one:
 
 ```yaml
 place:
   seat:
-    x: 0.4      # to the piece's RIGHT. Negative is left
+    x: 0.4      # to the piece's right. Negative is left
     y: 0.5      # up, the same number the short form gives
-    z: -0.15    # in FRONT of it. Negative is behind
+    z: -0.15    # in front of it. Negative is behind
 ```
 
-**Side and forward, not world x and z.** They turn with the piece, so a bench
-placed facing east seats people along itself rather than across it.
+These are relative to the piece, not world x and z. They turn with it, so a
+bench placed facing east seats people along itself rather than across it. Each
+offset can be up to 16 blocks.
 
-If **every** chair on your server sits people a little high or low, that is not
-your number: it is how the game draws a seated player. Nudge them all at once
-with `models.seat-offset` in [`config.yml`](/rp-engine/config) and
-`/rp reload` — sit, adjust, reload, sit again, with no restart.
-
-Right-click to sit, shift to get up. One player per model, and a model with a
+Right-click to sit, sneak to get up. One player per model, and a model with a
 seat keeps its hitbox.
 
-<Callout type="note" title="The seat is never saved">
-  It is a marker the player rides, and it is gone on dismount, on quit, when
-  the model is broken, and when the server stops.
+If every chair on your server sits people a little high or low, nudge them all
+at once with `models.seat-offset` in [`config.yml`](/rp-engine/config)
+(positive is higher), then `/rp reload`. No restart needed.
 
-  That is deliberate. The way this feature usually rots is a world slowly
-  filling with invisible things players can stand on, months after the chairs
-  they belonged to were removed — so nothing is left behind to accumulate.
-</Callout>
+The seat is an invisible marker the player rides. It is never saved: it is
+removed when the player gets up or leaves, when the model is broken, and when
+the server stops, so nothing is left behind in the world.
 
-A model that animates plays its animation on right-click instead. Shift-right-
-click still sits.
+What else a click does comes first in some cases. A model with a right-click
+animation, [states](/rp-engine/furniture#states-lamps-doors-and-screens) or
+[storage](/rp-engine/furniture#storage) does that on a plain click, and you
+sit by sneaking and right-clicking. See
+[which click does what](/rp-engine/furniture#which-click-does-what).
 
 ## Light
 
-A display entity emits nothing, so `light:` puts a **real light block** in the
-model's anchor and takes it away when the piece is broken. A lamp wants about
+A display entity gives off no light, so `light:` puts a real light block in the
+model's block space and removes it when the piece is broken. A lamp wants about
 `14`.
 
 <Callout type="warning" title="A solid piece cannot also be a lamp">
-  One block cannot be a barrier and a light at once, and the barrier wins. If
-  you need both, the usual answer is a solid model beside a non-solid lamp
-  rather than one piece trying to be two things.
+  The barrier and the light would have to be the same block, and the barrier
+  wins. Put a non-solid lamp beside a solid model instead.
 </Callout>
 
 ## Where it may go
 
-`surface:` refuses a placement rather than turning the piece sideways.
+`surface:` refuses a placement on the wrong face rather than turning the piece
+sideways.
 
 | `surface:` | Where it can go |
 |---|---|
@@ -82,14 +80,12 @@ model's anchor and takes it away when the piece is broken. A lamp wants about
 | `ceiling` | The underside. Chandeliers, hanging plants |
 | `any` | Anywhere |
 
-A chandelier stuck to the underside of a floor is somebody's build ruined, so
-the wrong face is a refusal and not a rotation.
-
 ## What it drops
 
-Breaking a piece gives back **the item it was placed from**, keeping whatever
-name or enchantments that item had — so a renamed chair comes back renamed.
+Breaking a piece gives back the item it was placed from, with whatever name or
+enchantments that item had, so a renamed chair comes back renamed.
 
-`drop:` overrides that with a different content ID, for a piece that is meant
-to break rather than come back. A statue that drops rubble, a window that
-drops shards.
+`drop:` gives a different content ID instead, for a piece meant to break rather
+than come back: a statue that drops rubble, a window that drops shards. A
+[`shulker` container](/rp-engine/furniture#storage) ignores `drop:`, because it
+always gives back itself with its contents inside.

@@ -1,62 +1,52 @@
 export const metadata = {
   title: "Bones that do something",
   description:
-    "Heads that track, hitboxes you can aim at, seats and nametags — named the way your rig already names them.",
+    "Heads that track, hitboxes you can aim at, seats and nametags, named the way your rig already names them.",
 };
 
 # Bones that do something
 
-Name a bone with one of these prefixes in Blockbench and it does more than get
-drawn.
-
-<Callout type="note" title="These are Model Engine's prefixes, on purpose">
-  A rig you already have — or bought — names its bones this way. Inventing our
-  own spelling would mean re-authoring a model to move it here, for no gain to
-  anybody. It is a naming convention, and this one is already the convention.
-</Callout>
+In Blockbench, a model's parts are grouped into bones. Start a bone's name with
+one of these prefixes and it does more than get drawn. They are the same
+prefixes Model Engine uses, so a rig you already have, or bought, works without
+renaming anything.
 
 | Bone name | What it does |
 |---|---|
 | `h_head` | Turns to look at whatever its mob is targeting |
-| `hi_head` | The same, and every bone under it inherits it |
-| `b_wing` | A hitbox of its own — the mob is hit on the wing you aimed at |
-| `ob_wing` | The same, turning with the bone |
-| `p_seat1` | Somewhere to sit. Right-click it |
+| `hi_head` | The same, and every bone under it turns with it |
+| `b_wing` | A hitbox of its own, so the model is hit where you aimed |
+| `ob_wing` | The same, and the hitbox turns with the bone |
+| `p_seat1` | A passenger seat. Right-click it to sit |
 | `mount` | Where the driver sits. One per model |
 | `tag_name` | Where a name floats |
 
-Anything else is an ordinary bone, which is nearly all of them. A model needs
-none of this.
+Heads and seats only work on a [model worn by a mob](/rp-engine/mobs) or a
+[custom entity](/rp-engine/entities): a placed statue has nothing to look with
+and nobody to carry. Any other bone is an ordinary bone, which is nearly all of
+them. A model needs none of these.
 
 ## Heads
 
-A head bone turns toward what its mob is fighting, on top of whatever the
-animation is already doing to it — so a walk cycle still moves the head and
-looking is composed over it.
+An `h_` or `hi_` bone turns toward what its mob is fighting, on top of whatever
+the animation is doing, so a walk cycle still moves the head.
 
-<Callout type="warning" title="It follows the target, not the gaze">
-  Bukkit does not expose a mob's head yaw — the yaw you can read is the body's
-  — so "look where it is looking" is not a question the API can answer. Looking
-  at what it is fighting is, and is what you actually want from a boss. A mob
-  with no target faces the way its body does, which is right: an idle mob's
-  head is straight ahead.
+<Callout type="note" title="It follows the target, not the gaze">
+  The server cannot read which way a mob's head is turned, only its body. So a
+  head bone looks at the mob's current target, and faces straight ahead when it
+  has none.
 </Callout>
-
-Only on [a model worn by a mob](/rp-engine/mobs). A placed statue has nothing
-to look with.
 
 ## Hitboxes
 
 `b_` and `ob_` give a bone a hitbox of its own, so a dragon is hit on the wing
-you aimed at rather than inside one rectangle around the whole animal.
+you aimed at instead of inside one box round the whole animal. The hitbox is
+sized from the bone and follows the animation. Use `ob_` for bones that rotate
+a long way, so the hitbox turns with them.
 
-They ride the bone, so they follow the animation. Sized from the bone itself,
-measured when the pack is built.
-
-**A hit on a bone is forwarded to the mob.** The wing is not a creature: it has
-no health of its own, and the mob takes the damage with its own resistances,
-its own death and its own loot. What a bone changes is where you have to aim,
-and how much that is worth:
+A hit on a bone is passed on to the mob. The wing has no health of its own: the
+mob takes the damage with its own armour, death and loot. You can make some
+bones count for more or less:
 
 ```yaml
   place:
@@ -65,33 +55,27 @@ and how much that is worth:
       wing: 0.5
 ```
 
-Matched against the bone's **own** name and not its lineage — unlike an
-[animation's bone mask](/rp-engine/animation#two-at-once). A hitbox is a place
-you aimed at, and counting everything inside a torso as a torso hit would make
-a head worthless the moment it was inside one.
+Each number multiplies the damage of a hit on that bone. It matches the bone's
+own name only, not the bones inside it, so a head inside a torso still counts
+as a head. (An [animation mask](/rp-engine/layers#masks) works the other way and
+includes everything under the bone.)
 
 ## Seats
 
-`p_` is a passenger seat and `mount` is the driver's. Right-click one to sit;
-the seat follows the bone, so a seat on a walking mount goes with it.
+`p_` bones are passenger seats and `mount` is the driver's. Right-click one to
+sit; the seat follows the bone, so a seat on a walking mount moves with it.
 
-`mount` is a whole bone name rather than a prefix, which is Model Engine's one
-exception and is copied exactly. A bone called `mountain` is scenery.
+`mount` must be the whole bone name. A bone called `mountain` is scenery.
 
 ## Nametags
 
-`tag_` says where a name floats. Vanilla puts a name a fixed distance above the
-hitbox, which on a model three blocks tall and five wide is somewhere inside
-its knee.
+`tag_` marks where a name floats. Vanilla puts a name a fixed distance above
+the hitbox, which on a large model can be somewhere inside its knee.
 
-The text is the mob's own custom name, and its vanilla one is hidden while the
-tag is up so there are not two. Taking the model off gives it back.
+The text is the mob's own custom name, and its normal name tag is hidden while
+the model is on so there are not two. Taking the model off brings it back.
 
-## What is deliberately not here
+## Not supported
 
-Procedural bones — tails, segments — and item-display slots on a bone.
-
-Both are animation the engine would be **inventing** rather than a position it
-can read off your rig, and half-doing either is worse than not having it: a
-tail that lags wrongly reads as the plugin being broken, and there is no
-setting anybody can reach to fix it.
+Procedural bones (tails, chains of segments) and bones that hold an item are
+not supported.
