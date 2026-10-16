@@ -1,12 +1,18 @@
 export const metadata = {
   title: "Shaders",
   description:
-    "Custom HUD overlays you draw and place anywhere on screen: freehand paint, smooth shapes, and labels, player heads and progress bars that update live in game.",
+    "Custom HUD overlays you draw and place anywhere on screen, and 3D objects in the world that no block model can be: black holes, bubbles, fireballs.",
 };
 
 # Shaders
 
-A shader object is a piece of HUD you design yourself: a health bar in the
+Shaders come in two kinds, picked with the **2D / 3D** switch on the Shader tab:
+
+- **2D: shapes over the screen (HUD-style).** Most of this page.
+- **3D: objects in the world.** A black hole, a soap bubble, a ball of fire:
+  things a block model can't be. See [3D objects](#3d-objects).
+
+A 2D shader object is a piece of HUD you design yourself: a health bar in the
 corner, a nameplate at the top of the screen, a badge beside the hotbar. You
 draw it, place it anywhere on screen, and it stays put at every window size and
 GUI scale.
@@ -15,7 +21,7 @@ Some of it can **change while people play**. A label can read `{health}`, a bar
 can fill as a value rises and falls, and a player head shows the face of
 whoever is looking at it.
 
-<Callout type="warning" title="A shader object needs RP Engine">
+<Callout type="warning" title="A 2D shader object needs RP Engine">
   The art is in your resource pack, but something on the server has to put it
   on a player's screen and fill in the live values. That is [RP
   Engine](/rp-engine). Without it the pack loads and nothing appears.
@@ -225,3 +231,71 @@ object on your screen straight away.
   pack might be loaded on.
 - **Not in the ItemsAdder export.** That format has to leave the pack's font to
   ItemsAdder, and a shader object is drawn through it.
+
+## 3D objects
+
+A 3D object is something that sits in the world and looks like nothing a cube
+model can make: a swirling portal, a planet, a glowing orb, a black hole with
+a lensed disk. It is drawn by a shader in your pack, worked out fresh for every
+pixel, so it is smooth and round from every side and can move.
+
+### Making one
+
+Press **Add asset**, pick the **Shader** tab, switch to **3D** and describe it,
+for example "a slowly spinning plasma orb with a purple core and crackling
+white arcs". A 3D object is always generated: there is nothing to draw by hand,
+so **Blank** isn't offered. It takes a few minutes.
+
+Things with glow, smoke, energy, glass or motion work best. One centred object
+works better than a whole scene.
+
+### The object's page
+
+There is no editor. The page is the object running live, and three things to do
+with it.
+
+- **Look at it.** Drag to orbit and scroll to zoom. The floor squares are
+  blocks, so you can judge its size.
+- **Change it.** Write what to change ("make the glow bluer", "spin it
+  slower", "add a second ring") and press **Change with AI**. The object keeps
+  what it was until the change is done, and keeps it if the change fails.
+- **Place it.** See below.
+
+**Cost to draw** says how hard the object is on a player's graphics card:
+Light, Moderate or Heavy. Several Heavy objects on screen at once can cost
+frame rate on a slow machine.
+
+**Show the shader code** shows what was written, for reading. It can't be
+edited: one line that doesn't compile would stop the whole pack loading.
+
+### Placing it
+
+Set the **Size** (from a quarter of a block to 64 blocks across), then either:
+
+- **Copy /summon** and run the command where you stand, with the pack applied.
+  **No plugin is needed**: it is a plain vanilla command, so it works on any
+  server or in single player. The object appears just above you.
+- **Place in game** puts it in front of you on the server the pack is
+  [synced](/testing/plugin) to, at its stored size. Sync the pack first.
+
+Once placed it behaves like any entity: it stays where it is, blocks in front
+of it hide it, and killing it removes it.
+
+### Bubbles and glass
+
+A bubble is drawn by the game itself, refracting the world behind it. That
+needs a **26.2** pack and **Improved Transparency** turned on in the player's
+Video Settings. Without it, players see a faint outline. On 26.2 with Improved
+Transparency, blocks that cut through any 3D object also get a bright edge
+where they meet it.
+
+### 3D limits
+
+- **What it draws is all it can change.** It can't bend or distort the world
+  behind it (the bubble on 26.2 is the exception), and it casts no shadow.
+- **Fog doesn't reach it**, so a distant object stays as bright as a near one.
+- **It always faces the same way**, whichever way the summoned entity is
+  turned.
+- **It needs your pack.** Players without it don't see the object.
+- **Not in the Bedrock or ItemsAdder exports.**
+
