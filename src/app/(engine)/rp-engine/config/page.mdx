@@ -10,6 +10,11 @@ The settings live in `plugins/RPEngine/config.yml`, which the plugin writes
 the first time it starts. Every setting has a working default. Many settings
 apply on `/rp reload`; restart the server to be sure a change has taken effect.
 
+When an update adds a setting your file should show you, RP Engine writes it
+into your `config.yml` on the next start, explanation and all, without touching
+anything else in the file. The old file is kept beside it as
+`config.yml.v<number>.bak`, and the console says what changed.
+
 ## Serving the pack
 
 ```yaml
