@@ -48,16 +48,8 @@ nothing makes nobody download anything.
 
 ## Serving them
 
-The plugin serves the built packs over HTTP itself:
-
-```yaml
-host:
-  port: 8181
-  public-address: "http://203.0.113.4:8181"
-```
-
-`public-address` must be how a player's game reaches your server: a public IP
-or hostname, not `127.0.0.1`. The plugin cannot work this out by itself behind
-a proxy or NAT. If you host the built zips yourself (a CDN, a web server),
-`host.enabled: false` makes the plugin only build them.
-See [Configuration](/rp-engine/config#serving-the-pack).
+By default the plugin uploads each built pack to ResourcePack AI's pack host
+and sends players the link to it, so there is nothing to open or configure.
+It can serve them from your own server instead, on the game port or a port of
+its own, or leave hosting to you. See
+[Configuration](/rp-engine/config#serving-the-pack).
