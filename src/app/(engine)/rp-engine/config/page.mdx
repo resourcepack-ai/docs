@@ -272,8 +272,10 @@ list, so without help only one of the two draws.
 
 With `merge: true`, RP Engine reads the other plugin's pack from its folder,
 combines its own text shader with theirs so both draw, and sends the result as
-a small pack of its own on top of the others. If the other plugin's pack
-reaches players after RP Engine's, RP Engine moves its pack back on top.
+a small pack of its own on top of the others. If another plugin's pack
+reaches a player after RP Engine's, RP Engine sends its own again, on top.
+Some plugins (BetterHud among them) send theirs in a way that removes every
+other pack the player has, so without this RP Engine's would be gone.
 
 The console says what happened, and so does chat for players with
 `rpengine.shaders` (ops), when it happens and when they join:
