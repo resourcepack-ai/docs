@@ -122,7 +122,12 @@ it, and it appears in the Text tool too.
 The words are drawn into the screen as pixels, like the built-in faces, so
 nothing extra ships and no player needs the font. A pixel font is drawn exactly
 at its own size, which the editor works out for you, and at 2x or 3x. Any other
-font is drawn at the size you pick and looks best at 10px or more. Fonts can be
+font is drawn at the size you pick and looks best at 10px or more; its letters
+are lined up with the pixels as they are drawn, so every stroke keeps one width
+and a line of capitals stays one height. A character the font doesn't have is
+drawn as its other case (a font with capitals only writes everything in
+capitals) or, failing that, in Minecraft's own font, and the panel says which
+characters those are. Fonts can be
 TrueType (`.ttf`) or a collection (`.ttc`), up to 2 MB; an `.otf` whose letters
 are PostScript curves cannot be read, so use the font's `.ttf` version.
 
