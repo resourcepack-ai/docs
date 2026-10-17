@@ -152,7 +152,7 @@ columns and grids. When it is taller than the screen, the game scrolls it.
 | **Image** | A PNG, JPG, GIF (first frame) or WebP up to 512 pixels a side. Add it from **Add component** or drop the file on the screen. It is kept with the pack for its other dialogs. |
 | **Chip**, **Badge**, **Check line**, **Label and value** | A balance or tag; a small solid tag such as NEW; a ✔ or ✘ line; a label left and a value right. |
 | **Progress bar** | A label, a count and a bar, in its own **Bar colour** and **Track colour** if you like. It can [follow the player](#bars-that-follow-the-player). |
-| **Controls** | Switch, segmented (two to four choices), slider, dropdown, checkbox, stepper, search box and text box, drawn in the theme. They are pictures unless bound to a [player setting](#player-settings). |
+| **Controls** | Switch, segmented (two to four choices), slider, dropdown, checkbox, stepper, search box and text box, drawn in the theme. They are pictures unless bound to a [player setting](#player-settings); players can [type in a text box](#typing-in-a-drawn-box). |
 | **Sidebar button**, **List option**, **Icon button**, **Theme button** | The parts of a settings screen. A sidebar button can be taller than its 18 pixels and carry a badge. |
 | **Item slots** | See [Items and inventories](#items-and-inventories). |
 | **QR code**, **Divider**, **Space** | A QR code opens its link when clicked. |
@@ -244,6 +244,39 @@ ban {target} $(length) $(reason)
 
 A checkbox gives `true` or `false`, and a choice written `7d=7 days` shows
 "7 days" and gives `7d`. Only footer buttons fill in keys.
+
+### Typing in a drawn box
+
+A **Text box** from the **Controls** shelf is a picture of a box until you
+switch on **Typing** in its panel. Then players click it and type in it, and
+what they typed reaches a footer button's command under the key in **Saved
+as**, like any input:
+
+```
+block $(player)
+```
+
+Minecraft only takes typing in its own text box, so Studio sets the game's box
+exactly on your drawn one and the pack hides the game's black look of it. What
+players type is written by the game, in light grey from the box's left edge,
+so the box draws no words of its own. A dark theme reads best.
+
+Where the game puts its box is the game's choice, and the editor follows it:
+
+- **The box is always centred.** A text box as wide as its card lines up by
+  itself. One off to the side is marked in amber with where the game will put
+  it; **Line it up** in its panel moves it there.
+- **A second box goes 10 pixels under the first**, a third 10 under that.
+- **The first box ends the clickable part of the dialog.** Nothing beside or
+  below it can be clicked, so the button that sends the answer goes in the
+  footer. Words and pictures below it are still drawn.
+- **Leave Longest answer empty** unless you need a limit. A box takes as much
+  as fits in it; with a limit, the game shows a count such as `3/16` under the
+  box.
+
+It lines up exactly on Minecraft 1.21.11 and newer. On 1.21.6 to 1.21.10 the
+game puts its box 4 pixels higher, so what is typed sits at the top of the
+drawn box.
 
 ## Getting it onto a server
 
