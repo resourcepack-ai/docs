@@ -115,6 +115,20 @@ get it the next time they are sent a pack anyway, such as on rejoining or with
 choose the moment yourself; `/rp reload` always includes every rig that has
 arrived.
 
+## Vanilla recipes
+
+```yaml
+items:
+  vanilla-recipes: false
+```
+
+Whether custom items count as the vanilla item they are made from in the
+game's own recipes. Off, a tomato made from paper is not paper: it can't make
+a book, cook in a furnace, go through a stonecutter or repair a tool on an
+anvil. Your own [recipes](/rp-engine/recipes) and other plugins' recipes work
+either way. Set it to `true` to let every item in, or let in just one with
+[`vanilla-recipes: true`](/rp-engine/recipes#vanilla-recipes) on the item.
+
 ## Seats
 
 ```yaml

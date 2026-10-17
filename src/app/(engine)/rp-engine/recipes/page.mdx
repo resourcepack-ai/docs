@@ -135,6 +135,26 @@ the anvil as normal. A repair mends by `repair` for each `addition-amount`,
 using as many as it takes, like a vanilla material repair. Take the result with
 the mouse: number keys and dropping don't work for anvil recipes.
 
+## Vanilla recipes
+
+A custom item is a vanilla item underneath, but the game's own recipes don't
+treat it as one: a tomato made from paper won't make a book, cook, go through
+a stonecutter or repair a tool on an anvil. A custom item can still be dyed,
+upgraded to netherite or decorated like its material, because what comes out
+is still that item.
+
+To use a custom item in a recipe, name it in one of your own. To let one item
+count as its material in vanilla recipes too, say so on the item:
+
+```yaml
+plain_stick:
+  material: STICK
+  vanilla-recipes: true   # still a stick to vanilla's recipes
+```
+
+`items.vanilla-recipes: true` in the [config](/rp-engine/config#vanilla-recipes)
+does the same for every item.
+
 ## Naming
 
 A recipe ID is not a content ID, so a recipe can be called `ruby_block` while
