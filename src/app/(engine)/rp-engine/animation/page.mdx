@@ -35,7 +35,8 @@ about controlling playback applies to both.
 
 ## When it plays
 
-The Blockbench file decides when each animation starts:
+The Blockbench file decides when each animation starts, unless you set a
+[`mode`](#what-happens-at-the-end) over it:
 
 | Set in Blockbench as | Plays |
 |---|---|
@@ -74,7 +75,7 @@ Leave out any setting to keep what the model says.
 
 | Setting | Does | Default |
 |---|---|---|
-| `mode` | What happens at the end: `loop`, `hold` or `once` | From the model |
+| `mode` | `loop`, `hold` or `once`: what happens at the end, and when it starts | From the model |
 | `speed` | Playback speed multiplier | `1` |
 | `priority` | Which animation wins a shared trigger (higher wins) | `0` |
 | `blend` | Seconds to ease in and out | Off |
@@ -93,9 +94,11 @@ Leave out any setting to keep what the model says.
 Use `hold` for a door, a lid or a drawbridge. Without it they spring shut the
 moment they finish opening.
 
-`mode` changes what happens at the end, not when an animation starts. That
-still comes from the Blockbench file: an animation set to Loop there plays on
-its own, and anything else plays on right-click.
+`mode` also decides when it starts, the same way the Blockbench setting does:
+`loop` plays on its own as soon as the piece is placed, and `hold` or `once`
+waits for a right-click. An animation whose model gives it other triggers keeps
+them, and `loop` adds playing on its own. Needs RP Engine 0.2.13 or newer;
+older versions change only the ending.
 
 ### Speed
 
