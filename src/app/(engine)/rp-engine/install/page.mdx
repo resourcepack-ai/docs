@@ -27,19 +27,11 @@ or newer**, running **Java 17 or newer**. Folia is not supported.
       output/       ← the built packs, rebuilt on every reload
     ```
   </Step>
-  <Step title="Let players download the pack">
-    The plugin serves the pack itself, on port `8181` by default. Players
-    outside your network can only download it if `host.public-address` in
-    `config.yml` is an address they can reach:
-
-    ```yaml
-    host:
-      port: 8181
-      public-address: "http://203.0.113.4:8181"   # your server's public IP or hostname
-    ```
-
-    Open that port in your firewall (or your host's panel), then restart. The
-    default, `127.0.0.1`, only works when you play on the same machine. See
+  <Step title="Join">
+    There is nothing to set up for players to get the pack. By default the
+    plugin uploads it to ResourcePack AI's pack host and players download it
+    from there, so no port has to be opened and no address typed in. To serve
+    it from your own server instead, see
     [Configuration](/rp-engine/config#serving-the-pack).
   </Step>
 </Steps>

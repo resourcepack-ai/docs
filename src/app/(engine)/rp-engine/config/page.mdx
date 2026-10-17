@@ -7,27 +7,51 @@ export const metadata = {
 # Configuration
 
 The settings live in `plugins/RPEngine/config.yml`, which the plugin writes
-the first time it starts. Every setting has a working default. The one most
-servers need to change is `host.public-address`, so players outside your
-network can download the pack. Many settings apply on `/rp reload`; restart
-the server to be sure a change has taken effect.
+the first time it starts. Every setting has a working default. Many settings
+apply on `/rp reload`; restart the server to be sure a change has taken effect.
 
 ## Serving the pack
 
 ```yaml
 host:
+  mode: upload
   port: 8181
   public-address: "http://127.0.0.1:8181"
-  enabled: true
 ```
 
-The plugin serves its built packs over HTTP itself.
+A player's game downloads a pack over HTTP, from a link the server sends it.
+`host.mode` decides where that link points:
+
+| Mode | How it works | Use it when |
+|---|---|---|
+| `upload` (default) | Each pack is uploaded to ResourcePack AI's pack host (`packs.resourcepack.ai`), free, and players download it from there. A pack is only uploaded again when it changes. | Almost always. Nothing to open or configure, and it works behind a proxy and on any host. |
+| `same-port` | Your server serves the packs itself, on its Minecraft port. | You want nothing to leave your machine, and players connect to this server directly. |
+| `own-port` | Your server serves the packs itself, on a second port. | You want nothing to leave your machine and you run a proxy (Velocity, BungeeCord). You have to open the port and set the address. |
+| `none` | Packs are built into `output/` but not served. | You host the zips yourself (a CDN, a web server). |
+
+With `upload`, your packs are stored on our servers for as long as your
+server uses them: one nothing has touched for 30 days is deleted, and only the
+Minecraft client can download them. If an upload fails, the pack is served on
+your game port instead and the console says so.
+
+`same-port` does not work behind a proxy, because a proxy only passes
+Minecraft through. The link it sends each player uses the address that player
+joined with, so there is nothing to configure.
+
+`own-port` uses the two other keys:
 
 | Key | Default | What it does |
 |---|---|---|
 | `host.port` | `8181` | The port it listens on. `0` picks a free one, which is only useful for testing |
-| `host.public-address` | `http://127.0.0.1:8181` | The address a player's game downloads the pack from. Set it to your server's public IP or hostname and the port above, and open that port. The plugin cannot work this out itself behind a proxy or NAT |
-| `host.enabled` | `true` | `false` if you host the built zips yourself (a CDN, a web server) and only want the plugin to build them |
+| `host.public-address` | `http://127.0.0.1:8181` | The address a player's game downloads the pack from. Set it to your server's public IP or hostname and the port above, and open that port (on a hosting panel, allocate it to your server). The plugin cannot work this out itself behind a proxy or NAT |
+
+A config written before `host.mode` existed keeps working as it did: one with
+its own `public-address` set stays on `own-port`, and `host.enabled: false`
+means `none`.
+
+When a player's game cannot download a pack, the console says which link it
+was sent and what to check, once per restart. `/rp bundles` shows the link
+each bundle is served at.
 
 ## The pack and the join prompt
 
