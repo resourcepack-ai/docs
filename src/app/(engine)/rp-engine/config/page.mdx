@@ -262,6 +262,7 @@ Nothing connects to Studio unless somebody runs `/rp sync`, `/rp edit` or
 ```yaml
 shaders:
   merge: true
+  notify-players: true
 ```
 
 Some plugins draw their HUD by replacing one of the game's core shaders, and
@@ -282,7 +283,8 @@ removes every other pack the player has, so without this RP Engine's would be
 gone.
 
 The console says what happened, and so does chat for players with
-`rpengine.shaders` (ops), when it happens and when they join:
+`rpengine.shaders` (ops), when it happens and when they join. Set
+`notify-players: false` to keep it to the console:
 
 - **Merged**: which plugin's shader, and on which Minecraft versions.
 - **Could not merge**: which versions, and why. A plugin whose own shader
