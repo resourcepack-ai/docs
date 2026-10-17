@@ -146,7 +146,7 @@ columns and grids. When it is taller than the screen, the game scrolls it.
 | --- | --- |
 | **Button** | The game's grey button. **Selected** makes it gold, **Greyed out** disables it, and it can take its own colour. Its panel can also make it the theme's button or the GUI's light one. |
 | **Link** | Clickable words, for a contents list. |
-| **Text**, **Heading**, **Big title** | Words in the game's font. Colour codes work: `&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` grey, `&l` bold, `&r` reset, `&#55ff55` any colour. |
+| **Text**, **Heading**, **Big title** | Words in the game's font, or [one of your own](#your-own-fonts). Colour codes work: `&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` grey, `&l` bold, `&r` reset, `&#55ff55` any colour. |
 | **Page of text** | `# Title`, `## Heading`, `### Heading` (gold), `- bullets`, `> notes`, `**gold words**`, `---` for a rule. |
 | **Icon** | Any vanilla item, a player head, your pack's own sprites and textures, or one of more than a hundred drawn icons (the **Small** shelf of the picker has nine-pixel ones for labels). Bare or in a slot. |
 | **Image** | A PNG, JPG, GIF (first frame) or WebP up to 512 pixels a side. Add it from **Add component** or drop the file on the screen. It is kept with the pack for its other dialogs. |
@@ -167,6 +167,23 @@ row or column to make the whole box one button.
 one of fourteen under **Theme** (Stone, Slate, Deepslate, Nether, Ocean, Jungle,
 End, Royal, Oak, Parchment, Ice, Cherry, Redstone, Sand), or choose any **Card**
 and **Accent** colour and the rest is worked out from those.
+
+### Your own fonts
+
+A text piece can be set in a font of your own: under **Font** in its panel,
+choose **Upload a font (.ttf)**, or pick one the pack already has. Fonts are
+kept with the pack and shared with its GUIs.
+
+The words are drawn into the dialog's picture, so the font never ships and
+works on every server and engine. A pixel font is drawn exactly at its own size
+(which the editor detects) and at 2x or 3x; any other font is drawn at the size
+you choose, best at 10px or more. Colour codes still work. **Bold** is only
+what you tick: a heading keeps the font's own weight.
+
+Words holding a [live value](#live-values) are drawn by the game, so they stay
+in its font. Fonts can be TrueType (`.ttf`) or a collection (`.ttc`), up to 2
+MB; an `.otf` whose letters are PostScript curves cannot be read, so use the
+font's `.ttf` version.
 
 ### Tooltips
 
