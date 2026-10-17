@@ -257,6 +257,39 @@ Nothing connects to Studio unless somebody runs `/rp sync`, `/rp edit` or
 | `sync.server-token` | empty | Only for a server the Studio account owner runs themselves. With a token, Studio can see who is online and push to them without a pairing code |
 | `edit.enabled` | `true` | `false` turns off [`/rp edit`](/rp-engine/editing) |
 
+## Other plugins' shaders
+
+```yaml
+shaders:
+  merge: true
+```
+
+Some plugins draw their HUD by replacing one of the game's core shaders, and
+the text shader is the usual one: BetterHud does, and so do Studio's HUD
+shader objects and the player heads in Studio dialogs. A player's game keeps
+only one copy of each core shader, from whichever pack is highest in their
+list, so without help only one of the two draws.
+
+With `merge: true`, RP Engine reads the other plugin's pack from its folder,
+combines its own text shader with theirs so both draw, and sends the result as
+a small pack of its own on top of the others. If the other plugin's pack
+reaches players after RP Engine's, RP Engine moves its pack back on top.
+
+The console says what happened, and so does chat for players with
+`rpengine.shaders` (ops), when it happens and when they join:
+
+- **Merged**: which plugin's shader, and on which Minecraft versions.
+- **Could not merge**: which versions, and why. A plugin whose own shader
+  cannot compile on a version gets this, because merging would only replace a
+  working shader with a broken one. BetterHud 2.0.0 is one: its shader does not
+  compile on 1.21.6 to 1.21.11, so update BetterHud.
+- **Shader clash**: another core shader both packs replace. Only the text
+  shader is merged, so for anything else, only one of the two draws.
+
+RP Engine can merge its text shader with one other plugin's. If two other
+plugins both replace it, it says so and merges neither. `merge: false` turns
+merging off and leaves only the warnings.
+
 ## Usage count
 
 ```yaml
