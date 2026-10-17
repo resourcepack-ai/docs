@@ -585,6 +585,30 @@ Players with `dialogengine.pack.notify` are told the download address when the
 pack fails to load for them, which is the quickest way to spot a missing
 `public-host`.
 
+### Other plugins' shaders
+
+A drawn dialog that shows a player's head does it by replacing the game's text
+shader, and some HUD plugins (BetterHud among them) replace the same shader. A
+player's game keeps only one copy, from whichever pack is highest in their list,
+so without help one of the two stops drawing.
+
+```yaml
+shaders:
+  merge: true
+  notify-players: true
+```
+
+With `merge: true`, Dialog Engine reads the other plugin's pack from its folder
+and combines the two shaders inside the drawn dialog pack, so both draw, with no
+extra pack to download. When it has merged, a joining player's pack waits up to
+three seconds for the other plugin's to arrive first, so the drawn pack lands on
+top. If the other plugin's pack arrives later anyway, the drawn pack is sent
+again, on top.
+
+The console says what was merged, on which versions, and what could not be and
+why. So does chat for players with `dialogengine.shaders` (ops), when it happens
+and when they join; `notify-players: false` keeps it to the console.
+
 ## Samples
 
 On first start the plugin writes sample dialogs into `dialogs/samples/`: a
@@ -633,6 +657,7 @@ Every node is op-only by default.
 | `dialogengine.pack.notify` | Being told the drawn dialogs' pack address when it fails to load for you |
 | `dialogengine.samples` | Opening the sample dialogs |
 | `dialogengine.update` | Being told on joining that a newer Dialog Engine is out |
+| `dialogengine.shaders` | Being told when the drawn dialog pack's text shader was merged with another plugin's, or clashes with one |
 | `dialogengine.admin` | All of the above in one node |
 
 A dialog's own `permission:` and a button's are whatever node you write there.
