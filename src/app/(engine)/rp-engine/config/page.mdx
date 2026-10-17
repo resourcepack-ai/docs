@@ -271,11 +271,15 @@ only one copy of each core shader, from whichever pack is highest in their
 list, so without help only one of the two draws.
 
 With `merge: true`, RP Engine reads the other plugin's pack from its folder,
-combines its own text shader with theirs so both draw, and sends the result as
-a small pack of its own on top of the others. If another plugin's pack
-reaches a player after RP Engine's, RP Engine sends its own again, on top.
-Some plugins (BetterHud among them) send theirs in a way that removes every
-other pack the player has, so without this RP Engine's would be gone.
+combines its own text shader with theirs so both draw, and puts the result
+inside its own pack. Players get no extra pack and no extra loading screen.
+
+RP Engine's pack has to sit above the other plugin's, so when the two share a
+shader, a joining player's packs wait up to three seconds for the other
+plugin's to arrive first. If it comes later than that, RP Engine sends its own
+again, on top. Some plugins (BetterHud among them) send theirs in a way that
+removes every other pack the player has, so without this RP Engine's would be
+gone.
 
 The console says what happened, and so does chat for players with
 `rpengine.shaders` (ops), when it happens and when they join:
