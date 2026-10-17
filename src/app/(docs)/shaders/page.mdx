@@ -204,8 +204,11 @@ An object does nothing until something shows it. There are three ways.
   require a permission.
 - **A command**: `/rp shader studio:<id> [player]` shows it, and
   `/rp shader clear` takes them all off. `/rp shaders` lists every shader on the
-  server. The id is on the object's card on the pack page. These need the
-  `rpengine.shader` permissions, which are op by default.
+  server. The full command is under **In game** on the Canvas, the first thing
+  the editor shows, and the copy button on the object's card on the pack page
+  copies it too. The id comes from the name the object was created with, so
+  renaming it later does not change it. These need the `rpengine.shader`
+  permissions, which are op by default.
 - **A plugin**: `overlays().show(player, "studio:<id>")` and
   `overlays().hide(...)`. See [the RP Engine API](/rp-engine/api#hud-overlays).
 
