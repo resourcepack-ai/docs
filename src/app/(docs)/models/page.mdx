@@ -76,10 +76,13 @@ Defaults, all changeable in the editor's settings:
 | Hide / show cube | `H` |
 | Duplicate cube | `Ctrl+D` |
 | Select all | `Ctrl+A` |
-| Copy / paste | `Ctrl+C` / `Ctrl+V` |
+| Copy / paste cubes | `Ctrl+C` / `Ctrl+V` |
 | Delete cube | `Delete` |
 | Deselect | `Esc` |
 | Undo / redo | `Ctrl+Z` / `Ctrl+Y` |
+
+Copied cubes paste into any model, in another tab or another pack too. Any
+textures they use come with them.
 
 The tool rail also has a **Select** tool, for picking without a gizmo, and a
 **Pivot** tool, which moves a bone's pivot point without moving its cubes. Use
@@ -96,6 +99,15 @@ joints (a front wheel pivots on its axle), so it's ready to animate.
 
 Bones are saved in the same `groups` field Blockbench uses. Vanilla Minecraft
 ignores it, so grouping never breaks an exported pack.
+
+### Copying a texture to another model
+
+To use one model's texture on another, copy it: right-click it in Paint mode's
+texture list and choose **Copy texture**, or press the copy button beside a
+face's texture in Edit mode. Then, in the other model (any tab, any pack),
+select the faces or cubes and press `Ctrl+V` or the paste button beside the
+face's texture. With cubes selected but no faces, it goes on every face. A
+texture from another pack is copied into this one first.
 
 ### UVs
 
