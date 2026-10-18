@@ -127,7 +127,9 @@ it's a Private Use character, and nobody can type one by hand.
 - **An animated tag gets a colour of its own** in place of `&f`, written as a
   hex code like `&#fcfcf4`. That colour is what plays the animation, so keep it,
   and if your chat plugin writes hex colours another way, use the same six
-  digits in its spelling (`<#fcfcf4>`, `{#fcfcf4}`).
+  digits in its spelling (`<#fcfcf4>`, `{#fcfcf4}`). Keep the `&r` after the
+  tag as well: without it many chat plugins draw the player's name in that
+  colour, and the name shimmers along with the tag.
 - **Priority** decides which prefix wins when a player is in several groups.
   Give higher ranks higher numbers.
 - Players need your pack to see the tag. Without it, the character shows as a
