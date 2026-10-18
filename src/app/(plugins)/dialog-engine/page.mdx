@@ -523,6 +523,50 @@ report_pick:
       actions: ["[open] report target={row.name}"]
 ```
 
+### The Quick Actions key
+
+Minecraft 1.21.6 added a Quick Actions key, **G** unless a player rebinds it.
+`quick-action: true` puts a dialog on it. With several dialogs on the key, G
+shows a list of them to pick from.
+
+```yaml
+menu:
+  title: "Menu for {player}"
+  quick-action: true          # G opens the dialog itself
+  # ...
+
+shop:
+  title: "Shop"
+  quick-action:
+    mode: launcher            # G opens a button that opens the dialog fresh
+    label: "<gold>Shop"       # what the key's list calls it (default: the title)
+  # ...
+```
+
+The key is the player's game, not the server: pressing it opens a copy of the
+dialog the player was sent when they joined, and the server is never told. So
+there are two modes:
+
+- **direct** (the default, also `true`). G opens the dialog straight away. Dialog
+  Engine draws each player's copy for them as they join, so `{player}`, a head,
+  and PlaceholderAPI values (a LuckPerms rank, say) show what was true at that
+  moment, and stay that way until they join again. Its buttons work as usual.
+  The player is not in a world yet when it is drawn, so placeholders about where
+  they are or their health are empty, and a button with a `permission:` is left
+  out. `DialogOpenEvent` is not fired: the server does not know it opened.
+- **launcher**. G opens a small screen with an **Open** button (its words are
+  `messages.quick-open` in config.yml), and the button has the server open the
+  dialog, drawn fresh like any other: every check, placeholder and event as
+  usual. One extra click, and nothing is out of date.
+
+Direct needs Paper. On Spigot, and for a dialog with a `permission:`, a `json:`
+dialog, or a drawn dialog, G opens the launcher instead. A drawn dialog can be
+put on the key with `quickAction: true` in its `dialog.yml`.
+
+The key only picks up a change after a **restart**: what G opens is part of the
+data the server reads as it starts, written to `world/datapacks/dialogengine_quick`,
+and the console says when a restart is owed. Nothing extra is downloaded.
+
 ### From the console, or for somebody else
 
 ```

@@ -529,6 +529,8 @@ console.
 
 A dialog can declare a command players open it with (`/shop`). The engine
 registers it; `DialogInfo.command()` and `permission()` say what it is.
+`DialogInfo.quickAction()` says whether it is on the [Quick Actions
+key](/dialogs#the-quick-actions-key) (G).
 
 A dialog opens straight away even if it was pushed a moment ago, because the
 engine sends the whole dialog. `pending()` only tells you whether its id is in

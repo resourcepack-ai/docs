@@ -70,9 +70,10 @@ Dialogs need Minecraft 1.21.6 or newer.
 | `/rp page <id>` | Turn the dialog you are looking at to another page | `rpengine.page` (everyone) |
 | `/rp page close` | Close the dialog you are looking at | `rpengine.page` (everyone) |
 | `/rp slot <slot>` | Move an item in a dialog's item slots | `rpengine.slot` (everyone) |
+| `/rp quick <id>` | Open a dialog on the [Quick Actions key](/dialogs#the-quick-actions-key): what its launcher's button runs | `rpengine.quick` (everyone) |
 | `/<command> [player]` | A dialog's own command, such as `/shop` | everyone, or the permission the dialog names |
 
-`var`, `page` and `slot` are what clicks inside a dialog run, so every player
+`var`, `page`, `slot` and `quick` are what clicks inside a dialog run, so every player
 has them. Each only does what a click in the dialog you were shown could do.
 
 A dialog gets its own command from `command:` in its file, or **Players open

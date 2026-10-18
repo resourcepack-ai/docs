@@ -322,6 +322,32 @@ The player to open it for goes last, and opening it for someone else needs
 `rpengine.dialog.others`. Plugins pass values through [RP Engine's
 API](/rp-engine/api#dialogs).
 
+### The Quick Actions key
+
+Minecraft 1.21.6 added a Quick Actions key, **G** unless a player rebinds it.
+Tick **Open it with the Quick Actions key** in the dialog's panel and G opens
+it. Put several dialogs on the key and G shows a list of them to pick from.
+
+The key is the player's game, not the server: pressing it opens a copy of the
+dialog the player was sent when they joined, and the server is never told. That
+gives you two ways to put a dialog on it:
+
+- **Opens the dialog** (the default). G opens the dialog straight away. RP
+  Engine draws each player's copy for them as they join, so their name, head and
+  any other value shows what was true at that moment, and stays that way until
+  they join again. Buttons in it work as usual. This needs Paper. On Spigot, and
+  for a dialog behind a permission (which is not known yet while a player is
+  joining), G opens the launcher instead.
+- **Opens a launcher**. G opens a small screen with an **Open** button, and the
+  button has the server open the dialog, drawn fresh like any other. One extra
+  click, and everything in it is up to date. Use this when a dialog shows
+  something that changes, like a balance or a rank.
+
+A dialog with the player's own items in it always uses the launcher. Either way,
+the key only picks up a change when the server **restarts**: what G opens is
+part of the data the server reads as it starts, not of the resource pack, so
+nothing extra is downloaded.
+
 ### Without RP Engine
 
 A dialog is a vanilla `minecraft:dialog`, so a datapack alone can run one. Put
@@ -331,6 +357,9 @@ either the whole pack or the dialog's own **Resource pack** export. To add that
 to a pack of your own, load it as a separate pack, or copy its files in and
 merge any `assets/minecraft/font/default.json` into yours rather than
 overwriting it. Its `README.txt` lists which character is which picture.
+
+The **Datapack** export puts a dialog that is on the Quick Actions key on the
+key as well, and G opens it as written.
 
 Without a plugin, everything per player is missing: live values show as
 written, bound controls stay on their default, inventories, live heads, bars and
@@ -602,11 +631,13 @@ least:
 | Click sounds | 0.2.5 |
 | Seamless after a click | 0.2.6 |
 | RP Engine icons in a Pack glyph | 0.2.10 |
+| The Quick Actions key | 0.2.17 |
 
 On an older RP Engine the feature fails quietly: a bound control shows every
 state at once, a live bar is empty, a conditioned piece is drawn for everybody,
-and so on. In Dialog Engine, click sounds need a version newer than 0.3.5 and
-Seamless needs 0.4.0.
+and so on. In Dialog Engine, click sounds need a version newer than 0.3.5,
+Seamless needs 0.4.0, and the Quick Actions key 0.6.0 (where a drawn dialog
+always uses the launcher).
 
 ## Older UI-style dialogs
 
