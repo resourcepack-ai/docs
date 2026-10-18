@@ -1,0 +1,116 @@
+export const metadata = {
+  title: "Rank tags",
+  description:
+    "The badge in front of a player's name, drawn from a few lines of YAML, and how to put it on a rank with LuckPerms or any permissions plugin.",
+};
+
+# Rank tags
+
+A rank tag is the badge in front of a player's name: a rounded red **OWNER**,
+a gold **VIP**. RP Engine draws one from a few lines of YAML, so there is no
+picture to make:
+
+```yaml
+# fonts/ranks.yml
+owner:
+  priority: 100
+  tag:
+    text: OWNER
+    background: "#e53935"
+vip:
+  priority: 10
+  tag:
+    text: VIP&f+          # & codes colour part of the words
+    background: gold
+    text-color: "#2b2b2b"
+    roundness: pill
+```
+
+A rank tag is an [icon](/rp-engine/icons) in every other way: it has a
+character, `:mypack:owner:` types it, and `%rpengine_icon_mypack:owner%` prints
+it. The difference is that the picture is drawn when the pack is built, from
+the fields below.
+
+<Callout type="note" title="Quote your colours">
+  In YAML a `#` starts a comment, so write `"#e53935"` with the quotes. Without
+  them the colour is ignored and the tag stays red.
+</Callout>
+
+## The fields
+
+All of them go under `tag:`, and only `text` is required.
+
+| Field | Default | What it does |
+|---|---|---|
+| `text` | | The words, up to 24 characters. `&6` and the game's other codes, or `&#ff8800`, colour what follows. `&l` is bold, `&r` goes back to `text-color` |
+| `font` | `classic` | `classic` (crisp 5-pixel capitals) or `tiny` (has lowercase) |
+| `text-color` | white | The letters |
+| `text-fade` | | A second colour the letters fade into, left to right |
+| `bold` | `false` | Bold letters |
+| `shadow` | `true` | A dark shadow under the letters |
+| `shadow-color` | the background, darker | |
+| `spacing` | `0` | Extra pixels between letters, up to 3 |
+| `background` | red | The tag's colour |
+| `shading` | `glossy` | `glossy`, `gradient` or `flat` |
+| `background-fade` | the background, darker | Where a `gradient` ends |
+| `outline` | `1` | `0`, `1` or `2` pixels |
+| `outline-color` | the background, darker | |
+| `roundness` | `2` | `0` (square) to `6`, or `pill` |
+| `padding-x` · `padding-y` | `3` · `1` | Space around the words |
+| `width` | fits the words | A fixed width, so a set of tags lines up |
+| `scale` | `1` | Draws it 2, 3 or 4 times bigger |
+| `offset` | `0` | Moves it up (or down, negative) from centred on the line |
+
+A colour is a hex code or one of the game's colour names: `red`, `dark_red`,
+`gold`, `aqua` and the rest. A field with a mistake in it is a warning on
+`/rp reload` and uses its default, so a typo costs a colour and not the tag.
+
+The defaults make the classic tag, and it's **9 pixels tall, exactly one line
+of chat**, so it never overlaps the lines above and below. `scale: 2` and
+bigger are for the scoreboard, the tab list and holograms.
+
+## Putting it on a rank
+
+**Don't paste a tag's character into a LuckPerms prefix.** RP Engine gives
+icons their characters in ID order, so adding a tag can shift the characters
+of the ones after it, and a saved character would then show the wrong tag.
+Give the rank a permission instead, and print the placeholder.
+
+Every tag has a permission, `rpengine.tag.<namespace>.<id>`. Nobody has it
+until you give it, ops included:
+
+```
+/lp group owner permission set rpengine.tag.mypack.owner true
+/lp group vip permission set rpengine.tag.mypack.vip true
+```
+
+Then put `%rpengine_tag%` where the prefix goes, in your chat format, tab list
+or nametag plugin. It prints the tag the player wears: of the tags they have,
+the one with the highest `priority`.
+
+```yaml
+# a chat plugin's format, for example
+format: "%rpengine_tag% {player}: {message}"
+```
+
+This works with any permissions plugin, since it's ordinary permissions. It
+needs [PlaceholderAPI](/rp-engine/placeholderapi), and a plugin that reads
+placeholders where you put it. `%rpengine_tag_id%` prints which tag it is,
+for a plugin that shows different things per rank.
+
+<Callout type="tip" title="Made in Studio?">
+  A rank tag made in [ResourcePack AI Studio](/rank-tags) keeps its character
+  forever, so it can go straight into a LuckPerms prefix: its page writes the
+  command for you.
+</Callout>
+
+## Good to know
+
+- `file`, `gif`, `grid`, `animation` and `height` do nothing on a tag (its
+  size is the drawing's), and say so on reload. `ascent` still works, and wins
+  over the centred one.
+- `aliases` and `permission` work exactly as on any icon, for
+  [typing it in chat](/rp-engine/icons#typing-them-in-chat).
+- Tags look the same in [Studio](/rank-tags) and here: the same drawing,
+  pixel for pixel. Studio has more fonts, and a tag using one of those arrives
+  from Studio already drawn.
