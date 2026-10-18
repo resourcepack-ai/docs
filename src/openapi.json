@@ -679,6 +679,7 @@
                               "hud",
                               "dialog",
                               "icon",
+                              "rank_tag",
                               "sound"
                             ]
                           },
@@ -834,6 +835,7 @@
                 "hud",
                 "dialog",
                 "icon",
+                "rank_tag",
                 "sound"
               ]
             }
@@ -917,6 +919,7 @@
                         "hud",
                         "dialog",
                         "icon",
+                        "rank_tag",
                         "sound"
                       ]
                     },
@@ -1342,6 +1345,7 @@
                             "hud",
                             "dialog",
                             "icon",
+                            "rank_tag",
                             "sound"
                           ]
                         },
@@ -1512,6 +1516,7 @@
                         "hud",
                         "dialog",
                         "icon",
+                        "rank_tag",
                         "sound"
                       ]
                     },
@@ -1719,6 +1724,7 @@
                         "hud",
                         "dialog",
                         "icon",
+                        "rank_tag",
                         "sound"
                       ]
                     },
@@ -1903,6 +1909,7 @@
                         "hud",
                         "dialog",
                         "icon",
+                        "rank_tag",
                         "sound"
                       ]
                     },
@@ -2099,6 +2106,7 @@
                         "hud",
                         "dialog",
                         "icon",
+                        "rank_tag",
                         "sound"
                       ]
                     },
@@ -2483,6 +2491,7 @@
                         "hud",
                         "dialog",
                         "icon",
+                        "rank_tag",
                         "sound"
                       ]
                     },
@@ -2703,6 +2712,7 @@
                         "hud",
                         "dialog",
                         "icon",
+                        "rank_tag",
                         "sound"
                       ]
                     },
@@ -2887,6 +2897,7 @@
                         "hud",
                         "dialog",
                         "icon",
+                        "rank_tag",
                         "sound"
                       ]
                     },
@@ -3038,6 +3049,169 @@
         }
       }
     },
+    "/packs/{pack}/rank-tags": {
+      "post": {
+        "operationId": "generateRankTag",
+        "summary": "Generate a rank tag",
+        "description": "Produces a `rank_tag` — the small badge in front of a player's name, used as a LuckPerms (or any permissions plugin's) prefix or suffix: a rounded background with the rank written on it. In the pack it is a font glyph, exactly like an `icon`.\n\n**Name the rank and a colour**: `a red OWNER tag`. A colour in the prompt is the background unless the prompt says it belongs to the letters or the outline. The words, colours, shape and font are chosen for you and drawn pixel-exact; every one of them can be changed afterwards in the Studio's rank tag editor.\n\nOne flat charge per tag, refunded in full if it fails. Answers when the tag is made.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Done. A rank tag is designed while the request waits, so `status` is already `ready` and `job` needs no polling.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "rank_tag",
+                        "sound"
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "The file format it is stored as.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
+                "example": {
+                  "id": "owner",
+                  "type": "rank_tag",
+                  "kind": "font",
+                  "job": "medieval-keep:font:owner",
+                  "status": "ready",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "The rank, and how it should look.",
+                    "maxLength": 300,
+                    "example": "a red OWNER tag"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label. Absent uses the tag's words."
+                  },
+                  "char": {
+                    "type": "string",
+                    "description": "Pin it to a specific character instead of an assigned codepoint."
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/packs/{pack}/sounds": {
       "post": {
         "operationId": "generateSound",
@@ -3076,6 +3250,7 @@
                         "hud",
                         "dialog",
                         "icon",
+                        "rank_tag",
                         "sound"
                       ]
                     },
