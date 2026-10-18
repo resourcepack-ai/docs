@@ -462,8 +462,8 @@ names, so a stamina bar out of 100 needs only the one `set` call. They are also
 the values [dialogs](#dialogs) print.
 
 `set` and `value` are safe from any thread. They only record the value; the
-next redraw (within about a second and a half) picks it up, so six `set` calls
-in a row cost one redraw. `show`, `hide` and `hideAll` are main thread only.
+next tick draws it, so six `set` calls in a row cost one redraw, and setting a
+value to what it already was costs nothing. `show`, `hide` and `hideAll` are main thread only.
 
 ### Laying a value out
 
