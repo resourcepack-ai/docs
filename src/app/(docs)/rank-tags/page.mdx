@@ -61,7 +61,7 @@ player name, or try another GUI scale. When the AI made more than one take,
 | **Frame** | The **Outline** (worked out from the background, a colour of your own, or none), a second ring inside it (the **rim**), a **3D edge** that stands the tag up off the line, and the **Space beside the words** |
 | **Icon** | One of over a hundred icons, searchable, **In a cell** inside the tag, **Beside** the words or on a **Tile** of its own, and the cell's colour |
 | **Animation** | None, **Glint** (a shine sweeps across), **Rainbow** (the letters cycle colours), **Twinkle** (sparkles come and go) or **Pulse** (the frame breathes) |
-| **In game** | **Size**, from 1× to 4×, and **Height on the line** if it should sit higher or lower than centred |
+| **In game** | **Size**, on a slider from half size to 4×, with ½×, 1× and the whole sizes a click away, and **Height on the line** if it should sit higher or lower than centred |
 
 Colours you don't set work themselves out from the background: the outline is
 a darker shade of it, and so are the shadow and the icon's cell. Set one
@@ -88,10 +88,17 @@ new look at once. <kbd>Ctrl</kbd> + <kbd>Z</kbd> undoes and
   the tab list and holograms.
 </Callout>
 
+**Sizes.** The whole sizes (1×, 2×, 3×, 4×) are pixel for pixel. A tag
+smaller than 1× is smaller than chat's own letters, and keeps every pixel at
+GUI scale 2 and up. Between whole sizes the game scales the picture, as it does
+any icon, so a few pixels come out a little wider than others; the line of chat
+under the editor's preview shows it the way the game will.
+
 To draw something on a tag by hand, use **Paint it by hand**. It turns the tag
 into a plain icon with the same picture and the same character, which the
-pixel editor can open. Its parts stop being fields after that, and an
-animated tag keeps only its first frame.
+pixel editor can open. Its parts stop being fields after that, an animated tag
+keeps only its first frame, and a tag between whole sizes becomes the next
+whole size up.
 
 ## Animated tags
 
