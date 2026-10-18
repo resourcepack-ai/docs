@@ -45,13 +45,15 @@ one the dialog has that exact click for. Taking them away breaks those clicks.
 | `rpengine.chat.effects.<name>` | op | Typing one Text Effect in chat: `rpengine.chat.effects.fire`. A `/` in the name is a `.` |
 | `rpengine.update` | op | Being told on join when a newer RP Engine is out |
 | `rpengine.shaders` | op | Being told, on join and when it happens, that another plugin's pack replaces a core shader RP Engine's packs also replace |
+| `rpengine.tag.<namespace>.<id>` | nobody | Wearing that [rank tag](/rp-engine/rank-tags) in `%rpengine_tag%`. One per tag |
 
 `rpengine.emote.force` is not a child of `rpengine.emote.cast`: being allowed
 to ask is not being allowed to skip asking. The node `emote.cast` checks can
 be changed with `emotes.cast-permission` in [`config.yml`](/rp-engine/config#emotes).
 
-`rpengine.chat.icons` and the `rpengine.chat.effects` nodes are not granted
-by `rpengine.admin`. Every other node here is.
+`rpengine.chat.icons`, the `rpengine.chat.effects` nodes and the
+`rpengine.tag` nodes are not granted by `rpengine.admin`: a staff member
+holding every tag would wear whichever ranks highest. Every other node here is.
 
 `rpengine.edit` deserves a moment before you grant it widely. It lets whoever
 holds it rewrite files in your content folder from a browser; see

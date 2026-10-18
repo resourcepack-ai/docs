@@ -1,0 +1,127 @@
+export const metadata = {
+  title: "Rank tags",
+  description:
+    "The badge in front of a player's name, for a LuckPerms prefix or suffix: making one, the editor, and putting it on a rank.",
+};
+
+# Rank tags
+
+A rank tag is the badge in front of a player's name: a rounded red **OWNER**,
+a gold **VIP**, a blue **MOD**. It's made to be a LuckPerms prefix or suffix,
+or the prefix of any other permissions plugin.
+
+In the pack, a rank tag is an [icon](/icons): one character that draws the
+picture anywhere text is drawn. The difference is that you never paint it.
+It's drawn from its words, its colours and its shape, so you change it by
+changing those, and it stays sharp whatever you change.
+
+## Making one
+
+Open a pack, press **Add asset**, pick **Icon** and set **Type** to
+**Rank tag**.
+
+- **Generate**: name the rank and a colour. It takes a few seconds and opens in
+  the editor, where every part of it can still be changed.
+- **Blank**: type what it says, pick a colour and a look, and it opens in the
+  editor.
+
+A colour in the prompt is the **background**, unless you say it belongs to the
+letters or the outline:
+
+| Prompt | What you get |
+| --- | --- |
+| `a red OWNER tag` | A red tag, white letters |
+| `an ADMIN tag with red text` | Red letters on a dark tag |
+| `a gold VIP+ tag with a white plus` | A gold tag, the `+` in white |
+| `a dark blue pill-shaped MOD tag, no outline` | Fully rounded ends, no outline |
+| `a big green BUILDER tag` | The same tag at twice the size |
+
+With no colour, you get the one servers usually give that rank: red for
+owner, blue for moderator, gold for VIP and so on.
+
+## The editor
+
+The tag sits large in the middle, with a line of chat under it drawn with the
+game's own font, so you see exactly how it reads next to a name. Switch the
+preview between **Prefix** and **Suffix**, change the player name, or try
+another GUI scale.
+
+| Section | What it sets |
+| --- | --- |
+| **Looks** | Restyles the whole tag in one click: Classic, Pill, Flat, Square or Outline. Words and colour stay |
+| **Text** | The words, the **Font**, the **Colour** (or a fade into a second one), **Bold**, the **Shadow** under the letters and **Letter spacing** |
+| **Background** | **Colour**, **Shading** (Glossy, Gradient or Flat), **Roundness** from square to pill, the **Outline** and its colour, **Padding**, and a **Fixed width** to line up a set of tags |
+| **In game** | **Size**, from 1× to 4×, and **Height on the line** if it should sit higher or lower than centred |
+
+Colours default to working themselves out from the background: an outline is a
+darker shade of it, and so is the shadow. Set one yourself and it stays.
+
+Colour part of the words the way a LuckPerms prefix does, with `&` codes:
+`VIP&6+` is VIP with a gold plus, `&#ff8800` is any colour, `&l` is bold and
+`&r` goes back to the tag's own colour.
+
+**Fonts.** Classic and Tiny are crisp 5-pixel letters; Tiny has real
+lowercase. Small Caps is rounder. Minecraft is the game's own font, for a
+bigger tag. Your pack's own TrueType fonts are there too, with
+**Upload a font**.
+
+**Edit with AI**, under the preview, changes the tag from a sentence: "make it
+gold", "rounder, no outline", "white letters with a black outline". The change
+lands in the fields as an unsaved edit, so you can keep it with **Save** or
+undo it. It costs 5 AI Credits.
+
+**Save** keeps the tag's character, so a prefix that already uses it shows the
+new look at once. <kbd>Ctrl</kbd> + <kbd>Z</kbd> undoes and
+<kbd>Ctrl</kbd> + <kbd>S</kbd> saves.
+
+<Callout type="tip" title="One line of chat">
+  A Classic tag with an outline and a pixel of padding is 9 pixels tall,
+  exactly one line of chat, so it never overlaps the lines around it. The
+  Minecraft font and bigger sizes overlap a little. Save those for the
+  scoreboard, the tab list and holograms.
+</Callout>
+
+To draw something on a tag by hand, a crown say, use **Paint it by hand**. It
+turns the tag into a plain icon with the same picture and the same character,
+which the pixel editor can open. Its words and colours stop being fields after
+that.
+
+## Putting it on a rank
+
+The tag's page writes the LuckPerms command for you. Type the group, pick
+**Prefix** or **Suffix**, copy, and run it in the console or in chat:
+
+```
+/lp group owner meta setprefix 100 "&f<tag> "
+```
+
+`<tag>` stands for the tag's own character, which the page fills in for you:
+it's a Private Use character, and nobody can type one by hand.
+
+- **Keep the `&f`.** The game tints a glyph with the colour of the text it's in,
+  so a tag after `&c` comes out tinted red. White leaves its colours alone.
+- **Priority** decides which prefix wins when a player is in several groups.
+  Give higher ranks higher numbers.
+- Players need your pack to see the tag. Without it, the character shows as a
+  blank box.
+
+Any chat, tab-list or nametag plugin that shows LuckPerms prefixes shows the
+tag, because it's just a character in the prefix.
+
+<Callout type="note">
+  Chat draws a soft dark copy of every character one pixel down and to the
+  right, and a tag gets one too. It's the game's ordinary text shadow, not part
+  of your tag.
+</Callout>
+
+## In a content folder
+
+[RP Engine](/rp-engine) draws rank tags from a few lines of YAML in its
+content folder, with the same renderer and the same result. See
+[RP Engine rank tags](/rp-engine/rank-tags).
+
+## Exporting
+
+A rank tag exports exactly as an icon does: its PNG under
+`assets/minecraft/textures/font/` and its entry in
+`assets/minecraft/font/default.json`. See [Icons](/icons#exporting).
