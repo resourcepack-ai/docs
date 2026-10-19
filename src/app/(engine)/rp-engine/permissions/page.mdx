@@ -41,6 +41,8 @@ one the dialog has that exact click for. Taking them away breaks those clicks.
 | `rpengine.emote.cast` | op | Pulling other players into an emote. They are still asked first |
 | `rpengine.emote.force` | op | Pulling other players in without asking them |
 | `rpengine.chat.icons` | everyone | Icons in chat, above |
+| `rpengine.chat.effects.all` | op | Typing every [Text Effect](/rp-engine/text-effects#in-chat) in chat, as `<fx:name>text</fx>` |
+| `rpengine.chat.effects.<name>` | op | Typing one Text Effect in chat: `rpengine.chat.effects.fire`. A `/` in the name is a `.` |
 | `rpengine.update` | op | Being told on join when a newer RP Engine is out |
 | `rpengine.shaders` | op | Being told, on join and when it happens, that another plugin's pack replaces a core shader RP Engine's packs also replace |
 
@@ -48,8 +50,8 @@ one the dialog has that exact click for. Taking them away breaks those clicks.
 to ask is not being allowed to skip asking. The node `emote.cast` checks can
 be changed with `emotes.cast-permission` in [`config.yml`](/rp-engine/config#emotes).
 
-`rpengine.chat.icons` is not granted by `rpengine.admin`. Every other node
-here is.
+`rpengine.chat.icons` and the `rpengine.chat.effects` nodes are not granted
+by `rpengine.admin`. Every other node here is.
 
 `rpengine.edit` deserves a moment before you grant it widely. It lets whoever
 holds it rewrite files in your content folder from a browser; see

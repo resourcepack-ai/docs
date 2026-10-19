@@ -217,6 +217,13 @@ export const engineNav: EngineGroup[] = [
           "alias", "permission"],
       },
       {
+        title: "Text Effects",
+        href: "/rp-engine/text-effects",
+        description: "Text that waves, burns or shines, in item names, lore, chat and titles.",
+        keywords: ["text effect", "effect", "fx", "shader", "rainbow", "gradient", "wave", "glow", "fire",
+          "preset", "glsl", "chat", "item name", "lore", "minimessage", "colour", "color"],
+      },
+      {
         title: "Recipes",
         href: "/rp-engine/recipes",
         description: "Crafting, cooking and stonecutting your own items.",

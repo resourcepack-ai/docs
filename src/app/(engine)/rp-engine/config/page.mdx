@@ -83,6 +83,7 @@ prompt:
 ```yaml
 chat:
   icons: false
+  text-effects: true
   prefix: "RPEngine"
   colour:
     prefix: "#3670f8"
@@ -107,6 +108,15 @@ default.
 
 Text that is not an icon name is left exactly as typed, so `10:30`, `:)` and
 links are safe.
+
+## Text Effects in chat
+
+`chat.text-effects: true` (the default) lets players type
+`<fx:fire>hello</fx>` in chat to write "hello" in the
+[Text Effect](/rp-engine/text-effects) called `fire`. It needs
+`rpengine.chat.effects.all` for every effect, or `rpengine.chat.effects.<name>`
+for one, and both default to op. A tag somebody may not use stays as typed.
+`false` turns it off for everybody.
 
 ## Emotes
 
