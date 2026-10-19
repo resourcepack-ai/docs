@@ -55,9 +55,10 @@ cubes.
 - **Minecraft 1.21.4 or newer.** Older versions get nothing, and there is
   nothing for Bedrock yet.
 - **48 VFX per pack.**
-- **Every sprite is an entity**, so an effect keeps at most 240 alive at once,
-  and a server keeps 4,000 alive across every effect by default (the oldest
-  effects end to make room). Server owners can change that; see
+- **Every sprite is an entity.** An effect stops adding sparks and debris once
+  it has 240 sprites alive (its fixed layers can take it past that), and a
+  server keeps 4,000 alive across every effect by default (the oldest effects
+  end to make room). Server owners can change that; see
   [what it costs](/rp-engine/vfx#what-it-costs).
 - **A plain exported zip can't play one.** The zip carries the pictures; what
   plays them is RP Engine.

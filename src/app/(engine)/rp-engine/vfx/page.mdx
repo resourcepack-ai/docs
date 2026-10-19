@@ -88,9 +88,11 @@ A bare name is a content folder's effect before a Studio one; `mypack:frost` and
 
 ## What it costs
 
-Every sprite is an item display, and one effect keeps at most 240 alive at
-once. A small one (a slash) is a few dozen, a big one (a dome, a storm) a
-couple of hundred at its busiest.
+Every sprite is an item display. A small effect (a slash) is a few dozen at
+its busiest, a big one (a dome, a storm) a couple of hundred. An effect stops
+starting new sparks and debris once it has 240 sprites alive, but its fixed
+layers are not held to that, so a very large recipe can draw more. The
+server-wide limit below counts every sprite either way.
 
 **`vfx.max-sprites` in config.yml is how many may be alive across the whole
 server**, 4,000 by default. When a new effect would go over it, the oldest
