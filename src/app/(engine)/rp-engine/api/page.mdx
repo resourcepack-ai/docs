@@ -461,6 +461,31 @@ Values are per player, not per overlay, and a progress bar reads the same
 names, so a stamina bar out of 100 needs only the one `set` call. They are also
 the values [dialogs](#dialogs) print.
 
+The same values can change more than words. A piece of a Studio overlay can be
+told, in its **From code** settings, to show only while a condition holds, to
+switch to one of its named colours, or (a progress bar) to take its length or a
+colour threshold from a value. Your plugin just sets the value:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.overlays().set(player, "status", "poisoned");  // a named colour
+engine.overlays().set(player, "rank", "vip");         // Show when {rank} == "vip"
+engine.overlays().set(player, "mana_len", "120");     // a bar 120 pixels long
+```
+
+```kotlin
+engine.overlays().set(player, "status", "poisoned")  // a named colour
+engine.overlays().set(player, "rank", "vip")         // Show when {rank} == "vip"
+engine.overlays().set(player, "mana_len", "120")     // a bar 120 pixels long
+```
+
+</CodeTabs>
+
+Colours can only be ones the overlay names, and shapes can't change at all:
+they are compiled into the resource pack. See
+[Changing it from code](/shaders#changing-it-from-code).
+
 `set` and `value` are safe from any thread. They only record the value; the
 next tick draws it, so six `set` calls in a row cost one redraw, and setting a
 value to what it already was costs nothing. `show`, `hide` and `hideAll` are main thread only.
