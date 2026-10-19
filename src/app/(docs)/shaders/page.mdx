@@ -14,11 +14,9 @@ switch on the Shader tab:
 - **3D: objects in the world.** A black hole, a soap bubble, a ball of fire:
   things a block model can't be. See [3D objects](#3d-objects).
 
-Two more live beside them, with tabs of their own in **Add asset**: **Text
-Effects**, which make text wave, burn or shine (see [Text Effects](#text-effects)),
-and **VFX**, spell effects drawn in the world, which play in game through
-[RP Engine](/rp-engine/vfx) (0.2.20 or newer): sync the pack and press **Play in
-game** on the VFX's page.
+Two more live beside them, with tabs of their own in **Add asset** and pages of
+their own here: [Text Effects](/text-effects), which make text wave, burn or
+shine, and [VFX](/vfx), spell effects drawn in the world.
 
 A 2D shader object is a piece of HUD you design yourself: a health bar in the
 corner, a nameplate at the top of the screen, a badge beside the hotbar. You
@@ -362,41 +360,8 @@ object also get a bright edge where they meet it.
 - **It needs your pack.** Players without it don't see the object.
 - **Not in the Bedrock or ItemsAdder exports.**
 
-## Text Effects
+## Text Effects and VFX
 
-A Text Effect makes text move, burn, shine or fill with water: letters that
-bob on a wave, a rainbow that scrolls, pixel flames licking up off every
-letter. It works on any text the game draws flat on the screen: chat, item
-names and lore, titles, scoreboards and menus.
-
-### Making one
-
-Press **Add asset** and pick the **Text Effect** tab. Either describe the look
-("molten gold", "frozen solid", "glitching") and the AI writes it, which costs
-AI Credits and takes a few minutes, or pick one of the 32 presets, which is
-free and ready at once. Either way, you can ask for changes from its page
-afterwards.
-
-### Using it
-
-**A Text Effect is a colour.** The page shows it, and any text in exactly that
-colour wears the effect for every player with your pack. No plugin is needed:
-the page has the colour written as a `/tellraw` command, as MiniMessage and as
-a hex code, ready to copy, and **Show in chat** sends you a line on the server
-your pack is synced to.
-
-With [RP Engine](/rp-engine/text-effects) on the server, it also knows the
-effect by name once the pack is synced or distributed, so
-`<fx:studio:<id>>Hello</fx>` works in item names, messages and chat. The page
-shows the exact tag.
-
-### Text Effect limits
-
-- **Only text on the screen.** Signs, name tags and text displays in the world
-  keep the plain colour, which is very nearly white.
-- **Text Effects share a pack's 32 shader slots** with 2D and 3D shader objects.
-- **A colour code inside the text ends the effect.** Bold and italic are fine.
-- **It needs your pack.** Players without it see near-white text.
-- **One text shader per screen.** If a player's game also has another pack
-  that replaces the text shader on top of yours, only one of the two draws.
-
+Two more kinds of shader-made asset have pages of their own:
+[Text Effects](/text-effects), which make any text wave, burn or shine, and
+[VFX](/vfx), spell effects drawn in the world.
