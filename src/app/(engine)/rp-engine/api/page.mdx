@@ -63,6 +63,7 @@ engine.shaderObjects(); // 3D shader objects: place them and drive them
 engine.armor();         // 3D armour sets, and putting them on people
 engine.sounds();        // custom sounds
 engine.icons();         // icons, and putting one into text
+engine.textEffects();   // Text Effects, and writing text in one
 engine.overlays();      // HUD overlays: show one, hide one, feed it values
 engine.dialogs();       // dialogs: open one, feed it values, read player settings
 engine.registry();      // everything this server holds, by id
@@ -80,6 +81,7 @@ engine.shaderObjects()  // 3D shader objects: place them and drive them
 engine.armor()          // 3D armour sets, and putting them on people
 engine.sounds()         // custom sounds
 engine.icons()          // icons, and putting one into text
+engine.textEffects()    // Text Effects, and writing text in one
 engine.overlays()       // HUD overlays: show one, hide one, feed it values
 engine.dialogs()        // dialogs: open one, feed it values, read player settings
 engine.registry()       // everything this server holds, by id
@@ -1067,6 +1069,57 @@ frame.
 
 `IconInfo.aliases()` and `permission()` apply to players typing the icon in
 chat. `format` ignores both.
+
+## Text Effects in your own text
+
+A [Text Effect](/rp-engine/text-effects) is a colour: text drawn in exactly
+that colour wears the effect, whatever sent it. So the API hands you the
+colour, and two ways to write text in it.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+TextEffects effects = engine.textEffects();
+
+// Tags in your own config, resolved the way RP Engine's own files are.
+player.sendMessage(effects.format(config.getString("welcome"))); // "Welcome to <fx:rainbow>Skyblock</fx>!"
+
+// One effect by name: a content folder's before a Studio one.
+effects.find("fire").ifPresent(fire -> {
+    meta.setDisplayName(effects.apply(fire.id(), "Flame Sword"));
+    // Adventure, on Paper: the colour is all it takes.
+    player.sendMessage(Component.text("Hot!", TextColor.color(fire.rgb())));
+});
+```
+
+```kotlin
+val effects = engine.textEffects()
+
+// Tags in your own config, resolved the way RP Engine's own files are.
+player.sendMessage(effects.format(config.getString("welcome"))) // "Welcome to <fx:rainbow>Skyblock</fx>!"
+
+// One effect by name: a content folder's before a Studio one.
+effects.find("fire").ifPresent { fire ->
+    meta.setDisplayName(effects.apply(fire.id(), "Flame Sword"))
+    // Adventure, on Paper: the colour is all it takes.
+    player.sendMessage(Component.text("Hot!", TextColor.color(fire.rgb())))
+}
+```
+
+</CodeTabs>
+
+| Method | What it does |
+|---|---|
+| `ids()` | Every Text Effect, both sources, sorted |
+| `info(id)` | A `TextEffectInfo`, by ID |
+| `find(name)` | By what somebody typed: `mypack:fire`, or a bare `fire` |
+| `apply(id, text)` | `text` in the effect, as a legacy string that resets after itself |
+| `format(text)` | Every `<fx:name>...</fx>` replaced. A tag naming nothing is left as written |
+
+`TextEffectInfo` has `id()`, `name()`, `color()` (`#rrggbb`), `rgb()`,
+`source()` (`CONTENT` or `STUDIO`) and `preset()`. `apply` and `format` write
+legacy codes (`§x§f§c...`), which every Spigot API takes. A colour code inside
+the text ends the effect; bold and italic do not. Safe from any thread.
 
 ## Events
 
