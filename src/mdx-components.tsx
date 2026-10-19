@@ -10,6 +10,7 @@ import { Copyable, ServerAddress } from "@/components/mdx/copyable";
 import { DownloadJar } from "@/components/mdx/download";
 import { ApiBaseUrl, Endpoint } from "@/components/mdx/endpoint";
 import { Step, Steps } from "@/components/mdx/steps";
+import { asset } from "@/lib/base-path";
 
 /**
  * Global MDX mapping — required by @next/mdx under the App Router.
@@ -71,6 +72,21 @@ const components: MDXComponents = {
   h4: heading(4),
 
   p: (props) => <p className="my-4 leading-[1.75]" {...props} />,
+
+  // Markdown pictures, framed like the cards and callouts beside them. A path
+  // in public/ is written root-relative (`/images/x.webp`) and gets the
+  // basePath here, which a plain <img> would not add by itself.
+  img: ({ alt = "", src, ...props }: ComponentProps<"img">) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      alt={alt}
+      src={typeof src === "string" && src.startsWith("/") ? asset(src) : src}
+      loading="lazy"
+      decoding="async"
+      className="border-border w-full rounded-lg border"
+      {...props}
+    />
+  ),
 
   a: ({ href = "", children, ...props }: ComponentProps<"a">) => {
     // Same-site links go through next/link so navigation stays client-side;
