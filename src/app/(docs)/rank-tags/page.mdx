@@ -46,10 +46,12 @@ owner, blue for moderator, gold for VIP and so on.
 
 ## The editor
 
-The tag sits large in the middle, playing if it's animated, with a line of
-chat under it drawn with the game's own font, so you see exactly how it reads
-next to a name. Switch the preview between **Prefix** and **Suffix**, change the
-player name, or try another GUI scale. When the AI made more than one take,
+The tag sits large in the middle, drawn the way the game draws it (text
+shadow included) and playing if it's animated, with a line of chat under it in
+the game's own font, so you see exactly how it reads next to a name. If you've
+linked your Minecraft account, the chat line uses your name. Switch the preview
+between **Prefix** and **Suffix**, or change the player name. When the AI made
+more than one take,
 **The AI's takes** sit under the preview: click one to use it.
 
 | Section | What it sets |
@@ -61,7 +63,7 @@ player name, or try another GUI scale. When the AI made more than one take,
 | **Frame** | The **Outline** (worked out from the background, a colour of your own, or none), a second ring inside it (the **rim**), a **3D edge** that stands the tag up off the line, and the **Space beside the words** |
 | **Icon** | One of over a hundred icons, searchable, **In a cell** inside the tag, **Beside** the words or on a **Tile** of its own, and the cell's colour |
 | **Animation** | None, **Glint** (a shine sweeps across), **Rainbow** (the letters cycle colours), **Twinkle** (sparkles come and go) or **Pulse** (the frame breathes) |
-| **In game** | **Size**, on a slider from half size to 4×, with ½×, 1× and the whole sizes a click away, and **Height on the line** if it should sit higher or lower than centred |
+| **In game** | **Size**, on a slider from a quarter size to 4×, with ¼×, ½×, ¾×, 1× and 2× a click away, and **Height on the line** if it should sit higher or lower than centred, one pixel per step |
 
 Colours you don't set work themselves out from the background: the outline is
 a darker shade of it, and so are the shadow and the icon's cell. Set one
@@ -73,7 +75,8 @@ case (Sr.Mod, Builder), and Bold is that font in bold. Your pack's own TrueType
 fonts are there too, with **Upload a font**.
 
 **Edit with AI**, under the preview, changes the tag from a sentence: "make it
-gold", "add a crown", "glossy with a 3D edge", "make it shine". The change
+gold", "add a crown", "glossy with a 3D edge", "make it shine", "half the
+size", "use my pack font". It can set everything the panel can. The change
 lands in the fields as an unsaved edit, so you can keep it with **Save** or
 undo it. It costs 5 AI Credits.
 
@@ -89,8 +92,10 @@ new look at once. <kbd>Ctrl</kbd> + <kbd>Z</kbd> undoes and
 </Callout>
 
 **Sizes.** The whole sizes (1×, 2×, 3×, 4×) are pixel for pixel. A tag
-smaller than 1× is smaller than chat's own letters, and keeps every pixel at
-GUI scale 2 and up. Between whole sizes the game scales the picture, as it does
+smaller than 1× is smaller than chat's own letters: a ½× tag keeps every pixel
+at GUI scale 2 and up, a ¼× tag only at GUI scale 4, and its words may not
+read. A small tag can also only move so far up the line, because the game won't
+draw a glyph higher than its own height. Between whole sizes the game scales the picture, as it does
 any icon, so a few pixels come out a little wider than others; the line of chat
 under the editor's preview shows it the way the game will.
 
