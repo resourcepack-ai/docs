@@ -196,6 +196,35 @@ A progress bar fills from a value and a maximum: `{health}` out of
 can read it the same way. See [the RP Engine API](/rp-engine/api#hud-overlays)
 for `overlays().set(player, "stamina", "40")`.
 
+## Changing it from code
+
+Every label, head, picture and progress bar has a **From code** section at the
+bottom of its settings. Each field reads a value the same way a `{name}` does,
+so a plugin, the built-in values above or PlaceholderAPI can drive it, per
+player.
+
+- **Show when** hides the piece while a condition is false, for example
+  `{rank} == "vip"`, `{mana} > 10` or `perm:hud.extra`, joined with `&&` and
+  `||`. It is the same language as a dialog's Show when. Nothing else moves
+  when a piece is hidden.
+- **Other colours** gives a label, a picture's tint or a bar's fill named
+  colours, such as `poisoned` or `frozen`, and the value that picks one. Set
+  that value to a name and the piece switches; anything else draws its own
+  colour. On a bar, a named colour wins over the colour-by-value thresholds.
+- **Length from** sets a progress bar's length in pixels from a value. A bar
+  that is always full is a box your code can resize.
+- **Thresholds from** moves a colour threshold from a value, as a percentage.
+
+```java
+engine.overlays().set(player, "status", "poisoned");
+engine.overlays().set(player, "mana_len", "120");
+```
+
+Shapes and paint are part of the pack, so their size and colour can't change
+while the game is running. Colours are picked from the ones you set in Studio;
+code can't make up a new one. Each named colour costs one of the object's 32
+pieces.
+
 ## Showing it in game
 
 An object does nothing until something shows it. There are three ways.
@@ -220,7 +249,8 @@ object on your screen straight away.
 ## Limits
 
 - **32 pieces per object.** Each label, player head and picture takes one. A
-  progress bar takes two, plus one for each colour threshold. Paint takes one
+  progress bar takes two, plus one for each colour threshold, and each named
+  colour (see Changing it from code) takes one more. Paint takes one
   per 256-pixel tile of drawing, so a small drawing is one. The status bar at
   the bottom of the editor counts them, and anything past 32 isn't drawn.
 - **Paint is pixel art.** It is drawn one pixel per GUI pixel, so it looks
