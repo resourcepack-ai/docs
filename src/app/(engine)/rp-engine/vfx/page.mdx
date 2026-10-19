@@ -88,10 +88,52 @@ A bare name is a content folder's effect before a Studio one; `mypack:frost` and
 
 ## What it costs
 
-Every sprite is an item display, and an effect keeps at most 240 alive at once.
-At most 32 effects play together; a 33rd ends the oldest. Nothing is saved:
-the displays are gone when the effect ends, and a restart mid-effect leaves
-nothing behind.
+Every sprite is an item display, and one effect keeps at most 240 alive at
+once. A small one (a slash) is a few dozen, a big one (a dome, a storm) a
+couple of hundred at its busiest.
+
+**`vfx.max-sprites` in config.yml is how many may be alive across the whole
+server**, 4,000 by default. When a new effect would go over it, the oldest
+effects playing end to make room, so a cast always plays. `0` is no limit, and `/rp reload` reads a new value.
+
+```yaml
+vfx:
+  max-sprites: 4000   # 0 for no limit
+```
+
+What sprites cost the server, measured on a desktop PC running Paper 1.21.11
+with one player watching. A tick has 50 ms before the server falls behind:
+
+| Sprites alive | Average tick | Worst tick |
+|---|---|---|
+| 240 (one big effect) | 2 ms | 3 ms |
+| 2,000 | 3 ms | 14 ms |
+| 4,000 | 6 ms | 16 ms |
+| 8,000 | 10 ms | 27 ms |
+| 15,000 | 21 ms | 54 ms |
+| 30,000 | 37 ms | 117 ms |
+
+So the server copes comfortably up to about 8,000, starts to stutter around
+15,000 (single ticks over 50 ms), and lags throughout past 30,000. Everything
+else your server does comes out of the same 50 ms, and every player watching
+is sent every sprite's movement, so a busy server or a crowd reaches these
+sooner.
+
+**The players' games are usually the limit before the server is.** Each
+sprite is drawn by every client that can see it, and a few thousand on screen
+at once costs frames on a modest PC.
+
+**What we recommend:**
+
+- **4,000, the default**, for most servers: about 16 of the biggest effects at
+  once, or a hundred small ones, and a few ms of tick time.
+- **1,500 to 2,000** for a busy survival server or one where players cast
+  often (a PvP or RPG server), so effects never compete with everything else.
+- **8,000** for a showcase or minigame where effects are the point and the
+  server is otherwise quiet. Going above that is rarely worth it.
+
+Nothing is saved: the displays are gone when the effect ends, and a restart
+mid-effect leaves nothing behind.
 
 Every sound an effect starts is stopped when it ends, so a long one (an
 elytra's wind under a tornado) does not carry on into the next.
