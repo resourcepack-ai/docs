@@ -1160,12 +1160,32 @@ vfx.find("frost_nova").ifPresent { info ->
 | `find(name)` | By what somebody typed: `mypack:frost`, or a bare `frost` |
 | `play(id, location)` | Plays it there, facing the location's yaw. Empty for an unknown ID, or below 1.21.4 |
 | `play(id, player)` | Plays it where the player stands, facing their way |
+| `play(id, location, caster, options)` | Plays it as a `VfxOptions` says (below); `caster` is whose placeholders a condition reads, and may be null |
+| `play(id, player, options)` | The same, cast on a player |
 | `playing()` | Every `VfxPlay` playing now |
+| `stop(tag)` / `stop(player)` | Ends the effects with that tag, or cast on that player, and says how many |
 | `stopAll()` | Ends them all, and says how many there were |
 
+`VfxOptions` is every [casting option](/rp-engine/vfx#casting-options):
+`loop()`, `loopFor(ticks)`, `loopTimes(n)`, `until(condition)`,
+`whileTrue(condition)`, `stopWhen(play -> ...)` (a check of your own, run every
+`checkEvery(ticks)`), `end(End.FINISH | End.CUT)`, `speed`, `scale`, `turn`,
+`offset(left, up, ahead)`, `follow(entity)`, `delay`, `vary`, `seed`, `sounds`,
+`volume`, `viewers(Viewers.EVERYONE | Viewers.CASTER)` and `tag`.
+
+```java
+vfx.play(id, player, VfxOptions.builder()
+        .loop()
+        .stopWhen(play -> !combat.isFighting(player))
+        .follow(player)
+        .tag("combat-aura")
+        .build());
+```
+
 `VfxInfo` has `id()`, `name()`, `durationTicks()`, `source()` (`CONTENT` or
-`STUDIO`) and `preset()`. A `VfxPlay` has `id()`, `location()`, `running()` and
-`stop()`. A Studio VFX is shown only to the players whose pack has it. Main
+`STUDIO`) and `preset()`. A `VfxPlay` has `id()`, `location()`, `running()`,
+`stop()` (now), `finish()` (a loop plays out its fade), `options()`, `age()`
+and `passes()`. A Studio VFX is shown only to the players whose pack has it. Main
 thread only.
 
 ## Events
