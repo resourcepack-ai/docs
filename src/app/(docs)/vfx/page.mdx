@@ -39,6 +39,18 @@ game. Drag to look around it, and scrub through it to stop on a moment.
 There is no editor: a VFX is a timeline of sprites, sounds and sparks, and you
 change it by asking.
 
+## Effects that loop
+
+A server can play any VFX on a loop: for a time, a number of times, or until
+something happens in the game (see [casting options](/rp-engine/vfx#casting-options)).
+An effect with a **loop section** loops properly: its build-up plays once, the
+middle repeats for as long as it is wanted, and its fade plays when it stops.
+Without one, the whole effect plays again from the start.
+
+Describe one that should go on ("a burning aura that lasts until I stop it")
+and Studio gives it a loop section, or ask an existing one with **Edit with AI**
+("make the middle loop"). The page previews the loop going round twice.
+
 ## Playing it in game
 
 A VFX needs [RP Engine](/rp-engine/vfx) 0.2.20 or newer on the server and

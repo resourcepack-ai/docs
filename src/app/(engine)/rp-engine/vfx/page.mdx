@@ -80,11 +80,62 @@ has not synced sees nothing, rather than a cloud of missing-texture cubes.
 |---|---|---|
 | `/rp vfx` | Every VFX this server can play | `rpengine.vfx` |
 | `/rp vfx presets` | The ready-made ones a content file can name | `rpengine.vfx` |
-| `/rp cast <name> [player]` | Play one where a player stands | `rpengine.cast` |
-| `/rp cast stop` | End every VFX playing | `rpengine.cast` |
+| `/rp cast <name> [player] [options]` | Play one where a player stands | `rpengine.cast` |
+| `/rp cast stop [all]` | End every VFX playing, at once | `rpengine.cast` |
+| `/rp cast stop <player>` | End the VFX cast on a player | `rpengine.cast` |
+| `/rp cast stop tag:<name>` | End the VFX cast with that tag | `rpengine.cast` |
 
 A bare name is a content folder's effect before a Studio one; `mypack:frost` and
 `studio:frost` choose. Casting on somebody else needs `rpengine.cast.others`.
+Stopping a loop by player or tag lets it play its fade first (see `end:` below);
+`/rp cast stop` ends everything there and then.
+
+## Casting options
+
+Anything after the player is an option, in any order:
+
+```
+/rp cast storm Steve loop until:{arena_state} == "ended"
+/rp cast aura Steve loop:5m follow scale:1.5 tag:aura
+/rp cast frost_nova Steve speed:0.5 offset:0,0,3 only:caster
+```
+
+| Option | What it does |
+|---|---|
+| `loop` | Plays on a loop until it is stopped, or until one of the next three says |
+| `loop:<time>` | Loops for that long: `30s`, `5m`, `100t` (ticks) |
+| `loop:<n>x` | Loops that many times: `loop:3x` |
+| `until:<condition>` | Loops until the condition holds. Takes the rest of the line, so put it last |
+| `while:<condition>` | Loops for as long as the condition holds. Also last |
+| `check:<time>` | How often a condition is checked: every second by default, `check:5t` for a quarter of a second |
+| `end:finish` / `end:cut` | When a loop is told to stop, play out its fade (the default) or end there and then |
+| `speed:<n>` | Playback speed, 0.1 to 10: `speed:0.5` is half speed |
+| `scale:<n>` | Size, 0.1 to 10: distances and sprites both grow |
+| `turn:<degrees>` | Turns it to the left of the way the player faces; negative turns right |
+| `offset:<left>,<up>,<ahead>` | Moves it from the player's feet, in blocks: `offset:0,0,3` is three blocks ahead |
+| `follow` | Moves and turns with the player for as long as it plays |
+| `delay:<time>` | Waits before it starts |
+| `vary` | Each pass of a loop draws its own random sparks instead of repeating the last |
+| `seed:<n>` | Starts its random draws from this number; the same seed plays the same way |
+| `quiet` | Plays without its sounds |
+| `volume:<n>` | Multiplies its sounds' volume, 0 to 4 |
+| `only:caster` | Only the player it is cast on sees and hears it |
+| `tag:<name>` | A name to stop it by: `/rp cast stop tag:<name>` |
+
+**A condition is the language dialogs use for Show when**, read for the player
+it was cast on: any placeholder (`{health}`, `{world}`, PlaceholderAPI's, a
+value a plugin set), compared with `==`, `!=`, `<`, `>`, `<=` or `>=`, joined
+with `&&` and `||`, `!` for not, brackets, and `perm:<node>` for a permission.
+Quote words: `{arena_state} == "ended"`. `until:{health} < 6 || !perm:mage.aura`
+ends the loop when they are hurt or lose the permission.
+
+**How a loop goes round** depends on the effect. One with a loop section (made
+in Studio) plays its build-up once, repeats the section, and plays its fade when
+it stops. One without plays the whole effect again each time. A loop stops on
+whichever of its time, count, condition or a `/rp cast stop` comes first.
+
+A loop that follows a player ends when they leave or change world.
+
 
 ## What it costs
 
@@ -142,5 +193,6 @@ elytra's wind under a tornado) does not carry on into the next.
 
 ## From a plugin
 
-`engine.vfx()` lists them and plays one at a place or on a player. See the
+`engine.vfx()` lists them and plays one at a place or on a player, with every
+option above as a `VfxOptions`, plus a check of your own to end a loop. See the
 [API](/rp-engine/api#vfx).
