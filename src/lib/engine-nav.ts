@@ -224,6 +224,13 @@ export const engineNav: EngineGroup[] = [
           "preset", "glsl", "chat", "item name", "lore", "minimessage", "colour", "color"],
       },
       {
+        title: "VFX",
+        href: "/rp-engine/vfx",
+        description: "Spell and ability effects drawn in the world: a slash, a storm, a black hole.",
+        keywords: ["vfx", "effect", "spell", "ability", "particles", "cast", "slash", "lightning", "preset",
+          "item display", "sprite"],
+      },
+      {
         title: "Recipes",
         href: "/rp-engine/recipes",
         description: "Crafting, cooking and stonecutting your own items.",

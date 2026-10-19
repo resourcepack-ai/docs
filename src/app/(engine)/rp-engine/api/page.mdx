@@ -64,6 +64,7 @@ engine.armor();         // 3D armour sets, and putting them on people
 engine.sounds();        // custom sounds
 engine.icons();         // icons, and putting one into text
 engine.textEffects();   // Text Effects, and writing text in one
+engine.vfx();           // VFX: play one where somebody stands
 engine.overlays();      // HUD overlays: show one, hide one, feed it values
 engine.dialogs();       // dialogs: open one, feed it values, read player settings
 engine.registry();      // everything this server holds, by id
@@ -82,6 +83,7 @@ engine.armor()          // 3D armour sets, and putting them on people
 engine.sounds()         // custom sounds
 engine.icons()          // icons, and putting one into text
 engine.textEffects()    // Text Effects, and writing text in one
+engine.vfx()            // VFX: play one where somebody stands
 engine.overlays()       // HUD overlays: show one, hide one, feed it values
 engine.dialogs()        // dialogs: open one, feed it values, read player settings
 engine.registry()       // everything this server holds, by id
@@ -1120,6 +1122,51 @@ effects.find("fire").ifPresent { fire ->
 `source()` (`CONTENT` or `STUDIO`) and `preset()`. `apply` and `format` write
 legacy codes (`§x§f§c...`), which every Spigot API takes. A colour code inside
 the text ends the effect; bold and italic do not. Safe from any thread.
+
+## VFX
+
+A [VFX](/rp-engine/vfx) is a spell effect the engine plays in the world. Play
+one at a place, or on a player (at their feet, facing their way), and keep the
+handle if you want to end it early.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+Vfx vfx = engine.vfx();
+
+vfx.find("frost_nova").ifPresent(info -> {
+    vfx.play(info.id(), player).ifPresent(play -> {
+        // play.running() until it ends; play.stop() ends it now.
+    });
+});
+```
+
+```kotlin
+val vfx = engine.vfx()
+
+vfx.find("frost_nova").ifPresent { info ->
+    vfx.play(info.id(), player).ifPresent { play ->
+        // play.running() until it ends; play.stop() ends it now.
+    }
+}
+```
+
+</CodeTabs>
+
+| Method | What it does |
+|---|---|
+| `ids()` | Every VFX, both sources, sorted |
+| `info(id)` | A `VfxInfo`, by ID |
+| `find(name)` | By what somebody typed: `mypack:frost`, or a bare `frost` |
+| `play(id, location)` | Plays it there, facing the location's yaw. Empty for an unknown ID, or below 1.21.4 |
+| `play(id, player)` | Plays it where the player stands, facing their way |
+| `playing()` | Every `VfxPlay` playing now |
+| `stopAll()` | Ends them all, and says how many there were |
+
+`VfxInfo` has `id()`, `name()`, `durationTicks()`, `source()` (`CONTENT` or
+`STUDIO`) and `preset()`. A `VfxPlay` has `id()`, `location()`, `running()` and
+`stop()`. A Studio VFX is shown only to the players whose pack has it. Main
+thread only.
 
 ## Events
 
