@@ -1,0 +1,100 @@
+export const metadata = {
+  title: "VFX",
+  description:
+    "Spell and ability effects drawn in the world out of glowing sprites: a slash, a lightning storm, a black hole. From a preset, Studio's JSON or a Studio pack.",
+};
+
+# VFX
+
+A VFX is a spell or ability effect drawn in the world: a sword slash, a ring of
+ice spikes, a lightning storm, a black hole. RP Engine plays it where a player
+stands, facing the way they face, out of glowing sprites it moves tick by tick.
+
+```yaml
+# mypack/vfx/spells.yml
+frost:
+  preset: frost_nova
+```
+
+```
+/rp cast frost
+```
+
+That is all it takes. RP Engine paints the sprites the effect needs into the
+server's pack, and `/rp cast` plays it. It needs **Minecraft 1.21.4 or newer**
+and RP Engine 0.2.20 or newer.
+
+## Three ways to write one
+
+```yaml
+# mypack/vfx/spells.yml
+frost:
+  preset: frost_nova          # one of the ready-made ones: /rp vfx presets
+  name: Frost Nova            # what /rp vfx calls it; the preset's name if absent
+
+burst:
+  file: mypack/vfx/burst.json # Studio's JSON for one; the path is from the content folder
+
+spark:
+  recipe:                     # the same JSON, written inline
+    duration: 30
+    layers:
+      - type: motes
+        kind: streak
+        start: 0
+        end: 20
+        burst: 40
+        at: [0, 1, 0]
+        shape: sphere
+        speed: [0.3, 0.6]
+```
+
+A `.json` file in `vfx/` that is a recipe on its own is one effect too, named
+after the file: download a VFX's recipe from its page in Studio, drop it in
+`vfx/`, and `/rp reload`.
+
+The ten presets are Studio's own: `void_slash`, `frost_nova`, `thunderstorm`,
+`pillar_of_light`, `black_hole`, `starfall`, `sanctuary_bloom`, `rift_eye`,
+`tornado` and `aegis_dome`.
+
+**A recipe is cleaned the way Studio cleans one.** Numbers out of range are
+clamped, fields nobody reads are dropped and a layer that cannot be drawn is
+left out, and the reload says what changed. So an effect plays in game exactly
+as it plays in Studio's preview, and a recipe with nothing left in it is
+refused rather than played as nothing.
+
+## From Studio
+
+A VFX made in Studio needs nothing on the server. Sync the pack and its VFX
+arrive with it, as `studio:<id>`: `/rp cast studio:ice_spikes`, or the **Play in
+game** button on the VFX's own page.
+
+A Studio effect is shown only to the players whose pack has it. Somebody who
+has not synced sees nothing, rather than a cloud of missing-texture cubes.
+
+## Commands
+
+| Command | What it does | Permission |
+|---|---|---|
+| `/rp vfx` | Every VFX this server can play | `rpengine.vfx` |
+| `/rp vfx presets` | The ready-made ones a content file can name | `rpengine.vfx` |
+| `/rp cast <name> [player]` | Play one where a player stands | `rpengine.cast` |
+| `/rp cast stop` | End every VFX playing | `rpengine.cast` |
+
+A bare name is a content folder's effect before a Studio one; `mypack:frost` and
+`studio:frost` choose. Casting on somebody else needs `rpengine.cast.others`.
+
+## What it costs
+
+Every sprite is an item display, and an effect keeps at most 240 alive at once.
+At most 32 effects play together; a 33rd ends the oldest. Nothing is saved:
+the displays are gone when the effect ends, and a restart mid-effect leaves
+nothing behind.
+
+Every sound an effect starts is stopped when it ends, so a long one (an
+elytra's wind under a tornado) does not carry on into the next.
+
+## From a plugin
+
+`engine.vfx()` lists them and plays one at a place or on a player. See the
+[API](/rp-engine/api#vfx).
