@@ -152,6 +152,13 @@ export const engineNav: EngineGroup[] = [
         ],
       },
       {
+        title: "Vehicles",
+        href: "/rp-engine/vehicles",
+        description: "A model people ride: cars, boats, helicopters and aeroplanes, with up to eight seats.",
+        keywords: ["vehicle", "car", "boat", "plane", "aeroplane", "helicopter", "drive", "seat",
+          "passenger", "driver", "flight", "takeoff", "scale", "particles", "fuel"],
+      },
+      {
         title: "Custom blocks",
         href: "/rp-engine/blocks",
         description: "A block you can place, mine and stand on: states, plants, crops, stairs, slabs and doors.",
@@ -165,12 +172,6 @@ export const engineNav: EngineGroup[] = [
         description: "A vanilla item wearing a different model.",
         keywords: ["item", "material", "model", "texture", "bbmodel", "lore", "glow", "copy-model"],
         items: [
-          {
-            title: "Armour",
-            href: "/rp-engine/armour",
-            description: "Any item worn on a body, with its own art.",
-            keywords: ["armor", "armour", "equipment", "helmet", "leggings", "humanoid", "trim"],
-          },
           {
             title: "Stats and components",
             href: "/rp-engine/stats",
@@ -186,16 +187,10 @@ export const engineNav: EngineGroup[] = [
         ],
       },
       {
-        title: "Emotes",
-        href: "/rp-engine/emotes",
-        description: "Animations played on the player — solo, with a cast, or worn.",
-        keywords: ["emote", "rig", "skin", "duet", "cast", "invite", "movement set", "stance"],
-      },
-      {
-        title: "Sounds",
-        href: "/rp-engine/sounds",
-        description: "Real sound events, with subtitles.",
-        keywords: ["sound", "ogg", "vorbis", "subtitle", "category", "stream", "audio"],
+        title: "Armour",
+        href: "/rp-engine/armour",
+        description: "Any item worn on a body, with its own art.",
+        keywords: ["armor", "armour", "equipment", "helmet", "leggings", "humanoid", "trim"],
       },
       {
         title: "GUIs",
@@ -210,11 +205,37 @@ export const engineNav: EngineGroup[] = [
         keywords: ["hud", "overlay", "action bar", "boss bar", "mana", "health"],
       },
       {
+        title: "Dialogs",
+        href: "/rp-engine/dialogs",
+        description: "Menus the game draws itself: buttons, pages, a command of their own, per-player settings.",
+        keywords: ["dialog", "dialogs", "menu", "1.21.6", "button", "page", "rp page", "rp var", "setting",
+          "target", "placeholder", "click sound", "show_dialog"],
+      },
+      {
         title: "Icons",
         href: "/rp-engine/icons",
         description: "Pictures that behave like letters, anywhere text renders.",
         keywords: ["icon", "font", "glyph", "emoji", "codepoint", "ascent", "shortcode", "animated", "gif",
           "alias", "permission"],
+      },
+      {
+        title: "Sounds",
+        href: "/rp-engine/sounds",
+        description: "Real sound events, with subtitles.",
+        keywords: ["sound", "ogg", "vorbis", "subtitle", "category", "stream", "audio"],
+      },
+      {
+        title: "Emotes",
+        href: "/rp-engine/emotes",
+        description: "Animations played on the player — solo, with a cast, or worn.",
+        keywords: ["emote", "rig", "skin", "duet", "cast", "invite", "movement set", "stance"],
+      },
+      {
+        title: "3D objects",
+        href: "/rp-engine/objects",
+        description: "Shader objects in the world: states, moves, turns and scripted sequences.",
+        keywords: ["object", "shader", "3d", "black hole", "portal", "state", "sequence", "spawn",
+          "move", "turn", "size", "seed"],
       },
       {
         title: "Text Effects",
@@ -241,20 +262,6 @@ export const engineNav: EngineGroup[] = [
         href: "/rp-engine/entities",
         description: "A real mob wearing one of your models.",
         keywords: ["entity", "mob", "spawn", "health", "tags", "ai", "loot", "guard"],
-      },
-      {
-        title: "Vehicles",
-        href: "/rp-engine/vehicles",
-        description: "A model people ride: cars, boats, helicopters and aeroplanes, with up to eight seats.",
-        keywords: ["vehicle", "car", "boat", "plane", "aeroplane", "helicopter", "drive", "seat",
-          "passenger", "driver", "flight", "takeoff", "scale", "particles", "fuel"],
-      },
-      {
-        title: "3D objects",
-        href: "/rp-engine/objects",
-        description: "Shader objects in the world: states, moves, turns and scripted sequences.",
-        keywords: ["object", "shader", "3d", "black hole", "portal", "state", "sequence", "spawn",
-          "move", "turn", "size", "seed"],
       },
       {
         title: "Liquids",
