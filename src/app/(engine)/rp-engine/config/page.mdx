@@ -235,6 +235,19 @@ This is for the placeholders the server works out itself, like `{health}` and
 PlaceholderAPI's: lower makes those smoother, at one packet per wearer per
 redraw. Above 50 the action bar starts to fade between redraws.
 
+## VFX
+
+```yaml
+vfx:
+  max-sprites: 4000   # 0 for no limit
+```
+
+How many [VFX](/rp-engine/vfx) sprites may be alive at once across the whole
+server. Each sprite is a display entity. When a new effect would go over it,
+the oldest effects playing end to make room, so a cast always plays. 4,000 is a
+few ms of tick time; see [what it costs](/rp-engine/vfx#what-it-costs) for
+measurements and what we recommend for busy and quiet servers.
+
 ## Dialogs
 
 ```yaml
