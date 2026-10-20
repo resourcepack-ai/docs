@@ -64,6 +64,12 @@ export const nav: NavGroup[] = [
         ],
       },
       {
+        title: "Chat",
+        href: "/chat",
+        description: "Describe a whole pack and get a plan to generate, with prices.",
+        keywords: ["chat", "assistant", "plan", "whole pack", "batch", "theme", "many at once", "conversation"],
+      },
+      {
         title: "Models",
         href: "/models",
         description: "Cubes, bones, painting, and how a model gets in-game.",
