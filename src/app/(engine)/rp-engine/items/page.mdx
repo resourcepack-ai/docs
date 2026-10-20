@@ -93,6 +93,57 @@ rifle_aimed:
 Needs Minecraft 1.21.4 or newer. On an older server the normal model is used in
 first person too, with a warning.
 
+### A bow that draws back
+
+`pull:` gives an item a look for each stage of being drawn, the way a vanilla
+bow has three. The first is shown the moment the player starts drawing, and
+the item goes back to its own look when they let go:
+
+```yaml
+longbow:
+  material: BOW
+  model: longbow
+  pull: [longbow_pull_0, longbow_pull_1, longbow_pull_2]
+```
+
+Each entry is the same kind of thing as the item's own look: a model when the
+item has a `model:`, a texture when it is a flat sprite (a bare name such as
+`longbow_pull_0` is `textures/item/longbow_pull_0.png`). To mix them, or to
+say when each stage starts, write each one out:
+
+```yaml
+pull:
+  - { at: 0,    model: longbow_pull_0 }
+  - { at: 0.65, texture: item/longbow_pull_1 }
+  - { at: 0.9,  model: longbow_pull_2 }
+```
+
+`at:` is how far drawn the stage begins. A bow is fully drawn after one second,
+so for a bow it reads as a fraction; a crossbow's is the fraction of its loading
+time, so Quick Charge speeds the stages up as it does vanilla's. Leave it out
+and three stages on a bow or crossbow use vanilla's own timings, and any other
+number of stages is spread evenly.
+
+A crossbow also has a loaded look:
+
+```yaml
+repeater:
+  material: CROSSBOW
+  model: repeater
+  pull: [repeater_pull_0, repeater_pull_1, repeater_pull_2]
+  charged: repeater_arrow            # loaded with an arrow
+  charged-firework: repeater_rocket  # loaded with a firework; optional
+```
+
+Without `charged-firework:` a firework shows the `charged:` look too.
+
+All of it is drawn by the player's own game, so everybody watching sees the
+draw and the server sends nothing while it happens. On Minecraft 1.21.4 or
+newer any item a player can hold in use (a bow, a crossbow, a trident, a
+shield) can have `pull:` stages. On an older server only an item built on
+`BOW` or `CROSSBOW` can, and anything else keeps its own look, with a warning.
+Bedrock players see the item's own look throughout.
+
 ## Borrowing another item's model
 
 ```yaml
