@@ -2442,6 +2442,15 @@
                     "type": "boolean",
                     "description": "Follow the pack's style guide — its palette, its notes and its reference pictures. Defaults to true, so a pack with a style guide produces assets that match it without this field. Send false for one asset that should deliberately not match. A pack with no style guide, or one switched off, ignores this either way.",
                     "default": true
+                  },
+                  "referenceIds": {
+                    "type": "array",
+                    "description": "`auto` only: several reference images instead of one, in order — `referenceId`s from `POST /packs/{pack}/references`. The director is shown every one and designs the screen after them. Without `auto` the one reference goes to the image model, so send a single `referenceId`. Send this or `referenceId`, not both.",
+                    "maxItems": 5,
+                    "items": {
+                      "type": "string",
+                      "description": "A `referenceId`."
+                    }
                   }
                 },
                 "required": [
@@ -2843,6 +2852,19 @@
                     "type": "string",
                     "description": "A link to draw as a QR code on the screen, which also opens when the code is clicked. http(s), at most 300 characters.",
                     "maxLength": 300
+                  },
+                  "referenceId": {
+                    "type": "string",
+                    "description": "A reference image: the `referenceId` from `POST /packs/{pack}/references`, or one uploaded in the Studio."
+                  },
+                  "referenceIds": {
+                    "type": "array",
+                    "description": "Several reference images instead of one, in order: `referenceId`s from `POST /packs/{pack}/references`. The director is shown every one and designs the screen after them. Send this or `referenceId`, not both.",
+                    "maxItems": 5,
+                    "items": {
+                      "type": "string",
+                      "description": "A `referenceId`."
+                    }
                   },
                   "useStyleGuide": {
                     "type": "boolean",
