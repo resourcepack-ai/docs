@@ -89,6 +89,32 @@ out long. To pick a shorter one, press the pencil on the item's page and change
 **Custom Model Data**. Copies handed out before the change stop showing the
 item, so give them again after you Sync.
 
+## States: a bow that draws back
+
+A variant is the vanilla item underneath, so a variant of a bow shoots like a
+bow and a variant of a shield blocks like one. What you give it is how it
+looks while it does: the item's page has a **States** card for every item the
+game draws in more than one way.
+
+| Variant of | States |
+| --- | --- |
+| Bow | Three drawing stages (from the start, after 0.65 seconds, fully drawn at 0.9) |
+| Crossbow | Three loading stages, Loaded, and Loaded with a rocket |
+| Trident | Raised to throw |
+| Shield | Blocking |
+| Fishing rod | Cast |
+| Goat horn | Playing |
+| Brush | Three brushing stages |
+
+Each state switches at the same moment vanilla's does. Leave one empty and it
+shows the state before it, so a single drawn look is enough for a bow. On a 2D
+item each state is a picture you upload, fitted to the item's size; on a 3D
+item each state is another model in the pack. States need Minecraft 1.21.4 or
+newer, like the variant itself.
+
+A custom item is carried on paper, which has no states. To make your own bow,
+make a variant of a bow.
+
 ## Exporting
 
 In the exported `.zip`, a sprite is a PNG at
