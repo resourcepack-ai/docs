@@ -50,6 +50,14 @@ joined with, so there is nothing to configure.
 | `host.port` | `8181` | The port it listens on. `0` picks a free one, which is only useful for testing |
 | `host.public-address` | `http://127.0.0.1:8181` | The address a player's game downloads the pack from. Set it to your server's public IP or hostname and the port above, and open that port (on a hosting panel, allocate it to your server). The plugin cannot work this out itself behind a proxy or NAT |
 
+With `upload` you can also keep a copy served from your own server, for any
+player whose game cannot reach the pack host (a school or work network that
+blocks it, say). Set `host.fallback-on-download-failure: true` along with
+`host.port` and `host.public-address` as for `own-port`, and open that port.
+A player whose download fails is sent your server's link instead, and so is
+everybody while an upload is failing. It is read at startup and needs RP
+Engine 0.2.25 or newer.
+
 A config written before `host.mode` existed keeps working as it did: one with
 its own `public-address` set stays on `own-port`, and `host.enabled: false`
 means `none`.
