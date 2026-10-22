@@ -35,9 +35,16 @@ you recover handles from an earlier run.
 Treat the handle as an opaque string. To tell assets apart, read the asset's
 `type` field (`block`, `item3d`, `dialog` and so on), not the handle.
 
-A [pack import](/api-reference/import-pack) is the one job with a different
-handle, `<pack>:import`. Polling it returns the same three statuses, plus an
-`import` report of what came in and what was left out.
+A [pack import](/api-reference/import-pack) has a different handle,
+`<pack>:import`. Polling it returns the same three statuses, plus an `import`
+report of what came in and what was left out.
+
+Shaders, VFX and emotes are kept apart from a pack's files, and an
+[AI edit](/api-reference/edit-asset) changes an asset that already exists, so
+their handles name that instead of a file format: `<pack>:shader:<id>`,
+`<pack>:vfx:<id>`, `<pack>:emote:<id>` and `<pack>:edit:<key>`. They poll the
+same way and answer the same three statuses, without an `asset` in the answer.
+An edit's job reads `ready` once the change is saved.
 
 ## Polling always ends
 
