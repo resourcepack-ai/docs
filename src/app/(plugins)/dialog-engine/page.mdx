@@ -16,7 +16,8 @@ it, fills it in for each player and runs whatever its buttons say.
 - **Server owners** write dialogs in a folder and give them commands,
   permissions, conditions, lists and actions. No code.
 - **Developers** ship dialogs with their own plugin, add their own actions,
-  placeholders and lists, and hear every click as an event.
+  placeholders and lists, and hear every press of a YAML dialog's buttons as an
+  event.
 
 A dialog is drawn by the game itself, so it needs no resource pack. The one
 exception is a [drawn dialog](#drawn-dialogs), which is a picture designed in
@@ -615,6 +616,12 @@ editor's **Export** menu for Dialog Engine, unzip it into `plugins/` and run
   `commandPermission:` at the top. You can edit it by hand and `/de reload`: a
   changed file is sent to the editor to be redrawn, which needs the internet.
 
+A drawn dialog does not fire `DialogClickEvent`: its pieces are not YAML
+buttons with an `id:`. To answer one in Java, register an action and name it
+in the piece's command. In the editor that is **When clicked** set to **Run
+command**, with `[myplugin:claim] daily` (or several, `[a] ...; [b] ...`).
+A command with no brackets is run by the player, as on any dialog.
+
 ### The resource pack
 
 All drawn dialogs share one small pack, which is sent alongside any pack your
@@ -810,7 +817,7 @@ Everything a plugin registers is dropped when it disables.
 | Event | When |
 |---|---|
 | `DialogOpenEvent` | A dialog is about to be drawn: opened, refreshed, paged or returned to. Cancellable. `values()` can be changed, and `isReopened()` says whether it is the same dialog again |
-| `DialogClickEvent` | A button was pressed and its inputs passed, before its actions run. Cancellable. `getButtonId()`, `getInputs()`, `getActions()` (changeable), and `getContext()` to open, refresh or close |
+| `DialogClickEvent` | A button on a YAML dialog was pressed and its inputs passed, before its actions run. Cancellable. `getButtonId()`, `getInputs()`, `getActions()` (changeable), and `getContext()` to open, refresh or close. Not fired by a [drawn dialog](#drawn-dialogs) |
 | `DialogInputErrorEvent` | An input failed its check. The message can be changed |
 | `DialogEngineReloadEvent` | Everything was read again |
 
