@@ -137,6 +137,10 @@
       "status": 409,
       "description": "That asset's generation failed. Its job carries the reason."
     },
+    "no_file": {
+      "status": 400,
+      "description": "A shader, text effect, VFX, emote or emote group has no file of its own. It is built into the pack's zip: use the export."
+    },
     "file_too_large": {
       "status": 413,
       "description": "The file is over the limit for what it's being used as. `message` says the limit."
@@ -642,7 +646,7 @@
       "get": {
         "operationId": "listAssets",
         "summary": "List a pack's assets",
-        "description": "Page until `nextCursor` is null. An asset's `id` is also its job handle, so this is how you find the handle for something generated in an earlier run.\n\nEvery asset says what it is in `type` — `block`, `item`, `item3d`, `gui`, `hud`, `dialog`, `icon`, `sound` and so on — and that is the field to filter and branch on. `kind` is the file format it is stored as (`texture`, `model`, `font`, `sound`), which several types share: a block, an item sprite, a GUI, a HUD and a dialog are all `texture`s. Some types are parts of another asset rather than assets of their own (`block_face`, `model_texture`, `item_model`).",
+        "description": "Page until `nextCursor` is null. An asset's `id` is also its job handle, so this is how you find the handle for something generated in an earlier run.\n\nEvery asset says what it is in `type` — `block`, `item`, `item3d`, `gui`, `hud`, `dialog`, `icon`, `sound` and so on — and that is the field to filter and branch on. `kind` is the file format it is stored as (`texture`, `model`, `font`, `sound`), which several types share: a block, an item sprite, a GUI, a HUD and a dialog are all `texture`s. Some types are parts of another asset rather than assets of their own (`block_face`, `model_texture`, `item_model`).\n\n**Shaders, text effects, VFX, emotes and emote groups are listed too**, after everything else, with `kind` set to the store they live in (`shader`, `vfx`, `emote`, `emote_group`) because they have no file of their own: they are built into the pack's `.zip`. Their `name` is the id to send to `POST /packs/{pack}/assets/{kind}/{name}/edit`, and their `id` is a job handle like any other. The cursor pages across both parts as one list, so keep passing `nextCursor` until it is null.",
         "tags": [
           "Packs"
         ],
@@ -684,17 +688,26 @@
                               "dialog",
                               "icon",
                               "rank_tag",
-                              "sound"
+                              "sound",
+                              "shader",
+                              "text_effect",
+                              "vfx",
+                              "emote",
+                              "emote_group"
                             ]
                           },
                           "kind": {
                             "type": "string",
-                            "description": "The file format it is stored as, which several types share.",
+                            "description": "The file format it is stored as, which several types share. For a shader, text effect, VFX, emote or emote group, the store it lives in instead: those have no file of their own.",
                             "enum": [
                               "texture",
                               "model",
                               "font",
-                              "sound"
+                              "sound",
+                              "shader",
+                              "vfx",
+                              "emote",
+                              "emote_group"
                             ]
                           },
                           "name": {
@@ -724,7 +737,7 @@
                           },
                           "sizeBytes": {
                             "type": "integer",
-                            "description": "Size of the stored file."
+                            "description": "Size of the stored file. Null for the kinds with no file."
                           },
                           "updatedAt": {
                             "type": "string",
@@ -840,7 +853,12 @@
                 "dialog",
                 "icon",
                 "rank_tag",
-                "sound"
+                "sound",
+                "shader",
+                "text_effect",
+                "vfx",
+                "emote",
+                "emote_group"
               ]
             }
           },
@@ -848,15 +866,19 @@
             "name": "kind",
             "in": "query",
             "required": false,
-            "description": "Only assets stored in this file format.",
+            "description": "Only assets stored in this file format, or in this store.",
             "schema": {
               "type": "string",
-              "description": "Only assets stored in this file format.",
+              "description": "Only assets stored in this file format, or in this store.",
               "enum": [
                 "texture",
                 "model",
                 "font",
-                "sound"
+                "sound",
+                "shader",
+                "vfx",
+                "emote",
+                "emote_group"
               ]
             }
           },
@@ -1141,7 +1163,7 @@
       "get": {
         "operationId": "getAssetFile",
         "summary": "Download an asset file",
-        "description": "The asset's own bytes, with the matching content type: PNG for textures and icons, JSON for models, Ogg Vorbis for sounds.\n\nThe path takes an asset's `kind` and `name` exactly as the asset listing reports them — `texture/item:rusted_key` for an item sprite, `texture/gui:shop_menu` for a GUI — so copy both from there rather than building them from its type.\n\nAsking before it's ready answers 409 rather than handing back the placeholder that sits there while it generates — a blank PNG that looked like a result is the one genuinely misleading answer available here.",
+        "description": "The asset's own bytes, with the matching content type: PNG for textures and icons, JSON for models, Ogg Vorbis for sounds.\n\nThe path takes an asset's `kind` and `name` exactly as the asset listing reports them — `texture/item:rusted_key` for an item sprite, `texture/gui:shop_menu` for a GUI — so copy both from there rather than building them from its type. A shader, text effect, VFX, emote or emote group has no file of its own and answers `no_file`: export the pack instead.\n\nAsking before it's ready answers 409 rather than handing back the placeholder that sits there while it generates — a blank PNG that looked like a result is the one genuinely misleading answer available here.",
         "tags": [
           "Packs"
         ],
@@ -1150,7 +1172,7 @@
             "description": "The file."
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `still_generating`, `generation_failed`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `no_file`, `still_generating`, `generation_failed`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1290,7 +1312,7 @@
       "get": {
         "operationId": "getJob",
         "summary": "Check a generation",
-        "description": "A handle looks like `<pack>:<kind>:<name>` and comes back from every generation endpoint. A pack import's is `<pack>:import`, and its answer carries `import` (what came in, what didn't and why) where a generation's carries `asset`.\n\nShaders, VFX and emotes keep stores of their own, and an AI edit is a run on an asset that already exists, so their handles name that instead of a file format (`<pack>:shader:<id>`, `<pack>:vfx:<id>`, `<pack>:emote:<id>`, `<pack>:edit:<key>`) and their answers carry no `asset`. An edit's job reads `ready` once the edit has been saved.\n\nThere's no jobs table behind this: generation is two-phase, so the asset row is written up front with status `generating` and the runner fills it in. The asset *is* the job record, which is why a handle stays resolvable long after the run finished.\n\nPolling always terminates. A run that dies without recording anything reads as `error` once it passes the stale cutoff.",
+        "description": "A handle looks like `<pack>:<kind>:<name>` and comes back from every generation endpoint. A pack import's is `<pack>:import`, and its answer carries `import` (what came in, what didn't and why) where a generation's carries `asset`.\n\nShaders, VFX and emotes keep stores of their own, and an AI edit is a run on an asset that already exists, so their handles name that instead of a file format (`<pack>:shader:<id>`, `<pack>:vfx:<id>`, `<pack>:emote:<id>`, `<pack>:emote_group:<id>`, `<pack>:edit:<key>`) and their answers carry no `asset`. An edit's job reads `ready` once the edit has been saved.\n\nThere's no jobs table behind this: generation is two-phase, so the asset row is written up front with status `generating` and the runner fills it in. The asset *is* the job record, which is why a handle stays resolvable long after the run finished.\n\nPolling always terminates. A run that dies without recording anything reads as `error` once it passes the stale cutoff.",
         "tags": [
           "Jobs"
         ],
@@ -1350,17 +1372,26 @@
                             "dialog",
                             "icon",
                             "rank_tag",
-                            "sound"
+                            "sound",
+                            "shader",
+                            "text_effect",
+                            "vfx",
+                            "emote",
+                            "emote_group"
                           ]
                         },
                         "kind": {
                           "type": "string",
-                          "description": "The file format it is stored as, which several types share.",
+                          "description": "The file format it is stored as, which several types share. For a shader, text effect, VFX, emote or emote group, the store it lives in instead: those have no file of their own.",
                           "enum": [
                             "texture",
                             "model",
                             "font",
-                            "sound"
+                            "sound",
+                            "shader",
+                            "vfx",
+                            "emote",
+                            "emote_group"
                           ]
                         },
                         "name": {
@@ -1390,7 +1421,7 @@
                         },
                         "sizeBytes": {
                           "type": "integer",
-                          "description": "Size of the stored file."
+                          "description": "Size of the stored file. Null for the kinds with no file."
                         },
                         "updatedAt": {
                           "type": "string",
