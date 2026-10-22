@@ -44,7 +44,8 @@ Shaders, VFX and emotes are kept apart from a pack's files, and an
 their handles name that instead of a file format: `<pack>:shader:<id>`,
 `<pack>:vfx:<id>`, `<pack>:emote:<id>` and `<pack>:edit:<key>`. They poll the
 same way and answer the same three statuses, without an `asset` in the answer.
-An edit's job reads `ready` once the change is saved.
+An edit's job reads `ready` once the change is saved. The [asset listing](/api-reference/list-assets) includes shaders, VFX,
+emotes and emote groups, with these handles as their ids.
 
 ## Polling always ends
 
