@@ -87,14 +87,20 @@ Copied cubes paste into any model, in another tab or another pack too. Any
 textures they use come with them.
 
 The tool rail also has a **Select** tool, for picking without a gizmo, and a
-**Pivot** tool, which moves a bone's pivot point without moving its cubes. Use
-it when a hinge turns around the wrong spot.
+**Pivot** tool, which moves the selected cube's pivot point without moving the
+cube. Use it when a cube turns around the wrong spot.
 
 ### Bones
 
 Select several cubes and group them into a **bone**: a named group with its
 own pivot point. Bones are what you animate. Turning a bone turns everything
 in it around one point, which is how a door swings or a wing flaps.
+
+Select a cube in a bone and the right panel shows the **Bone** card, with the
+bone's own pivot point and **Select members**, which selects every cube in the
+bone. The Move tool then moves the whole bone, its pivot going along. In Edit
+mode the Rotate tool turns each selected cube around its own pivot. To turn a
+bone as one piece, use Animate.
 
 A generated model arrives already grouped, with named parts and pivots at the
 joints (a front wheel pivots on its axle), so it's ready to animate.
