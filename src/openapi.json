@@ -4301,6 +4301,141 @@
         }
       }
     },
+    "/packs/{pack}/assets/{kind}/{name}/delete": {
+      "post": {
+        "operationId": "deleteAsset",
+        "summary": "Delete an asset",
+        "description": "Deletes one asset from a pack, as the Studio's Delete does. Addressed exactly as a download is: a stored asset by the `kind` and `name` the listing reports (`texture/mossy_bricks`, `model/lantern`), a shader, text effect, VFX, emote or emote group by its listed `kind` and `name` (`shader/<id>`, `emote_group/<id>`).\n\nIt is gone from the listing as soon as this answers; a model's or a sheet's files are removed a moment later. **It cannot be undone.** A part of another asset (`block_face`, `model_texture`, `item_model`) is not deleted on its own: delete the asset it belongs to. Deleting is free, and a key may only delete in the sections of a pack it can edit.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deleted": {
+                      "type": "boolean",
+                      "description": "Always true."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was in."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "The `kind` you addressed it by."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "The `name` you addressed it by."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What it was."
+                    }
+                  },
+                  "required": [
+                    "deleted",
+                    "pack",
+                    "kind",
+                    "name",
+                    "type"
+                  ]
+                },
+                "example": {
+                  "deleted": true,
+                  "pack": "medieval-keep",
+                  "kind": "texture",
+                  "name": "mossy_bricks",
+                  "type": "block"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `kind` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `kind` from the listing.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound",
+                "shader",
+                "vfx",
+                "emote",
+                "emote_group"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `name` from the listing.",
+              "example": "mossy_bricks"
+            }
+          }
+        ]
+      }
+    },
     "/uploads": {
       "post": {
         "operationId": "createUpload",
