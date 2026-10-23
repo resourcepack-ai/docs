@@ -3269,6 +3269,205 @@
         }
       }
     },
+    "/packs/{pack}/armor": {
+      "post": {
+        "operationId": "generateArmor",
+        "summary": "Generate an armour set",
+        "description": "Produces armour, in one of two shapes:\n\n- `2d` (the default): an `armor` set, a reskin of one of the vanilla sets, named by `setId`. The game's own silhouette is kept, so the face and forearms stay bare. A pack holds one of each vanilla set; a second answers `conflict`.\n- `3d`: an `armor3d` set, new geometry worn on the player, which needs RP Engine on the server to be seen. A pack may hold as many as it likes; `name` labels it and `setId` is ignored.\n\nTakes a few minutes. One charge, refunded in full if it fails. Armour is changed in the Studio's armour editor, not with `editAsset`.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "rank_tag",
+                        "sound"
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "The file format it is stored as.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
+                "example": {
+                  "id": "iron",
+                  "type": "armor",
+                  "kind": "texture",
+                  "job": "medieval-keep:texture:armor:iron",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `conflict`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What the armour looks like.",
+                    "example": "rusted knight's plate with a red sash"
+                  },
+                  "shape": {
+                    "type": "string",
+                    "description": "A vanilla set reskin, or a 3D set.",
+                    "enum": [
+                      "2d",
+                      "3d"
+                    ],
+                    "default": "2d"
+                  },
+                  "setId": {
+                    "type": "string",
+                    "description": "Which vanilla set to reskin. Required for `2d`.",
+                    "enum": [
+                      "leather",
+                      "copper",
+                      "chainmail",
+                      "iron",
+                      "gold",
+                      "diamond",
+                      "netherite",
+                      "turtle_scute"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label, for a `3d` set. Absent uses the prompt's first words."
+                  },
+                  "referenceIds": {
+                    "type": "array",
+                    "description": "Reference images for a `3d` set, in order: `referenceId`s from `POST /packs/{pack}/references`. A `2d` set takes `referenceId`.",
+                    "maxItems": 5,
+                    "items": {
+                      "type": "string",
+                      "description": "A `referenceId`."
+                    }
+                  },
+                  "referenceId": {
+                    "type": "string",
+                    "description": "A reference image: the `referenceId` from `POST /packs/{pack}/references`, or one uploaded in the Studio."
+                  },
+                  "useStyleGuide": {
+                    "type": "boolean",
+                    "description": "Follow the pack's style guide — its palette, its notes and its reference pictures. Defaults to true, so a pack with a style guide produces assets that match it without this field. Send false for one asset that should deliberately not match. A pack with no style guide, or one switched off, ignores this either way.",
+                    "default": true
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/packs/{pack}/sounds": {
       "post": {
         "operationId": "generateSound",
