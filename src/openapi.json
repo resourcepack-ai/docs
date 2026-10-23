@@ -133,6 +133,10 @@
       "status": 409,
       "description": "The asset exists but isn't finished. Poll its job until it's ready."
     },
+    "not_linked": {
+      "status": 409,
+      "description": "Nobody is linked to receive a push: no `/link` code for this pack has been claimed by a player of yours, and you are not on the test server with `/permlink`."
+    },
     "generation_failed": {
       "status": 409,
       "description": "That asset's generation failed. Its job carries the reason."
@@ -152,6 +156,10 @@
     "unavailable": {
       "status": 503,
       "description": "The feature behind this endpoint is switched off."
+    },
+    "push_failed": {
+      "status": 502,
+      "description": "The pack was built but the server holding the player could not be reached, or refused it. `message` says which."
     },
     "export_failed": {
       "status": 500,
@@ -1599,6 +1607,119 @@
             }
           }
         ]
+      }
+    },
+    "/packs/{pack}/push": {
+      "post": {
+        "operationId": "pushPack",
+        "summary": "Push a pack into Minecraft",
+        "description": "What the Studio's **Sync** button does: builds the pack and sends it straight to a player in game, who gets it without rejoining. It reaches the key owner: their account if it is linked with `/permlink` and they are on the test server, otherwise whoever claimed this pack's `/link` code on a server running RP Engine. Anybody else is out of reach on purpose.\n\nWhen nothing has changed since the last push to the same person in this session, nothing is built and `status` is `unchanged`; send `force: true` to push anyway. Free.\n\nEmotes are pushed with the default player model rather than each player's own skin, which only the Studio can fetch. Press Sync in the Studio for skinned emotes.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Delivered, or already there.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`applied` when it was sent, `unchanged` when they already had it.",
+                      "enum": [
+                        "applied",
+                        "unchanged"
+                      ]
+                    },
+                    "player": {
+                      "type": "string",
+                      "description": "Who it reached, when the server said."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status",
+                    "player"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "applied",
+                  "player": "Notch"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`, `not_linked`, `push_failed`, `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "force": {
+                    "type": "boolean",
+                    "description": "Push even when nothing has changed.",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/packs/{pack}/export": {
