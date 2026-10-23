@@ -6,9 +6,11 @@ export const metadata = {
 # API overview
 
 The ResourcePack AI API lets your own code do what Studio does to a pack:
-create a pack, generate block textures, models, items, GUIs, the HUD, dialogs,
-icons, sounds, shaders, VFX and emotes into it, change what's there with AI,
-upload files you already have or import a whole resource pack, and download the
+create a pack, generate block textures, models, items, armour, GUIs, the HUD,
+dialogs, icons, sounds, shaders, VFX and emotes into it, change what's there
+with AI, upload files you already have or import a whole resource pack, set
+up vehicles and movement groups, rename and delete assets, set the pack's style
+guide, push it straight into Minecraft, publish it to servers, and download the
 finished `.zip`.
 
 <Callout type="note" title="On a paid plan">
@@ -78,10 +80,8 @@ generation you can't afford is refused with `402`. See
 
 ## What's not here
 
-The API creates packs, generates and uploads into them, and gets assets back
-out. It doesn't edit pixels or geometry, refine an existing asset, delete
-anything, change pack settings or collaborators, or sync to a server. Those are
-in Studio. If you need one of them from code, tell us in
+The API doesn't edit pixels or geometry by hand, change a pack's own settings
+or its collaborators, or make skins. Those are in Studio. If you need one of them from code, tell us in
 [Discord](https://resourcepack.ai/discord).
 
 <CardGroup cols={2}>

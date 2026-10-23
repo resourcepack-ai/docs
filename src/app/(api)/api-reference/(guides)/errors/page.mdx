@@ -26,10 +26,12 @@ Branch on `code`, never on `message`. The wording can change; the code won't.
 | 400 | `invalid_job_handle` | A job handle that isn't `<pack>:<kind>:<name>` or `<pack>:import` |
 | 400 | `file_fetch_failed` | A file given by `url` couldn't be downloaded |
 | 400 | `not_a_pack` | An import's file isn't a resource pack, or holds nothing usable |
+| 400 | `no_file` | A shader, text effect, VFX, emote or emote group has no file of its own; use the export |
 | 401 | `missing_api_key` | No `Authorization: Bearer` header |
 | 401 | `invalid_api_key` | The key isn't one of ours, or has been revoked |
 | 401 | `wrong_key_kind` | An MCP key sent to the REST API, or an API key sent to the MCP server |
 | 402 | `insufficient_credits` | Not enough AI Credits. Nothing was started or charged |
+| 402 | `distribution_cap` | This month's players are at your plan's limit, so a new release can't be published |
 | 403 | `plan_required` | The key is valid but the account is on Starter |
 | 403 | `account_suspended` | The account is suspended; `message` says until when |
 | 403 | `forbidden` | Valid key, but not allowed to do this in this pack |
@@ -39,11 +41,15 @@ Branch on `code`, never on `message`. The wording can change; the code won't.
 | 404 | `job_not_found` | No job by that handle |
 | 404 | `upload_not_found` | No upload by that id. Uploads expire after 15 minutes and can be used once |
 | 409 | `conflict` | That vanilla target is already reskinned in this pack |
+| 409 | `already_running` | An AI edit or generation of that asset is still running |
+| 409 | `not_a_vehicle` | The model isn't a vehicle yet |
+| 409 | `not_linked` | Nobody is linked to receive a push |
 | 409 | `still_generating` | You asked for an asset's file before it was ready |
 | 409 | `generation_failed` | That asset's generation failed; its job has the reason |
 | 413 | `file_too_large` | The file is over the limit for its use; `message` says the limit |
 | 429 | `rate_limited` | Over this key's budget; see [Rate limits](/api-reference/rate-limits) |
 | 500 | `export_failed` | The zip couldn't be built |
+| 502 | `push_failed` | The pack was built but the player's server couldn't be reached |
 | 500 | `request_failed` | Something went wrong with no more specific code |
 | 503 | `unavailable` | The feature behind this endpoint is switched off |
 
