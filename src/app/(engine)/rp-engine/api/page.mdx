@@ -153,6 +153,7 @@ engine.models().place(location, tree, PlaceOptions.defaults().placer(player)); /
 engine.models().itemFor("golem", ItemOptions.defaults());
 engine.models().near(location, 16);   // what is standing around here
 engine.models().at(entity);           // is this entity part of a model?
+engine.models().at(entity).ifPresent(model -> model.play("wave", true)); // play on a placed model
 ```
 
 ```kotlin
@@ -161,6 +162,7 @@ engine.models().place(location, tree, PlaceOptions.defaults().placer(player)) //
 engine.models().itemFor("golem", ItemOptions.defaults())
 engine.models().near(location, 16.0)  // what is standing around here
 engine.models().at(entity)            // is this entity part of a model?
+engine.models().at(entity).ifPresent { it.play("wave", true) } // play on a placed model
 ```
 
 </CodeTabs>
@@ -173,8 +175,14 @@ cancelled it.
 
 A `Placement` is a handle on a model standing in a world: `play` an animation,
 `stop`, `remove(dropItem)`, read `playhead()` (how far into its animation it
-is) and `seek(seconds)` to drive that clock yourself. `bind` and `unbind` put a
-model on an entity that isn't ours, such as an NPC.
+is) and `seek(seconds)` to drive that clock yourself. `play(name, true)` starts
+the animation over even if it is already running.
+
+`bind` and `unbind` put a model on an entity that isn't ours, such as an NPC,
+and `animate` plays on a model put on that way. **`animate` answers false for a
+model standing in the world**, because nothing is wearing it. For one of those,
+including the hitbox a right-click hands you, use `at(entity)` and `play` on the
+placement, as above.
 
 What a pack's `place:` block said is a read-only `ModelInfo`: facing, scale,
 seat and light, plus `storage()` (a `StorageSpec`: type, rows, title, sounds),
