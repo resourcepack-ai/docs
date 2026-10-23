@@ -137,6 +137,10 @@
       "status": 409,
       "description": "Nobody is linked to receive a push: no `/link` code for this pack has been claimed by a player of yours, and you are not on the test server with `/permlink`."
     },
+    "not_a_vehicle": {
+      "status": 409,
+      "description": "The model is not a vehicle yet. Make it one with `POST /packs/{pack}/vehicles/{model}`."
+    },
     "generation_failed": {
       "status": 409,
       "description": "That asset's generation failed. Its job carries the reason."
@@ -4995,6 +4999,435 @@
                         "type": "string",
                         "description": "The emote played while jump."
                       }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/vehicles/{model}": {
+      "get": {
+        "operationId": "getVehicle",
+        "summary": "Read a vehicle's settings",
+        "description": "A vehicle is a model RP Engine lets players ride: its seats, how it drives, its hitbox, which animation plays in each state, its sounds and its particles. This is the vehicle editor's whole configuration, in the shape `POST` takes back.\n\n`ready` is false until it can be ridden (most often, until it has a driver's seat), and `unfinishedReason` says why.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "200": {
+            "description": "The vehicle.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "The vehicle's model name."
+                    },
+                    "vehicle": {
+                      "type": "object",
+                      "description": "The whole configuration, the shape `POST` takes."
+                    },
+                    "ready": {
+                      "type": "boolean",
+                      "description": "Whether it can be ridden."
+                    },
+                    "unfinishedReason": {
+                      "type": "string",
+                      "description": "Why it cannot be ridden yet, or null."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "model",
+                    "vehicle",
+                    "ready",
+                    "unfinishedReason"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "model": "rowboat",
+                  "vehicle": {
+                    "kind": "vehicle",
+                    "medium": "water",
+                    "speed": 6,
+                    "animations": {
+                      "moving": "row"
+                    }
+                  },
+                  "ready": true,
+                  "unfinishedReason": null
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "description": "The model's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The model's `name` from the listing.",
+              "example": "rowboat"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "setVehicle",
+        "summary": "Make a model a vehicle, or change its settings",
+        "description": "Turns a model into a vehicle when it is not one yet (its geometry is untouched; `converted` says it happened), and saves `vehicle` when sent. Send nothing to convert only.\n\n`vehicle` is the whole configuration, in the shape `GET` answers: read it, change what you want, send it back. Values out of range are corrected rather than refused, and the answer is what was stored, so read it rather than assuming. Seat positions are in the model's pixels, a seat at yaw 0 faces the way the vehicle drives, and one seat must be the driver's. A 3D item's model cannot be a vehicle. Free.\n\nTo animate the vehicle and its riders together, `POST /packs/{pack}/vehicles/{model}/rig`.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved. The vehicle as stored.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "The vehicle's model name."
+                    },
+                    "vehicle": {
+                      "type": "object",
+                      "description": "The whole configuration, the shape `POST` takes."
+                    },
+                    "ready": {
+                      "type": "boolean",
+                      "description": "Whether it can be ridden."
+                    },
+                    "unfinishedReason": {
+                      "type": "string",
+                      "description": "Why it cannot be ridden yet, or null."
+                    },
+                    "converted": {
+                      "type": "boolean",
+                      "description": "True when this call made the model a vehicle. Absent otherwise."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "model",
+                    "vehicle",
+                    "ready",
+                    "unfinishedReason"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "model": "rowboat",
+                  "vehicle": {
+                    "kind": "vehicle",
+                    "medium": "water",
+                    "speed": 6,
+                    "animations": {
+                      "moving": "row"
+                    }
+                  },
+                  "ready": true,
+                  "unfinishedReason": null,
+                  "converted": true
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "description": "The model's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The model's `name` from the listing.",
+              "example": "rowboat"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "vehicle": {
+                    "type": "object",
+                    "description": "The whole configuration: `medium` (`land`, `water` or `air`), `speed`, `acceleration`, `turnSpeed`, `turnInPlace`, `weight`, `scale`, `jump`, `hitbox`, `flight`, `seats`, `animations` (state to the model's animation name), `sounds`, `capes`, `vehicleStatus` and `particles`."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/vehicles/{model}/rig": {
+      "post": {
+        "operationId": "rigVehicle",
+        "summary": "Animate a vehicle and its riders",
+        "description": "The vehicle editor's **Animate everything**: one run that animates the vehicle's own parts and a rider in each seat on one clock, so a paddle and the arms holding it move together. Each rider's motion becomes that seat's emote for the state, and the vehicle's becomes its own animation; both are wired into the settings.\n\nTakes minutes. Charged as an animation, refunded if it fails. One AI edit at a time per model: a second answers `already_running`.\n\n`plan: true` also sets the vehicle up first from its geometry (how it moves, a hitbox, seats, a couple of particle emitters), which is the quickest way from a plain model to something rideable.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. Poll `job` until it leaves `generating`, then read the vehicle again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The vehicle's name."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Always `vehicle`."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Always `model`."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating`."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
+                "example": {
+                  "id": "rowboat",
+                  "type": "vehicle",
+                  "kind": "model",
+                  "status": "generating",
+                  "pack": "medieval-keep",
+                  "job": "medieval-keep:edit:model:rowboat"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `already_running`, `not_a_vehicle`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "description": "The vehicle's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The vehicle's `name` from the listing.",
+              "example": "rowboat"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "instruction": {
+                    "type": "string",
+                    "description": "How it should move. Absent lets it decide from the model.",
+                    "maxLength": 600,
+                    "example": "a slow rowing stroke, the rower leaning into each pull"
+                  },
+                  "characters": {
+                    "type": "integer",
+                    "description": "How many riders to animate, when the vehicle has no seats yet.",
+                    "minimum": 1,
+                    "maximum": 8
+                  },
+                  "plan": {
+                    "type": "boolean",
+                    "description": "Set the vehicle up from its geometry first.",
+                    "default": false
+                  },
+                  "states": {
+                    "type": "array",
+                    "description": "Only these states. Absent animates every one it can.",
+                    "items": {
+                      "type": "string",
+                      "description": "A vehicle state.",
+                      "enum": [
+                        "airborne",
+                        "turning",
+                        "reversing",
+                        "moving",
+                        "idle",
+                        "submerged"
+                      ]
                     }
                   }
                 }
