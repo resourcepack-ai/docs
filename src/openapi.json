@@ -642,6 +642,360 @@
         ]
       }
     },
+    "/packs/{pack}/style": {
+      "get": {
+        "operationId": "getStyleGuide",
+        "summary": "Read a pack's style guide",
+        "description": "The house style every visual generation in the pack follows unless it sends `useStyleGuide: false`: a palette, the author's notes, and reference pictures the look is read from. A pack with nothing set answers an empty guide.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The guide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "style": {
+                      "type": "object",
+                      "description": "The guide.",
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean",
+                          "description": "Whether generations follow it. Off keeps it without anything reading it."
+                        },
+                        "notes": {
+                          "type": "string",
+                          "description": "The author's own words about the look. May be empty."
+                        },
+                        "palette": {
+                          "type": "array",
+                          "description": "The pack's colours. A visual generation paints in these.",
+                          "items": {
+                            "type": "object",
+                            "description": "One colour.",
+                            "properties": {
+                              "hex": {
+                                "type": "string",
+                                "description": "`#rrggbb`, lowercase."
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Its name, when it came from a named palette."
+                              }
+                            },
+                            "required": [
+                              "hex"
+                            ]
+                          }
+                        },
+                        "paletteName": {
+                          "type": "string",
+                          "description": "The named palette it came from, if any."
+                        },
+                        "strict": {
+                          "type": "boolean",
+                          "description": "Whether finished pixels are snapped to the palette rather than only asked to use it."
+                        },
+                        "imageIds": {
+                          "type": "array",
+                          "description": "Reference pictures the look is read from, as `referenceId`s.",
+                          "items": {
+                            "type": "string",
+                            "description": "A `referenceId`."
+                          }
+                        }
+                      },
+                      "required": [
+                        "enabled",
+                        "notes",
+                        "palette",
+                        "strict",
+                        "imageIds"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "style"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "style": {
+                    "enabled": true,
+                    "notes": "Weathered stone and dark oak, muted greens.",
+                    "palette": [
+                      {
+                        "hex": "#3b3a36"
+                      },
+                      {
+                        "hex": "#6b5a43"
+                      },
+                      {
+                        "hex": "#4f6b3a"
+                      }
+                    ],
+                    "strict": false,
+                    "imageIds": []
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "setStyleGuide",
+        "summary": "Change a pack's style guide",
+        "description": "Changes the fields you send and keeps the rest, so `{\"palette\": [\"#3b3a36\", \"#6b5a43\"]}` sets the colours and leaves the notes alone. Only the pack's owner may change it: it decides what every collaborator's generations look like.\n\nA reference picture is a `referenceId` from `POST /packs/{pack}/references`; `imageIds` is the whole list, in order, so send the old ids to keep them. A picture taken out of the list is deleted. The pictures are read once, behind the answer, and what is read off them steers generations from then on.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved. The guide as it now stands.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "style": {
+                      "type": "object",
+                      "description": "The guide.",
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean",
+                          "description": "Whether generations follow it. Off keeps it without anything reading it."
+                        },
+                        "notes": {
+                          "type": "string",
+                          "description": "The author's own words about the look. May be empty."
+                        },
+                        "palette": {
+                          "type": "array",
+                          "description": "The pack's colours. A visual generation paints in these.",
+                          "items": {
+                            "type": "object",
+                            "description": "One colour.",
+                            "properties": {
+                              "hex": {
+                                "type": "string",
+                                "description": "`#rrggbb`, lowercase."
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Its name, when it came from a named palette."
+                              }
+                            },
+                            "required": [
+                              "hex"
+                            ]
+                          }
+                        },
+                        "paletteName": {
+                          "type": "string",
+                          "description": "The named palette it came from, if any."
+                        },
+                        "strict": {
+                          "type": "boolean",
+                          "description": "Whether finished pixels are snapped to the palette rather than only asked to use it."
+                        },
+                        "imageIds": {
+                          "type": "array",
+                          "description": "Reference pictures the look is read from, as `referenceId`s.",
+                          "items": {
+                            "type": "string",
+                            "description": "A `referenceId`."
+                          }
+                        }
+                      },
+                      "required": [
+                        "enabled",
+                        "notes",
+                        "palette",
+                        "strict",
+                        "imageIds"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "style"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "style": {
+                    "enabled": true,
+                    "notes": "Weathered stone and dark oak, muted greens.",
+                    "palette": [
+                      {
+                        "hex": "#3b3a36"
+                      },
+                      {
+                        "hex": "#6b5a43"
+                      }
+                    ],
+                    "strict": false,
+                    "imageIds": []
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether generations follow it."
+                  },
+                  "notes": {
+                    "type": "string",
+                    "description": "Your own words about the look.",
+                    "maxLength": 1000
+                  },
+                  "palette": {
+                    "type": "array",
+                    "description": "The whole palette: `#rrggbb` strings, or `{hex, name}`. Duplicates are dropped.",
+                    "maxItems": 64,
+                    "items": {
+                      "type": "string",
+                      "description": "A colour, `#rrggbb`."
+                    }
+                  },
+                  "paletteName": {
+                    "type": "string",
+                    "description": "A name for the palette. Sending a palette without one clears the old name."
+                  },
+                  "strict": {
+                    "type": "boolean",
+                    "description": "Snap finished pixels to the palette. Right for a chosen palette, wrong for one taken off a photo."
+                  },
+                  "imageIds": {
+                    "type": "array",
+                    "description": "The whole list of reference pictures, as `referenceId`s.",
+                    "maxItems": 10,
+                    "items": {
+                      "type": "string",
+                      "description": "A `referenceId`."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/packs/{pack}/assets": {
       "get": {
         "operationId": "listAssets",
