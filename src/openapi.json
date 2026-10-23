@@ -5604,6 +5604,162 @@
         }
       }
     },
+    "/packs/{pack}/assets/{kind}/{name}/rename": {
+      "post": {
+        "operationId": "renameAsset",
+        "summary": "Rename an asset",
+        "description": "Changes an asset's label, the name the Studio shows for it. Addressed exactly as a download is, by the listing's `kind` and `name`. Its id never changes, so nothing that points at it breaks.\n\nA block and a 2D armour set are named by the vanilla thing they reskin, and a part (`block_face`, `model_texture`, `item_model`) by the asset it belongs to, so neither has a label to change. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Renamed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "The `kind` you addressed it by."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "The `name` you addressed it by, unchanged."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What it is."
+                    },
+                    "displayName": {
+                      "type": "string",
+                      "description": "The label as stored."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "kind",
+                    "name",
+                    "type",
+                    "displayName"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "kind": "model",
+                  "name": "lantern",
+                  "type": "model",
+                  "displayName": "Iron lantern"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `kind` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `kind` from the listing.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound",
+                "shader",
+                "vfx",
+                "emote",
+                "emote_group"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `name` from the listing.",
+              "example": "lantern"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "displayName": {
+                    "type": "string",
+                    "description": "The new label.",
+                    "maxLength": 50,
+                    "example": "Iron lantern"
+                  }
+                },
+                "required": [
+                  "displayName"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/packs/{pack}/assets/{kind}/{name}/delete": {
       "post": {
         "operationId": "deleteAsset",
