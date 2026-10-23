@@ -4488,6 +4488,397 @@
         }
       }
     },
+    "/packs/{pack}/emote-groups": {
+      "post": {
+        "operationId": "createEmoteGroup",
+        "summary": "Make a movement group",
+        "description": "Makes an `emote_group`: one emote per movement state (`idle`, `walk`, `sprint`, `sneak_idle`, `sneak_move`, `jump`), worn as one thing with `/emote <name>`. RP Engine plays whichever state the player is in, so a pack can have its own walk and run and leave jumping to the game.\n\n`parts` maps a state to an emote's `id` from `POST /packs/{pack}/emotes` or the listing. A state left out is the player's own animation. Emotes for more than one performer, and groups, cannot be members: a part naming one is left out and reported in `ignored`.\n\nFree, and finished when it answers. A pack holds at most 16 groups.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "201": {
+            "description": "Made.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The group's id. Also its job handle's last part, and what `/emote` takes."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Always `emote_group`."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Its name."
+                    },
+                    "parts": {
+                      "type": "object",
+                      "description": "State to emote `id`, as saved.",
+                      "properties": {
+                        "idle": {
+                          "type": "string",
+                          "description": "The emote played while idle."
+                        },
+                        "walk": {
+                          "type": "string",
+                          "description": "The emote played while walk."
+                        },
+                        "sprint": {
+                          "type": "string",
+                          "description": "The emote played while sprint."
+                        },
+                        "sneak_idle": {
+                          "type": "string",
+                          "description": "The emote played while sneak idle."
+                        },
+                        "sneak_move": {
+                          "type": "string",
+                          "description": "The emote played while sneak move."
+                        },
+                        "jump": {
+                          "type": "string",
+                          "description": "The emote played while jump."
+                        }
+                      }
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it is in."
+                    },
+                    "ignored": {
+                      "type": "array",
+                      "description": "States you named whose emote could not be a member. Absent when none.",
+                      "items": {
+                        "type": "string",
+                        "description": "A state."
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "name",
+                    "parts",
+                    "pack"
+                  ]
+                },
+                "example": {
+                  "id": "knight_walk",
+                  "type": "emote_group",
+                  "name": "Knight walk",
+                  "parts": {
+                    "walk": "march",
+                    "sprint": "charge"
+                  },
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "What it is called, and what `/emote` takes.",
+                    "maxLength": 64,
+                    "example": "Knight walk"
+                  },
+                  "parts": {
+                    "type": "object",
+                    "description": "State to emote `id`, for any of the states.",
+                    "properties": {
+                      "idle": {
+                        "type": "string",
+                        "description": "The emote played while idle."
+                      },
+                      "walk": {
+                        "type": "string",
+                        "description": "The emote played while walk."
+                      },
+                      "sprint": {
+                        "type": "string",
+                        "description": "The emote played while sprint."
+                      },
+                      "sneak_idle": {
+                        "type": "string",
+                        "description": "The emote played while sneak idle."
+                      },
+                      "sneak_move": {
+                        "type": "string",
+                        "description": "The emote played while sneak move."
+                      },
+                      "jump": {
+                        "type": "string",
+                        "description": "The emote played while jump."
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/emote-groups/{group}": {
+      "post": {
+        "operationId": "updateEmoteGroup",
+        "summary": "Change a movement group",
+        "description": "Renames a group, or sets which emote plays in each state. `parts`, when sent, is the whole map: a state left out goes back to the player's own animation. Leave `parts` out to keep them as they are.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The group's id. Also its job handle's last part, and what `/emote` takes."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Always `emote_group`."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Its name."
+                    },
+                    "parts": {
+                      "type": "object",
+                      "description": "State to emote `id`, as saved.",
+                      "properties": {
+                        "idle": {
+                          "type": "string",
+                          "description": "The emote played while idle."
+                        },
+                        "walk": {
+                          "type": "string",
+                          "description": "The emote played while walk."
+                        },
+                        "sprint": {
+                          "type": "string",
+                          "description": "The emote played while sprint."
+                        },
+                        "sneak_idle": {
+                          "type": "string",
+                          "description": "The emote played while sneak idle."
+                        },
+                        "sneak_move": {
+                          "type": "string",
+                          "description": "The emote played while sneak move."
+                        },
+                        "jump": {
+                          "type": "string",
+                          "description": "The emote played while jump."
+                        }
+                      }
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it is in."
+                    },
+                    "ignored": {
+                      "type": "array",
+                      "description": "States you named whose emote could not be a member. Absent when none.",
+                      "items": {
+                        "type": "string",
+                        "description": "A state."
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "name",
+                    "parts",
+                    "pack"
+                  ]
+                },
+                "example": {
+                  "id": "knight_walk",
+                  "type": "emote_group",
+                  "name": "Knight walk",
+                  "parts": {
+                    "idle": "stand_guard",
+                    "walk": "march"
+                  },
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "group",
+            "in": "path",
+            "required": true,
+            "description": "The group's `id`.",
+            "schema": {
+              "type": "string",
+              "description": "The group's `id`.",
+              "example": "knight_walk"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "A new name.",
+                    "maxLength": 64
+                  },
+                  "parts": {
+                    "type": "object",
+                    "description": "The whole map of state to emote `id`.",
+                    "properties": {
+                      "idle": {
+                        "type": "string",
+                        "description": "The emote played while idle."
+                      },
+                      "walk": {
+                        "type": "string",
+                        "description": "The emote played while walk."
+                      },
+                      "sprint": {
+                        "type": "string",
+                        "description": "The emote played while sprint."
+                      },
+                      "sneak_idle": {
+                        "type": "string",
+                        "description": "The emote played while sneak idle."
+                      },
+                      "sneak_move": {
+                        "type": "string",
+                        "description": "The emote played while sneak move."
+                      },
+                      "jump": {
+                        "type": "string",
+                        "description": "The emote played while jump."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/packs/{pack}/assets/{kind}/{name}/edit": {
       "post": {
         "operationId": "editAsset",
