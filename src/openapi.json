@@ -161,6 +161,10 @@
       "status": 503,
       "description": "The feature behind this endpoint is switched off."
     },
+    "skin_limit_reached": {
+      "status": 409,
+      "description": "The account holds as many skins as it may. Delete one first."
+    },
     "push_failed": {
       "status": 502,
       "description": "The pack was built but the server holding the player could not be reached, or refused it. `message` says which."
@@ -1795,7 +1799,7 @@
       "get": {
         "operationId": "getJob",
         "summary": "Check a generation",
-        "description": "A handle looks like `<pack>:<kind>:<name>` and comes back from every generation endpoint. A pack import's is `<pack>:import`, and its answer carries `import` (what came in, what didn't and why) where a generation's carries `asset`.\n\nShaders, VFX and emotes keep stores of their own, and an AI edit is a run on an asset that already exists, so their handles name that instead of a file format (`<pack>:shader:<id>`, `<pack>:vfx:<id>`, `<pack>:emote:<id>`, `<pack>:emote_group:<id>`, `<pack>:edit:<key>`) and their answers carry no `asset`. An edit's job reads `ready` once the edit has been saved.\n\nThere's no jobs table behind this: generation is two-phase, so the asset row is written up front with status `generating` and the runner fills it in. The asset *is* the job record, which is why a handle stays resolvable long after the run finished.\n\nPolling always terminates. A run that dies without recording anything reads as `error` once it passes the stale cutoff.",
+        "description": "A handle looks like `<pack>:<kind>:<name>` and comes back from every generation endpoint. A pack import's is `<pack>:import`, and its answer carries `import` (what came in, what didn't and why) where a generation's carries `asset`.\n\nShaders, VFX and emotes keep stores of their own, and an AI edit is a run on an asset that already exists, so their handles name that instead of a file format (`<pack>:shader:<id>`, `<pack>:vfx:<id>`, `<pack>:emote:<id>`, `<pack>:emote_group:<id>`, `<pack>:edit:<key>`) and their answers carry no `asset`. An edit's job reads `ready` once the edit has been saved.\n\nA skin has no pack, so its handle is `skin:<id>`, its `pack` is null and its answer carries `skin`.\n\nThere's no jobs table behind this: generation is two-phase, so the asset row is written up front with status `generating` and the runner fills it in. The asset *is* the job record, which is why a handle stays resolvable long after the run finished.\n\nPolling always terminates. A run that dies without recording anything reads as `error` once it passes the stale cutoff.",
         "tags": [
           "Jobs"
         ],
@@ -1813,7 +1817,7 @@
                     },
                     "pack": {
                       "type": "string",
-                      "description": "The pack it belongs to."
+                      "description": "The pack it belongs to. Null for a skin."
                     },
                     "status": {
                       "type": "string",
@@ -1830,7 +1834,7 @@
                     },
                     "asset": {
                       "type": "object",
-                      "description": "The asset itself. Absent for an import, a shader, a VFX, an emote and an edit.",
+                      "description": "The asset itself. Absent for an import, a shader, a VFX, an emote, an edit and a skin.",
                       "properties": {
                         "id": {
                           "type": "string",
@@ -1918,6 +1922,68 @@
                         "name",
                         "status",
                         "updatedAt"
+                      ]
+                    },
+                    "skin": {
+                      "type": "object",
+                      "description": "For a skin: the skin itself.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The skin's id."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "variant": {
+                          "type": "string",
+                          "description": "Arm width: `wide` (Steve) or `slim` (Alex).",
+                          "enum": [
+                            "wide",
+                            "slim"
+                          ]
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Where its generation got to. A skin made in the Studio is `ready`.",
+                          "enum": [
+                            "generating",
+                            "ready",
+                            "error"
+                          ]
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "Why the generation failed. Null otherwise."
+                        },
+                        "prompt": {
+                          "type": "string",
+                          "description": "What it was generated from, if it was."
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "job": {
+                          "type": "string",
+                          "description": "Its job handle, `skin:<id>`."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "variant",
+                        "status",
+                        "error",
+                        "prompt",
+                        "createdAt",
+                        "updatedAt",
+                        "job"
                       ]
                     },
                     "import": {
@@ -6308,6 +6374,713 @@
             }
           }
         }
+      }
+    },
+    "/skins": {
+      "get": {
+        "operationId": "listSkins",
+        "summary": "List your skins",
+        "description": "Every player skin on the account, newest first. A skin belongs to a person, not a pack, so these take a personal API key: a team key is refused.",
+        "tags": [
+          "Skins"
+        ],
+        "responses": {
+          "200": {
+            "description": "The skins.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "skins": {
+                      "type": "array",
+                      "description": "Newest first.",
+                      "items": {
+                        "type": "object",
+                        "description": "A skin.",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "The skin's id."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Its name."
+                          },
+                          "variant": {
+                            "type": "string",
+                            "description": "Arm width: `wide` (Steve) or `slim` (Alex).",
+                            "enum": [
+                              "wide",
+                              "slim"
+                            ]
+                          },
+                          "status": {
+                            "type": "string",
+                            "description": "Where its generation got to. A skin made in the Studio is `ready`.",
+                            "enum": [
+                              "generating",
+                              "ready",
+                              "error"
+                            ]
+                          },
+                          "error": {
+                            "type": "string",
+                            "description": "Why the generation failed. Null otherwise."
+                          },
+                          "prompt": {
+                            "type": "string",
+                            "description": "What it was generated from, if it was."
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          },
+                          "job": {
+                            "type": "string",
+                            "description": "Its job handle, `skin:<id>`."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "variant",
+                          "status",
+                          "error",
+                          "prompt",
+                          "createdAt",
+                          "updatedAt",
+                          "job"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "skins"
+                  ]
+                },
+                "example": {
+                  "skins": [
+                    {
+                      "id": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84",
+                      "name": "a knight in red armour",
+                      "variant": "wide",
+                      "status": "ready",
+                      "error": null,
+                      "prompt": "a knight in red armour",
+                      "createdAt": "2026-10-23T09:12:00.000Z",
+                      "updatedAt": "2026-10-23T09:12:00.000Z",
+                      "job": "skin:5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "generateSkin",
+        "summary": "Generate a skin",
+        "description": "Draws a 64x64 player skin from a description: the face, hair and clothes, with the second layer used for hair, collars and boots that stand off the body. Takes a few minutes; poll `job` (`skin:<id>`) at `GET /jobs/{job}`, then fetch the PNG.\n\nCharged to the key owner's own credits, refunded in full if it fails. Takes a personal API key.",
+        "tags": [
+          "Skins"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. Poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The skin's id."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Its name."
+                    },
+                    "variant": {
+                      "type": "string",
+                      "description": "Arm width: `wide` (Steve) or `slim` (Alex).",
+                      "enum": [
+                        "wide",
+                        "slim"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Where its generation got to. A skin made in the Studio is `ready`.",
+                      "enum": [
+                        "generating",
+                        "ready",
+                        "error"
+                      ]
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "Why the generation failed. Null otherwise."
+                    },
+                    "prompt": {
+                      "type": "string",
+                      "description": "What it was generated from, if it was."
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "description": "ISO 8601."
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "description": "ISO 8601."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Its job handle, `skin:<id>`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "variant",
+                    "status",
+                    "error",
+                    "prompt",
+                    "createdAt",
+                    "updatedAt",
+                    "job"
+                  ]
+                },
+                "example": {
+                  "id": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84",
+                  "name": "a knight in red armour",
+                  "variant": "wide",
+                  "status": "generating",
+                  "error": null,
+                  "prompt": "a knight in red armour",
+                  "createdAt": "2026-10-23T09:12:00.000Z",
+                  "updatedAt": "2026-10-23T09:12:00.000Z",
+                  "job": "skin:5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `insufficient_credits`, `skin_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "Who it is.",
+                    "maxLength": 400,
+                    "example": "a knight in red armour with a scarred face"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Its name. Absent uses the prompt."
+                  },
+                  "variant": {
+                    "type": "string",
+                    "description": "Arm width.",
+                    "enum": [
+                      "wide",
+                      "slim"
+                    ],
+                    "default": "wide"
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/skins/{skin}": {
+      "get": {
+        "operationId": "getSkin",
+        "summary": "Read a skin",
+        "description": "One skin on the account.",
+        "tags": [
+          "Skins"
+        ],
+        "responses": {
+          "200": {
+            "description": "The skin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The skin's id."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Its name."
+                    },
+                    "variant": {
+                      "type": "string",
+                      "description": "Arm width: `wide` (Steve) or `slim` (Alex).",
+                      "enum": [
+                        "wide",
+                        "slim"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Where its generation got to. A skin made in the Studio is `ready`.",
+                      "enum": [
+                        "generating",
+                        "ready",
+                        "error"
+                      ]
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "Why the generation failed. Null otherwise."
+                    },
+                    "prompt": {
+                      "type": "string",
+                      "description": "What it was generated from, if it was."
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "description": "ISO 8601."
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "description": "ISO 8601."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Its job handle, `skin:<id>`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "variant",
+                    "status",
+                    "error",
+                    "prompt",
+                    "createdAt",
+                    "updatedAt",
+                    "job"
+                  ]
+                },
+                "example": {
+                  "id": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84",
+                  "name": "a knight in red armour",
+                  "variant": "wide",
+                  "status": "ready",
+                  "error": null,
+                  "prompt": "a knight in red armour",
+                  "createdAt": "2026-10-23T09:12:00.000Z",
+                  "updatedAt": "2026-10-23T09:12:00.000Z",
+                  "job": "skin:5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "skin",
+            "in": "path",
+            "required": true,
+            "description": "The skin's `id`.",
+            "schema": {
+              "type": "string",
+              "description": "The skin's `id`.",
+              "example": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84"
+            }
+          }
+        ]
+      }
+    },
+    "/skins/{skin}/file": {
+      "get": {
+        "operationId": "getSkinFile",
+        "summary": "Download a skin",
+        "description": "The skin's 64x64 PNG, the file Minecraft and every skin site take. Asking before it is drawn answers `still_generating`.",
+        "tags": [
+          "Skins"
+        ],
+        "responses": {
+          "200": {
+            "description": "The PNG."
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `still_generating`, `generation_failed`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "skin",
+            "in": "path",
+            "required": true,
+            "description": "The skin's `id`.",
+            "schema": {
+              "type": "string",
+              "description": "The skin's `id`.",
+              "example": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84"
+            }
+          }
+        ]
+      }
+    },
+    "/skins/{skin}/push": {
+      "post": {
+        "operationId": "pushSkin",
+        "summary": "Wear a skin in game",
+        "description": "The skin editor's **Sync**: puts the skin on the key owner's player in game now, without them rejoining. It reaches their account when it is linked with `/permlink` and they are online, and the party they are in. Name a `pack` to also reach the server that pack is linked to with `/link`, which is how a skin reaches your own server. Free.",
+        "tags": [
+          "Skins"
+        ],
+        "responses": {
+          "200": {
+            "description": "Worn.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The skin."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `applied`."
+                    },
+                    "reached": {
+                      "type": "integer",
+                      "description": "How many players got it."
+                    },
+                    "of": {
+                      "type": "integer",
+                      "description": "How many it was sent to."
+                    },
+                    "players": {
+                      "type": "array",
+                      "description": "Who it was sent to.",
+                      "items": {
+                        "type": "string",
+                        "description": "A player name."
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "status",
+                    "reached",
+                    "of",
+                    "players"
+                  ]
+                },
+                "example": {
+                  "id": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84",
+                  "status": "applied",
+                  "reached": 1,
+                  "of": 1,
+                  "players": [
+                    "Notch"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `not_linked`, `push_failed`, `still_generating`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "skin",
+            "in": "path",
+            "required": true,
+            "description": "The skin's `id`.",
+            "schema": {
+              "type": "string",
+              "description": "The skin's `id`.",
+              "example": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pack": {
+                    "type": "string",
+                    "description": "A pack whose `/link`ed server should get it too."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/skins/{skin}/delete": {
+      "post": {
+        "operationId": "deleteSkin",
+        "summary": "Delete a skin",
+        "description": "Deletes a skin from the account. It cannot be undone. Free.",
+        "tags": [
+          "Skins"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deleted": {
+                      "type": "boolean",
+                      "description": "Always true."
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "The skin."
+                    }
+                  },
+                  "required": [
+                    "deleted",
+                    "id"
+                  ]
+                },
+                "example": {
+                  "deleted": true,
+                  "id": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "skin",
+            "in": "path",
+            "required": true,
+            "description": "The skin's `id`.",
+            "schema": {
+              "type": "string",
+              "description": "The skin's `id`.",
+              "example": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84"
+            }
+          }
+        ]
       }
     },
     "/uploads": {
