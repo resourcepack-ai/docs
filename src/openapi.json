@@ -161,6 +161,10 @@
       "status": 502,
       "description": "The pack was built but the server holding the player could not be reached, or refused it. `message` says which."
     },
+    "distribution_cap": {
+      "status": 402,
+      "description": "The account (or team) has served its plan's players for this month, so a new release cannot be published. Players still get the live one."
+    },
     "export_failed": {
       "status": 500,
       "description": "The zip couldn't be built."
@@ -5300,6 +5304,421 @@
             }
           }
         ]
+      }
+    },
+    "/packs/{pack}/distribution": {
+      "get": {
+        "operationId": "getDistribution",
+        "summary": "Read a pack's distribution",
+        "description": "What servers bound to this pack hand their players: which Minecraft versions are built, the live release, and the newest one, with each version's build. Poll it after `POST /packs/{pack}/publish` until `latest.status` leaves `building`.\n\n`url` is the pack's stable download address, the one a server's `server.properties` can name.",
+        "tags": [
+          "Distribution"
+        ],
+        "responses": {
+          "200": {
+            "description": "The pack's distribution.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "enabled": {
+                      "type": "boolean",
+                      "description": "Whether bound servers are serving it at all."
+                    },
+                    "versions": {
+                      "type": "array",
+                      "description": "The versions a release is built for.",
+                      "items": {
+                        "type": "string",
+                        "description": "A Minecraft version."
+                      }
+                    },
+                    "defaultVersion": {
+                      "type": "string",
+                      "description": "The version the stable `url` serves."
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "The stable download address."
+                    },
+                    "live": {
+                      "type": "object",
+                      "description": "The release players get now, or null before the first.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The release's id."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Where the build is.",
+                          "enum": [
+                            "building",
+                            "ready",
+                            "failed"
+                          ]
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "Why it failed. Absent otherwise."
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "readyAt": {
+                          "type": "string",
+                          "description": "ISO 8601, once built."
+                        },
+                        "artifacts": {
+                          "type": "array",
+                          "description": "One per version, plus `bedrock` when the pack has anything that crosses over.",
+                          "items": {
+                            "type": "object",
+                            "description": "One build.",
+                            "properties": {
+                              "version": {
+                                "type": "string",
+                                "description": "A Minecraft version, or `bedrock`."
+                              },
+                              "status": {
+                                "type": "string",
+                                "description": "Where this build is.",
+                                "enum": [
+                                  "building",
+                                  "ready",
+                                  "failed"
+                                ]
+                              },
+                              "error": {
+                                "type": "string",
+                                "description": "Why it failed. Absent otherwise."
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "description": "Its size, once built."
+                              }
+                            },
+                            "required": [
+                              "version",
+                              "status",
+                              "bytes"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "status",
+                        "createdAt",
+                        "readyAt",
+                        "artifacts"
+                      ]
+                    },
+                    "latest": {
+                      "type": "object",
+                      "description": "The newest release, live or not, or null before the first.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The release's id."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Where the build is.",
+                          "enum": [
+                            "building",
+                            "ready",
+                            "failed"
+                          ]
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "Why it failed. Absent otherwise."
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "readyAt": {
+                          "type": "string",
+                          "description": "ISO 8601, once built."
+                        },
+                        "artifacts": {
+                          "type": "array",
+                          "description": "One per version, plus `bedrock` when the pack has anything that crosses over.",
+                          "items": {
+                            "type": "object",
+                            "description": "One build.",
+                            "properties": {
+                              "version": {
+                                "type": "string",
+                                "description": "A Minecraft version, or `bedrock`."
+                              },
+                              "status": {
+                                "type": "string",
+                                "description": "Where this build is.",
+                                "enum": [
+                                  "building",
+                                  "ready",
+                                  "failed"
+                                ]
+                              },
+                              "error": {
+                                "type": "string",
+                                "description": "Why it failed. Absent otherwise."
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "description": "Its size, once built."
+                              }
+                            },
+                            "required": [
+                              "version",
+                              "status",
+                              "bytes"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "status",
+                        "createdAt",
+                        "readyAt",
+                        "artifacts"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "enabled",
+                    "versions",
+                    "defaultVersion",
+                    "url",
+                    "live",
+                    "latest"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "enabled": true,
+                  "versions": [
+                    "1.21.4",
+                    "1.21.11"
+                  ],
+                  "defaultVersion": "1.21.11",
+                  "url": "https://packs.resourcepack.ai/p/8f2c1d/pack.zip",
+                  "live": null,
+                  "latest": {
+                    "id": "rel_01",
+                    "status": "building",
+                    "createdAt": "2026-10-23T09:12:00.000Z",
+                    "readyAt": null,
+                    "artifacts": [
+                      {
+                        "version": "1.21.4",
+                        "status": "ready",
+                        "bytes": 482113
+                      },
+                      {
+                        "version": "1.21.11",
+                        "status": "building",
+                        "bytes": null
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/publish": {
+      "post": {
+        "operationId": "publishPack",
+        "summary": "Publish a release",
+        "description": "What the Distribution tab's **Publish** does: builds the pack as it is now, once per chosen Minecraft version plus the Bedrock `.mcpack`, and makes it what every server bound to the pack hands its players. A release is a snapshot: later edits reach players only with the next publish, which replaces it.\n\nSend `versions` to choose what it is built for (a version older than the pack's assets allow is refused); leave it out to build what was chosen last. The build takes a minute or more: follow it with `GET /packs/{pack}/distribution`. One version failing does not stop the others.\n\nNeeds the `distribute` permission on the pack. Free, but refused with `distribution_cap` when this month's players are already at the plan's limit.",
+        "tags": [
+          "Distribution"
+        ],
+        "responses": {
+          "202": {
+            "description": "Building.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "release": {
+                      "type": "string",
+                      "description": "The new release's id."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `building`."
+                    },
+                    "versions": {
+                      "type": "array",
+                      "description": "What it is being built for.",
+                      "items": {
+                        "type": "string",
+                        "description": "A Minecraft version."
+                      }
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "release",
+                    "status",
+                    "versions"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "release": "rel_01",
+                  "status": "building",
+                  "versions": [
+                    "1.21.4",
+                    "1.21.11"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `distribution_cap`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "versions": {
+                    "type": "array",
+                    "description": "The Minecraft versions to build for. Replaces the saved choice.",
+                    "items": {
+                      "type": "string",
+                      "description": "A Minecraft version.",
+                      "example": "1.21.11"
+                    }
+                  },
+                  "defaultVersion": {
+                    "type": "string",
+                    "description": "Which of `versions` the stable download address serves. Absent is the first."
+                  },
+                  "notes": {
+                    "type": "string",
+                    "description": "A note kept with the release.",
+                    "maxLength": 500
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/uploads": {
