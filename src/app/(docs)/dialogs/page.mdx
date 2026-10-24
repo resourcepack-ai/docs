@@ -38,8 +38,10 @@ asset**:
 
 - **Generate**: describe the screen and the AI designs it. See [Generating
   one](#generating-one).
-- **Blank**: open the editor with a title, a line of words and a **Close**
-  button, and build the rest yourself.
+- **Blank**: start from nothing (a title, a line of words and a **Close**
+  button) or from a **template**: an event shop, a quest board, a server hub, a
+  rank store, daily rewards, a crate, a profile, warps, rules or a welcome
+  screen. Each comes with a banner, a kit and its pieces, all yours to change.
 
 Then pair the pack with your server and push it, the same way you [test
 anything else](/testing/plugin), and open it in game:
@@ -55,12 +57,16 @@ The dialog's settings panel in the editor shows its exact id.
 
 Say what the screen is for: "a settings menu with video, audio and chat", "a
 pet menu where you can rename and summon your pet", "a crate menu for a prison
-server". The AI builds it from the editor's own pieces, picks colours to suit
-the subject (or uses the ones you name, or your pack's [Style
-Guide](/generating#writing-a-prompt) palette), and checks its own work for cut-off labels and
-screens that are too tall before saving.
+server". The AI first decides how it should look, choosing a [kit](#kits),
+colours (or the ones you name, or your pack's [Style
+Guide](/generating#writing-a-prompt) palette), a banner and what should move.
+Then it builds the screen from the editor's own pieces, draws the banner's
+picture, and looks at the result as a player would. It fixes cut-off labels and
+screens that are too tall, and makes one thing the focal point, before saving.
 
 - A dialog costs **30 AI Credits**.
+- **Variations** makes up to three dialogs from one prompt, each with a
+  different look, at 30 credits each.
 - Tick **Multi page** for a sidebar or tabs with a page behind each button,
   every page written for its name. Name the pages you want in the prompt, up to
   ten. It costs 30 credits for the first page and 5 for each one after.
@@ -95,6 +101,7 @@ search box across all of them:
 | Shelf | What is on it |
 | --- | --- |
 | **Blocks** | Ready-made groups: settings card, setting row, sidebar (plain, of cards or of buttons), tab bar, button stack, card list, profile card, stat cards, product grid, yes or no, header bar, and a [List](#lists-the-server-fills). |
+| **Decor** | Banner, hero item, rarity card, ribbon, ornament and glow dividers, window, fade card, big lettering, sparkles and confetti. See [The look](#the-look). |
 | **Items** | Item slot, grid of slots, your inventory. See [Items and inventories](#items-and-inventories). |
 | **Controls** | Switch, segmented, slider, dropdown, checkbox, stepper, search box, text box, sidebar button, icon button, theme button, list option, badge. |
 | **Basics** | Text, heading, big title, button, link, icon, player head, pack glyph, chip, check line, label and value, progress bar, page of text, QR code, divider, space, an image of your own, and a drawing. |
@@ -114,7 +121,9 @@ one click.
 **Moving.** Drag a piece to move it between rows and columns. Hold **Shift**
 while dragging, or use **Place anywhere**, to lift it out of the layout and put
 it at any pixel; it snaps to edges and centres (hold **Alt** not to). **Back
-into the layout** returns it.
+into the layout** returns it. With one placed piece selected, **Ctrl**-click
+others to select them too: the panel lines them up by their edges or middles, or
+spreads them with even gaps, and the arrow keys and Delete act on all of them.
 
 **Shortcuts.** Right-click a piece for **Edit words**, copy, paste, duplicate,
 **Group in a column**, **Put on a panel**, **Ungroup** and delete, or use
@@ -132,7 +141,14 @@ click](#after-a-click)).
 
 **JSON** shows the layout, and its **minecraft:dialog** tab shows the file the
 game reads. **Export** downloads the dialog for a plugin, a datapack or as a
-picture (see [Getting it onto a server](#getting-it-onto-a-server)).
+picture (see [Getting it onto a server](#getting-it-onto-a-server)), and, for a
+dialog with [motion](#motion), as an **Animated GIF** for a store page or a post.
+
+**Edit with AI**, on the page strip, changes what is on a page. Its **Restyle**
+tab changes only how it looks: say "dark luxury with gold" or "a cosy winter
+cabin" and it picks a new kit, colours, banner scene, lettering, glows and
+motion, leaving every word, button and click exactly as it was. Either costs 15
+AI Credits and `Ctrl+Z` takes it back.
 
 **Export as PNG**, on a piece's right-click menu, saves that piece as images for
 dialog plugins that build screens from pictures: the art without words, a lit
@@ -151,7 +167,7 @@ columns and grids. When it is taller than the screen, the game scrolls it.
 | **Text**, **Heading**, **Big title** | Words in the game's font, or [one of your own](#your-own-fonts). Colour codes work: `&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` grey, `&l` bold, `&r` reset, `&#55ff55` any colour. |
 | **Page of text** | `# Title`, `## Heading`, `### Heading` (gold), `- bullets`, `> notes`, `**gold words**`, `---` for a rule. |
 | **Icon** | Any vanilla item, a player head, your pack's own sprites and textures, or one of more than a hundred drawn icons (the **Small** shelf of the picker has nine-pixel ones for labels). Bare or in a slot. |
-| **Image** | A PNG, JPG, GIF (first frame) or WebP up to 512 pixels a side. Add it from **Add component** or drop the file on the screen. It is kept with the pack for its other dialogs. |
+| **Image** | A PNG, JPG, GIF (first frame) or WebP up to 512 pixels a side. Add it from **Add component** or drop the file on the screen. It is kept with the pack for its other dialogs. To put a picture *behind* other pieces, give their box a [Picture](#a-boxs-own-look). |
 | **Drawing** | A picture you draw in the editor, with the same tools and colours as the texture editor. **Add component** › **Drawing** starts a blank one as wide as the dialog; set its size on the right, one pixel per pixel of the dialog, and press **Done** to place it. Every text, rectangle, ellipse, line and paste lands on a layer of its own, and the **Move** tool (V) picks any of them by clicking it and drags it; the arrows nudge it and Delete removes it. Text stays editable: its words, font (Minecraft, Classic, Small Caps, Tiny, Block or your pack's own), size, colour or fade or rainbow, bold, italic, underline, strikethrough, shadow and outline, alignment and spacing. **Turn into pixels** lets you paint on it. **Draw on it**, in any image's panel, opens a drawing again with its layers as you left them. |
 | **Chip**, **Badge**, **Check line**, **Label and value** | A balance or tag; a small solid tag such as NEW; a ✔ or ✘ line; a label left and a value right. |
 | **Progress bar** | A label, a count and a bar, in its own **Bar colour** and **Track colour** if you like. **Icon before the label** puts a small icon at the start of its line. It can [follow the player](#bars-that-follow-the-player). |
@@ -166,10 +182,11 @@ behind one row, the GUI's light **Panel** or **Dark panel**, an item **Slot**,
 or the see-through **Shade**, **Deep shade** and **Gold**. Tick **Clicking** on a
 row or column to make the whole box one button.
 
-**Themes.** Cards, controls and highlights are drawn in the dialog's theme. Pick
-one of fourteen under **Theme** (Stone, Slate, Deepslate, Nether, Ocean, Jungle,
-End, Royal, Oak, Parchment, Ice, Cherry, Redstone, Sand), or choose any **Card**
-and **Accent** colour and the rest is worked out from those.
+**Themes.** Cards, controls and highlights are drawn in the dialog's colours.
+Pick one of fourteen under **Colours** (Stone, Slate, Deepslate, Nether, Ocean,
+Jungle, End, Royal, Oak, Parchment, Ice, Cherry, Redstone, Sand), or choose any
+**Card** and **Accent** colour and the rest is worked out from those. What
+they are drawn *with* is the [kit](#kits).
 
 ### Your own fonts
 
@@ -282,6 +299,94 @@ Where the game puts its box is the game's choice, and the editor follows it:
 It lines up exactly on Minecraft 1.21.11 and newer. On 1.21.6 to 1.21.10 the
 game puts its box 4 pixels higher, so what is typed sits at the top of the
 drawn box.
+
+## The look
+
+### Kits
+
+A kit is what everything is drawn with: the material the cards are made of,
+how round their corners are, their frame, the dividers, how headings are
+lettered, and whether lit things glow. Pick one under **Kit** in the dialog's
+settings:
+
+| Kit | Looks like |
+| --- | --- |
+| **Classic** | The plain raised cards, in any colours. |
+| **Scroll** | Parchment in a gilded frame, wax-red accents. |
+| **Luxe** | Near-black velvet with gold trim and glowing highlights. |
+| **Glass** | Dark glass with bright corner brackets and scanlines. |
+| **Wood** | Warm planks and cream words. |
+| **Frost** | Pale ice with soft corners. |
+| **Forge** | Cracked rock with glowing seams. |
+| **Arcade** | Black with neon outlines. |
+| **Meadow** | Leafy green and sunshine gold. |
+| **Castle** | Grey stone bricks and gold. |
+| **Night** | A starry sky. |
+
+A kit comes in its own colours, and you can change them under **Colours**
+without losing the kit. Changing kit never moves anything: every piece keeps
+its place and size.
+
+### A box's own look
+
+Any row, column or card has a **Look** section in its panel:
+
+- **Picture**: an image behind the box's content, cropped to fill it, with
+  **Darken for words** so a title reads over it. Choose one of your images, one
+  of the **Starter banners** (free), or **Draw it with AI**: describe a scene
+  and the image model paints it at exactly the box's size (10 AI Credits).
+- **Fill** in a colour of its own, fading down or across to a second one. Words
+  on it take colours that read on it.
+- **Made of**: planks, parchment, stone, bricks, velvet, glass, frost, magma,
+  leaves, metal, stars or grid.
+- **Corners**, **Border** (thin or thick), **Bevel**, **Drop shadow**, **Glow**,
+  **Corner ornaments** (gold, brackets or rivets) and **Opacity**.
+
+A **Banner** from the **Decor** shelf is a box like this, ready-made: a picture
+across the top with its title lettered over it, a line under it and a chip at
+its right. Its art prompt is already in its panel, ready to draw.
+
+### Lettering, glows and decorations
+
+- **Lettering** on a text piece: an **Outline**, letters that **Fade** to a
+  second colour, and a **Shadow** colour or none. **Huge** and **Giant** sizes
+  draw words three and four times their size.
+- An icon's **Glow** puts a soft halo behind it, and **Burst of rays** a ring of
+  rays: for the thing to look at.
+- A badge can be a **Ribbon** with notched ends. A divider can be an
+  **Ornament**, **Glow**, **Fade** or **Dots** line.
+- A **Decoration** scatters sparkles, stars, confetti or hearts over its box.
+  Place it anywhere, over a banner or round a reward.
+
+These are drawn into the dialog's picture, so they need nothing on the server.
+Words that hold a [live value](#live-values) are drawn by the game, so they keep
+its font and take no lettering.
+
+### Motion
+
+Any piece can **shimmer** (a shine sweeps across it), **pulse**, **twinkle**,
+cycle through the **rainbow** or **flicker** like candlelight, slowly, normally
+or fast. Set it under **Motion** in the piece's panel; everything inside the
+piece moves with it. The editor plays it as it will look, and the pause button
+on the left stops it while you work.
+
+In game it is played by your resource pack, so it needs nothing from the
+plugin: a player with the pack sees it move, from the moment the dialog opens.
+The parts the game draws itself (live words, player heads, inventory items)
+stay still.
+
+### Text effects on words
+
+If your pack has [text effects](/text-effects), a text piece's
+**Text effect** puts one on its words: a wave, a rainbow, fire. The game draws
+those words, in its own font, and your pack's shader plays the effect.
+
+### A Close in the dialog's style
+
+The game's grey footer button looks the same on every dialog. **Draw it in the
+dialog's kit instead**, under **Footer**, hides it and puts a button that
+closes the dialog just under the content, which you can move and restyle.
+Generated dialogs in a kit, and most templates, start that way.
 
 ## Getting it onto a server
 
