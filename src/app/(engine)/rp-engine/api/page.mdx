@@ -1204,15 +1204,16 @@ otherwise.
 | Event | When |
 |---|---|
 | `ContentLoadEvent` | Content finished loading and the packs are built. A reload replaces every definition, so rebuild anything you cached here. `cause()` is `STARTUP` or a reload. Not cancellable |
-| `PackSendEvent` | A pack went out to a player. Not cancellable |
+| `PackSendEvent` | A pack went out to a player. `pack()` is the built pack; its `uuid()` is the id `PlayerResourcePackStatusEvent` reports on 1.20.3+, so you can match the two. Not cancellable |
 | `RigPackBuildEvent` | The emote rigs were rebaked: on every content load, or alone for a new skin or `reloadRigs()`. `alone()` and `separate()` say which. Not cancellable |
-| `ItemUseEvent` | A custom item was right- or left-clicked. Cancelling cancels the vanilla use too |
+| `ItemUseEvent` | A custom item was right- or left-clicked. `block()` and `face()` say what was clicked (null in the air). Cancelling cancels the vanilla use too |
 | `ModelPlaceEvent` | A model is about to be put down. `stack()` is the stack in the player's hand it's placed from, so you can read what the item carries; null when a plugin placed it |
-| `ModelBreakEvent` | A model is about to be broken. Has a drop flag separate from cancelling |
-| `ModelInteractEvent` | A placed model was right-clicked |
+| `ModelPlacedEvent` | A model was put down and is standing. `placement()` is its handle and `stack()` the stack it came from, so you can copy what the item carries onto the placement's `data()`. Not cancellable |
+| `ModelBreakEvent` | A model is about to be broken. `hitbox()` is its Interaction entity (its UUID tells two copies of one model apart) and `placement()` its handle. Has a drop flag separate from cancelling |
+| `ModelInteractEvent` | A placed model was right-clicked, from your content folder or from Studio. Has `hitbox()`, `placement()` and `clickedPosition()`. Cancelling stops everything the engine would do with the click |
 | `ModelAnimationEvent` | A model is about to play an animation |
 | `ModelAnimationEndEvent` | One ended: finished, replaced or stopped. Not cancellable |
-| `ModelSeatEvent` | Somebody is about to sit on a chair, a seat bone or a vehicle seat |
+| `ModelSeatEvent` | Somebody is about to sit on a chair, a seat bone or a vehicle seat. `placement()` or `vehicle()` says what it belongs to |
 | `ModelBindEvent` | A model is going on, or coming off, an entity that isn't ours (a boss, an NPC) |
 | `VehicleEnterEvent` | Somebody is about to get into a vehicle. Fires after `ModelSeatEvent` for the same seat |
 | `VehicleExitEvent` | Somebody got out or was taken out, with the reason: dismounted, ejected, quit, reloaded, removed, unloaded, shutdown. After `RELOADED` they're put back a tick later with no enter event. Not cancellable |
@@ -1220,7 +1221,7 @@ otherwise.
 | `VehicleStateEvent` | What a vehicle is doing changed: set off, stopped, took off, went under. Not cancellable |
 | `VehicleImpactEvent` | A vehicle hit another vehicle, the world, or the ground. See [Collisions and parts](#collisions-and-parts). Not cancellable |
 | `VehicleBailEvent` | A bad landing is about to throw a rider off. Cancelling keeps them aboard |
-| `EntityDeathEvent` | A custom entity died. Bukkit's event has the drops; this one says what it was. Not cancellable |
+| `EntityDeathEvent` | A custom entity died. Says what it was, `killer()`, and `drops()`: Bukkit's live drop list, so editing it changes the loot. Not cancellable |
 | `PlayerLiquidEvent` | Somebody went into or came out of one of your liquids. Not cancellable |
 | `EmoteStartEvent` | An emote is about to start |
 | `EmoteEndEvent` | An emote ended, with the reason: finished, stopped, moved, damaged, quit, shutdown |
