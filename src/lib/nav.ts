@@ -209,7 +209,7 @@ export const nav: NavGroup[] = [
         ],
       },
       {
-        title: "Rank tags",
+        title: "Rank Tags",
         href: "/rank-tags",
         description: "The badge in front of a player's name, for a LuckPerms prefix or suffix.",
         keywords: [
