@@ -127,7 +127,11 @@ are lined up with the pixels as they are drawn, so every stroke keeps one width
 and a line of capitals stays one height. A character the font doesn't have is
 drawn as its other case (a font with capitals only writes everything in
 capitals) or, failing that, in Minecraft's own font, and the panel says which
-characters those are. Fonts can be
+characters those are. So a font for another script, such as a Thai font with no
+English letters, works too: its own letters are drawn from it, with vowel and
+tone marks over the letter they belong to, and any English letters and digits
+come from Minecraft's font. Scripts written right to left, or whose letters join
+up (Arabic, Hindi), are not drawn correctly. Fonts can be
 TrueType (`.ttf`) or a collection (`.ttc`), up to 2 MB; an `.otf` whose letters
 are PostScript curves cannot be read, so use the font's `.ttf` version.
 
