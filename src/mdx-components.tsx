@@ -75,15 +75,18 @@ const components: MDXComponents = {
 
   // Markdown pictures, framed like the cards and callouts beside them. A path
   // in public/ is written root-relative (`/images/x.webp`) and gets the
-  // basePath here, which a plain <img> would not add by itself.
-  img: ({ alt = "", src, ...props }: ComponentProps<"img">) => (
+  // basePath here, which a plain <img> would not add by itself. A picture that
+  // brings its own shape (cards with transparent gaps) opts out of the frame
+  // with the title "plain": `![alt](/images/x.webp "plain")`.
+  img: ({ alt = "", src, title, ...props }: ComponentProps<"img">) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       alt={alt}
       src={typeof src === "string" && src.startsWith("/") ? asset(src) : src}
+      title={title === "plain" ? undefined : title}
       loading="lazy"
       decoding="async"
-      className="border-border w-full rounded-lg border"
+      className={title === "plain" ? "w-full" : "border-border w-full rounded-lg border"}
       {...props}
     />
   ),
