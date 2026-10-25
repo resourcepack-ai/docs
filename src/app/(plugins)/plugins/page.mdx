@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Plugins",
   description:
-    "Our Minecraft server plugins besides RP Engine: Dialog Engine for dialog screens in YAML, Punishments for moderation, 3D Engine for real 3D models from .glb, .gltf and .obj files, and 3D Pets.",
+    "Our Minecraft server plugins besides RP Engine: MC GUI for screens written in HTML and CSS, Dialog Engine for dialog screens in YAML, Punishments for moderation, 3D Engine for real 3D models from .glb, .gltf and .obj files, and 3D Pets.",
 };
 
 # Plugins
@@ -11,6 +11,9 @@ thing. None of them needs RP Engine installed, and none needs a ResourcePack AI
 account. Two are addons for another one here, and say so.
 
 <CardGroup cols={3}>
+  <Card title="MC GUI" href="/mcgui" icon="gui">
+    Real screens written in HTML and CSS, fullscreen or on walls.
+  </Card>
   <Card title="Dialog Engine" href="/dialog-engine" icon="gui">
     Minecraft's own dialog screens, written in YAML, with a Java API.
   </Card>
@@ -29,6 +32,7 @@ account. Two are addons for another one here, and say so.
 
 | Plugin | Server | Minecraft | Needs |
 | --- | --- | --- | --- |
+| [MC GUI](/mcgui) | Spigot or Paper | 1.21.11 and newer | Nothing else |
 | [Dialog Engine](/dialog-engine) | Spigot or Paper | 1.21.7 and newer | Nothing else |
 | [Punishments](/punishments) | Spigot or Paper | 1.21.7 and newer | Dialog Engine, for the panel |
 | [3D Engine](/3d-engine) | Spigot or Paper | 26.3 | Nothing else |

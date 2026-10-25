@@ -37,6 +37,22 @@ export const pluginsNav: NavGroup[] = [
     ],
   },
   {
+    title: "Screens",
+    items: [
+      {
+        title: "MC GUI",
+        href: "/mcgui",
+        description: "Real screens in Minecraft written in HTML and CSS, fullscreen with a mouse pointer or on walls.",
+        keywords: [
+          "mc gui", "mcgui", "/mcgui", "/gui", "/ui", "ui engine", "uiengine", "html", "css", "page", "screen",
+          "menu", "gui", "fullscreen", "wall", "map", "maps", "item frame", "overlay", "blur", "pointer", "cursor",
+          "mouse", "hover", "button", "data-command", "data-console", "placeholder", "placeholderapi", "form",
+          "mcgui.dev", "import", "editor", "1.21.11", "spigot", "paper", "api", "pageclickevent", "canvas",
+        ],
+      },
+    ],
+  },
+  {
     title: "Dialogs",
     items: [
       {
