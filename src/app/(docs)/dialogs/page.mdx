@@ -162,17 +162,17 @@ columns and grids. When it is taller than the screen, the game scrolls it.
 
 | Piece | What it is |
 | --- | --- |
-| **Button** | The game's grey button. **Selected** makes it gold, **Greyed out** disables it, and it can take its own colour. Its panel can also make it the theme's button or the GUI's light one. |
+| **Button** | The game's grey button. **Selected** makes it gold, **Greyed out** disables it, and it can take its own colour. Its panel can also make it the theme's button or the GUI's light one. Its icon can be [a picture of your own](#pictures-in-buttons-and-bars). |
 | **Link** | Clickable words, for a contents list. |
 | **Text**, **Heading**, **Big title** | Words in the game's font, or [one of your own](#your-own-fonts). Colour codes work: `&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` grey, `&l` bold, `&r` reset, `&#55ff55` any colour. |
 | **Page of text** | `# Title`, `## Heading`, `### Heading` (gold), `- bullets`, `> notes`, `**gold words**`, `---` for a rule. |
-| **Icon** | Any vanilla item, a player head, your pack's own sprites and textures, or one of more than a hundred drawn icons (the **Small** shelf of the picker has nine-pixel ones for labels). Bare or in a slot. |
+| **Icon** | Any vanilla item, a player head, your pack's own sprites and textures, one of more than a hundred drawn icons (the **Small** shelf of the picker has nine-pixel ones for labels), or one of your own pictures (the **Pictures** shelf). Bare or in a slot. |
 | **Image** | A PNG, JPG, GIF (first frame) or WebP up to 512 pixels a side. Add it from **Add component** or drop the file on the screen. It is kept with the pack for its other dialogs. To put a picture *behind* other pieces, give their box a [Picture](#a-boxs-own-look). |
 | **Drawing** | A picture you draw in the editor, with the same tools and colours as the texture editor. **Add component** › **Drawing** starts a blank one as wide as the dialog; set its size on the right, one pixel per pixel of the dialog, and press **Done** to place it. Every text, rectangle, ellipse, line and paste lands on a layer of its own, and the **Move** tool (V) picks any of them by clicking it and drags it; the arrows nudge it and Delete removes it. Text stays editable: its words, font (Minecraft, Classic, Small Caps, Tiny, Block or your pack's own), size, colour or fade or rainbow, bold, italic, underline, strikethrough, shadow and outline, alignment and spacing. **Turn into pixels** lets you paint on it. **Draw on it**, in any image's panel, opens a drawing again with its layers as you left them. |
 | **Chip**, **Badge**, **Check line**, **Label and value** | A balance or tag; a small solid tag such as NEW; a ✔ or ✘ line; a label left and a value right. |
 | **Progress bar** | A label, a count and a bar, in its own **Bar colour** and **Track colour** if you like. **Icon before the label** puts a small icon at the start of its line. It can [follow the player](#bars-that-follow-the-player). |
 | **Controls** | Switch, segmented (two to four choices), slider, dropdown, checkbox, stepper, search box and text box, drawn in the theme. They are pictures unless bound to a [player setting](#player-settings); players can [type in a text box](#typing-in-a-drawn-box). |
-| **Sidebar button**, **List option**, **Icon button**, **Theme button** | The parts of a settings screen. A sidebar button can be taller than its 18 pixels and carry a badge. |
+| **Sidebar button**, **List option**, **Icon button**, **Theme button** | The parts of a settings screen. A sidebar button can be taller than its 18 pixels, carry a badge, and show [a picture of your own](#pictures-in-buttons-and-bars). |
 | **Item slots** | See [Items and inventories](#items-and-inventories). |
 | **QR code**, **Divider**, **Space** | A QR code opens its link when clicked. |
 
@@ -187,6 +187,23 @@ Pick one of fourteen under **Colours** (Stone, Slate, Deepslate, Nether, Ocean,
 Jungle, End, Royal, Oak, Parchment, Ice, Cherry, Redstone, Sand), or choose any
 **Card** and **Accent** colour and the rest is worked out from those. What
 they are drawn *with* is the [kit](#kits).
+
+### Pictures in buttons and bars
+
+Anything with an icon can show one of your own pictures instead: a button, a
+sidebar button, a tab, a chip in a header bar, a card heading. In its **Icon**
+picker, open **Pictures** and choose one, or **Import a picture…**. The picture
+is fitted whole into the icon with its shape kept: a small one is scaled up by
+whole steps so pixel art stays sharp, and a big one is shrunk smoothly.
+
+An icon is 16 pixels, which is small for a picture. A button or a sidebar
+button can draw it bigger: set **Icon size** in its panel to 24, 32 or 48 and
+the button grows to hold it. A sidebar of picture buttons is a
+**Sidebar** from **Blocks** with a picture and a size on each entry.
+
+For a picture *beside* the buttons, such as a logo at the left of a top bar, drop
+an **Image** into the bar's row. For one *behind* a whole bar, give the bar a
+[Picture](#a-boxs-own-look).
 
 ### Your own fonts
 
