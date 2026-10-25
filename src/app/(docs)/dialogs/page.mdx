@@ -754,6 +754,15 @@ line. Studio can't see your pack, so the glyph is a marked box in the editor;
 choose a **Picture in the editor** to see it while you lay it out. Only players
 with your pack see the icon, and it moves up and down in 9-pixel steps.
 
+A [live value](#live-values) works in a pasted glyph too, so a placeholder can
+choose the glyph for each player: `{"text":"%card_face%","font":"cards:pixels"}`
+shows whatever `%card_face%` returns, in that font. With RP Engine 0.2.34 or
+Dialog Engine 0.6.4, the colour codes in the value are kept (`§a`,
+`§x§f§f§8§8§0§0`, `&a` and `&#ff8800`), so a placeholder that colours its glyphs
+for each player, such as a face built from one-pixel glyphs, looks the way it
+does in chat. Older versions show the glyphs white. The glyph's place is as
+wide as you set, so set **Width** to what the value draws.
+
 With RP Engine 0.2.10 or newer you can also paste an **RP Engine icon** the
 way chat writes it: `:mypack:thirst:`, `:thirst:` or `<mypack:thirst>`. RP
 Engine puts the icon in as the dialog opens and measures it, so its width
@@ -777,13 +786,15 @@ least:
 | Click sounds | 0.2.5 |
 | Seamless after a click | 0.2.6 |
 | RP Engine icons in a Pack glyph | 0.2.10 |
+| Colour codes from a placeholder in a Pack glyph | 0.2.34 |
 | The Quick Actions key | 0.2.17 |
 
 On an older RP Engine the feature fails quietly: a bound control shows every
 state at once, a live bar is empty, a conditioned piece is drawn for everybody,
 and so on. In Dialog Engine, click sounds need a version newer than 0.3.5,
-Seamless needs 0.4.0, and the Quick Actions key 0.6.0 (where a drawn dialog
-always uses the launcher).
+Seamless needs 0.4.0, the Quick Actions key 0.6.0 (where a drawn dialog
+always uses the launcher), and colour codes from a placeholder in a Pack glyph
+0.6.4.
 
 ## Older UI-style dialogs
 
