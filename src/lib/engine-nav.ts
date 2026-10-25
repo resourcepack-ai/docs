@@ -252,7 +252,7 @@ export const engineNav: EngineGroup[] = [
           "item display", "sprite"],
       },
       {
-        title: "Rank tags",
+        title: "Rank Tags",
         href: "/rp-engine/rank-tags",
         description: "The badge in front of a player's name, drawn from YAML.",
         keywords: ["rank", "tag", "prefix", "suffix", "luckperms", "badge", "permission", "placeholder", "chat"],
