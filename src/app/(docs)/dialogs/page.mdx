@@ -162,7 +162,7 @@ columns and grids. When it is taller than the screen, the game scrolls it.
 
 | Piece | What it is |
 | --- | --- |
-| **Button** | The game's grey button. **Selected** makes it gold, **Greyed out** disables it, and it can take its own colour. Its panel can also make it the theme's button or the GUI's light one. Its icon can be [a picture of your own](#pictures-in-buttons-and-bars). |
+| **Button** | The game's grey button. **Selected** makes it gold, **Greyed out** disables it, **Words from the left** starts its label at the left edge rather than the middle (for a sidebar of buttons), and it can take its own colour. Its panel can also make it the theme's button or the GUI's light one. Its icon can be [a picture of your own](#pictures-in-buttons-and-bars). |
 | **Link** | Clickable words, for a contents list. |
 | **Text**, **Heading**, **Big title** | Words in the game's font, or [one of your own](#your-own-fonts). Colour codes work: `&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` grey, `&l` bold, `&r` reset, `&#55ff55` any colour. |
 | **Page of text** | `# Title`, `## Heading`, `### Heading` (gold), `- bullets`, `> notes`, `**gold words**`, `---` for a rule. |
@@ -718,6 +718,11 @@ such as a greyed **VIP only** button. The two share a **Show one of** box
 **Colour when** keeps the piece for everyone but changes its colours for some
 players: a talent-tree button that turns green from level 4. The first matching
 look wins.
+
+These are also how a plugin changes a button for one player. **Selected** and
+**Greyed out** are part of the picture, so a plugin can't flip them while the
+dialog is open: draw the button both ways and let **Show something else
+instead…** choose, on a [live value](#live-values) the plugin sets.
 
 The editor shows the dialog as a player with the default settings sees it, with
 every permission held. In **Components**, a crossed-out eye marks a piece with
