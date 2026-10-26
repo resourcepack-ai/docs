@@ -20,8 +20,9 @@ Vanilla clients, no mods.
   as an event, or draw their own pictures on walls and fullscreen.
 
 No browser runs on the server. MC GUI has its own HTML and CSS renderer, so a
-page is **static** HTML and CSS: no JavaScript. Links, commands, hover states,
-scrolling, sounds and form controls are made to work in game instead.
+page is **static** HTML and CSS. Links, commands, hover states, scrolling,
+sounds and form controls are made to work in game instead. For games, a page
+can also run JavaScript that draws on a `<canvas>` (see [Scripts](#scripts)).
 
 ## Installing
 
@@ -345,13 +346,59 @@ transitions (`@keyframes`, `animation`, `transition`).
 (`serif`), JetBrains Mono (`monospace`), `Minecraft` (the game's own letters)
 and `Monocraft` are built in.
 
-**Not supported:** JavaScript, WOFF fonts, WebP pictures, video, iframes,
-floats (a floated box stays where it is), and typing into inputs.
+**Not supported:** WOFF fonts, WebP pictures, video, iframes, floats (a
+floated box stays where it is), typing into inputs, and scripts changing the
+page's HTML or CSS (a script draws on a canvas: see [Scripts](#scripts)).
 
 Files are read from the pages folder only. With `allow-web` a page can also
 load stylesheets, fonts and pictures from the web, but not from the server's
 own machine or network unless `allow-private-hosts` is on. Pages load in the
 background, so a slow one never holds up the server.
+
+## Scripts
+
+A page can run JavaScript that draws on a `<canvas>`, for games and anything
+drawn fresh every frame. Most pages don't need one: menus, shops, forms, tabs
+and hover effects all work without a script.
+
+```html
+<canvas id="game" width="640" height="360"></canvas>
+<script>
+  const ctx = document.getElementById("game").getContext("2d");
+  let x = 300;
+  document.addEventListener("keydown", e => {
+    if (e.key === "a") x -= 20;
+    if (e.key === "d") x += 20;
+  });
+  function frame() {
+    ctx.fillStyle = "#111";
+    ctx.fillRect(0, 0, 640, 360);
+    ctx.fillStyle = "#5ad1ff";
+    ctx.fillRect(x, 160, 40, 40);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+</script>
+```
+
+| A script has | |
+|---|---|
+| Drawing | The canvas 2D context: rectangles, paths, arcs, text, `drawImage`, gradients, transforms, clipping, alpha and line dashes. Not yet: `getImageData`, `putImageData`, patterns, shadows and filters. |
+| Time | `requestAnimationFrame` (20 frames a second, up to 30 with `<meta name="ui:fps" content="30">`), `setTimeout`, `setInterval`, `performance.now()` and promises. |
+| Keys | `keydown` and `keyup`, with `e.key` one of `"w"` `"a"` `"s"` `"d"`, `" "` (jump), `"Control"` (sprint), `"q"` and `"1"` to `"9"`. Those are the keys a seated player has. F still goes back and sneaking still closes the page. |
+| Mouse | `mousemove`, `mousedown`, `mouseup` and `click` on the canvas, with `offsetX` and `offsetY` in CSS pixels. |
+| Pictures | `new Image()` with a picture from the pages folder, or an `<img>` on the page, for `drawImage`. |
+| Minecraft | `mcgui.sound("entity.experience_orb.pickup 1 1.5")` plays a sound to the player, `mcgui.command("spawn")` runs a command as them, and `mcgui.player` is their name. |
+
+A script can't change the page's HTML or CSS, so draw anything that changes
+(a score, a timer, game over) on the canvas. Scripts have no network access and
+load from the pages folder only.
+
+Each player gets their own copy of the script, and scripts never run on the
+server's main thread. A frame that takes longer than 250 ms stops the script,
+and errors are written to the console with the page and line. Newer JavaScript
+(`class`, `...` spread, `async` and `await`) is converted the first time the
+page opens, which takes a moment; plain functions and `let` run straight away.
 
 ## Fast pages
 
