@@ -169,7 +169,10 @@ Two formats upload:
 - **`.bbmodel`** (Blockbench) keeps its cube names, its groups (as bones), its
   animations, its textures and its rotations, so a rigged Blockbench model
   arrives ready to animate.
-- **`.json`** (a vanilla block model) comes in as geometry.
+- **`.json`** (a vanilla block model) comes in as geometry. A vanilla *item*
+  model that only names a texture, like the wheat seeds, has no cubes in it and
+  is refused with "Model has no valid geometry": make that one an
+  [Item](/items) instead.
 
 A model too big for Minecraft's model box is scaled down to fit.
 
