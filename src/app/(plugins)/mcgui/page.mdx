@@ -148,11 +148,10 @@ locks onto it and only they see it; the rest of the world goes on around them.
 They are put back exactly where they stood, facing the same way. Anything that
 hurts them, a teleport, a world change or death also gets them up.
 
-With the resource pack the page fills the whole window, whatever its shape and
-the player's field of view, and the pointer moves as fast as their mouse.
-Without the pack the page is drawn in plain map colours; such a player can run
-`/mcgui fov <degrees>` so it fits their screen, as the server cannot read the
-setting.
+The page fills the whole window, whatever its shape and the player's field of
+view, and the pointer moves as fast as their mouse. Fullscreen pages need the
+resource pack: a player without it is told so and offered the pack again,
+rather than seated.
 
 ### Size
 
@@ -400,8 +399,8 @@ under `resource-pack`:
 | `mode` | Does |
 | --- | --- |
 | `serve` (default) | Serves `pack.zip` itself on `port` and sends it to players as they join |
-| `external` | Serves nothing: host `plugins/MCGUI/pack.zip` yourself, or merge it into your own pack, and set `public-url` |
-| `off` | No pack |
+| `external` | Serves nothing: host `plugins/MCGUI/pack.zip` yourself and set `public-url`, or merge it into another plugin's pack (ItemsAdder, Nexo) and leave `public-url` blank |
+| `off` | No pack: walls show plain map colours, and fullscreen pages do not open |
 
 <Callout type="warning" title="Set public-url on a real server">
   With `public-url` blank, players are told to fetch the pack from
@@ -434,7 +433,7 @@ loses: merge packs with care.
 | `/mcgui reload` | Reads the config and every page again |
 | `/mcgui import <code>` | Brings in pages from [mcgui.dev](#pages-from-mcguidev) |
 | `/mcgui test wall\|view [cols] [rows] [player]` | A test picture on the wall you look at, or fullscreen |
-| `/mcgui fov <degrees>` | Fits fullscreen pages to your field of view, without the pack |
+| `/mcgui fov <degrees>` | Tells the server your field of view, which it cannot read |
 | `/mcgui pointer [speed]` | Your pointer speed, 0.25 to 4 times the server's |
 | `/mcgui pack` | Sends you the resource pack again |
 | `/mcgui stats` | What the plugin costs the server now (`stats json` for one line of JSON) |
