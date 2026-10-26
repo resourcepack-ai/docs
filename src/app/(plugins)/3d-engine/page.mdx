@@ -44,17 +44,17 @@ pack from them and sends it to players as they join. Players install nothing.
       pack.zip    ← the resource pack it built
     ```
   </Step>
-  <Step title="Let players reach the pack">
-    The plugin serves its pack over HTTP on port **8163**. Open that port and
-    set `pack.url` in `config.yml` to the address players can reach:
+  <Step title="The pack reaches players by itself">
+    The plugin uploads its pack to ResourcePack AI's free pack host
+    (`packs.resourcepack.ai`) and players download it from there, so there is
+    no port to open. It is only uploaded again when it changes, it is kept
+    while your server uses it, and only the Minecraft client can download it.
 
-    ```yaml
-    pack:
-      url: "http://play.example.com:8163"
-    ```
-
-    Left empty, players are sent the server's own IP, which they often cannot
-    reach. The console warns you about this on startup.
+    The host takes packs up to 95 MB. A bigger pack (lots of animated models)
+    is served by your server instead, on port **8163**: open that port and set
+    `pack.url` to the address players reach it on, such as
+    `http://play.example.com:8163`. The console says when this happens. To
+    always serve it yourself, set `pack.host: serve`.
   </Step>
   <Step title="Add a model">
     Put a model file in `plugins/3DEngine/models/` and run `/3d reload`. Then
@@ -396,8 +396,8 @@ settings it had, and `/3d quality` refuses to save over it.
 
 | Key | Default | What it does |
 |---|---|---|
-| `pack.host` | `true` | Serve the pack from this server over HTTP |
-| `pack.port` | `8163` | The port it is served on |
+| `pack.host` | `upload` | `upload` to ResourcePack AI's pack host, `serve` from this server over HTTP, or `none` |
+| `pack.port` | `8163` | The port it is served on (`serve`, or a pack too big to upload) |
 | `pack.bind` | empty | The address to listen on. Empty is all of them |
 | `pack.url` | empty | The address players download it from |
 | `pack.send` | `true` | Send it to players as they join |
