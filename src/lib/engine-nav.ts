@@ -340,6 +340,13 @@ export const engineNav: EngineGroup[] = [
     title: "Migrating",
     items: [
       {
+        title: "Adding a resource pack",
+        href: "/rp-engine/resource-packs",
+        description: "Drop an existing resource pack .zip in, shaders and overlays included, and it ships with everything else.",
+        keywords: ["resource pack", "resourcepack", "zip", "existing pack", "shader", "shaders", "overlay",
+          "pack.mcmeta", "convert", "import", "texture pack"],
+      },
+      {
         title: "Moving from ItemsAdder",
         href: "/rp-engine/itemsadder",
         description: "Drop an ItemsAdder pack in and it loads. What comes across, and what does not.",

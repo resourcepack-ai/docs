@@ -1,0 +1,88 @@
+export const metadata = {
+  title: "Adding a resource pack",
+  description:
+    "Drop an existing resource pack .zip, shaders and all, into RP Engine's content folder and it ships with everything else.",
+};
+
+# Adding a resource pack
+
+RP Engine builds one pack for your players, so an existing resource pack goes
+into it rather than beside it. Drop the `.zip` into `plugins/RPEngine/content/`
+and run `/rp reload` (or restart).
+
+```
+plugins/RPEngine/content/
+  My Shaders v2.zip        ← before
+```
+
+```
+plugins/RPEngine/content/
+  my_shaders_v2/           ← after: the zip, unpacked
+    pack.mcmeta
+    pack.png
+    assets/
+      minecraft/shaders/...
+    <overlay folders>/
+plugins/RPEngine/unpacked-zips/
+  My Shaders v2.zip        ← moved out of the way
+```
+
+The zip is unpacked into a folder named after it, and the zip itself is moved to
+`unpacked-zips/`. From then on the folder is the pack: edit it there.
+
+## What gets copied
+
+Everything, as written. Every namespace (`minecraft` included), shaders, sounds,
+fonts and language files land where they say. If its `pack.mcmeta` lists
+**overlays**, those folders come too and the entries are added to the built
+pack's `pack.mcmeta`, which is how a pack ships shaders that only some versions
+of the game should load. Its `pack.png` becomes the icon unless another pack's
+comes first alphabetically.
+
+A resource pack defines nothing. It is art that rides along with your items,
+furniture and HUDs.
+
+## Unpacking it yourself
+
+You can also unzip it yourself. A folder in `content/` with `pack.mcmeta` and
+`assets/` at the top and no `pack.yml` is read as a resource pack. Two things
+catch people out:
+
+- **The folder name has to be a namespace**: lowercase letters, digits, `_`,
+  `.` and `-`. `My Shaders` is refused; `my_shaders` works. (A zip is renamed
+  for you.)
+- **`pack.mcmeta` has to be at the top.** A zip that puts everything inside one
+  folder is unwrapped for you; a folder you unzipped yourself is not.
+
+## Updating it
+
+A zip is never unpacked over a folder that already exists, because that folder
+might be one you have edited. To replace a pack with a new version, delete its
+folder and drop the new zip in. Until you do, the console says the zip was
+skipped and why.
+
+<Callout type="warning" title="Two packs replacing the same file">
+  A resource pack can replace vanilla files, so two of them can disagree. The
+  pack whose folder comes later alphabetically wins, and the build names both.
+  Core shaders are the usual case: a player's game keeps one copy of each, so
+  if another plugin's pack replaces the same shader, only one draws. See
+  [Other plugins' shaders](/rp-engine/config#other-plugins-shaders).
+</Callout>
+
+## With your own content
+
+To keep a resource pack and your own items in one folder, put the resource pack
+inside a content pack as `resourcepack/`:
+
+```
+plugins/RPEngine/content/
+  mypack/
+    pack.yml
+    items/
+    resourcepack/          ← copied as written, overlays included
+      pack.mcmeta
+      assets/
+```
+
+This is the layout [CraftEngine](/rp-engine/craftengine) packs use, and works
+exactly the same way.
