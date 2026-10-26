@@ -36,12 +36,6 @@ scrolling, sounds and form controls are made to work in game instead.
     26.x). [PlaceholderAPI](https://www.spigotmc.org/resources/6245/) is
     optional. Players need nothing installed.
   </Step>
-  <Step title="Set the pack's address">
-    MC GUI builds a small resource pack and serves it itself, on port `25602`.
-    On a real server, open that port and set `resource-pack.public-url` in
-    `config.yml` to the address players reach it at, then restart. See
-    [The resource pack](#the-resource-pack).
-  </Step>
   <Step title="Try an example">
     Run `/mcgui open market`. Sneak to get up.
   </Step>
@@ -390,23 +384,29 @@ so one heavy page cannot hold a thread for good; raise it for very large pages.
 ## The resource pack
 
 With the pack, maps show full colour, smoothly scaled, a fullscreen page fills
-the window and the pointer follows the mouse every frame. Without it, players
-still see every page, in dithered map colours.
+the window and the pointer follows the mouse every frame. Pages a player opens
+need it; wall screens work without it, in dithered map colours.
 
 MC GUI builds the pack at start (with your sounds and cursors in it) and,
 under `resource-pack`:
 
 | `mode` | Does |
 | --- | --- |
-| `serve` (default) | Serves `pack.zip` itself on `port` and sends it to players as they join |
+| `upload` (default) | Uploads the pack to ResourcePack AI's free pack host, `packs.resourcepack.ai`, and players download it from there. Nothing to open or set up |
+| `serve` | Serves `pack.zip` itself on `port`; set `public-url` to an address players can reach, such as `http://play.example.com:25602/pack.zip`, and open that port |
 | `external` | Serves nothing: host `plugins/MCGUI/pack.zip` yourself and set `public-url`, or merge it into another plugin's pack (ItemsAdder, Nexo) and leave `public-url` blank |
-| `off` | No pack: walls show plain map colours, and fullscreen pages do not open |
+| `off` | No pack: walls show plain map colours, and pages do not open |
 
-<Callout type="warning" title="Set public-url on a real server">
-  With `public-url` blank, players are told to fetch the pack from
-  `127.0.0.1`, which only works for a player on the server's own machine. Set
-  it to an address players can reach, such as `http://play.example.com:25602/pack.zip`,
-  and open that port.
+With `upload`, the pack is only uploaded again when it changes, it is kept for
+as long as your server uses it (one nothing has used for 30 days is deleted),
+and only the Minecraft client can download it. If an upload fails, MC GUI
+serves the pack itself on `port` and `public-url` until it works, and the
+console says so.
+
+<Callout type="warning" title="Upgrading from 0.5.2 or older">
+  Your `config.yml` still says `mode: serve`. With `public-url` blank, players
+  are sent `127.0.0.1`, which only works on the server's own machine, so set
+  `mode: upload` and restart.
 </Callout>
 
 `required: true` makes the pack required, so a player who declines it is
@@ -483,8 +483,8 @@ explained in the file itself.
 | `views.pointer-speed` | `1.0` | How far the pointer moves for the mouse |
 | `walls.right-click-fullscreen` | `true` | Right-clicking a wall screen opens its page fullscreen |
 | `screens.view-distance` | `48` | Blocks from a wall screen beyond which it is not sent |
-| `resource-pack.mode` | `serve` | See [The resource pack](#the-resource-pack) |
-| `resource-pack.public-url` | blank | The pack's address for players |
+| `resource-pack.mode` | `upload` | See [The resource pack](#the-resource-pack) |
+| `resource-pack.public-url` | blank | The pack's address for players (`serve` and `external`) |
 | `render-timeout` | `2` | Seconds of CPU a picture may take before it is given up |
 | `cpu-threads` | `0` | Threads for drawing pages; 0 means the cores minus one |
 | `builder-mark` | `true` | Draws the [mcgui.dev mark](#pages-from-mcguidev) on pages made there |
