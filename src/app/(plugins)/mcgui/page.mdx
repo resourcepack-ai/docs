@@ -388,11 +388,17 @@ and hover effects all work without a script.
 | Keys | `keydown` and `keyup`, with `e.key` one of `"w"` `"a"` `"s"` `"d"`, `" "` (jump), `"Control"` (sprint), `"q"` and `"1"` to `"9"`. Those are the keys a seated player has. F still goes back and sneaking still closes the page. |
 | Mouse | `mousemove`, `mousedown`, `mouseup` and `click` on the canvas, with `offsetX` and `offsetY` in CSS pixels. |
 | Pictures | `new Image()` with a picture from the pages folder, or an `<img>` on the page, for `drawImage`. |
-| Minecraft | `mcgui.sound("entity.experience_orb.pickup 1 1.5")` plays a sound to the player, `mcgui.command("spawn")` runs a command as them, and `mcgui.player` is their name. |
+| Minecraft | `mcgui.sound("entity.experience_orb.pickup 1 1.5")` plays a sound to the player, `mcgui.command("spawn")` runs a command as them (only from their own click or key press), and `mcgui.player` is their name. |
 
 A script can't change the page's HTML or CSS, so draw anything that changes
 (a score, a timer, game over) on the canvas. Scripts have no network access and
 load from the pages folder only.
+
+`mcgui.command` only runs while the player's own click or key press is being
+handled. Asked for at any other moment (as the page opens, or from a timer), the
+command is not run and the console says why, so a page can never run commands
+as whoever opens it without them doing anything. To give a reward at the end of
+a game, draw a "Claim" button and run the command when it is clicked.
 
 Each player gets their own copy of the script, and scripts never run on the
 server's main thread. A frame that takes longer than 250 ms stops the script,
