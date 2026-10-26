@@ -629,14 +629,20 @@ server already sends, not instead of it. It is only built once you have a drawn
 dialog, so a server that never uses `/de edit` never asks anybody to download
 anything.
 
-The plugin serves the pack itself on port `8165`. **Set `pack.public-host`** to
-your server's public address or domain and open that port, or players outside
-your machine cannot download it. Or host it yourself: `/de pack` writes it to a
-file, and `pack.url` says where you put it.
+The plugin uploads the pack to ResourcePack AI's free pack host
+(`packs.resourcepack.ai`) and players download it from there, so there is
+nothing to open or set up (`pack.host: upload`). It is only uploaded again when
+it changes, it is kept while your server uses it, and only the Minecraft client
+can download it. If an upload fails, the plugin serves the pack itself until it
+works.
+
+To serve it yourself instead, set `pack.host: serve`: it is served on port
+`8165`, and `pack.public-host` must be your server's public address or domain,
+with that port open. Or host it somewhere else: `/de pack` writes it to a file,
+and `pack.url` says where you put it.
 
 Players with `dialogengine.pack.notify` are told the download address when the
-pack fails to load for them, which is the quickest way to spot a missing
-`public-host`.
+pack fails to load for them.
 
 ### Other plugins' shaders
 
@@ -739,7 +745,8 @@ Give them out with your permissions plugin as usual:
 | `edit.url` | `https://studio.resourcepack.ai` | Where the dialog editor is. Must be `https://` |
 | `pack.send` | `true` | Send the drawn dialogs' pack to players as they join |
 | `pack.required` | `false` | Kick players who decline it |
-| `pack.port` | `8165` | The port the built-in pack server listens on |
+| `pack.host` | `upload` | `upload` to ResourcePack AI's pack host, or `serve` from this server |
+| `pack.port` | `8165` | The port the built-in pack server listens on (`serve`, or while an upload fails) |
 | `pack.bind` | blank | The address it listens on. Blank is every address |
 | `pack.public-host` | blank | The address players download it from: your server's public address or domain |
 | `pack.url` | blank | Host the pack yourself and put its URL here. The built-in server is then off |
