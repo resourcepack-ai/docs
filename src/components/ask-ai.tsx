@@ -265,7 +265,7 @@ function AnswerLink({
 function inline(text: string, onNavigate: () => void): ReactNode[] {
   const out: ReactNode[] = [];
   const pattern =
-    /(`[^`\n]+`)|\*\*([^*\n]+)\*\*|\[([^\]\n]+)\]\((https:\/\/[^)\s]+)\)|(https:\/\/[^\s<>()]+[^\s<>().,;:!?'"])/g;
+    /(`[^`\n]+`)|\*\*([^*\n]+)\*\*|\[([^\]\n]+)\]\((https:\/\/[^)\s]+)\)|(https:\/\/[^\s<>()]+[^\s<>().,;:!?'"])|(?<![\w.%+-])([\w.%+-]+@(?:[a-z0-9-]+\.)*resourcepack\.ai)(?![\w-])/gi;
   let last = 0;
   let match: RegExpExecArray | null;
   let key = 0;
@@ -293,6 +293,14 @@ function inline(text: string, onNavigate: () => void): ReactNode[] {
         <AnswerLink key={key++} href={match[5]} onNavigate={onNavigate}>
           {match[5].replace(/^https:\/\//, "")}
         </AnswerLink>,
+      );
+    } else if (match[6]) {
+      // Only our own addresses: the service strips any other, and this is
+      // the second lock on that door.
+      out.push(
+        <a key={key++} href={`mailto:${match[6]}`} className={LINK}>
+          {match[6]}
+        </a>,
       );
     }
     last = pattern.lastIndex;
