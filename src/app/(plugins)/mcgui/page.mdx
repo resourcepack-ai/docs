@@ -406,6 +406,12 @@ and errors are written to the console with the page and line. Newer JavaScript
 (`class`, `...` spread, `async` and `await`) is converted the first time the
 page opens, which takes a moment; plain functions and `let` run straight away.
 
+The script engine isn't part of the plugin's jar. The first time a page with a
+script opens, MC GUI downloads it once (2.4 MB) from `cdn.resourcepack.ai`,
+checks it, and keeps it in `plugins/MCGUI/libs/`. If your server has no internet
+access, download `https://cdn.resourcepack.ai/MCGUI-scripts-<version>.jar` (the
+version is MC GUI's) and put it in that folder yourself.
+
 ## Fast pages
 
 Pages are drawn off the server's main thread. A hover is quick when only the
