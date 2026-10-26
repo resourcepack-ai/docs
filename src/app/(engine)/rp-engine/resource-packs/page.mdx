@@ -36,7 +36,8 @@ Everything, as written. Every namespace (`minecraft` included), shaders, sounds,
 fonts and language files land where they say. If its `pack.mcmeta` lists
 **overlays**, those folders come too and the entries are added to the built
 pack's `pack.mcmeta`, which is how a pack ships shaders that only some versions
-of the game should load. Its `pack.png` becomes the icon unless another pack's
+of the game should load. A `filter` (files it hides from packs below it) and
+custom `language` entries are carried over the same way. Its `pack.png` becomes the icon unless another pack's
 comes first alphabetically.
 
 A resource pack defines nothing. It is art that rides along with your items,
