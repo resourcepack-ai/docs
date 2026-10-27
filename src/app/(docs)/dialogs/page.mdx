@@ -254,6 +254,7 @@ Set under **When clicked** on any clickable piece or footer button:
 | Action | What happens |
 | --- | --- |
 | **Run command** | The player runs it, with their own permissions. |
+| **Run as console** | The server runs it as the console, so the player needs no permission for it. `{player}` is who clicked. Needs RP Engine 0.2.39 or newer, or Dialog Engine 0.6.6 or newer. |
 | **Suggest command** | A small box opens with the command typed in; they finish it and press **Run**. (Minecraft does not let a dialog fill the chat box.) |
 | **Open link** | The game asks before opening it. Must start with `http://` or `https://`. |
 | **Copy text** | Copies it to their clipboard. |
@@ -262,8 +263,14 @@ Set under **When clicked** on any clickable piece or footer button:
 | **Open another dialog** | Opens one of the pack's dialogs straight away. **Another id…** takes any dialog id the server already knows. On Dialog Engine 0.6.1 and newer that includes Dialog Engine's own dialogs, by their id (`shop:main`) or by the name of one in the same folder (`main`). |
 | **Nothing** | Only shows the tooltip. On a footer button, it closes the dialog. |
 
-A command always runs as the player. For something they lack permission for,
-give them a command your server has set up for the purpose.
+**Run command** runs as the player, so they need permission for it, and they
+could just as well type it in chat. **Run as console** is for a command only
+the dialog should give them: `warp spawn {player}` from a menu, without
+everybody having `/warp`. The command never reaches the player's game (the
+button only names it), and the server runs it only for somebody whose dialog
+has that button on it, so typing it in chat does nothing. It cannot use what
+the player typed into a text box, which would let them write the console's
+command for it.
 
 Minecraft refuses a whole dialog if one action is invalid, so a button with a
 bad link, a bad id or an empty command is sent with no action, and the editor
