@@ -81,6 +81,7 @@ has not synced sees nothing, rather than a cloud of missing-texture cubes.
 | `/rp vfx` | Every VFX this server can play | `rpengine.vfx` |
 | `/rp vfx presets` | The ready-made ones a content file can name | `rpengine.vfx` |
 | `/rp cast <name> [player] [options]` | Play one where a player stands | `rpengine.cast` |
+| `/rp cast <name> at <x> <y> <z> [world] [options]` | Play one at a place, cast by nobody | `rpengine.cast.at` |
 | `/rp cast stop [all]` | End every VFX playing, at once | `rpengine.cast` |
 | `/rp cast stop <player>` | End the VFX cast on a player | `rpengine.cast` |
 | `/rp cast stop tag:<name>` | End the VFX cast with that tag | `rpengine.cast` |
@@ -89,6 +90,38 @@ A bare name is a content folder's effect before a Studio one; `mypack:frost` and
 `studio:frost` choose. Casting on somebody else needs `rpengine.cast.others`.
 Stopping a loop by player or tag lets it play its fade first (see `end:` below);
 `/rp cast stop` ends everything there and then.
+
+## Casting at a place
+
+`at` plays an effect at coordinates instead of on a player, which is what an
+ability, an arena or a command block wants: the effect is not tied to anybody,
+and plays on where it was put when whoever ran it walks off.
+
+```
+/rp cast meteor at 120 64 -40
+/rp cast meteor at 120 64 -40 world_nether loop:30s tag:arena
+/execute as @e[tag=totem] run rp cast aura at ~ ~1 ~ loop tag:totems
+```
+
+Each coordinate is a number or `~`, with `~2` meaning two more. `~` counts from
+whoever runs the command: a player, a command block, the entity an `execute as`
+runs it as, or the world's spawn from the console. Without a world it plays in
+the world of whoever runs it, or the first world from the console.
+
+It faces the way whoever ran the command faces, or south from the console and a
+command block; `turn:` turns it from there. Every other option works as it does
+on a player, except `follow` and `only:caster`, which need somebody to cast it
+on. A condition has no player to read either: every placeholder in it is empty
+and `perm:` is never true, so loop one for a time or a count, or by tag. Stop
+one with `tag:<name>` or `/rp cast stop`; it is nobody's, so
+`/rp cast stop <player>` does not reach it.
+
+A content folder's effect is seen by everybody. A Studio effect is seen by the
+players near it whose pack holds it **when it starts**, so somebody who walks up
+to a long loop later does not see it until it is cast again.
+
+It needs `rpengine.cast.at` as well as `rpengine.cast`, since it can put an
+effect anywhere on the server.
 
 ## Casting options
 
