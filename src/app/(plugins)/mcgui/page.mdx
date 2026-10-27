@@ -453,7 +453,7 @@ under `resource-pack`:
 | --- | --- |
 | `upload` (default) | Uploads the pack to ResourcePack AI's free pack host, `packs.resourcepack.ai`, and players download it from there. Nothing to open or set up |
 | `serve` | Serves `pack.zip` itself on `port`; set `public-url` to an address players can reach, such as `http://play.example.com:25602/pack.zip`, and open that port |
-| `external` | Serves nothing: host `plugins/MCGUI/pack.zip` yourself and set `public-url`, or merge it into another plugin's pack (ItemsAdder, Nexo) and leave `public-url` blank |
+| `external` | Serves nothing: host `plugins/MCGUI/pack.zip` yourself and set `public-url`, or merge it into another plugin's pack (ItemsAdder, Nexo) and leave `public-url` blank. The pack is also unpacked into `plugins/MCGUI/pack/` for plugins that merge folders: for ItemsAdder, add `MCGUI/pack` under `resource-pack.zip.merge_other_plugins_resourcepacks_folders` in its `config.yml` and run `/iazip` |
 | `off` | No pack: walls show plain map colours, and pages do not open |
 
 With `upload`, the pack is only uploaded again when it changes, it is kept for
