@@ -576,6 +576,14 @@ A slider or stepper can show a setting with at most 21 positions, so 0 to 100
 needs a step of 5 or more. With more than that it stays a picture, and its
 panel says so and suggests a step.
 
+A setting with more options than fit on one segmented control can be split
+across several: give each the same **Player setting**. Each one lights up only
+when the setting is one of its own options, and shows nothing chosen otherwise,
+so a choice of eight names can be two rows of four. A player who has never
+picked one gets the first control's default. Only segmented controls share a
+setting this way (not the cycle look); for any other control, the first one
+with that name is the one that works.
+
 Other plugins read a setting as `%rpengine_var_show_sidebar%` through
 PlaceholderAPI, or through [RP Engine's API](/rp-engine/api#player-settings).
 Inside the dialog, `{show_sidebar}` is its value. A player can only set a
