@@ -103,8 +103,8 @@ enemy within three and a half blocks that it can see: a wall between you and
 it is cover. It stays in your hotbar, greyed out for fifteen seconds after a
 throw, and being splatted does not bring it back any sooner.
 
-**One hit splats you.** You watch as a spectator for three seconds, then come
-back at one of your team's spawns, protected for a second and a half: a ball
+**One hit splats you.** For three seconds you watch whoever got you, the camera
+slowly circling them, then you come back at one of your team's spawns, protected for a second and a half: a ball
 that hits you in that time does nothing. There is no friendly fire. Enemy name
 tags are hidden, so you find people by looking for them.
 
@@ -343,6 +343,9 @@ match-seconds: 180
 kill-limit: 0
 freeze-seconds: 3
 respawn-seconds: 3
+# While you're out, the camera circles whoever splatted you. false leaves you a
+# free spectator where you fell.
+killer-camera: true
 spawn-protection-seconds: 1.5
 # How long the final scoreboard stays up before everybody is back in the lobby.
 end-seconds: 12
