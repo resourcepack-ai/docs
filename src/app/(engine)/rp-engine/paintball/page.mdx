@@ -108,8 +108,10 @@ back at one of your team's spawns, protected for a second and a half: a ball
 that hits you in that time does nothing. There is no friendly fire. Enemy name
 tags are hidden, so you find people by looking for them.
 
-The match ends when the clock runs out (three minutes) or, if the server sets
-one, when a team reaches the kill limit. The result has the screen to itself
+A pling sounds with a minute and with thirty seconds left, and the time left
+shows in the middle of the screen; for the last ten seconds it is the number
+itself, at ten and then from five down. The match ends when the clock runs out
+(three minutes) or, if the server sets one, when a team reaches the kill limit. The result has the screen to itself
 for three seconds, then everybody gets the scoreboard, and a few seconds later
 it is back to the lobby for another. The paint comes off the walls between
 matches. It was never blocks: every splat is a display, so the arena itself is
@@ -128,8 +130,8 @@ HUD**:
   you land one.
 - **The middle**, which carries every moment of a match: the countdown ring,
   GO!, the paint on your screen when you are splatted and the ring counting
-  you back in, SPLATTED and who when you get somebody, and the result on its
-  band with the final score.
+  you back in, SPLATTED and who when you get somebody, the time left as the
+  clock runs down, and the result on its band with the final score.
 
 **The scoreboard** (F, `/pb scoreboard`, or the lobby's item) is a dialog with
 both teams' tables, the top five of each, best first: each player's face,
@@ -357,6 +359,8 @@ hud:
   kill-feed-seconds: 8
   kill-banner-seconds: 2.5
   hit-marker-ticks: 6
+  # Seconds left at which a pling sounds and the time left is shown.
+  time-warnings: [60, 30, 10, 5, 4, 3, 2, 1]
 
 update-check: true
 ```
