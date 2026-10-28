@@ -425,6 +425,34 @@ replace either. A replacement has to show the same values.
 Options a newer version adds are written into your existing file when the
 server starts, with their defaults, and nothing already there is touched.
 
+## Placeholders
+
+With [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
+on the server, Paintball registers `%paintball_...%` placeholders for
+scoreboards, holograms and anything else that reads them. Every match that
+ends, by the clock, the kill limit or `/pb stop`, is added to each player's
+totals, which are kept in `plugins/RPEPaintball/stats.json`. A player who
+leaves before the end keeps their kills and deaths but gets no win, loss or
+match; a draw is neither a win nor a loss.
+
+| Placeholder | What it is |
+|---|---|
+| `%paintball_arena_status_<arena>%` | Maintenance (closed), Not Configured, Ready, Starting, In Game or Ending |
+| `%paintball_arena_players_<arena>%` | How many are in its lobby or match |
+| `%paintball_arena_plays_<arena>%` | How many matches it has had |
+| `%paintball_arena_name_<arena>%` | Its display name |
+| `%paintball_arena_red_<arena>%`, `%paintball_arena_blue_<arena>%` | Each team's kills in its current or last match |
+| `%paintball_arena_time_<arena>%` | Its match clock |
+| `%paintball_player_<stat>%` | The player's own total |
+| `%paintball_player_arena%`, `%paintball_player_team%` | Where the player is playing, and for whom |
+| `%paintball_leaderboard_<stat>_<n>%` | Who is n-th for that stat |
+| `%paintball_leaderboard_<stat>_<n>_value%` | Their number |
+
+A `<stat>` is `kills`, `deaths`, `wins` (or `won`), `losses` (or `lost`),
+`matches` (or `played`), `shots`, `hits`, `accuracy` or `kd`.
+
+The status words are under `messages:` (`status-maintenance` ... `status-ending`).
+
 ## Update check
 
 With `update-check: true`, Paintball asks SpigotMC for its current version a
