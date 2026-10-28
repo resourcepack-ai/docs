@@ -79,8 +79,8 @@ share them.
 ### In a match
 
 Every match opens with a three-second countdown, frozen in place, then a
-whistle. You carry a marker, a paint grenade, a mask and a suit in your team's
-colour.
+whistle. You carry a marker, a paint grenade, a paint mine, a mask and a suit
+in your team's colour.
 
 | Key | What it does |
 |---|---|
@@ -88,6 +88,7 @@ colour.
 | **Left-click** | Up to the sights, or back down. Zoomed in, slower on your feet, and no spread at all |
 | **Q** | Reload. The marker also reloads by itself when the hopper runs dry |
 | **Right-click** the grenade | Throw it |
+| **Right-click** the ground with the mine | Set it |
 | **F** | The scoreboard |
 | **Tab** | The player list: the score and the clock on top, each player's kills and deaths |
 
@@ -102,6 +103,10 @@ the sights down.
 enemy within three and a half blocks that it can see: a wall between you and
 it is cover. It stays in your hotbar, greyed out for fifteen seconds after a
 throw, and being splatted does not bring it back any sooner.
+
+**The mine** is one a match. Set it on the ground and, a second and a half
+later, it is armed: the first enemy to step on it sets it off, splatting every
+enemy within three blocks that it can see. Your own team can walk over it.
 
 **One hit splats you.** For three seconds you watch whoever got you, the camera
 slowly circling them, then you come back at one of your team's spawns, protected for a second and a half: a ball
@@ -376,6 +381,14 @@ grenade:
   fuse-ticks: 30
   throw-speed: 1.1
   radius: 3.5
+
+mine:
+  # How many mines each player can set in a match. 0 for none.
+  per-match: 1
+  # How long after it is set before it can go off.
+  arm-seconds: 1.5
+  # How far it splats enemies it can see when it goes off.
+  radius: 3.0
 
 paint:
   # The most splats one match keeps on the walls; the oldest go first.
