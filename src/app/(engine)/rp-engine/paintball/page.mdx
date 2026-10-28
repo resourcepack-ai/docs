@@ -251,6 +251,32 @@ still `tp` to a closed arena and change it.
 Spawns and bounds cannot be changed while a match is being played on an arena:
 `/pb stop <id>` first.
 
+### Settings per arena
+
+Every number in [the configuration](#configuration), and each team's marker,
+is the server's default. An arena can set any of them for itself:
+
+```
+/pb arena set <id> <option> <value>
+```
+
+```
+/pb arena set main match-seconds 300
+/pb arena set main kill-limit 25
+/pb arena set main marker.hopper 60
+/pb arena set main teams.red.marker gold
+/pb arena set main hud.time-warnings 60,30,10
+```
+
+An option is named by its path in `config.yml`, and tab-completion lists them:
+everything except `ui`, `messages` and `update-check`, which are the server's.
+`/pb arena set <id> <option> default` puts one back to `config.yml`'s value, and
+`/pb arena set <id>` lists what the arena sets. They are kept under `settings:`
+beside the arena in `arenas.yml`, which you can also edit by hand and
+`/pb reload`. A change applies at once, so the clock and the limits of a match
+already under way are best changed between matches. This works from the console
+too.
+
 ## Commands
 
 `/paintball`, or `/pb` for short. `/pb help` and tab-completion only offer
@@ -278,6 +304,7 @@ what you may run.
 | `/pb arena enable <id>` / `disable <id>` | Open or close it |
 | `/pb arena tp <id>` | Go to its waiting spot |
 | `/pb arena name <id> <name>` | Rename it |
+| `/pb arena set <id> [<option> <value\|default>]` | Its own value for one of `config.yml`'s options, or with no option, list them |
 | `/pb arena delete <id>` | Remove it |
 
 ## Permissions
@@ -299,7 +326,7 @@ permission at all.
 | `paintball.stop` | `/pb stop`: end a match, or empty a lobby | Operators |
 | `paintball.reload` | `/pb reload`: reread `config.yml` and `arenas.yml` | Operators |
 | `paintball.as` | `/pb as <player> ...`: run a subcommand as somebody else (for NPCs and console). Checked against **their** permissions | Operators |
-| `paintball.arena` | Arena setup: `list`, `create`, `setwaiting`, `addspawn`, `clearspawns`, `wand` and `setbounds`, `enable`, `disable`, `tp`, `name` | Operators |
+| `paintball.arena` | Arena setup: `list`, `create`, `setwaiting`, `addspawn`, `clearspawns`, `wand` and `setbounds`, `enable`, `disable`, `tp`, `name`, `set` | Operators |
 | `paintball.arena.generate` | `/pb arena generate`: build a whole field, replacing every block in a large box | Operators |
 | `paintball.arena.delete` | `/pb arena delete`: remove an arena, ending its match | Operators |
 | `paintball.bypass.commands` | Run any command during a match, not only the few a player may | Operators |
@@ -307,7 +334,8 @@ permission at all.
 
 ## Configuration
 
-`plugins/RPEPaintball/config.yml`. The numbers:
+`plugins/RPEPaintball/config.yml`. The numbers, which are the server's
+defaults: [an arena can set any of them for itself](#settings-per-arena).
 
 ```yaml
 match-seconds: 180
