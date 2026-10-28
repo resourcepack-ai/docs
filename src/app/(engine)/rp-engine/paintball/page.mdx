@@ -364,8 +364,10 @@ update-check: true
 **Every word a player reads** is under `messages:` in the same file, in
 [MiniMessage](https://docs.advntr.dev/minimessage/format.html): chat, the
 lobby's hotbar, the player list, the scoreboard's heading and the HUD's text.
-The words drawn as pictures in the HUD (GO!, VICTORY) are art in the content
-folder rather than config.
+The big words in the middle of the HUD (YOU'RE TEAM, GO!, SPLATTED BY,
+VICTORY...) are drawn in the HUD's own lettering, which has the letters A to Z,
+the digits, `!`, `-`, `'` and spaces: anything else in them is left out. The
+scoreboard's column headings are part of its picture, in the content folder.
 
 **The HUD and the scoreboard are RP Engine content** like any other, so
 `ui.hud` and `ui.scoreboard` can point at a HUD or dialog of your own to
