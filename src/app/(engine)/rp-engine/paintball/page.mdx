@@ -106,7 +106,9 @@ throw, and being splatted does not bring it back any sooner.
 **One hit splats you.** For three seconds you watch whoever got you, the camera
 slowly circling them, then you come back at one of your team's spawns, protected for a second and a half: a ball
 that hits you in that time does nothing. There is no friendly fire. Enemy name
-tags are hidden, so you find people by looking for them.
+tags are hidden, so you find people by looking for them. Your teammates' show
+through walls, as the game's own always do, unless the server turns on
+`nametags.hide-behind-blocks`.
 
 A pling sounds with a minute and with thirty seconds left, and the time left
 shows in the middle of the screen; for the last ten seconds it is the number
@@ -392,6 +394,17 @@ hud:
   hit-marker-ticks: 6
   # Seconds left at which a pling sounds and the time left is shown.
   time-warnings: [60, 30, 10, 5, 4, 3, 2, 1]
+
+nametags:
+  # The names over players' heads. The game's own show through walls; with this
+  # on they are text that blocks in front of it hide, like anything else.
+  hide-behind-blocks: false
+  # Whether you see the other team's names too, not only your own team's. With
+  # hide-behind-blocks off, that means through walls as well.
+  enemies: false
+  # How a name reads, in MiniMessage, with hide-behind-blocks on. {player} is
+  # the name and {team_colour} its team's colour (#FF4655 or #2E9BFF).
+  format: "<{team_colour}>{player}"
 
 update-check: true
 ```
