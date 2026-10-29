@@ -235,13 +235,19 @@ neighbouring plants turn into each other.
 ```yaml
 overlays:
   refresh-ticks: 30   # 1 to 50
+  trigger-ticks: 2    # 1 to 20
 ```
 
-How often a HUD a player is wearing is re-sent, in ticks (20 a second). A value
-a plugin sets through the API is drawn on the next tick whatever this says.
-This is for the placeholders the server works out itself, like `{health}` and
-PlaceholderAPI's: lower makes those smoother, at one packet per wearer per
-redraw. Above 50 the action bar starts to fade between redraws.
+`refresh-ticks` is how often a HUD a player is wearing is re-sent, in ticks (20
+a second). A value a plugin sets through the API is drawn on the next tick
+whatever this says. This is for the placeholders the server works out itself,
+like `{health}` and PlaceholderAPI's: lower makes those smoother, at one packet
+per wearer per redraw. Above 50 the action bar starts to fade between redraws.
+
+`trigger-ticks` is how often a HUD's state triggers, such as sneaking or holding
+an item, are checked (0.2.40 and newer). 1 puts a HUD on or takes it off on the
+very tick the player does the thing, for a minigame that needs it exact; 20 is
+once a second. A check only sends a packet when the answer changes.
 
 ## VFX
 
