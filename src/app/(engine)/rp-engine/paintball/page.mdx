@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Paintball",
   description:
-    "An addon for RP Engine: team paintball with a marker you hold to fire and aim down the sights, paint grenades, a full-screen HUD, and a field it builds for you in one command.",
+    "An addon for RP Engine: paintball in three modes (team deathmatch, free for all and capture the flag) with a marker you hold to fire and aim down the sights, paint grenades and mines, a full-screen HUD, and a field it builds for you in one command.",
 };
 
 # Paintball
@@ -12,11 +12,12 @@ beside the engine and it brings its own content with it.
 
 ![A paintball match: a paint grenade, the marker and splats on the walls](/images/paintball.webp)
 
-This one is paintball, red against blue. Hold right-click to fire a paint
-marker, left-click to aim down its sights, and throw a paint grenade round a
-corner. One hit splats you, you are back three seconds later, and the team with
-more kills when the clock runs out wins. Everything on screen during a match is
-drawn by a full-screen HUD, and one command builds a whole field to play on.
+This one is paintball. Hold right-click to fire a paint marker, left-click to
+aim down its sights, throw a paint grenade round a corner and leave a mine in a
+doorway. One hit splats you and you are back a few seconds later. Play it as
+team deathmatch, as a free for all, or as capture the flag (see [Game
+modes](#game-modes)). Everything on screen during a match is drawn by a
+full-screen HUD, and one command builds a whole field to play on.
 
 ## Installing
 
@@ -158,6 +159,52 @@ match. Disconnecting, or being teleported to another world by something else,
 counts as leaving. If the server goes down mid-match, everybody gets their
 things back the next time they join.
 
+## Game modes
+
+Every arena plays one of three modes, `teams` unless it says otherwise.
+
+| Mode | How it plays |
+|---|---|
+| **Team deathmatch** (`teams`) | Red against blue. Most splats when the clock runs out wins, or the first team to the kill limit if there is one |
+| **Free for all** (`ffa`) | Everybody against everybody, each in a paint colour of their own. First to 15 splats, or the most when the clock runs out, wins |
+| **Capture the flag** (`ctf`) | Red against blue, for each other's flag. First team to 3 captures, or the most when the clock runs out, wins |
+
+Choose an arena's mode with `/pb arena set <arena> mode ffa`, or play another
+one for a single match with `/pb start <arena> ctf`. The lobby says which mode
+is next.
+
+### Free for all
+
+Every player gets one of eight paint colours (red, blue, green, orange, yellow,
+purple, pink and cyan), handed out in `ffa.colours` order. More players than
+colours share them. Your marker, mask, suit, balls, splats, grenade and mine are
+all in your colour, and so is your edge of the kill feed. Every other player is
+an enemy and nobody's name tag shows. You come back at whichever spawn is
+furthest from everybody still in. The arena's red and blue spawns all count.
+
+The HUD shows your kills on the left and the leader's on the right of the
+clock, with your place under them. At the end the winner sees VICTORY and
+everybody else their place. A tie on kills goes to whoever was splatted less,
+and a tie on both is a draw. The scoreboard is one table of everybody, best
+first.
+
+### Capture the flag
+
+Each team has a flag at its base. Walk into the other team's flag to take it.
+While you carry it you glow, walk a little slower, and cannot aim down the
+sights, throw your grenade or set your mine. Bring it to your own flag while
+yours is at home and your team scores a capture.
+
+If the carrier is splatted, the flag drops where they fell. An enemy can pick
+it up again. A teammate of the flag's who touches it sends it home, and
+otherwise it goes home on its own after twenty seconds. The HUD shows each
+flag's state beside its team's captures: at home, taken or dropped. The middle
+of the screen and chat say when a flag is taken, dropped, returned or
+captured.
+
+A generated field has both flags in place. On an arena you set up by hand,
+stand where each one goes and run `/pb arena setflag <arena> red` and `blue`.
+
 ## Running matches
 
 Matches do not start on their own: somebody with `paintball.start` runs
@@ -166,7 +213,7 @@ lobby; everybody else is told the lobby is waiting for an op.
 
 - **`/pb start`** starts a match now, on the arena you are in. If you are not
   in yet it joins you first, which is why it works alone. `/pb start <arena>`
-  names one.
+  names one, and `/pb start <arena> <teams|ffa|ctf>` plays that mode this once.
 - **`/pb stop`** during a match ends it the ordinary way: the result, the
   scoreboard, then back to the lobby. In the lobby it sends everybody home.
 
@@ -295,7 +342,7 @@ what you may run.
 | `/pb team <red\|blue\|auto>` | The side you would like, from the next match |
 | `/pb leave` | Out, with your inventory and position back |
 | `/pb scoreboard` | The match scoreboard (F in a match or its lobby) |
-| `/pb start [arena]` | Start a match now, joining you first if you are not in |
+| `/pb start [arena] [teams\|ffa\|ctf]` | Start a match now, in the arena's mode or another, joining you first if you are not in |
 | `/pb stop [arena]` | End the match, or in the lobby, send everybody home |
 | `/pb as <player> <subcommand>` | Run a subcommand as somebody else |
 | `/pb reload` | Reread `config.yml` and `arenas.yml` |
@@ -306,6 +353,7 @@ what you may run.
 | `/pb arena setwaiting <id>` | Its waiting spot, where you stand |
 | `/pb arena addspawn <id> <red\|blue>` | A team spawn, where you stand |
 | `/pb arena clearspawns <id> <red\|blue>` | Remove a team's spawns |
+| `/pb arena setflag <id> <red\|blue>` | Where that team's flag stands in capture the flag, where you stand |
 | `/pb arena wand` | The bounds wand |
 | `/pb arena setbounds <id>` | Its bounds, from the two corners you marked |
 | `/pb arena enable <id>` / `disable <id>` | Open or close it |
@@ -329,11 +377,11 @@ permission at all.
 | `paintball.team` | `/pb team`, and the red and blue items in the lobby's hotbar | Everyone |
 | `paintball.scoreboard` | `/pb scoreboard`, F in a match or its lobby, and the lobby's scoreboard item | Everyone |
 | `paintball.admin` | Every staff node: start, stop, reload, `/pb as`, arenas, the command bypass. Grants the eight below | Operators |
-| `paintball.start` | `/pb start`: start a match now (it joins you first if you are not in) | Operators |
+| `paintball.start` | `/pb start`: start a match now, in any mode (it joins you first if you are not in) | Operators |
 | `paintball.stop` | `/pb stop`: end a match, or empty a lobby | Operators |
 | `paintball.reload` | `/pb reload`: reread `config.yml` and `arenas.yml` | Operators |
 | `paintball.as` | `/pb as <player> ...`: run a subcommand as somebody else (for NPCs and console). Checked against **their** permissions | Operators |
-| `paintball.arena` | Arena setup: `list`, `create`, `setwaiting`, `addspawn`, `clearspawns`, `wand` and `setbounds`, `enable`, `disable`, `tp`, `name`, `set` | Operators |
+| `paintball.arena` | Arena setup: `list`, `create`, `setwaiting`, `addspawn`, `clearspawns`, `setflag`, `wand` and `setbounds`, `enable`, `disable`, `tp`, `name`, `set` | Operators |
 | `paintball.arena.generate` | `/pb arena generate`: build a whole field, replacing every block in a large box | Operators |
 | `paintball.arena.delete` | `/pb arena delete`: remove an arena, ending its match | Operators |
 | `paintball.bypass.commands` | Run any command during a match, not only the few a player may | Operators |
@@ -419,8 +467,58 @@ nametags:
   # the name and {team_colour} its team's colour (#FF4655 or #2E9BFF).
   format: "<{team_colour}>{player}"
 
+# What an arena plays unless it sets its own: teams, ffa or ctf.
+mode: teams
+
+ffa:
+  # The paint colours handed out, in this order, one to a player.
+  colours: [red, blue, green, orange, yellow, purple, pink, cyan]
+  # The marker each colour carries.
+  markers:
+    red: ember
+    blue: tide
+    green: toxic
+    orange: sunset
+    yellow: gold
+    purple: violet
+    pink: bubblegum
+    cyan: frost
+
+ctf:
+  # Captures to win. The team with more when the clock runs out wins.
+  captures: 3
+  # A dropped flag goes home on its own after this long.
+  flag-return-seconds: 20
+  # Whether your own flag has to be at home for you to score with theirs.
+  need-own-flag: true
+  # How fast the carrier walks, as a share of their normal speed.
+  carrier-speed: 0.85
+  # Whether the carrier glows, seen through walls by everybody.
+  carrier-glows: true
+  # Whether the carrier can throw their grenade and set their mine.
+  carrier-can-throw: false
+  # How close you have to come to a flag to take it, return it or score.
+  flag-reach: 1.3
+
+# Any option above, changed for one mode's matches only.
+modes:
+  teams: {}
+  ffa:
+    match-seconds: 240
+    kill-limit: 15
+    respawn-seconds: 2
+  ctf:
+    match-seconds: 480
+    respawn-seconds: 5
+
 update-check: true
 ```
+
+A mode's own values (`modes.<mode>`) are laid over the rest for that mode's
+matches only, so free for all can play to 15 with two-second respawns while
+team deathmatch keeps its three minutes. An arena's own settings come after
+both, and an arena can change one mode's value too, with
+`/pb arena set <arena> modes.ctf.respawn-seconds 6`.
 
 **Every word a player reads** is under `messages:` in the same file, in
 [MiniMessage](https://docs.advntr.dev/minimessage/format.html): chat, the
@@ -428,11 +526,14 @@ lobby's hotbar, the player list, the scoreboard's heading and the HUD's text.
 The big words in the middle of the HUD (YOU'RE TEAM, GO!, SPLATTED BY,
 VICTORY...) are drawn in the HUD's own lettering, which has the letters A to Z,
 the digits, `!`, `-`, `'` and spaces: anything else in them is left out. The
-scoreboard's column headings are part of its picture, in the content folder.
+scoreboard's title and column headings (`scoreboard-red`, `scoreboard-kills`
+and so on) are messages too.
 
-**The HUD and the scoreboard are RP Engine content** like any other, so
-`ui.hud` and `ui.scoreboard` can point at a HUD or dialog of your own to
-replace either. A replacement has to show the same values.
+**The HUDs and the scoreboards are RP Engine content** like any other, so
+`ui.hud`, `ui.hud-ffa`, `ui.scoreboard`, `ui.scoreboard-ffa` and
+`ui.scoreboard-ctf` can point at a HUD or dialog of your own to replace any of
+them. A replacement has to show the same values. Capture the flag draws the
+team HUD.
 
 `/pb reload` rereads the file, and `arenas.yml` too unless somebody is playing.
 Options a newer version adds are written into your existing file when the
@@ -454,15 +555,18 @@ match; a draw is neither a win nor a loss.
 | `%paintball_arena_players_<arena>%` | How many are in its lobby or match |
 | `%paintball_arena_plays_<arena>%` | How many matches it has had |
 | `%paintball_arena_name_<arena>%` | Its display name |
-| `%paintball_arena_red_<arena>%`, `%paintball_arena_blue_<arena>%` | Each team's kills in its current or last match |
+| `%paintball_arena_red_<arena>%`, `%paintball_arena_blue_<arena>%` | Each team's score in its current or last match: kills, or in capture the flag captures |
 | `%paintball_arena_time_<arena>%` | Its match clock |
+| `%paintball_arena_mode_<arena>%` | The mode being played, or the one it plays next |
+| `%paintball_arena_leader_<arena>%` | Who is ahead: a team, or in a free for all a player |
 | `%paintball_player_<stat>%` | The player's own total |
 | `%paintball_player_arena%`, `%paintball_player_team%` | Where the player is playing, and for whom |
 | `%paintball_leaderboard_<stat>_<n>%` | Who is n-th for that stat |
 | `%paintball_leaderboard_<stat>_<n>_value%` | Their number |
 
 A `<stat>` is `kills`, `deaths`, `wins` (or `won`), `losses` (or `lost`),
-`matches` (or `played`), `shots`, `hits`, `accuracy` or `kd`.
+`matches` (or `played`), `shots`, `hits`, `captures`, `accuracy` or `kd`. A
+win in a free for all is coming first.
 
 The status words are under `messages:` (`status-maintenance` ... `status-ending`).
 
