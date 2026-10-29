@@ -222,7 +222,14 @@ export const engineNav: EngineGroup[] = [
         title: "Sounds",
         href: "/rp-engine/sounds",
         description: "Real sound events, with subtitles.",
-        keywords: ["sound", "ogg", "vorbis", "subtitle", "category", "stream", "audio"],
+        keywords: ["sound", "ogg", "vorbis", "subtitle", "category", "stream", "audio", "stereo", "mono"],
+      },
+      {
+        title: "Music",
+        href: "/rp-engine/music",
+        description: "Playlists that play by world, region or area, or on command.",
+        keywords: ["music", "playlist", "soundtrack", "background", "track", "shuffle", "loop", "region",
+          "worldguard", "stereo"],
       },
       {
         title: "Emotes",
