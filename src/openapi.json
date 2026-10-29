@@ -91,7 +91,7 @@
     },
     "plan_required": {
       "status": 403,
-      "description": "The key is valid, but its account is on Starter. The API needs a paid plan."
+      "description": "The key is valid, but its account's plan does not include the API."
     },
     "account_suspended": {
       "status": 403,
