@@ -1364,3 +1364,12 @@ folder.
 Reads about what the server holds (`ids`, `info`, all of `ContentRegistry`)
 are safe from any thread. Anything touching a player, an entity or a world is
 main thread only, and its javadoc says so.
+
+**On Folia there is no main thread**, so "main thread" means the thread that
+owns what the call touches: the player's or entity's own scheduler for
+anything about them (`player.getScheduler().run(...)`), and the region
+scheduler for anything at a place (`Bukkit.getRegionScheduler().run(plugin,
+location, ...)`), such as placing a model or playing a VFX at a spot. A call
+from the global region or another region's thread is the same mistake a call
+from an async thread is on Paper. Everything RP Engine does on its own already
+follows this, so your plugin only has to for the calls it makes.
