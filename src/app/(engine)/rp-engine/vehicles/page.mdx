@@ -273,10 +273,12 @@ when it stops.
     moving: mypack:engine
 ```
 
-To loop, the sound needs a `length:` in its definition, and the engine replays
-it each time it ends. Without one it plays once as the vehicle enters the
-state. It plays from the vehicle and follows it. A sound id the server
-doesn't have is silent rather than an error.
+The engine replays the sound each time it ends, so it loops for as long as the
+state lasts. It knows how long the file runs by reading it, or from `length:`
+if you give one. It plays from the vehicle and follows it, which takes a
+**mono** file: a stereo one is heard at full volume everywhere in range, and
+the console warns about it. A sound id the server doesn't have is silent
+rather than an error.
 
 ## What the occupant does
 

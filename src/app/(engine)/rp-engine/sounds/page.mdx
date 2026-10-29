@@ -21,7 +21,7 @@ chime:
   volume: 1.0
   pitch: 1.0
   stream: false        # true for anything long
-  length: 2.4          # seconds. Only needed for looping
+  length: 2.4          # seconds. Read from the file if you leave it out
 ```
 
 | Field | Default | What it does |
@@ -82,9 +82,13 @@ never know it happened.
 Minecraft can't loop a sound: every sound plays once. Anything that sounds
 continuous, like a [vehicle's](/rp-engine/vehicles) engine, is the server
 playing the file again as soon as it ends, and for that it needs to know how
-long the file is. Give it `length:` (any audio player shows the figure). Without
-it, a vehicle plays the sound once when it enters that state. A wrong figure
-gives a gap or an overlap, not an error.
+long the file is. RP Engine reads that from the file itself, so you only need
+`length:` to override it, for example to cut a tail of silence off a loop. A
+wrong figure gives a gap or an overlap, not an error.
+
+`/rp sounds` shows each sound's length and whether it is mono or stereo. A file
+that isn't Ogg Vorbis (an mp3 or Opus file renamed to `.ogg`) gets a console
+warning, since it would play as silence.
 
 ## Playing one
 
