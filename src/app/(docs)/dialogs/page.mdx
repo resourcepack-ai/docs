@@ -750,6 +750,58 @@ The editor shows the dialog as a player with the default settings sees it, with
 every permission held. In **Components**, a crossed-out eye marks a piece with
 conditions, and a palette marks one with looks.
 
+### Sorting a box's pieces
+
+A box can show its pieces in an order worked out for each player, a page at a
+time: a shop whose items are sorted by rarity and then by price, with the ones
+a player can't buy yet at the end, and a button that switches to sorting by
+price.
+
+Select the box (a grid of item cards, say) and tick **Sort its pieces, a page
+at a time**. Then:
+
+- **Sort name** is what its live values are called. A box named `shop` gives
+  `{shop_page}` (the page shown), `{shop_pages}` (how many there are) and
+  `{shop_count}` (how many pieces this player sees), so a line reading
+  `Page {shop_page} of {shop_pages}` works anywhere in the dialog.
+- **Per page** is how many pieces it shows at once. Leave it on **All at once**
+  for no pages.
+- **Page from** is the [player setting](#player-settings) that says which page
+  is shown. Bind a stepper (or buttons) to that setting and it turns the page.
+  A page past the last shows the last.
+- **Order** lists the ways it can be sorted. Each sorts by one or more
+  properties in turn, lowest or highest first. The first order whose conditions
+  hold is used, and one with no conditions always holds, so an order with a
+  condition on a setting that a segmented control sets lets players choose the
+  sorting in game. Ties keep the order the pieces have in the editor.
+
+Each piece then says its own values under **Sort by**, in its panel: `rarity`
+`0` for a legendary item and `3` for a common one, `price` `450`. A value can
+be a [live value](#live-values), such as a price your shop plugin gives. **Another
+value when…** gives a piece another value for some players: `rarity` `-1` when
+the player lacks `shop.unlock.dragon`, so locked items sort last. The first
+rule that holds wins. Numbers sort as numbers, and anything else sorts by its
+letters, after every number.
+
+A piece whose [Show when](#show-when) fails is left out and the rest close up,
+so a page never has a gap in the middle.
+
+The editor shows the order a player with the dialog's default settings sees,
+and selecting a piece shows the page it is on.
+
+Things to know:
+
+- **Every piece is drawn once for every place it can land in**, so each place is
+  as big as the biggest piece, and a box sorts at most 24 pieces, 12 at a time.
+  A box of 24 pieces shown 12 at a time is 288 copies, which makes a large
+  dialog. The editor warns you when a box gets that big.
+- A control bound to a setting inside a sorted piece only works in one place.
+  Keep page turners and sort switches outside the box.
+- A sorted box can't hold another sorted box, a list, or a **Show one of** box
+  directly.
+- It needs RP Engine 0.2.46 or newer. On an older RP Engine, and in Dialog
+  Engine, its places are empty.
+
 ### Click sounds
 
 Clicks on the drawn screen make no sound in the game itself, so the plugin
@@ -822,6 +874,7 @@ least:
 | RP Engine icons in a Pack glyph | 0.2.10 |
 | Colour codes from a placeholder in a Pack glyph | 0.2.34 |
 | The Quick Actions key | 0.2.17 |
+| Sorting a box's pieces | 0.2.46 |
 
 On an older RP Engine the feature fails quietly: a bound control shows every
 state at once, a live bar is empty, a conditioned piece is drawn for everybody,
