@@ -22,6 +22,19 @@ guard:
   tags: [temple, boss]
 ```
 
+`model:` is an **item** id, not a file name. The model itself is an item like
+any other, so the guard above needs one in `items/` as well, wearing the
+Blockbench file you saved to `assets/models/guard.bbmodel`:
+
+```yaml
+# items/guard.yml
+guard:
+  material: PAPER
+  model: guard           # assets/models/guard.bbmodel
+```
+
+Without that item the mob spawns as a plain zombie, and `/rp reload` says so.
+
 `/rp spawn mypack:guard` spawns one where you stand. `/rp entities` lists them.
 
 | Field | Default | What it does |
