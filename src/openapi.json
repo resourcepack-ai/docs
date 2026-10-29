@@ -91,7 +91,7 @@
     },
     "plan_required": {
       "status": 403,
-      "description": "The key is valid, but its account is on Starter. The API needs a paid plan."
+      "description": "The key is valid, but its account's plan does not include the API."
     },
     "account_suspended": {
       "status": 403,
@@ -6370,6 +6370,180 @@
                     "maxLength": 500
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/gallery": {
+      "post": {
+        "operationId": "publishToGallery",
+        "summary": "Publish an asset to the gallery",
+        "description": "Puts one of the pack's assets on resourcepack.ai/gallery, as the **Publish to gallery** button on its page does: a snapshot of it as it is now, on a page of its own. Addressed by the listing's `type` and `name`. One live page per asset: publishing it again answers `conflict`.\n\nLeave out `title`, `description` or `tags` and the gallery writes them, as the button's **Write it for me** does, from the asset's picture and prompt; send them to use your own. `anonymous` publishes it without your name on it. Only the pack's owner can publish. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "201": {
+            "description": "Published.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "slug": {
+                      "type": "string",
+                      "description": "The page's slug."
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "The page."
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "The title as published."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "The description as published."
+                    },
+                    "tags": {
+                      "type": "array",
+                      "description": "The tags as published.",
+                      "items": {
+                        "type": "string",
+                        "description": "A tag."
+                      }
+                    },
+                    "anonymous": {
+                      "type": "boolean",
+                      "description": "Whether it carries your name."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "slug",
+                    "url",
+                    "title",
+                    "description",
+                    "tags",
+                    "anonymous"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "slug": "rusted-key",
+                  "url": "https://resourcepack.ai/gallery/rusted-key",
+                  "title": "Rusted Key",
+                  "description": "A worn iron key with a round bow and orange rust along its teeth.",
+                  "tags": [
+                    "key",
+                    "item"
+                  ],
+                  "anonymous": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `conflict`, `daily_limit`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "The asset's `type` from the listing (`item`, `icon`, `model`…).",
+                    "example": "item"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "The asset's `name` from the listing.",
+                    "example": "rusted_key"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "The page's title. Written for you when left out.",
+                    "minLength": 3,
+                    "maxLength": 80
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "A sentence or two about it. Written for you when left out.",
+                    "minLength": 20,
+                    "maxLength": 600
+                  },
+                  "tags": {
+                    "type": "array",
+                    "description": "Search tags. Written for you when left out.",
+                    "items": {
+                      "type": "string",
+                      "description": "A tag.",
+                      "example": "food"
+                    }
+                  },
+                  "anonymous": {
+                    "type": "boolean",
+                    "description": "Publish it without your name on it. Defaults to false."
+                  }
+                },
+                "required": [
+                  "type",
+                  "name"
+                ]
               }
             }
           }

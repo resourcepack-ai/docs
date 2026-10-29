@@ -21,7 +21,7 @@ chime:
   volume: 1.0
   pitch: 1.0
   stream: false        # true for anything long
-  length: 2.4          # seconds. Only needed for looping
+  length: 2.4          # seconds. Read from the file if you leave it out
 ```
 
 | Field | Default | What it does |
@@ -38,6 +38,21 @@ chime:
 
 **Ogg Vorbis only.** An mp3 renamed to `.ogg` plays as silence with no error in
 game, so a missing file fails the build with its path named.
+
+## Mono or stereo
+
+Both work, and the file decides which you get:
+
+- **Mono** comes from a spot in the world. Players hear it from its direction,
+  and it fades as they walk away. Use it for blocks, vehicles, creatures and
+  anything else that makes a noise somewhere.
+- **Stereo** keeps its left and right channels and plays at full volume to
+  everybody in range, wherever it was played from. Use it for music, menu
+  clicks and anything that should sound the same everywhere.
+
+RP Engine ships your file exactly as it is, so export it as the one you want.
+For music, also set `stream: true` and `category: music`, and see
+[Music](/rp-engine/music) for playlists that play by place.
 
 The build writes your namespace's `sounds.json` and English language file. If
 your pack ships its own as well, they are merged, and where both name the same
@@ -68,9 +83,13 @@ never know it happened.
 Minecraft can't loop a sound: every sound plays once. Anything that sounds
 continuous, like a [vehicle's](/rp-engine/vehicles) engine, is the server
 playing the file again as soon as it ends, and for that it needs to know how
-long the file is. Give it `length:` (any audio player shows the figure). Without
-it, a vehicle plays the sound once when it enters that state. A wrong figure
-gives a gap or an overlap, not an error.
+long the file is. RP Engine reads that from the file itself, so you only need
+`length:` to override it, for example to cut a tail of silence off a loop. A
+wrong figure gives a gap or an overlap, not an error.
+
+`/rp sounds` shows each sound's length and whether it is mono or stereo. A file
+that isn't Ogg Vorbis (an mp3 or Opus file renamed to `.ogg`) gets a console
+warning, since it would play as silence.
 
 ## Playing one
 
@@ -78,6 +97,7 @@ gives a gap or an overlap, not an error.
 /rp sounds                     every sound on this server
 /rp sound mypack:chime         play it to yourself
 /rp sound mypack:chime Steve   play it to somebody else
+/rp sound stop mypack:theme    stop it early (all stops every custom sound)
 ```
 
 From an [item action](/rp-engine/actions):

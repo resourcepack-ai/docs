@@ -180,14 +180,14 @@ helmet at all.
 - **The helmet** is drawn by the game, as an item on the head. It follows the
   head exactly, on every client. With `shader-helmet: true` the shaders draw it
   instead.
-- **On Minecraft 26.1 and 26.2**, the pack's shaders draw the rest of the set as
+- **On Minecraft 26.1 to 26.3**, the pack's shaders draw the rest of the set as
   part of the player's body, so it never lags and also shows on armour stands.
   RP Engine checks each viewer's version (through ViaVersion when it is
   installed) and spawns nothing extra for these players.
 - **Every other viewer** sees the body pieces as display entities, posed onto
   the player's limbs as they walk, swing, crouch and ride. A set with
   `displays: false` skips these, so other versions see only the helmet. Use
-  that when your server only admits 26.1 and 26.2.
+  that when your server only admits 26.1 to 26.3.
 
 What to expect with display entities:
 

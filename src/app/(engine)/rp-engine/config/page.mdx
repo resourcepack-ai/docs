@@ -249,6 +249,11 @@ an item, are checked (0.2.40 and newer). 1 puts a HUD on or takes it off on the
 very tick the player does the thing, for a minigame that needs it exact; 20 is
 once a second. A check only sends a packet when the answer changes.
 
+`trigger-ticks` is how often a HUD's state triggers (crouching or holding an
+item) are checked. At 1 a HUD goes on or off the same tick the player does the
+thing, which a minigame may want. A check that finds nothing
+changed sends nothing, so lowering it costs very little.
+
 ## VFX
 
 ```yaml
