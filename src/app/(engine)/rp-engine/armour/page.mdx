@@ -125,6 +125,31 @@ set. A group inside a bone (a `cape` inside `body`) rides that bone. A group
 with any other name is a load warning. Cubes and groups can be rotated any way
 you like.
 
+### Armour points and durability
+
+Needs RP Engine 0.2.36 or newer.
+
+The pieces `/rp armor give` hands out only look like armour: they give no
+armour points. To make a 3D set protect its wearer, write the pieces as
+ordinary [items](/rp-engine/items) and add `armor3d:` with the set's id. The
+item keeps everything it already has (name, attributes, durability, recipes)
+and wears that set's piece for its `armor:` slot:
+
+```yaml
+# items/void_armour.yml
+void_helmet:
+  name: "&5Void Helmet"
+  material: NETHERITE_HELMET
+  armor: head
+  armor3d: void_armour     # the set; an id in this pack, or namespace:id
+  durability: 1000
+  attributes:
+    - armor: 5
+```
+
+`armor:` is required with it, because it says which piece of the set the item
+is. `armor3d:` replaces `armor-art:`, so leave that out.
+
 ### Meshes and shader helmets
 
 Needs RP Engine 0.2.10 or newer.
