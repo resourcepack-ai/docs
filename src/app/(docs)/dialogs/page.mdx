@@ -470,7 +470,7 @@ dialog the player was sent when they joined, and the server is never told. That
 gives you two ways to put a dialog on it:
 
 - **Opens the dialog** (the default). G opens the dialog straight away. RP
-  Engine draws each player's copy for them as they join, so their name, head and
+  Engine (or Dialog Engine) draws each player's copy for them as they join, so their name, head and
   any other value shows what was true at that moment, and stays that way until
   they join again. Buttons in it work as usual. This needs Paper. On Spigot, and
   for a dialog behind a permission (which is not known yet while a player is
@@ -819,8 +819,8 @@ least:
 On an older RP Engine the feature fails quietly: a bound control shows every
 state at once, a live bar is empty, a conditioned piece is drawn for everybody,
 and so on. In Dialog Engine, click sounds need a version newer than 0.3.5,
-Seamless needs 0.4.0, the Quick Actions key 0.6.0 (where a drawn dialog
-always uses the launcher), and colour codes from a placeholder in a Pack glyph
+Seamless needs 0.4.0, the Quick Actions key 0.6.0 (and opening a drawn
+dialog straight from it, rather than through the launcher, 0.6.5), and colour codes from a placeholder in a Pack glyph
 0.6.4.
 
 ## Older UI-style dialogs
