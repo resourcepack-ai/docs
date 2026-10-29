@@ -943,7 +943,8 @@ point.
 To react:
 
 - `applyImpulse(deltaVelocity, spinDelta)` changes the physical response;
-  `velocity()` reads it.
+  `velocity()` reads it. An upward part lifts a land vehicle off the ground and
+  gravity brings it back, so a jump pad is one call (RP Engine 0.2.45 and newer).
 - `scuff(area, contact, amount)` adds a persistent scrape (amount 0 to 1, at
   most ten marks; a repeat hit in the same place deepens the mark).
 - `parts()` lists an animated model's bones, `partOffset(name)` says where one
