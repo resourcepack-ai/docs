@@ -15,9 +15,9 @@ It is the same API as the rest of this reference, with the same AI Credits and
 a key of its own. The difference is that an agent gets a list of tools to call
 instead of URLs it has to be programmed against.
 
-<Callout type="note" title="On a paid plan">
-  MCP keys are available on any paid plan, and the MCP server spends the same AI
-  Credits Studio does. There is no separate MCP pricing.
+<Callout type="note" title="On every plan">
+  MCP keys are available on every plan, the free one included, and the MCP
+  server spends the same AI Credits Studio does. There is no separate MCP pricing.
 </Callout>
 
 ## Connect
@@ -91,6 +91,7 @@ arguments are documented in full.
 | [`export_pack`](/api-reference/export-pack) | Build the Java `.zip`. Confirms it built rather than returning it. |
 | [`push_pack`](/api-reference/push-pack) | Send the pack straight into Minecraft, like the Studio's Sync button. |
 | [`publish_pack`](/api-reference/publish-pack) | Publish a release every bound server hands its players. |
+| [`publish_to_gallery`](/api-reference/publish-to-gallery) | Put an asset on the public gallery, with its title and description written for you if you leave them out. |
 | [`get_distribution`](/api-reference/get-distribution) | What bound servers serve, and how a release's build is going. |
 | [`create_upload`](/api-reference/create-upload) | A URL to put a file into, for anything too big to send inline. |
 | [`upload_asset`](/api-reference/upload-asset) | Put a file you already have into a pack: a texture, sprite, icon, model, sound, GUI, HUD or armour. Free. |
