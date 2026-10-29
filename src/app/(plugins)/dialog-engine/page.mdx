@@ -562,9 +562,13 @@ there are two modes:
   dialog, drawn fresh like any other: every check, placeholder and event as
   usual. One extra click, and nothing is out of date.
 
-Direct needs Paper. On Spigot, and for a dialog with a `permission:`, a `json:`
-dialog, or a drawn dialog, G opens the launcher instead. A drawn dialog can be
-put on the key with `quickAction: true` in its `dialog.yml`.
+Direct needs Paper. On Spigot, and for a dialog with a `permission:` or a
+`json:` dialog, G opens the launcher instead. A drawn dialog goes on the key
+with `quickAction: true` in its `dialog.yml` (or the editor's Quick Actions
+switch), and opens directly too since 0.6.5; `quickAction: launcher` keeps the
+launcher, and a drawn dialog showing the player's own items always uses it.
+While a drawn dialog is on the key, players are sent the drawn dialog pack as
+they join, so it is ready before they first press G.
 
 The key only picks up a change after a **restart**: what G opens is part of the
 data the server reads as it starts, written to `world/datapacks/dialogengine_quick`,
