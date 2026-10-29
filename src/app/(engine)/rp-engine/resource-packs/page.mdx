@@ -43,6 +43,18 @@ comes first alphabetically.
 A resource pack defines nothing. It is art that rides along with your items,
 furniture and HUDs.
 
+## A pack from ResourcePack AI Studio
+
+A pack exported from [Studio](/exporting) works the same way, and brings its
+shader objects, dialogs, screens and sounds with it: the zip carries a
+`studio-content.json` that tells RP Engine what each of them is. After
+`/rp reload`, `/rp shaders` lists its shader objects and `/rp shader
+studio:<id>` shows one, exactly as if you had synced the pack. Their rules
+(Always, On join and so on) apply to every player.
+
+Needs RP Engine **0.2.38** or newer and a zip exported after 29 October 2026.
+An older zip has no `studio-content.json`: export it again.
+
 ## Unpacking it yourself
 
 You can also unzip it yourself. A folder in `content/` with `pack.mcmeta` and
