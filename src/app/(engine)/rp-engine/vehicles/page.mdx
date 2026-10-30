@@ -260,6 +260,24 @@ standing still it holds its frame. It's off by default because not everything
 on `moving` is a wheel: a flapping flag or a bobbing suspension usually wants
 its own pace.
 
+### Steering
+
+There's one `turning` state for turning either way, so an animation on it can
+only steer one way. For front wheels that follow the steering, name an
+animation as `steering` (RP Engine 0.2.49 and newer):
+
+```yaml
+  steering: steer
+```
+
+It's never played. Draw it with the wheels at full lock to the left at its
+start, straight ahead in the middle and full lock to the right at its end, and
+RP Engine holds it at the angle the front wheels are really at. Full lock is 38
+degrees, a little less at speed, so draw it at 38 degrees either side.
+
+It sits on top of whatever else is playing and only moves the parts it
+animates, so a wheel that spins on `moving` keeps spinning while it steers.
+
 ## Sounds
 
 `sounds:` maps the same states to [sound](/rp-engine/sounds) ids and follows
