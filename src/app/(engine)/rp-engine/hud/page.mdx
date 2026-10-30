@@ -50,8 +50,10 @@ sent. The first of these that knows the name wins:
 1. A value a plugin set with `overlays().set(player, name, value)`. A
    [dialog](/dialogs#live-values) shows the same values.
 2. The built-ins below.
-3. PlaceholderAPI, if installed: `{vault_eco_balance}` is `%vault_eco_balance%`
-   in braces.
+3. PlaceholderAPI, if installed: `{vault_eco_balance}` or `%vault_eco_balance%`.
+   A placeholder with arguments works as you would write it anywhere else,
+   `%server_time_HH:mm%` or `%stat_{player_name}%`, and is handed to
+   PlaceholderAPI exactly as written (RP Engine 0.2.48 or later).
 
 A name nobody knows becomes empty rather than showing `{name}`.
 
