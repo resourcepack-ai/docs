@@ -94,6 +94,24 @@ rifle_aimed:
 Needs Minecraft 1.21.4 or newer. On an older server the normal model is used in
 first person too, with a warning.
 
+### An icon in the inventory
+
+`gui:` is how the item looks in an inventory slot: the hotbar, a chest, a
+creative tab. A model made to be seen in the world, like a vehicle or a chair,
+is hard to read shrunk to sixteen pixels, so give it an icon instead. Write a
+model the same ways as `model:`, or `{texture: ...}` for a flat icon (a bare
+name is looked for in `textures/item/`):
+
+```yaml
+red_kart:
+  material: PAPER
+  model: red_kart
+  gui: {texture: red_kart_icon}
+```
+
+Everywhere else (in a hand, on the ground, placed) the item keeps its model.
+Needs Minecraft 1.21.4 or newer, like `first-person:`.
+
 ### A bow that draws back
 
 `pull:` gives an item a look for each stage of being drawn, the way a vanilla
