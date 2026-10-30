@@ -118,3 +118,9 @@ account and a pairing code.
 
 `/rp edit` goes the other way and needs neither: your content folder is the
 source, and your changes land back in it.
+
+Content from a Studio pack, synced or [distributed](/distribution), has a
+`studio:` id. Studio is its source, and the pack's folder in `content/` is
+replaced each time you publish, so `/rp edit studio:<id>` doesn't open an
+editor here. It links to the pack in Studio instead: change it there and
+publish again.

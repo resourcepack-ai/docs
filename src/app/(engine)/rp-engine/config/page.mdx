@@ -302,6 +302,7 @@ edit:
   url: "https://studio.resourcepack.ai"
 distribution:
   api-url: "https://studio.resourcepack.ai"
+  mode: content
 ```
 
 Nothing connects to Studio unless somebody runs `/rp sync`, `/rp edit` or
@@ -311,6 +312,7 @@ Nothing connects to Studio unless somebody runs `/rp sync`, `/rp edit` or
 |---|---|---|
 | `sync.server-token` | empty | Only for a server the Studio account owner runs themselves. With a token, Studio can see who is online and push to them without a pairing code |
 | `edit.enabled` | `true` | `false` turns off [`/rp edit`](/rp-engine/editing) |
+| `distribution.mode` | `content` | Where a pack bound with [`/rp distribute`](/distribution) goes. `content` keeps it in `content/studio-<pack>/` and builds it into RP Engine's own pack. `cdn` sends it to each player on its own, the build for their version, and writes nothing to `content/`. Needs a restart |
 
 ## Other plugins' shaders
 

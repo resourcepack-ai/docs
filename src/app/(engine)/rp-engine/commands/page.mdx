@@ -169,8 +169,9 @@ See [Armour](/rp-engine/armour#3d-armour-from-studio).
 | `/rp sync remove <player>` | Take somebody off, and the pack off them | `rpengine.sync` |
 | `/rp sync leave` | Leave somebody else's sync | `rpengine.sync` |
 | `/rp sync stop` | End yours, for everybody on it | `rpengine.sync` |
-| `/rp distribute <code>` | Serve a pack published in Studio to everybody who joins | `rpengine.distribute` |
-| `/rp distribute off` | Stop serving it | `rpengine.distribute` |
+| `/rp distribute <code>` | Serve a pack published in Studio to everybody who joins. It is kept in `content/studio-<pack>/` | `rpengine.distribute` |
+| `/rp distribute off` | Stop serving it, and remove its folder | `rpengine.distribute` |
+| `/rp distribute off --keep` | Stop serving it, and keep its folder as your own content | `rpengine.distribute` |
 
 ## Editing in a browser
 
