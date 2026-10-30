@@ -1179,8 +1179,19 @@ vfx.find("frost_nova").ifPresent { info ->
 `loop()`, `loopFor(ticks)`, `loopTimes(n)`, `until(condition)`,
 `whileTrue(condition)`, `stopWhen(play -> ...)` (a check of your own, run every
 `checkEvery(ticks)`), `end(End.FINISH | End.CUT)`, `speed`, `scale`, `turn`,
-`offset(left, up, ahead)`, `follow(entity)`, `delay`, `vary`, `seed`, `sounds`,
-`volume`, `viewers(Viewers.EVERYONE | Viewers.CASTER)` and `tag`.
+`offset(left, up, ahead)`, `follow(entity)`, `follow(vehicle)`, `delay`, `vary`,
+`seed`, `sounds`, `volume`, `viewers(Viewers.EVERYONE | Viewers.CASTER)` and `tag`.
+
+`follow(vehicle)` rides with a vehicle and turns with the way its body points,
+not with where its driver is looking, so an exhaust stays at the tail through a
+corner and an effect made in front of the caster plays in front of the vehicle.
+Cast it at `vehicle.location()`, which carries that heading:
+
+```java
+vfx.play(boost, kart.location(), driver, VfxOptions.builder()
+        .follow(kart)
+        .build());
+```
 
 ```java
 vfx.play(id, player, VfxOptions.builder()
