@@ -31,8 +31,7 @@ You need [RP Engine](/testing/plugin) on the server.
     ```
 
     The server remembers this. It picks up everything you publish afterwards
-    on its own, with no restart. `/rp distribute off` unbinds it. A pack can
-    be bound to up to 10 servers.
+    on its own, with no restart. A pack can be bound to up to 10 servers.
   </Step>
   <Step title="Publish">
     Press **Publish**, tick the Minecraft versions you want to support, and
@@ -42,6 +41,35 @@ You need [RP Engine](/testing/plugin) on the server.
 </Steps>
 
 Players get the pack the next time they join.
+
+## On your server
+
+Once you publish, the pack appears in RP Engine's content folder as
+`plugins/RPEngine/content/studio-<pack>/`, the same as a Studio export you
+dropped in yourself. RP Engine builds it into the pack it already sends, so
+it sits alongside your own content and players download one pack, not two.
+`/rp shaders`, `/rp dialogs` and the rest list what's in it.
+
+Each time you publish again, the folder is replaced within a minute. Change
+the pack in Studio, not in the folder: files you edit there by hand are copied
+to `plugins/RPEngine/studio-backups/` and then replaced.
+
+| Command | What happens |
+|---|---|
+| `/rp distribute off` | Unbinds the server and removes the folder |
+| `/rp distribute off --keep` | Unbinds the server and keeps the folder as your own content, no longer updated |
+
+This needs RP Engine 0.2.49 or newer. Earlier versions, and a server with
+`distribution.mode: cdn` in its [config](/rp-engine/config#studio), send the
+published pack to each player on its own instead and write nothing to the
+content folder.
+
+<Callout type="note" title="Several Minecraft versions on one server">
+  The folder holds the build for your server's own version (or the nearest one
+  below it you published). If your players join on many versions through
+  ViaVersion, `distribution.mode: cdn` sends each of them the build for their
+  version instead.
+</Callout>
 
 ## Versions
 
@@ -53,6 +81,10 @@ own download, and the server picks one for each player as they join:
   versions at once, and each gets the matching build.
 - Bedrock players joining through Geyser get the Bedrock build, if your pack
   has anything Bedrock can use. See [Exporting › Bedrock](/exporting#bedrock).
+
+With the pack in your content folder (the default, see above), Java players get
+RP Engine's pack, built from your server's version. The version breakdown still
+shows which builds your players would have needed.
 
 A player on a version you haven't ticked is **served nothing and recorded**, so
 they show up in the version breakdown and you can tick that version and
