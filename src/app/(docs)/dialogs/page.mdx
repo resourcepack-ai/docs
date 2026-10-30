@@ -548,7 +548,10 @@ Any other name works too. The first of these that has a value wins:
    [shader object](/shaders#live-values) labels show.
 4. The built-in list above.
 5. PlaceholderAPI, if installed: `{vault_eco_balance}` or `%vault_eco_balance%`.
-   Names are letters, digits and `_` only.
+   A placeholder with arguments works as you would write it anywhere else,
+   `%server_time_HH:mm%` or `%stat_{player_name}%`, and is handed to
+   PlaceholderAPI exactly as written (RP Engine 0.2.48 or Dialog Engine 0.6.6
+   or later). It can't have a space in it.
 
 A name nothing answers is shown as written. A placeholder can choose between
 words: `{show_sidebar?on:Shown|off:Hidden}`, where the last choice is used when
