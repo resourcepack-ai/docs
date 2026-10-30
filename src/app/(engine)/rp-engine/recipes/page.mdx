@@ -156,6 +156,30 @@ plain_stick:
 `items.vanilla-recipes: true` in the [config](/rp-engine/config#vanilla-recipes)
 does the same for every item.
 
+## Replacing a vanilla recipe
+
+To swap one of the game's recipes for your own, add `replaces:` with its ID:
+
+```yaml
+better_sticks:
+  type: shapeless
+  result: STICK
+  amount: 8
+  ingredients: [OAK_PLANKS]
+  replaces: minecraft:stick   # or a list; a bare name means minecraft:
+```
+
+While your recipe is loaded, the vanilla one is gone from the server. Delete
+yours and reload, and the vanilla one comes back. Without `replaces:`, a recipe
+with the same grid as a vanilla one doesn't win: both match and the game picks
+one. Any recipe can replace any other, so a crafting recipe can stand in for a
+smelting one.
+
+The ID is the one `/recipe give` lists, which isn't always the item's name:
+iron from raw iron in a furnace is `minecraft:iron_ingot_from_smelting_raw_iron`.
+A wrong ID shows a warning when the pack loads. If your recipe fails to load,
+the vanilla one is left alone.
+
 ## Naming
 
 A recipe ID is not a content ID, so a recipe can be called `ruby_block` while
