@@ -122,7 +122,7 @@ enemy within three blocks that it can see. Your own team can walk over it.
 slowly circling them, then you come back at one of your team's spawns, protected for a second and a half: a ball
 that hits you in that time does nothing. A server can also give each spawn a
 safe zone (`spawn-protection-radius`, a circle or a square): you stay protected
-until you step out of it or fire. There is no friendly fire. Enemy name
+until you step out of it or fire, and the other side cannot set a mine in it. There is no friendly fire. Enemy name
 tags are hidden, so you find people by looking for them. Your teammates' show
 through walls, as the game's own always do, unless the server turns on
 `nametags.hide-behind-blocks`, which puts a name over each head that walls hide
@@ -445,7 +445,8 @@ spawn-protection-seconds: 1.5
 # And, with a radius, for as long as they stay inside this many blocks of the
 # spawn they came in at, however long that is: a circle round it, or a square.
 # Firing, throwing a grenade or setting a mine ends it, so nobody shoots out of
-# a safe zone. The border is drawn for whoever is inside. 0 for none.
+# a safe zone, and nobody can set a mine in the other side's. The border is
+# drawn for whoever is inside. 0 for none.
 spawn-protection-radius: 0
 spawn-protection-shape: circle
 # How long the final scoreboard stays up before everybody is back in the lobby.
