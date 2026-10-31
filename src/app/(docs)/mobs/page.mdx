@@ -63,6 +63,13 @@ all at once, and points each state at its animation.
   experience from the description, measures the hitbox off the model, works out
   which way it faces and picks its head. It's on for a mob that has no
   animations yet. Off, your settings are left alone and it only animates.
+  For a mob with no abilities yet, it also gives it the ones your words ask
+  for: *"a boss that slams the ground and summons minions at half health"*
+  comes back with a Ground Slam and a phase that calls minions, and with a
+  `slam` and a `summon` animation written for them beside the states (up to
+  two such animations, inside the same price). A VFX or sound an ability
+  wants that the pack doesn't have is left as a button on that step, with its
+  price, for you to make or not; nothing extra is generated on its own.
 - **States to animate**: Idle, Walk, Attack, Hurt and Death are ticked to start
   with. Run and Spawn are there if you want them; a blank Run plays Walk.
 
@@ -196,6 +203,47 @@ after the mob, with a second take on each sound's page if you prefer it. It's
 charged like generating a sound, per take, and the price is shown before you
 start.
 
+### Abilities
+
+What it does besides walk and bite: a ground slam every few seconds, minions
+when it drops below half health, a poison aura, a volley of fireballs, a
+phase where it goes red and fast. Each ability is three things:
+
+- **When**: every few seconds, when it's hurt, when it hits something, when it
+  appears, when it finds a target, when it dies, when a player right-clicks
+  it or when it kills a player. Narrow it with **Health** (*Once below* 50%
+  runs the moment it first drops under half, which is how a boss changes
+  phase; *While below* runs every time while it's under) and conditions:
+  only while it has a target, while its target is within or further than so
+  many blocks, while a player is near, in or out of a phase, by day or night,
+  in the rain, on the ground.
+- **Do**: steps, run in order. Play one of its animations, wait, damage,
+  heal, knock back, pull in, leap or lunge at its target, a potion effect,
+  set on fire, summon mobs, enter a phase, play one of the pack's VFX or
+  sounds, particles, a chat message or a title, shoot a projectile, an
+  explosion (it never breaks blocks), lightning, tint the model, change speed,
+  a shield, teleport to its target.
+- **At whom**, per step: itself, its target, whoever set it off, players or
+  everything within so many blocks, the nearest player, everything in front of
+  it, or for effects a spot: where it stands, where its target stands, a spot
+  ahead, a ring of spots, random spots near it.
+
+Plus a cooldown and a chance. **Add an ability** starts from nothing or from
+one of six: Ground slam, Summon minions at half health, Leap at its target,
+Poison aura, Fireball volley and Enrage phase.
+
+The **</>** button on an ability shows it as the
+[MythicMobs](https://mythiccraft.io) skill lines RP Engine runs, and you can
+edit it as lines: the first line says when, every line after it is a step.
+Anything RP Engine supports works there, not only what the form offers, and a
+line it can't read is pointed out as you type. Press the button again to go
+back to the form, which works as long as the lines only use what the form can
+show.
+
+Abilities need RP Engine 0.2.52 or newer. They reach the server with the rest
+of the mob when you sync; a mob on an older RP Engine walks and fights as
+before without them.
+
 ### Drops
 
 What it drops when killed, instead of the vanilla mob's loot: an item, the
@@ -217,6 +265,10 @@ drops nothing but its XP.
 | `/rp egg studio:<id> [player] [amount]` | Gives a spawn egg for it |
 
 `<id>` is the model's id, shown on its page.
+
+Bedrock players joining through Geyser see the mob as its model too, animated
+the same way, from the Bedrock pack a sync sends them (RP Engine 0.2.52 or
+newer).
 
 <Card title="Entities in RP Engine" href="/rp-engine/entities" icon="server">
   What the plugin does with a custom mob, and writing one by hand in YAML.
