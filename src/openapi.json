@@ -177,9 +177,13 @@
       "status": 402,
       "description": "The account (or team) has served its plan's players for this month, so a new release cannot be published. Players still get the live one."
     },
+    "nothing_to_export": {
+      "status": 400,
+      "description": "The pack holds nothing that export format is built from yet, or all of it is still generating. `message` says which."
+    },
     "export_failed": {
       "status": 500,
-      "description": "The zip couldn't be built."
+      "description": "The export couldn't be built."
     },
     "request_failed": {
       "status": 500,
@@ -1761,17 +1765,17 @@
     "/packs/{pack}/export": {
       "get": {
         "operationId": "exportPack",
-        "summary": "Export the pack as a zip",
-        "description": "The finished Java `.zip`, exactly what the Studio's Export button produces. Zipping happens on request rather than being kept warm, so this is slower than the other calls on a large pack. Bedrock `.mcpack` isn't in the API yet.",
+        "summary": "Export the pack",
+        "description": "Anything the Studio's Export menu downloads, built on request rather than kept warm, so this is slower than the other calls on a large pack.\n\n`format` picks which: `java` (the default) is the resource pack `.zip`; `bedrock` is the Bedrock `.mcpack`; `itemsadder`, `nexo`, `oraxen` and `craftengine` are content folders for a server running that plugin, which builds the pack itself from them; `modelengine` is a `.bbmodel` blueprint per model for ModelEngine; and `datapack` is the pack's dialogs as a vanilla datapack, whose pictures are in the Java zip.\n\nA format with nothing to build from yet (a pack with no models asked for blueprints, or everything still generating) answers `nothing_to_export` with what is missing.",
         "tags": [
           "Packs"
         ],
         "responses": {
           "200": {
-            "description": "A `application/zip` body."
+            "description": "The file: `application/zip`, or `application/octet-stream` for a `.mcpack`."
           },
           "default": {
-            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`, `export_failed`.",
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `nothing_to_export`, `export_failed`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1814,6 +1818,27 @@
               "type": "string",
               "description": "The pack's slug, as returned by the packs endpoints.",
               "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Which export to build.",
+            "schema": {
+              "type": "string",
+              "description": "Which export to build.",
+              "enum": [
+                "java",
+                "bedrock",
+                "itemsadder",
+                "modelengine",
+                "nexo",
+                "oraxen",
+                "craftengine",
+                "datapack"
+              ],
+              "default": "java"
             }
           }
         ]
@@ -8238,6 +8263,166 @@
                   "type",
                   "name"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/account": {
+      "get": {
+        "operationId": "getAccount",
+        "summary": "Check your credits",
+        "description": "The AI Credits this key spends from and the limits it works within, as the Studio's billing page shows them. A team key answers the team's shared pool and the team's limits; a personal key answers your own.\n\nCheck it before a run of generations rather than finding out from `insufficient_credits` halfway through: every generation reserves its price up front, so a balance under it is refused before anything starts. Free, and not recorded in the key's history.",
+        "tags": [
+          "Account"
+        ],
+        "responses": {
+          "200": {
+            "description": "The account as this key sees it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "account": {
+                      "type": "object",
+                      "description": "The plan, the balance and the limits.",
+                      "properties": {
+                        "plan": {
+                          "type": "string",
+                          "description": "The plan whose limits apply: `starter`, `creator`, `studio`, `team`, or `mates` for the mates rate."
+                        },
+                        "team": {
+                          "type": "string",
+                          "description": "The team this key acts for. Null for a personal key."
+                        },
+                        "credits": {
+                          "type": "object",
+                          "description": "The balance.",
+                          "properties": {
+                            "balance": {
+                              "type": "integer",
+                              "description": "Spendable right now."
+                            },
+                            "neverExpires": {
+                              "type": "integer",
+                              "description": "Of the balance, how much never expires: everything but the free monthly credits."
+                            },
+                            "nextExpiry": {
+                              "type": "object",
+                              "description": "The soonest-expiring credits, as `{credits, expiresAt}`. Null when nothing expires."
+                            },
+                            "monthly": {
+                              "type": "integer",
+                              "description": "Credits the plan grants each month."
+                            },
+                            "usedThisPeriod": {
+                              "type": "integer",
+                              "description": "Spent this billing period, refunds taken off."
+                            },
+                            "restricted": {
+                              "type": "array",
+                              "description": "Of the balance, credits that may only be spent on some asset types, as `{assetTypes, credits}`. Usually empty."
+                            }
+                          },
+                          "required": [
+                            "balance",
+                            "neverExpires",
+                            "nextExpiry",
+                            "monthly",
+                            "usedThisPeriod",
+                            "restricted"
+                          ]
+                        },
+                        "limits": {
+                          "type": "object",
+                          "description": "What the plan allows. Null is unlimited.",
+                          "properties": {
+                            "packs": {
+                              "type": "integer",
+                              "description": "Packs the account may hold."
+                            },
+                            "assetsPerPack": {
+                              "type": "integer",
+                              "description": "Assets one pack may hold."
+                            },
+                            "distributionPlayers": {
+                              "type": "integer",
+                              "description": "Players a month distribution may serve."
+                            }
+                          },
+                          "required": [
+                            "packs",
+                            "assetsPerPack",
+                            "distributionPlayers"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "plan",
+                        "team",
+                        "credits",
+                        "limits"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "account"
+                  ]
+                },
+                "example": {
+                  "account": {
+                    "plan": "creator",
+                    "team": null,
+                    "credits": {
+                      "balance": 1240,
+                      "neverExpires": 1240,
+                      "nextExpiry": null,
+                      "monthly": 500,
+                      "usedThisPeriod": 260,
+                      "restricted": []
+                    },
+                    "limits": {
+                      "packs": 20,
+                      "assetsPerPack": null,
+                      "distributionPlayers": 500
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
               }
             }
           }
