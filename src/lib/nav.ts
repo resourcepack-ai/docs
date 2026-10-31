@@ -158,12 +158,6 @@ export const nav: NavGroup[] = [
         ],
       },
       {
-        title: "Capes",
-        href: "/capes",
-        description: "Custom player capes, made in Studio and worn with RP Engine.",
-        keywords: ["cape", "capes", "cloak", "back", "optifine", "elytra", "wear", "rp cape"],
-      },
-      {
         title: "GUIs",
         href: "/guis",
         description: "Reskinning a screen, and what a pack can't change about one.",
