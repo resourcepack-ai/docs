@@ -5558,7 +5558,7 @@
       "post": {
         "operationId": "editAsset",
         "summary": "Edit an asset with AI",
-        "description": "Changes an asset that already exists from a sentence (`make it rustier`, `slower`, `add a second ring`), exactly as the Studio's **Edit with AI** button does, and at the same price. The asset is changed in place.\n\n**Which assets.** A stored asset is addressed by the `kind` and `name` the asset listing reports, as for a download: a `block` (`texture/mossy_bricks`), an `item` sprite (`texture/item:rusted_key`), a `model`, `item3d` or `vehicle` (`model/lantern`) and an `icon` (`font/heart`). The rest are addressed by their own kind and the `id` their generation returned: a 3D shader object or a text effect (`shader/<id>`), a VFX (`vfx/<id>`) and an emote (`emote/<id>`). A `hud`, a chest `gui` and a 2D `armor` set (`texture/hud:<id>`, `texture/gui:<id>`, `texture/armor:<set>`) are redrawn whole by their generator with the change as its brief, so they take minutes and cost what a generation does. Dialogs, sounds, rank tags, 3D armour and HUD shaders are changed in the Studio, and are refused here.\n\n**Limits.** An emote's instruction is up to 500 characters, a VFX's or a text effect's 600, a 3D object's 800. One edit at a time per asset: a second while the first runs answers `already_running`.\n\nThe `job` polls like a generation's. When it is `ready`, the asset holds the change: download it again to see it.",
+        "description": "Changes an asset that already exists from a sentence (`make it rustier`, `slower`, `add a second ring`), exactly as the Studio's **Edit with AI** button does, and at the same price. The asset is changed in place.\n\n**Which assets.** A stored asset is addressed by the `kind` and `name` the asset listing reports, as for a download: a `block` (`texture/mossy_bricks`), an `item` sprite (`texture/item:rusted_key`), a `model`, `item3d` or `vehicle` (`model/lantern`) and an `icon` (`font/heart`). The rest are addressed by their own kind and the `id` their generation returned: a 3D shader object or a text effect (`shader/<id>`), a VFX (`vfx/<id>`) and an emote (`emote/<id>`). A `hud`, a chest `gui` and a 2D `armor` set (`texture/hud:<id>`, `texture/gui:<id>`, `texture/armor:<set>`) are redrawn whole by their generator with the change as its brief, so they take minutes and cost what a generation does. A Dialog-style `dialog` (`texture/gui:<id>`) and a `rank_tag` (`font/<id>`) are changed while you wait and saved before this answers, so their job is already `ready`. Sounds, 3D armour and HUD shaders are changed in the Studio, and are refused here.\n\n**Modes.** `mode` picks which of the asset's AI buttons this is. `edit` (the default) is Edit with AI. `animate` is a model's **Animate with AI**: it writes or changes the model's bones and animations from a description of the motion (`the lid creaks open and shut`); set `addParts` to let it add the cubes the motion needs, and `fromAnimation` to start where one of its animations ends. An emote's edit already is its Animate with AI, so either word works there. `restyle` is a dialog's **Restyle with AI**: a new look for one page (colours, kit, banner) with nothing moved, reworded or rewired. On a dialog, `page` says which page (the first by default) and `scope` whether to rewrite only the part that changes per page (`part`, the default when the page has one) or the whole page.\n\n**Limits.** An emote's instruction is up to 500 characters, a VFX's or a text effect's 600, a 3D object's 800. One edit at a time per asset: a second while the first runs answers `already_running`.\n\nThe `job` polls like a generation's. When it is `ready`, the asset holds the change: download it again to see it.",
         "tags": [
           "Generating"
         ],
@@ -5592,7 +5592,11 @@
                     },
                     "status": {
                       "type": "string",
-                      "description": "Always `generating`: nothing is finished when this returns."
+                      "description": "`generating`, or `ready` for a dialog or rank tag, which is changed before this answers.",
+                      "enum": [
+                        "generating",
+                        "ready"
+                      ]
                     },
                     "pack": {
                       "type": "string",
@@ -5710,6 +5714,39 @@
                     "type": "string",
                     "description": "What to change.",
                     "example": "more moss in the cracks, and make the stone a little darker"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "description": "Which AI button: `edit`, a model's `animate`, or a dialog's `restyle`.",
+                    "enum": [
+                      "edit",
+                      "animate",
+                      "restyle"
+                    ],
+                    "default": "edit"
+                  },
+                  "addParts": {
+                    "type": "boolean",
+                    "description": "With `animate`: let it add cubes the motion needs, rather than only moving the ones there.",
+                    "default": false
+                  },
+                  "fromAnimation": {
+                    "type": "string",
+                    "description": "With `animate`: the name of one of the model's animations for the new one to start where it ends."
+                  },
+                  "page": {
+                    "type": "integer",
+                    "description": "On a dialog: which page, counting from 0.",
+                    "minimum": 0,
+                    "default": 0
+                  },
+                  "scope": {
+                    "type": "string",
+                    "description": "On a dialog's `edit`: rewrite only the page's own part, or the whole page (which every page shares outside its part).",
+                    "enum": [
+                      "part",
+                      "page"
+                    ]
                   }
                 },
                 "required": [
