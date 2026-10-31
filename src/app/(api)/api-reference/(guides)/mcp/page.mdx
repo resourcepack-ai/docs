@@ -98,6 +98,17 @@ arguments are documented in full.
 | [`list_asset_versions`](/api-reference/list-asset-versions) | Every version an asset's AI edits and regenerates made. |
 | [`get_asset_version_file`](/api-reference/get-asset-version-file) | One earlier version, to compare. An image comes back as an image. |
 | [`restore_asset_version`](/api-reference/restore-asset-version) | Undo: put an asset back as it was. Later versions are discarded. |
+| [`list_folders`](/api-reference/list-folders) | The pack page's folders, and what is filed in each. |
+| [`create_folder`](/api-reference/create-folder) | Make a folder for one tab's assets. |
+| [`update_folder`](/api-reference/update-folder) | Rename or recolour a folder. |
+| [`delete_folder`](/api-reference/delete-folder) | Remove a folder. Its assets stay. |
+| [`file_assets`](/api-reference/file-assets) | Put assets in a folder, or take them out. |
+| [`list_collaborators`](/api-reference/list-collaborators) | Who else is in a pack, who is invited, and what each may do. Owner only. |
+| [`invite_collaborator`](/api-reference/invite-collaborator) | Invite somebody by Minecraft username or email. Owner only. |
+| [`update_collaborator`](/api-reference/update-collaborator) | Change what a collaborator may do. Owner only. |
+| [`remove_collaborator`](/api-reference/remove-collaborator) | Take somebody out of a pack. Owner only. |
+| [`revoke_invite`](/api-reference/revoke-invite) | Withdraw an invitation still waiting. Owner only. |
+| [`set_collaborator_notifications`](/api-reference/set-collaborator-notifications) | Choose what you are told about collaborators' work. Owner only. |
 | [`regenerate_asset`](/api-reference/regenerate-asset) | Run a generation again, or retry a failed one. Spends credits. |
 | [`export_pack`](/api-reference/export-pack) | Build the Java `.zip`, the Bedrock `.mcpack`, or the content for ItemsAdder, Nexo, Oraxen, CraftEngine or ModelEngine. Confirms it built rather than returning it. |
 | [`push_pack`](/api-reference/push-pack) | Send the pack straight into Minecraft, like the Studio's Sync button. |
