@@ -7858,6 +7858,944 @@
         ]
       }
     },
+    "/packs/{pack}/assets/{kind}/{name}/regenerate": {
+      "post": {
+        "operationId": "regenerateAsset",
+        "summary": "Regenerate an asset",
+        "description": "Runs a block's, item sprite's, icon's, model's or sound's generation again, as its page's **Regenerate** button does, or **Retry** after a failed one. It uses the prompt the asset was made with unless you send a new one, which then becomes its prompt. Charged as that generation is.\n\nRegenerating something that came out fine keeps what it replaces as a version, so `POST /packs/{pack}/assets/{kind}/{name}/versions/{version}/restore` can bring it back. Other types are regenerated with their generate endpoint, or changed with Edit with AI.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "rank_tag",
+                        "sound"
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "The file format it is stored as.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
+                "example": {
+                  "id": "mossy_bricks",
+                  "type": "block",
+                  "kind": "texture",
+                  "job": "medieval-keep:texture:mossy_bricks",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `already_running`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `kind` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `kind` from the listing.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `name` from the listing.",
+              "example": "mossy_bricks"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "A new prompt. The stored one by default."
+                  },
+                  "takeCount": {
+                    "type": "integer",
+                    "description": "For a sound: how many takes to make.",
+                    "minimum": 1,
+                    "maximum": 10
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/assets/{kind}/{name}/duplicate": {
+      "post": {
+        "operationId": "duplicateAsset",
+        "summary": "Duplicate an asset",
+        "description": "A copy of an asset in the same pack, under a new name: the right-click menu's **Duplicate**. Free, but it is a new asset, so it counts against the pack's asset limit. Something a pack can hold only one of (a vanilla block or item reskin, a HUD, an armour set) answers `skipped` with the reason rather than an error.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "What happened to it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "result": {
+                      "type": "object",
+                      "description": "The copy.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "description": "What the asset is."
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack it came from."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "`transferred` when it went, `skipped` when it could not (see `reason`), `failed` when something went wrong.",
+                          "enum": [
+                            "transferred",
+                            "skipped",
+                            "failed"
+                          ]
+                        },
+                        "newId": {
+                          "type": "string",
+                          "description": "What it is called where it landed: usually its own id, the next free one when that was taken. Null unless transferred."
+                        },
+                        "reason": {
+                          "type": "string",
+                          "description": "Why it didn't go, completing \"Couldn't move it: ...\". Null when it did."
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "id",
+                        "status",
+                        "newId",
+                        "reason"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "result"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "result": {
+                    "type": "model",
+                    "id": "lantern",
+                    "status": "transferred",
+                    "newId": "lantern_2",
+                    "reason": null
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `asset_limit_reached`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `kind` from the listing, or `emote`.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `kind` from the listing, or `emote`.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound",
+                "shader",
+                "vfx",
+                "emote",
+                "emote_group"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `name` from the listing.",
+              "example": "lantern"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/transfer": {
+      "post": {
+        "operationId": "transferAssets",
+        "summary": "Move or copy assets to another pack",
+        "description": "The pack grid's **Move to pack** and **Copy to pack**: up to 60 assets, named by the `kind` and `name` the asset listing reports, into another pack this key can edit (`to`) or into a new pack made for them (`newPackName`, which counts against the pack limit like creating one). A model takes its textures with it; a custom item, its model.\n\nOnly the owner of this pack, or an admin of its team, may: taking assets out of a pack is a change to the pack. Each asset reports its own outcome, so one that cannot go (the target already reskins that vanilla block, say) does not stop the rest. `replace` lets a vanilla reskin overwrite the target's. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Each asset's outcome.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack they came from."
+                    },
+                    "to": {
+                      "type": "object",
+                      "description": "The pack they went to, as `{slug, name}`."
+                    },
+                    "results": {
+                      "type": "array",
+                      "description": "One outcome per asset.",
+                      "items": {
+                        "type": "object",
+                        "description": "One asset.",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "description": "What the asset is."
+                          },
+                          "id": {
+                            "type": "string",
+                            "description": "Its id in the pack it came from."
+                          },
+                          "status": {
+                            "type": "string",
+                            "description": "`transferred` when it went, `skipped` when it could not (see `reason`), `failed` when something went wrong.",
+                            "enum": [
+                              "transferred",
+                              "skipped",
+                              "failed"
+                            ]
+                          },
+                          "newId": {
+                            "type": "string",
+                            "description": "What it is called where it landed: usually its own id, the next free one when that was taken. Null unless transferred."
+                          },
+                          "reason": {
+                            "type": "string",
+                            "description": "Why it didn't go, completing \"Couldn't move it: ...\". Null when it did."
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "id",
+                          "status",
+                          "newId",
+                          "reason"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "to",
+                    "results"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "to": {
+                    "slug": "q7m2kd9x",
+                    "name": "Lanterns"
+                  },
+                  "results": [
+                    {
+                      "type": "model",
+                      "id": "lantern",
+                      "status": "transferred",
+                      "newId": "lantern",
+                      "reason": null
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`, `pack_limit_reached`, `asset_limit_reached`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "assets": {
+                    "type": "array",
+                    "description": "The assets, as `{kind, name}` from the listing.",
+                    "maxItems": 60,
+                    "items": {
+                      "type": "object",
+                      "description": "One asset.",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "description": "Its `kind`."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its `name`."
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "name"
+                      ]
+                    }
+                  },
+                  "to": {
+                    "type": "string",
+                    "description": "The slug of the pack they go to. Send this or `newPackName`."
+                  },
+                  "newPackName": {
+                    "type": "string",
+                    "description": "Make a new pack of this name for them instead.",
+                    "maxLength": 100
+                  },
+                  "mode": {
+                    "type": "string",
+                    "description": "`move` takes them out of this pack; `copy` leaves them in it too.",
+                    "enum": [
+                      "move",
+                      "copy"
+                    ],
+                    "default": "move"
+                  },
+                  "replace": {
+                    "type": "boolean",
+                    "description": "Let a vanilla reskin replace the target pack's own reskin of the same thing.",
+                    "default": false
+                  }
+                },
+                "required": [
+                  "assets"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/assets/{kind}/{name}/versions": {
+      "get": {
+        "operationId": "listAssetVersions",
+        "summary": "List an asset's versions",
+        "description": "An asset's history card: the original, then a version for every AI edit and regenerate since, oldest first, the last being what it is now. Kept for blocks, item sprites, icons and models. Download one with `GET .../versions/{version}` and go back to it with `POST .../versions/{version}/restore`.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The versions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "versions": {
+                      "type": "array",
+                      "description": "Oldest first.",
+                      "items": {
+                        "type": "object",
+                        "description": "One version.",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Pass as `{version}`."
+                          },
+                          "at": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          },
+                          "action": {
+                            "type": "string",
+                            "description": "What made it.",
+                            "enum": [
+                              "original",
+                              "iterate",
+                              "animate",
+                              "regenerate"
+                            ]
+                          },
+                          "instruction": {
+                            "type": "string",
+                            "description": "The Edit with AI instruction behind it. Null for the original and a regenerate."
+                          },
+                          "current": {
+                            "type": "boolean",
+                            "description": "Whether this is what the asset is now."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "at",
+                          "action",
+                          "instruction",
+                          "current"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "versions"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "versions": [
+                    {
+                      "id": "v_1",
+                      "at": "2026-08-10T16:02:11.000Z",
+                      "action": "original",
+                      "instruction": null,
+                      "current": false
+                    },
+                    {
+                      "id": "v_2",
+                      "at": "2026-08-10T16:09:40.000Z",
+                      "action": "iterate",
+                      "instruction": "more moss",
+                      "current": true
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `kind` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `kind` from the listing.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `name` from the listing.",
+              "example": "mossy_bricks"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/assets/{kind}/{name}/versions/{version}": {
+      "get": {
+        "operationId": "getAssetVersionFile",
+        "summary": "Download one version of an asset",
+        "description": "That version as it was saved: a PNG for a block, sprite or icon (an image over MCP, so an agent can compare them), the model's JSON for a model.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The file."
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `kind` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `kind` from the listing.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `name` from the listing.",
+              "example": "mossy_bricks"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "description": "A version's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "A version's `id` from the list.",
+              "example": "v_1"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/assets/{kind}/{name}/versions/{version}/restore": {
+      "post": {
+        "operationId": "restoreAssetVersion",
+        "summary": "Restore an earlier version of an asset",
+        "description": "Puts the asset back as it was in that version, the history card's **Restore**. **Every version after it is discarded**, so restoring the original undoes every edit since. Not while an AI edit of it is running (`already_running`). Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Restored.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `restored`."
+                    },
+                    "removed": {
+                      "type": "integer",
+                      "description": "How many later versions were discarded."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status",
+                    "removed"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "restored",
+                  "removed": 1
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `already_running`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `kind` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `kind` from the listing.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `name` from the listing.",
+              "example": "mossy_bricks"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "description": "A version's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "A version's `id` from the list.",
+              "example": "v_1"
+            }
+          }
+        ]
+      }
+    },
     "/packs/{pack}/distribution": {
       "get": {
         "operationId": "getDistribution",
