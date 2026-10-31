@@ -1,0 +1,76 @@
+export const metadata = {
+  title: "Loading Screens",
+  description:
+    "Restyle the screen Minecraft shows while your pack loads: your colours, your name and logo, falling snow or rising embers, and your own progress bar. Minecraft 26.1 to 26.3.",
+};
+
+# Loading Screens
+
+A Loading Screen restyles the screen Minecraft shows while resource packs load:
+normally red, with the Mojang Studios logo and a white bar. Yours can have its
+own colours, your server's name and logo, an effect like falling snow or rising
+embers, and a progress bar to match.
+
+## Making one
+
+Press **Add asset** and pick the **Loading Screen** tab. Either:
+
+- **Describe it** ("a spooky Halloween server called Grimfall"). Studio designs
+  the colours, effect, words and bar, which costs 5 AI Credits and takes a few
+  seconds; or
+- **Pick a look**, which is free: Winter Night, Nether, Starfield, Firefly
+  Forest, Thunderstorm, Royal Gold, Ocean, Clean, or Recoloured (Minecraft's
+  own screen and logo in a colour of your choosing). The name you give it
+  becomes the title on the screen.
+
+Either way it opens in the editor.
+
+## The editor
+
+The screen plays live, as the game draws it: the effect moves and the bar
+fills. The panel on the right has every part of it.
+
+- **Looks**: switch to another ready-made style. Your words and picture stay.
+- **Background**: one colour, a gradient from top to bottom, or a gradient
+  out from the middle, with an optional glow behind the logo.
+- **Effect**: none, snow, rain, stars, embers, sparkles or fireflies, in any
+  colour and amount.
+- **Logo**: your own (a picture, a title and a subtitle), Minecraft's own
+  logo, or none. A picture is best as pixel art: up to 128 by 64 pixels and 12
+  colours, and bigger ones are shrunk to fit. Titles are drawn in chunky pixel
+  capitals.
+- **Bar**: the frame and fill colours, solid, a gradient along the bar, or
+  moving stripes, and an optional colour for its empty part.
+- **Edit with AI**: say what to change ("make it purple", "add fireflies") and
+  the fields change. Nothing is saved until you press Save, so you can undo it.
+
+A pack shows one Loading Screen. If it has several, the card marked **Shown**
+is the one in the pack; press **Use this** on another to switch.
+
+## When players see it
+
+It works on **Minecraft 26.1, 26.2 and 26.3**. Older versions see Minecraft's
+own screen. On 26.1 the effect stands still, because that version gives the
+loading screen no clock; it moves on 26.2 and 26.3.
+
+A player sees it whenever the game reloads resources while your pack is
+already loaded:
+
+- pressing F3+T;
+- turning packs on or off in the Resource Packs menu;
+- a server sending a second pack, or leaving a server whose pack is then
+  taken off.
+
+The very first load on joining a server still shows Minecraft's red screen:
+the game hasn't got your pack yet while it is loading it. The very first
+screen when the game starts is Minecraft's too, for the same kind of reason.
+
+## How it works
+
+Minecraft reads the Mojang logo from its own files only, so a resource pack
+can't simply replace it. Instead your pack overrides the two shaders the
+loading screen is drawn with, recognises the background, the logo and the bar
+by where they are, and paints your design over them. Everything else drawn
+with those shaders is left exactly as it was. The shaders only load on the
+versions above, so a newer or older Minecraft falls back to the normal screen
+rather than breaking your pack.
