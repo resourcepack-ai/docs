@@ -47,23 +47,6 @@ nobody can change a word of it. Studio's **Run as console** action is the same
 thing. A button pressed twice runs twice, so for something given once, check
 first or close the dialog after it.
 
-A list under `command:` or `console:` (0.2.51 and newer) is several commands on
-one button, up to 16, run in order and stopping at the first that fails:
-
-```yaml
-    - label: Starter kit
-      console:
-        - give {player} bread 8
-        - give {player} torch 16
-    - label: Go
-      command: [spawn, "kit starter"]   # the PLAYER runs both
-```
-
-A game click runs one command, so a `command:` list runs `/rp run <key>`
-instead, and the engine runs each command as that player, with their own
-permissions, under the same check as `/rp click`. Studio writes the same for a
-**Run command** with more than one line.
-
 ## A command of its own
 
 ```yaml

@@ -55,8 +55,14 @@ not another.
 ## How the model is worn
 
 The model rides on the mob, and the mob's own body is made invisible rather
-than removed, so players hit it where it appears to be. Custom entities never
-despawn (a despawned mob would leave its model standing in an empty field).
+than removed, so players hit it where it appears to be. A custom entity you
+spawn never despawns; one that [spawned on its own](#spawning-on-its-own)
+despawns like the mob it replaced, and its model goes with it.
+
+When it takes damage the model flashes red for a moment, like a vanilla mob
+(`hurt-flash: false` turns that off). On 1.21.4 and newer the model itself goes
+red; older servers show a red outline instead, as does a model with no
+animations.
 
 A model's bones can do more than be drawn: turn a head towards the mob's
 target, give a wing its own hitbox, add a seat. See [Bones](/rp-engine/bones).
@@ -66,3 +72,72 @@ target, give a wing its own hitbox, add a seat. See [Bones](/rp-engine/bones).
   Citizens NPC, see [Putting a model on a mob](/rp-engine/mobs). That page
   dresses an existing mob; this one creates a new one.
 </Callout>
+
+## Boss bars, shooting and the rest
+
+```yaml
+golem:
+  type: RAVAGER
+  model: mypack:golem
+  name: "&2Moss Golem"
+  boss-bar: {color: GREEN, style: SEGMENTED_10, range: 40}
+  follow-range: 40       # blocks it notices a target from
+  fire-immune: true      # fire, lava and burning do nothing
+  glowing: false         # the spectral-arrow outline
+  hurt-flash: true       # red when hurt; the default
+```
+
+| Field | Default | What it does |
+|---|---|---|
+| `boss-bar` | none | A boss bar with its name and health for players within `range` blocks (32). `color` is one of PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE; `style` is SOLID or SEGMENTED_6, 10, 12 or 20. `boss-bar: true` is a purple one |
+| `follow-range` | the mob's own | How far it spots something to chase, up to 128 |
+| `fire-immune` | `false` | Fire, lava, magma blocks and burning do no harm |
+| `glowing` | `false` | Draws the model with the glowing outline |
+| `hurt-flash` | `true` | Flashes red when damaged |
+
+### A mob that shoots
+
+```yaml
+archer:
+  type: SKELETON
+  model: mypack:mushroom
+  ranged:
+    projectile: snowball   # arrow, snowball, small_fireball, fireball, wither_skull, trident
+    damage: 3              # per hit; 0 keeps the projectile's own
+    range: 18              # blocks
+    cooldown: 2            # seconds between shots when RP Engine shoots
+```
+
+On a skeleton, stray or bogged, the mob keeps its distance and aims like a
+skeleton: on 1.21.4 and newer it holds a bow nobody can see, and RP Engine swaps
+the arrow for your projectile. Any other `type` (and those three on older
+servers) is shot for by RP Engine every `cooldown` seconds while it has a target
+in range and in sight, and closes in like the mob it is. Either way its `attack`
+animation plays with each shot. Fireballs and skulls never break blocks.
+
+### Spawning on its own
+
+```yaml
+desert_ghoul:
+  type: HUSK
+  model: mypack:ghoul
+  spawning:
+    biomes: [desert, "*badlands*"]
+    replaces: [HUSK, ZOMBIE]
+    chance: 0.1          # 10% of those natural spawns become this
+    time: night          # day, night or any
+    min-light: 0
+    max-light: 7
+    min-group: 1
+    max-group: 2
+    max-per-chunk: 2
+    worlds: [world]
+```
+
+It **takes the place of** natural spawns rather than adding to them, so the
+game's mob caps and peaceful difficulty still hold. Without `replaces:` it can
+stand in for any natural spawn of its own kind: a monster type for monsters, an
+animal type for animals. An iron golem, allay or villager needs `replaces:`,
+because nothing spawns naturally as one. `biomes:` takes biome names, with `*`
+matching anything; biome tags (`#is_forest`) are not read. Natural ones despawn
+when nobody is near, like the mob they replaced.
