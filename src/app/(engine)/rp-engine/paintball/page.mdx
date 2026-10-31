@@ -64,6 +64,7 @@ holds:
 
 | Item | What it does |
 |---|---|
+| **Colour** (the marker) | Right-click for the next colour, and round again to Any. Your paint in a free for all; in a team match, your marker |
 | **Play for Red** / **Play for Blue** | Pick a side for the next match. Click the same one again to leave it to chance |
 | **Scoreboard** | The scoreboard of the last match |
 | **Leave** | Back to where you were, with your things |
@@ -73,6 +74,13 @@ within one player of each other: if too many people pick one, whoever picked
 it last plays for the other and is told so. Anybody who did not pick fills in
 where they are needed. Somebody who joins once a match is under way goes
 straight onto the smaller team.
+
+`/pb colour <colour|auto>` does the same as the marker. In a free for all the
+colour you choose is your paint (marker, mask, suit and splats); anybody who
+did not choose gets the colour fewest players have. In a team match your paint
+stays your team's, so the sides read at a glance, and you carry the marker of
+the colour you chose. The colours are the server's `ffa.colours`, and
+`colour-pick: false` turns choosing off.
 
 The field has five spawns a side. That is not a cap: more players simply
 share them.
@@ -103,7 +111,8 @@ the sights down.
 **The grenade** goes off a second and a half after it lands and splats every
 enemy within three and a half blocks that it can see: a wall between you and
 it is cover. It stays in your hotbar, greyed out for fifteen seconds after a
-throw, and being splatted does not bring it back any sooner.
+throw, and being splatted does not bring it back any sooner, unless the server
+sets `grenade.reset-on-respawn: true`.
 
 **The mine** is one a match. Set it on the ground and, a second and a half
 later, it is armed: the first enemy to step on it sets it off, splatting every
@@ -111,10 +120,14 @@ enemy within three blocks that it can see. Your own team can walk over it.
 
 **One hit splats you.** For three seconds you watch whoever got you, the camera
 slowly circling them, then you come back at one of your team's spawns, protected for a second and a half: a ball
-that hits you in that time does nothing. There is no friendly fire. Enemy name
+that hits you in that time does nothing. A server can also give each spawn a
+safe zone (`spawn-protection-radius`, a circle or a square): you stay protected
+until you step out of it or fire, and the other side cannot set a mine in it. There is no friendly fire. Enemy name
 tags are hidden, so you find people by looking for them. Your teammates' show
 through walls, as the game's own always do, unless the server turns on
-`nametags.hide-behind-blocks`.
+`nametags.hide-behind-blocks`, which puts a name over each head that walls hide
+and keeps the game's own off for the match, even on a server whose tab or name
+tag plugin draws them.
 
 A pling sounds with a minute and with thirty seconds left, and the time left
 shows in the middle of the screen; for the last ten seconds it is the number
@@ -222,6 +235,30 @@ NPCs, command blocks and anything else that can only run console commands:
 an NPC that runs `/pb as <player> join` for whoever clicks it is a join button. What the player runs
 is checked against **their** permissions, not the sender's.
 
+### Bots
+
+Computer players can fill a match up, so two people can play a four against
+four, and nobody plays one against two. They are off until you turn them on in
+config.yml, or for one arena with `/pb arena set`:
+
+- **`bots.fill`**: each side is filled with bots up to this many in a team
+  match, and everybody up to this many in a free for all.
+- **`bots.even-teams`**: in a team match, a bot for every person the other side
+  has more, so three against one becomes three against three.
+
+A bot plays like anybody else: it has a side or a colour, it is in the kill
+feed, on the scoreboard and in the score, and its paint is the same paint. It
+looks for the nearest enemy it can see, takes a moment to react
+(`bots.reaction-ticks`), fires in bursts with some spread (`bots.spread-degrees`)
+and sidesteps while it shoots. In capture the flag half of each side's bots go
+for the other flag and carry it home, and the rest guard their own. Bots do not
+throw grenades or set mines.
+
+People always come first: somebody who joins a match takes a bot's place, and
+when the last person leaves, the match ends, bots and all. Bots never count
+towards anybody's stats. They are mannequins, so they need Minecraft 1.21.9 or
+newer.
+
 ## Building an arena
 
 An arena is a waiting spot, at least one spawn for each team, and bounds: the
@@ -270,7 +307,10 @@ To play on a map you built yourself, stand in the right places and run:
   <Step title="Spawns">
     `/pb arena addspawn <id> red`, and again for `blue`. Up to five a team;
     past five the oldest goes. `/pb arena clearspawns <id> <red|blue>` starts
-    a team's over.
+    a team's over. With no colour, `/pb arena addspawn <id>` is a spawn for
+    anybody (up to ten): a free for all uses them along with the teams', and
+    a team with no spawns of its own uses them, so a free-for-all arena needs
+    no colours at all. `/pb arena clearspawns <id>` clears those.
   </Step>
   <Step title="Bounds">
     `/pb arena wand` hands you the bounds wand. Left-click a block for one
@@ -340,6 +380,7 @@ what you may run.
 |---|---|
 | `/pb join [arena]` | Into the lobby. `/pb` on its own does the same |
 | `/pb team <red\|blue\|auto>` | The side you would like, from the next match |
+| `/pb colour <colour\|auto>` | Your colour from the next match: your paint in a free for all, your marker in a team match |
 | `/pb leave` | Out, with your inventory and position back |
 | `/pb scoreboard` | The match scoreboard (F in a match or its lobby) |
 | `/pb start [arena] [teams\|ffa\|ctf]` | Start a match now, in the arena's mode or another, joining you first if you are not in |
@@ -351,8 +392,8 @@ what you may run.
 | `/pb arena generate <id> at <world> <x> <y> <z> [name]` | The same, from the console |
 | `/pb arena create <id> [name]` | A new, empty arena in your world |
 | `/pb arena setwaiting <id>` | Its waiting spot, where you stand |
-| `/pb arena addspawn <id> <red\|blue>` | A team spawn, where you stand |
-| `/pb arena clearspawns <id> <red\|blue>` | Remove a team's spawns |
+| `/pb arena addspawn <id> [red\|blue]` | A team spawn where you stand, or with no colour a spawn for anybody |
+| `/pb arena clearspawns <id> [red\|blue]` | Remove a team's spawns, or with no colour the spawns for anybody |
 | `/pb arena setflag <id> <red\|blue>` | Where that team's flag stands in capture the flag, where you stand |
 | `/pb arena wand` | The bounds wand |
 | `/pb arena setbounds <id>` | Its bounds, from the two corners you marked |
@@ -372,9 +413,10 @@ permission at all.
 
 | Node | What it allows | Default |
 |---|---|---|
-| `paintball.play` | Everything a player does: join, pick a team, the scoreboard. Grants the three below | Everyone |
+| `paintball.play` | Everything a player does: join, pick a team and a colour, the scoreboard. Grants the four below | Everyone |
 | `paintball.join` | `/pb join`: into an arena's lobby | Everyone |
 | `paintball.team` | `/pb team`, and the red and blue items in the lobby's hotbar | Everyone |
+| `paintball.colour` | `/pb colour`, and the marker in the lobby's hotbar, which picks your colour | Everyone |
 | `paintball.scoreboard` | `/pb scoreboard`, F in a match or its lobby, and the lobby's scoreboard item | Everyone |
 | `paintball.admin` | Every staff node: start, stop, reload, `/pb as`, arenas, the command bypass. Grants the eight below | Operators |
 | `paintball.start` | `/pb start`: start a match now, in any mode (it joins you first if you are not in) | Operators |
@@ -401,7 +443,15 @@ respawn-seconds: 3
 # While you're out, the camera circles whoever splatted you. false leaves you a
 # free spectator where you fell.
 killer-camera: true
+# A player just back at a spawn can't be splatted for this long.
 spawn-protection-seconds: 1.5
+# And, with a radius, for as long as they stay inside this many blocks of the
+# spawn they came in at, however long that is: a circle round it, or a square.
+# Firing, throwing a grenade or setting a mine ends it, so nobody shoots out of
+# a safe zone, and nobody can set a mine in the other side's. The border is
+# drawn for whoever is inside. 0 for none.
+spawn-protection-radius: 0
+spawn-protection-shape: circle
 # How long the final scoreboard stays up before everybody is back in the lobby.
 end-seconds: 12
 
@@ -426,6 +476,8 @@ marker:
 grenade:
   # Greyed out for this long after a throw. 0 for no wait at all.
   cooldown-seconds: 15
+  # true: being splatted brings it straight back.
+  reset-on-respawn: false
   fuse-ticks: 30
   throw-speed: 1.1
   radius: 3.5
@@ -458,13 +510,16 @@ hud:
 
 nametags:
   # The names over players' heads. The game's own show through walls; with this
-  # on they are text that blocks in front of it hide, like anything else.
+  # on they are text that blocks in front of it hide, like anything else, and
+  # the game's own are hidden for the match even when a tab or name tag plugin
+  # draws them.
   hide-behind-blocks: false
   # Whether you see the other team's names too, not only your own team's. With
   # hide-behind-blocks off, that means through walls as well.
   enemies: false
   # How a name reads, in MiniMessage, with hide-behind-blocks on. {player} is
-  # the name and {team_colour} its team's colour (#FF4655 or #2E9BFF).
+  # the name and {team_colour} its paint colour (#FF4655 or #2E9BFF in a team
+  # match), which colours what follows it whether or not it is in <>.
   format: "<{team_colour}>{player}"
 
 # What an arena plays unless it sets its own: teams, ffa or ctf.
@@ -483,6 +538,22 @@ ffa:
     purple: violet
     pink: bubblegum
     cyan: frost
+
+# Whether players choose their colour (/pb colour, or the lobby's marker) out
+# of ffa.colours: their paint in a free for all, their marker in a team match.
+colour-pick: true
+
+bots:
+  # Each side filled up to this many in a team match, everybody up to this
+  # many in a free for all. 0 for none.
+  fill: 0
+  # A bot for every person the other side has more.
+  even-teams: false
+  # How far a shot strays, in degrees, and how long before they fire at
+  # somebody who comes into view, in ticks.
+  spread-degrees: 4.0
+  reaction-ticks: 12
+  names: [Splotch, Drip, Smudge, Blot, Streak, Dab, Speckle, Spritz, Gloop, Swatch]
 
 ctf:
   # Captures to win. The team with more when the clock runs out wins.
