@@ -1003,6 +1003,27 @@ board.wallRiding()                          // is it on a wall right now?
   vehicle is below half a block a second, so nobody is ever trapped. Tell
   riders what the key does now.
 
+### A driver that isn't a player
+
+`drive(keys)` drives a vehicle as though somebody in the driver's seat were
+holding those keys, until you call it again, with nobody in it (RP Engine 0.2.50
+and newer). It's for computer racers, demo laps and ghosts. The handling is a
+player's, `setEnabled(false)` still stops it, and `input()` reports your keys,
+so code that reacts to what the driver pressed works for this driver too.
+`drive(null)` hands it back.
+
+```java
+VehicleInput keys = new VehicleInput(true, 1.0, -0.4,   // throttle 1, steer 0.4 to the left
+        true, false, true, false, false, false, false);   // forward, back, left, right, space, sprint, sneak
+kart.drive(keys);
+kart.carry(mannequin, 0);                                 // somebody to see in the driver's seat
+```
+
+`carry(entity, seat)` sits a figure that isn't a player in a seat, a mannequin
+or an NPC. It's for show: it doesn't drive and it isn't an occupant. A seat is
+rebuilt when its chunk loads again, which drops it, so check `getVehicle()` and
+carry it again when it has come off.
+
 ### Moving the vehicle's own model
 
 `dress` is for the rider. `perform` plays one of the **model's** animations
