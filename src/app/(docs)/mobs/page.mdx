@@ -26,13 +26,17 @@ The quickest way to a mob is to describe it.
    here as it does for any model.
 3. Press **Generate**. The model is built as a creature made to be animated
    (its head, jaw, legs, arms, tail and wings are separate parts), then it's
-   set up and animated in the same run: idle, walk, attack, hurt and death. Its
-   card says it's generating, then animating.
+   set up and animated in the same run: idle, walk, attack, hurt and death.
+   Last, it gets **sounds of its own**: an idle call, a hurt yelp, a death cry
+   and an attack, designed from what the creature is (a raccoon chitters, a
+   golem rumbles). Its card says it's generating, then animating.
 
-The price shown under the prompt covers both halves, and it's held while it
-runs and settled to what the run actually used. If the model is built but the
+The price shown under the prompt covers all of it, and it's held while it runs
+and settled to what the run actually used. If the model is built but the
 animating fails, you keep the mob without animations and aren't charged for
-the animating. The mob editor says what went wrong, and **Animate with AI**
+the animating. A sound that can't be made is skipped the same way: the mob
+keeps the vanilla sound for it and you aren't charged for it. The mob editor
+says what went wrong, and **Animate with AI** or **Generate sounds with AI**
 tries again.
 
 ## Making one by hand
@@ -176,9 +180,21 @@ higher up starts; a blank one simply doesn't play.
 
 Ambient, hurt, death, attack and step, each a sound from the pack. Pick one,
 or press **+** to make a new one in the sound editor (it opens in a new tab,
-and the list updates when you come back). Setting any of them silences the
-vanilla mob underneath, so a mob with none set keeps its own sounds. Ambient
-plays every so often while a player is nearby.
+and the list updates when you come back). The play button beside a slot plays
+what it's set to. Setting any of them silences the vanilla mob underneath, so
+a mob with none set keeps its own sounds. Ambient plays every so often while a
+player is nearby.
+
+**Generate sounds with AI**, under the slots, makes the ambient, hurt, death
+and attack sounds for you, which is how a mob made before generated mobs had
+sounds, or one converted from a model, gets its own. Describe the creature
+(it starts from how the mob was asked for) and tick the sounds to make. Each
+comes out short (about half a second for hurt and attack, one and a half to
+two for ambient and death), mono so it comes from the mob in game, and
+levelled so the four sit together. They're ordinary sounds of the pack, named
+after the mob, with a second take on each sound's page if you prefer it. It's
+charged like generating a sound, per take, and the price is shown before you
+start.
 
 ### Drops
 
