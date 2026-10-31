@@ -112,6 +112,12 @@ export const nav: NavGroup[] = [
         ],
       },
       {
+        title: "Mobs",
+        href: "/mobs",
+        description: "A model turned into a creature: behaviour, health, animations, sounds and drops.",
+        keywords: ["mob", "entity", "creature", "monster", "boss", "spawn", "spawn egg", "drops", "loot", "hostile", "convert"],
+      },
+      {
         title: "Blocks",
         href: "/blocks",
         description: "The pixel editor, and what a block texture becomes in a pack.",

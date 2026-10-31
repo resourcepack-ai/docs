@@ -1,0 +1,136 @@
+export const metadata = {
+  title: "Mobs",
+  description:
+    "A model turned into a creature: how it behaves, its health and damage, an animation per state, sounds, drops, and spawning it in game.",
+};
+
+# Mobs
+
+A mob is a model that walks around and fights: a golem boss, a raccoon, a
+beetle. You make the model as usual, convert it, and then choose how it
+behaves, how tough it is, which animation plays when, what it sounds like and
+what it drops. Converting changes nothing about the model itself. The cubes,
+textures and animations are still edited in the model editor.
+
+Mobs are run by [RP Engine](/testing/plugin) 0.2.51 or newer, so they need it
+on the server. Our test server has it.
+
+## Making one
+
+1. **Make the model.** Generate, upload or build it, as on the
+   [Models](/models) page. Give it bones and animations (walk, idle, attack)
+   in the model editor's Animate mode, because a mob plays them by state.
+2. **Convert it.** On the model's page, press **Convert** in the header, or
+   right-click the model's card and choose **Convert to…**, then **Mob**. The
+   mob editor opens straight away. From then on it's on the pack's **Mobs**
+   tab rather than under Models.
+3. **Set it up.** A new mob already works: a hostile mob with 20 health. Change
+   what you need and it saves on its own.
+
+## The mob editor
+
+The model stands in the middle with its hitbox drawn round it and a blue arrow
+at its feet showing which way it walks. The states and sounds are on the left,
+everything else on the right.
+
+### Behaviour
+
+Underneath, a mob is a vanilla mob you can't see, wearing your model. Its
+behaviour decides which one, and so how it moves and fights.
+
+| Behaviour | What it does |
+| --- | --- |
+| **Hostile** | Chases and hits players |
+| **Brute** | Big, slow, hits hard |
+| **Climber** | Hostile, and climbs walls |
+| **Neutral** | Wanders, and fights back when hit |
+| **Guardian** | Fights hostile mobs |
+| **Passive** | Wanders, and runs when hit |
+| **Flying** | Drifts around in the air |
+| **Flying hostile** | Swoops at players |
+| **Statue** | Never moves |
+
+**Burns in daylight** is off unless you tick it, whatever the mob walks like.
+
+### Stats
+
+| Setting | What it is |
+| --- | --- |
+| **Health** | In half-hearts: 20 is ten hearts, the same as a player |
+| **Damage** | Per hit, in half-hearts. 0 keeps the vanilla mob's own |
+| **Speed** | A multiple of the vanilla mob's own speed |
+| **Knockback resistance** | How much of a hit's knockback it ignores |
+| **XP** | Experience it drops when killed |
+
+### Size and facing
+
+**Model size** is how big the model is drawn. **Hitbox height** is how tall
+the box it's hit and pushed by is, in blocks; its width grows with it. Press
+**Fit to model** to match it to the model at its size. The hitbox needs a
+1.20.5 or newer server; older ones keep the vanilla mob's box.
+
+If the mob walks sideways or backwards, use **Turn** until the blue arrow
+points out of its face. **Head** picks a bone that turns to look at what the
+mob is after. That bone has to move in at least one animation, or it's drawn
+as part of the body and can't turn.
+
+### Animations
+
+One of the model's animations per state. Press play beside a state to watch it
+in the editor.
+
+| State | When it plays |
+| --- | --- |
+| **Death** | Once, when it dies. The body stays until it ends (at most 5 seconds) |
+| **Spawn** | Once, as it appears |
+| **Attack** | Once, each time it hits something |
+| **Hurt** | Once, each time it takes damage |
+| **Run** | Moving fast or chasing. Blank plays Walk |
+| **Walk** | Moving. Blank plays Idle |
+| **Idle** | Standing still. Blank leaves it in its rest pose |
+
+The list is in order of importance: a mob doing several things at once plays
+the first one listed. The first four play once to the end unless something
+higher up starts; a blank one simply doesn't play.
+
+### Sounds
+
+Ambient, hurt, death, attack and step, each a sound from the pack. Pick one,
+or press **+** to make a new one in the sound editor (it opens in a new tab,
+and the list updates when you come back). Setting any of them silences the
+vanilla mob underneath, so a mob with none set keeps its own sounds. Ambient
+plays every so often while a player is nearby.
+
+### Drops
+
+What it drops when killed, instead of the vanilla mob's loot: an item, the
+least and most of it, and the chance it drops at all. Search for any vanilla
+item, or type `studio:<id>` for one of the pack's own items. With no drops it
+drops nothing but its XP.
+
+## Spawning it in game
+
+1. **Sync the pack** to a server running RP Engine.
+2. Press **Spawn in game** on the model's page (or **Give** on its card) to get
+   a spawn egg for it. Use the egg on a block to hatch the mob there. This needs
+   a 1.20.5 or newer pack.
+3. Or use the commands on the server:
+
+| Command | What it does |
+| --- | --- |
+| `/rp spawn studio:<id>` | Spawns one where you stand |
+| `/rp egg studio:<id> [player] [amount]` | Gives a spawn egg for it |
+
+`<id>` is the model's id, shown on its page.
+
+<Card title="Entities in RP Engine" href="/rp-engine/entities" icon="server">
+  What the plugin does with a custom mob, and writing one by hand in YAML.
+</Card>
+
+## Exports
+
+A resource pack has no way to say a model is a mob, so the mob settings travel
+alongside a synced pack and RP Engine reads them there. They're also written
+into an exported Java pack's `studio-content.json`, which RP Engine reads when
+the zip is dropped into its content folder. The other exports carry the model,
+but not the mob.

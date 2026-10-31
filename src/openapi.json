@@ -1729,6 +1729,7 @@
                             "enum": [
                               "model",
                               "vehicle",
+                              "mob",
                               "block",
                               "block_face",
                               "model_texture",
@@ -1894,6 +1895,7 @@
               "enum": [
                 "model",
                 "vehicle",
+                "mob",
                 "block",
                 "block_face",
                 "model_texture",
@@ -1987,6 +1989,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -3913,6 +3916,7 @@
                           "enum": [
                             "model",
                             "vehicle",
+                            "mob",
                             "block",
                             "block_face",
                             "model_texture",
@@ -4155,6 +4159,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -4363,6 +4368,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -4548,6 +4554,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -4745,6 +4752,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -5139,6 +5147,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -5362,6 +5371,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -5560,6 +5570,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -5750,6 +5761,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -5913,6 +5925,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -6112,6 +6125,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -7177,6 +7191,7 @@
                           "enum": [
                             "model",
                             "vehicle",
+                            "mob",
                             "item3d",
                             "item_model"
                           ]
@@ -7319,6 +7334,7 @@
                           "enum": [
                             "model",
                             "vehicle",
+                            "mob",
                             "item3d",
                             "item_model"
                           ]
@@ -9784,6 +9800,7 @@
                       "enum": [
                         "model",
                         "vehicle",
+                        "mob",
                         "block",
                         "block_face",
                         "model_texture",
@@ -10985,7 +11002,7 @@
                   },
                   "sections": {
                     "type": "string",
-                    "description": "The sections they reach: a comma list of `models`, `vehicles`, `blocks`, `items`, `armor`, `guis`, `hud`, `dialogs`, `icons`, `sounds`, `emotes`, `shaders`, `distribution`, or `*` for all of them.",
+                    "description": "The sections they reach: a comma list of `models`, `vehicles`, `mobs`, `blocks`, `items`, `armor`, `guis`, `hud`, `dialogs`, `icons`, `sounds`, `emotes`, `shaders`, `distribution`, or `*` for all of them.",
                     "default": "*"
                   },
                   "caps": {
@@ -11690,6 +11707,7 @@
                     "enum": [
                       "models",
                       "vehicles",
+                      "mobs",
                       "blocks",
                       "items",
                       "armor",
@@ -11855,6 +11873,7 @@
                     "enum": [
                       "models",
                       "vehicles",
+                      "mobs",
                       "blocks",
                       "items",
                       "armor",
