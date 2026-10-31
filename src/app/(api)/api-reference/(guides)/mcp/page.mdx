@@ -93,6 +93,12 @@ arguments are documented in full.
 | [`get_asset_file`](/api-reference/get-asset-file) | An asset's file. An image comes back as an image, and a VFX can come back as a picture of it playing. |
 | [`rename_asset`](/api-reference/rename-asset) | Change an asset's label. Its id stays, so nothing breaks. |
 | [`delete_asset`](/api-reference/delete-asset) | Delete an asset from a pack. Free, and it cannot be undone. |
+| [`duplicate_asset`](/api-reference/duplicate-asset) | A copy of an asset in the same pack. Free. |
+| [`transfer_assets`](/api-reference/transfer-assets) | Move or copy assets into another pack, or into a new one. Owner only. |
+| [`list_asset_versions`](/api-reference/list-asset-versions) | Every version an asset's AI edits and regenerates made. |
+| [`get_asset_version_file`](/api-reference/get-asset-version-file) | One earlier version, to compare. An image comes back as an image. |
+| [`restore_asset_version`](/api-reference/restore-asset-version) | Undo: put an asset back as it was. Later versions are discarded. |
+| [`regenerate_asset`](/api-reference/regenerate-asset) | Run a generation again, or retry a failed one. Spends credits. |
 | [`export_pack`](/api-reference/export-pack) | Build the Java `.zip`, the Bedrock `.mcpack`, or the content for ItemsAdder, Nexo, Oraxen, CraftEngine or ModelEngine. Confirms it built rather than returning it. |
 | [`push_pack`](/api-reference/push-pack) | Send the pack straight into Minecraft, like the Studio's Sync button. |
 | [`give_asset`](/api-reference/give-asset) | Give in game: the item in the player's hands, the screen opened, the sound played, the set worn. |
