@@ -8464,6 +8464,175 @@
         }
       }
     },
+    "/packs/{pack}/models/{model}/export": {
+      "get": {
+        "operationId": "exportModel",
+        "summary": "Export one model",
+        "description": "One model as a resource pack of its own, built for one Minecraft version: the model page's **Download**. A model works on a range of versions decided by what is in it, so `version` picks one in that range (the pack's own by default) and a version below it answers `invalid_request` saying the oldest it can be. The `/give` command for that version rides in the `X-Give-Command` header.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "An `application/zip` body."
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `still_generating`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "description": "The model's `name` from the asset listing.",
+            "schema": {
+              "type": "string",
+              "description": "The model's `name` from the asset listing.",
+              "example": "lantern"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "required": false,
+            "description": "The Minecraft version to build for, like `1.21.4`. The pack's own by default.",
+            "schema": {
+              "type": "string",
+              "description": "The Minecraft version to build for, like `1.21.4`. The pack's own by default."
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/armor3d/{set}/file": {
+      "get": {
+        "operationId": "getArmor3dFile",
+        "summary": "Download a 3D armour set",
+        "description": "A 3D armour set as its page offers it: `bbmodel` (the default) is the whole set as a Blockbench project, to open and change there; `atlas` is the PNG every piece is painted on (an image over MCP). `{set}` is the set's `name` from the asset listing, with or without its `armor3d:`.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The `.bbmodel` (JSON) or the atlas (PNG)."
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `still_generating`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "set",
+            "in": "path",
+            "required": true,
+            "description": "The set's id.",
+            "schema": {
+              "type": "string",
+              "description": "The set's id.",
+              "example": "knight"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Which file.",
+            "schema": {
+              "type": "string",
+              "description": "Which file.",
+              "enum": [
+                "bbmodel",
+                "atlas"
+              ],
+              "default": "bbmodel"
+            }
+          }
+        ]
+      }
+    },
     "/packs/{pack}/vehicles/{model}": {
       "get": {
         "operationId": "getVehicle",
