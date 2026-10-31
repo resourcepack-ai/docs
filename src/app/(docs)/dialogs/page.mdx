@@ -253,8 +253,8 @@ Set under **When clicked** on any clickable piece or footer button:
 
 | Action | What happens |
 | --- | --- |
-| **Run command** | The player runs it, with their own permissions. |
-| **Run as console** | The server runs it as the console, so the player needs no permission for it. `{player}` is who clicked. Needs RP Engine 0.2.41 or newer, or Dialog Engine 0.6.6 or newer. |
+| **Run command** | The player runs it, with their own permissions. One command per line: [several](#several-commands-on-one-button) run in order. |
+| **Run as console** | The server runs it as the console, so the player needs no permission for it. `{player}` is who clicked. One command per line, run in order. Needs RP Engine 0.2.41 or newer, or Dialog Engine 0.6.6 or newer. |
 | **Suggest command** | A small box opens with the command typed in; they finish it and press **Run**. (Minecraft does not let a dialog fill the chat box.) |
 | **Open link** | The game asks before opening it. Must start with `http://` or `https://`. |
 | **Copy text** | Copies it to their clipboard. |
@@ -271,6 +271,29 @@ button only names it), and the server runs it only for somebody whose dialog
 has that button on it, so typing it in chat does nothing. It cannot use what
 the player typed into a text box, which would let them write the console's
 command for it.
+
+### Several commands on one button
+
+**Run command** and **Run as console** take one command per line, up to 16,
+and run them top to bottom with one click:
+
+```
+give {player} bread 8
+give {player} torch 16
+tellraw {player} "Here you go"
+```
+
+Minecraft lets a click run only one command, so a button with more than one is
+run by the plugin: it needs RP Engine 0.2.51 or Dialog Engine 0.6.7, or newer.
+A button with one command is exactly what it was before.
+
+- **They stop at the first that fails.** A command the server does not know,
+  or one that errors, ends the list there.
+- **Several "Run command" lines cannot use what the player typed** (`$(name)`):
+  a typed value only ever reaches a single command, so only the first line runs.
+  One "Run command" line can still use it, as before.
+- **In the vanilla datapack download** only the first command runs, because
+  there is no plugin there to run the rest.
 
 Minecraft refuses a whole dialog if one action is invalid, so a button with a
 bad link, a bad id or an empty command is sent with no action, and the editor
