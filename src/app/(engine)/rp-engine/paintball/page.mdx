@@ -103,7 +103,8 @@ the sights down.
 **The grenade** goes off a second and a half after it lands and splats every
 enemy within three and a half blocks that it can see: a wall between you and
 it is cover. It stays in your hotbar, greyed out for fifteen seconds after a
-throw, and being splatted does not bring it back any sooner.
+throw, and being splatted does not bring it back any sooner, unless the server
+sets `grenade.reset-on-respawn: true`.
 
 **The mine** is one a match. Set it on the ground and, a second and a half
 later, it is armed: the first enemy to step on it sets it off, splatting every
@@ -428,6 +429,8 @@ marker:
 grenade:
   # Greyed out for this long after a throw. 0 for no wait at all.
   cooldown-seconds: 15
+  # true: being splatted brings it straight back.
+  reset-on-respawn: false
   fuse-ticks: 30
   throw-speed: 1.1
   radius: 3.5
