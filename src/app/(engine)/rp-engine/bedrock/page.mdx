@@ -24,11 +24,14 @@ saved beside the Java zip in `plugins/RPEngine/output/`.
 
 ## What crosses over
 
-- **Items with a flat sprite.** A Bedrock player sees the item with your art
-  and its name. A [3D item](/rp-engine/items#3d-items) crosses only if it also
-  has a sprite at its `texture:` path, which Bedrock uses as its icon: Bedrock
-  cannot draw a Java model in a hand.
-- **Armour** on those items, on the body, from the same equipment texture.
+- **Items.** A Bedrock player sees the item with your art and its name.
+  Bedrock draws every custom item as a flat icon, so a
+  [3D item](/rp-engine/items#3d-items) or a piece of furniture uses its sprite
+  if it has one at its `texture:` path, and otherwise a picture of its model,
+  drawn the way the Java inventory shows it. An item with neither shows its
+  base material's own icon.
+- **Armour**, on the body, from the item's equipment texture. The item needs
+  no sprite of its own for this.
 - **Placed models.** Each piece is drawn for Bedrock players within 48 blocks
   as a native entity, at its size and facing, with its animations playing on
   their own client. A model that uses the game's own textures gets them baked
@@ -67,6 +70,23 @@ rebuilds the Bedrock pack and every Bedrock player gets the new art on their
 next join, but an item that did not exist at startup shows as its base
 material to Bedrock players until the server restarts. The console says so when
 it happens.
+
+The same goes for the very first start of a server whose items use the game's
+own textures (a model painted with oak planks, or an item falling back to its
+material's icon): those are downloaded once, after startup, and a restart puts
+their items in front of Bedrock players. After that they come from disk.
+
+## A server without RP Engine
+
+Geyser alone can show a pack exported from Studio: **Export › Bedrock players
+on a Java server** gives the `.mcpack` and the item mappings Geyser reads. With
+RP Engine installed you don't need its mappings, and shouldn't add them: RP
+Engine registers the same items itself. See [Bedrock and Geyser](/bedrock).
+
+A Studio pack you dropped into `content/` as a `.zip` reaches Java players
+only. For Bedrock players, take `packs/` from that export and put it in
+Geyser's folder; RP Engine already knows the items. A pack that arrives by
+Sync or Distribution needs none of this.
 
 ## Studio models on Bedrock
 
