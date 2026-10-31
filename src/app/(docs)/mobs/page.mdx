@@ -15,7 +15,27 @@ textures and animations are still edited in the model editor.
 Mobs are run by [RP Engine](/testing/plugin) 0.2.51 or newer, so they need it
 on the server. Our test server has it.
 
-## Making one
+## Generating one from words
+
+The quickest way to a mob is to describe it.
+
+1. On the pack page, press **Add asset**, stay on the **Model** tab, and set
+   **What is it** to **Mob**.
+2. Describe the creature: *"a waffle and cake golem boss with a crocodile
+   jaw"*, *"a raccoon"*, *"a purple cave spider"*. A reference picture works
+   here as it does for any model.
+3. Press **Generate**. The model is built as a creature made to be animated
+   (its head, jaw, legs, arms, tail and wings are separate parts), then it's
+   set up and animated in the same run: idle, walk, attack, hurt and death. Its
+   card says it's generating, then animating.
+
+The price shown under the prompt covers both halves, and it's held while it
+runs and settled to what the run actually used. If the model is built but the
+animating fails, you keep the mob without animations and aren't charged for
+the animating. The mob editor says what went wrong, and **Animate with AI**
+tries again.
+
+## Making one by hand
 
 1. **Make the model.** Generate, upload or build it, as on the
    [Models](/models) page. Give it bones and animations (walk, idle, attack)
@@ -26,6 +46,27 @@ on the server. Our test server has it.
    tab rather than under Models.
 3. **Set it up.** A new mob already works: a hostile mob with 20 health. Change
    what you need and it saves on its own.
+
+## Animate with AI
+
+At the foot of the mob editor's left column. It gives every part that moves a
+bone with the right pivot, then writes one animation for each state you tick,
+all at once, and points each state at its animation.
+
+- **What is it, and how does it move?** Optional words that steer it: *"a
+  heavy golem that stomps and bites"*, *"hops instead of walking"*.
+- **Set it up too** also chooses the behaviour, health, damage, speed and
+  experience from the description, measures the hitbox off the model, works out
+  which way it faces and picks its head. It's on for a mob that has no
+  animations yet. Off, your settings are left alone and it only animates.
+- **States to animate**: Idle, Walk, Attack, Hurt and Death are ticked to start
+  with. Run and Spawn are there if you want them; a blank Run plays Walk.
+
+Walk and the other loops repeat without a jump, death ends with the mob lying
+still, and the one-shots return to the rest pose so the next state starts
+cleanly. Running it again replaces the animations it writes and keeps any other
+animation the model has. It runs in the background: leave the editor and come
+back, and the states fill in when it finishes.
 
 ## The mob editor
 
