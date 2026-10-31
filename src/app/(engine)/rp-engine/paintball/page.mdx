@@ -64,6 +64,7 @@ holds:
 
 | Item | What it does |
 |---|---|
+| **Colour** (the marker) | Right-click for the next colour, and round again to Any. Your paint in a free for all; in a team match, your marker |
 | **Play for Red** / **Play for Blue** | Pick a side for the next match. Click the same one again to leave it to chance |
 | **Scoreboard** | The scoreboard of the last match |
 | **Leave** | Back to where you were, with your things |
@@ -73,6 +74,13 @@ within one player of each other: if too many people pick one, whoever picked
 it last plays for the other and is told so. Anybody who did not pick fills in
 where they are needed. Somebody who joins once a match is under way goes
 straight onto the smaller team.
+
+`/pb colour <colour|auto>` does the same as the marker. In a free for all the
+colour you choose is your paint (marker, mask, suit and splats); anybody who
+did not choose gets the colour fewest players have. In a team match your paint
+stays your team's, so the sides read at a glance, and you carry the marker of
+the colour you chose. The colours are the server's `ffa.colours`, and
+`colour-pick: false` turns choosing off.
 
 The field has five spawns a side. That is not a cap: more players simply
 share them.
@@ -343,6 +351,7 @@ what you may run.
 |---|---|
 | `/pb join [arena]` | Into the lobby. `/pb` on its own does the same |
 | `/pb team <red\|blue\|auto>` | The side you would like, from the next match |
+| `/pb colour <colour\|auto>` | Your colour from the next match: your paint in a free for all, your marker in a team match |
 | `/pb leave` | Out, with your inventory and position back |
 | `/pb scoreboard` | The match scoreboard (F in a match or its lobby) |
 | `/pb start [arena] [teams\|ffa\|ctf]` | Start a match now, in the arena's mode or another, joining you first if you are not in |
@@ -375,9 +384,10 @@ permission at all.
 
 | Node | What it allows | Default |
 |---|---|---|
-| `paintball.play` | Everything a player does: join, pick a team, the scoreboard. Grants the three below | Everyone |
+| `paintball.play` | Everything a player does: join, pick a team and a colour, the scoreboard. Grants the four below | Everyone |
 | `paintball.join` | `/pb join`: into an arena's lobby | Everyone |
 | `paintball.team` | `/pb team`, and the red and blue items in the lobby's hotbar | Everyone |
+| `paintball.colour` | `/pb colour`, and the marker in the lobby's hotbar, which picks your colour | Everyone |
 | `paintball.scoreboard` | `/pb scoreboard`, F in a match or its lobby, and the lobby's scoreboard item | Everyone |
 | `paintball.admin` | Every staff node: start, stop, reload, `/pb as`, arenas, the command bypass. Grants the eight below | Operators |
 | `paintball.start` | `/pb start`: start a match now, in any mode (it joins you first if you are not in) | Operators |
@@ -491,6 +501,10 @@ ffa:
     purple: violet
     pink: bubblegum
     cyan: frost
+
+# Whether players choose their colour (/pb colour, or the lobby's marker) out
+# of ffa.colours: their paint in a free for all, their marker in a team match.
+colour-pick: true
 
 ctf:
   # Captures to win. The team with more when the clock runs out wins.
