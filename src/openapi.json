@@ -7552,6 +7552,918 @@
         }
       }
     },
+    "/packs/{pack}/custom-guis": {
+      "get": {
+        "operationId": "listCustomGuis",
+        "summary": "List a pack's Custom GUIs",
+        "description": "A pack's Custom GUIs: menus written as HTML and CSS pages, which a server running MC GUI shows on maps and in full-screen views, filed on the GUIs tab beside the vanilla screens. They are not part of the resource pack (MC GUI builds its own), so nothing here reaches an export or a push; a server gets one with `POST /packs/{pack}/custom-guis/{gui}/share`. Also lists the templates a new one can start from.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The Custom GUIs and the templates.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "guis": {
+                      "type": "array",
+                      "description": "Its Custom GUIs, last changed first.",
+                      "items": {
+                        "type": "object",
+                        "description": "A Custom GUI.",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Its id in the pack."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Its name."
+                          },
+                          "pages": {
+                            "type": "integer",
+                            "description": "How many pages it has."
+                          },
+                          "entry": {
+                            "type": "string",
+                            "description": "The page a server opens first."
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "pages",
+                          "entry",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "templates": {
+                      "type": "array",
+                      "description": "What `create_custom_gui` can start from, as `{id, name, about}`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "guis",
+                    "templates"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "guis": [
+                    {
+                      "id": "server_menu",
+                      "name": "Server menu",
+                      "pages": 4,
+                      "entry": "menu.html",
+                      "updatedAt": "2026-10-27T10:00:00.000Z"
+                    }
+                  ],
+                  "templates": [
+                    {
+                      "id": "mc-hub",
+                      "name": "Server menu",
+                      "about": "A hub with your level and who's online."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "createCustomGui",
+        "summary": "Make a Custom GUI",
+        "description": "A new Custom GUI, blank or from one of the templates the listing names. Write its pages yourself with `update_custom_gui`, or have the AI write them with `generate_custom_gui_page`. A pack holds up to 50. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "201": {
+            "description": "Made.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "gui": {
+                      "type": "object",
+                      "description": "The new Custom GUI.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "pages": {
+                          "type": "integer",
+                          "description": "How many pages it has."
+                        },
+                        "entry": {
+                          "type": "string",
+                          "description": "The page a server opens first."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "pages",
+                        "entry",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "gui"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "gui": {
+                    "id": "server_menu",
+                    "name": "Server menu",
+                    "pages": 4,
+                    "entry": "menu.html",
+                    "updatedAt": "2026-10-27T10:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Its name.",
+                    "maxLength": 50,
+                    "example": "Server menu"
+                  },
+                  "template": {
+                    "type": "string",
+                    "description": "A template's `id`, or `blank` (the default)."
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "description": "What it is for, kept with it as its generation prompt is with an asset.",
+                    "maxLength": 4000
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/custom-guis/{gui}": {
+      "get": {
+        "operationId": "getCustomGui",
+        "summary": "Read a Custom GUI's files",
+        "description": "Its pages (`.html`), stylesheets (`.css`) and pictures (as `data:` URLs), as the editor's Code view has them. `entry` is the page a server opens first.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The Custom GUI and its files.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "gui": {
+                      "type": "object",
+                      "description": "The Custom GUI, with `files` as `{name, content}`.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "pages": {
+                          "type": "integer",
+                          "description": "How many pages it has."
+                        },
+                        "entry": {
+                          "type": "string",
+                          "description": "The page a server opens first."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "pages",
+                        "entry",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "gui"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "gui": {
+                    "id": "server_menu",
+                    "name": "Server menu",
+                    "pages": 1,
+                    "entry": "menu.html",
+                    "files": [
+                      {
+                        "name": "menu.html",
+                        "content": "<!doctype html>..."
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "gui",
+            "in": "path",
+            "required": true,
+            "description": "The Custom GUI's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Custom GUI's `id` from the list.",
+              "example": "server_menu"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "updateCustomGui",
+        "summary": "Change a Custom GUI's files",
+        "description": "Renames it, and/or changes its files: each of `files` replaces the file of that name or adds it, and `remove` takes files out, then it is checked and saved as the editor's Save would. A page links to another with an ordinary `href` to its file name; the MC GUI docs say what else a page can do (commands, placeholders, sounds). Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved. The Custom GUI and its files, as `get_custom_gui` answers."
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "gui",
+            "in": "path",
+            "required": true,
+            "description": "The Custom GUI's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Custom GUI's `id` from the list.",
+              "example": "server_menu"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "A new name.",
+                    "maxLength": 50
+                  },
+                  "files": {
+                    "type": "array",
+                    "description": "Files to write, as `{name, content}`: a bare file name (`shop.html`, `style.css`) and its text, or a picture as a `data:` URL.",
+                    "items": {
+                      "type": "object",
+                      "description": "A file."
+                    }
+                  },
+                  "remove": {
+                    "type": "array",
+                    "description": "File names to delete.",
+                    "items": {
+                      "type": "string",
+                      "description": "A file name."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/custom-guis/{gui}/delete": {
+      "post": {
+        "operationId": "deleteCustomGui",
+        "summary": "Delete a Custom GUI",
+        "description": "Deletes it. A server that imported it keeps its own copy of the pages.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `deleted`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "gui",
+            "in": "path",
+            "required": true,
+            "description": "The Custom GUI's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Custom GUI's `id` from the list.",
+              "example": "server_menu"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/custom-guis/{gui}/share": {
+      "post": {
+        "operationId": "shareCustomGui",
+        "summary": "Send a Custom GUI to a server",
+        "description": "The editor's **Send to server**: the Custom GUI as saved, frozen under a code. On a server running MC GUI, `/mcgui import <code>` writes its pages into the plugin's pages folder; importing a later code of the same GUI tidies the files the earlier one wrote. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "The import code."
+                    },
+                    "command": {
+                      "type": "string",
+                      "description": "What to type on the server."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "code",
+                    "command"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "code": "QWERTYUP",
+                  "command": "/mcgui import QWERTYUP"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "gui",
+            "in": "path",
+            "required": true,
+            "description": "The Custom GUI's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Custom GUI's `id` from the list.",
+              "example": "server_menu"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/custom-guis/{gui}/generate": {
+      "post": {
+        "operationId": "generateCustomGuiPage",
+        "summary": "Write a Custom GUI page with AI",
+        "description": "The Custom GUI editor's AI: writes a page from a sentence, or rewrites one that exists (`page`, the entry page by default), and saves it before answering, so there is no job to wait on. `look: minecraft` draws it in the game's own style (panels, slots, the game's font), and adds the kit's stylesheet to the GUI if it lacks it. 15 credits a request, flat, given back if it fails.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "200": {
+            "description": "Written and saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "gui": {
+                      "type": "object",
+                      "description": "The Custom GUI.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "pages": {
+                          "type": "integer",
+                          "description": "How many pages it has."
+                        },
+                        "entry": {
+                          "type": "string",
+                          "description": "The page a server opens first."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "pages",
+                        "entry",
+                        "updatedAt"
+                      ]
+                    },
+                    "page": {
+                      "type": "string",
+                      "description": "The page written."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `ready`."
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "The page's HTML."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "gui",
+                    "page",
+                    "status",
+                    "content"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "gui": {
+                    "id": "server_menu",
+                    "name": "Server menu",
+                    "pages": 2,
+                    "entry": "menu.html"
+                  },
+                  "page": "shop.html",
+                  "status": "ready",
+                  "content": "<!doctype html>..."
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "gui",
+            "in": "path",
+            "required": true,
+            "description": "The Custom GUI's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Custom GUI's `id` from the list.",
+              "example": "server_menu"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What the page should be, or what to change.",
+                    "maxLength": 4000,
+                    "example": "a shop with three ranks side by side and a Buy button under each"
+                  },
+                  "page": {
+                    "type": "string",
+                    "description": "The page's file name. A new one is made when it doesn't exist.",
+                    "example": "shop.html"
+                  },
+                  "look": {
+                    "type": "string",
+                    "description": "Its style.",
+                    "enum": [
+                      "modern",
+                      "minecraft"
+                    ],
+                    "default": "modern"
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/packs/{pack}/vehicles/{model}": {
       "get": {
         "operationId": "getVehicle",
