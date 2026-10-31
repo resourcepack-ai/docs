@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Plugin API",
   description:
-    "Drive items, models, emotes, vehicles, 3D armour, 3D shader objects, icons, sounds, HUD overlays and dialogs from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
+    "Drive items, models, emotes, vehicles, custom mobs and their skills, 3D armour, 3D shader objects, icons, sounds, HUD overlays and dialogs from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
 };
 
 # Plugin API
@@ -65,6 +65,8 @@ engine.sounds();        // custom sounds
 engine.icons();         // icons, and putting one into text
 engine.textEffects();   // Text Effects, and writing text in one
 engine.vfx();           // VFX: play one where somebody stands
+engine.mobs();          // custom mobs: spawn one, animate one, give an egg
+engine.skills();        // mob skills: add a mechanic, condition or targeter; cast one
 engine.overlays();      // HUD overlays: show one, hide one, feed it values
 engine.dialogs();       // dialogs: open one, feed it values, read player settings
 engine.registry();      // everything this server holds, by id
@@ -84,6 +86,8 @@ engine.sounds()         // custom sounds
 engine.icons()          // icons, and putting one into text
 engine.textEffects()    // Text Effects, and writing text in one
 engine.vfx()            // VFX: play one where somebody stands
+engine.mobs()           // custom mobs: spawn one, animate one, give an egg
+engine.skills()         // mob skills: add a mechanic, condition or targeter; cast one
 engine.overlays()       // HUD overlays: show one, hide one, feed it values
 engine.dialogs()        // dialogs: open one, feed it values, read player settings
 engine.registry()       // everything this server holds, by id
@@ -1229,6 +1233,159 @@ vfx.play(id, player, VfxOptions.builder()
 and `passes()`. A Studio VFX is shown only to the players whose pack has it. Main
 thread only.
 
+## Custom mobs
+
+The [custom mobs](/rp-engine/entities) a content folder's `entities/` declares
+and the ones a Studio sync carries (`studio:<id>`) are one catalogue.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+Mobs mobs = engine.mobs();
+ContentId rhino = ContentId.parse("zoo:rhino").orElseThrow();
+
+mobs.info(rhino).ifPresent(info -> info.animations());   // state -> animation name
+Entity spawned = mobs.spawn(location, rhino).orElseThrow();
+mobs.idOf(entity);                       // which custom mob this is, if any
+mobs.state(entity);                      // what it is showing: MobState.WALK, ...
+mobs.play(entity, MobState.ATTACK);      // as if it had happened: a one-shot, then back
+mobs.play(entity, "roar", 0);            // any animation of its model, for its own length
+ItemStack egg = mobs.egg(rhino, 1).orElseThrow();   // hatches that mob where used
+```
+
+```kotlin
+val mobs = engine.mobs()
+val rhino = ContentId.parse("zoo:rhino").orElseThrow()
+
+mobs.info(rhino).ifPresent { it.animations() }       // state -> animation name
+val spawned = mobs.spawn(location, rhino).orElseThrow()
+mobs.idOf(entity)                        // which custom mob this is, if any
+mobs.state(entity)                       // what it is showing: MobState.WALK, ...
+mobs.play(entity, MobState.ATTACK)       // as if it had happened: a one-shot, then back
+mobs.play(entity, "roar", 0.0)           // any animation of its model, for its own length
+val egg = mobs.egg(rhino, 1).orElseThrow()   // hatches that mob where used
+```
+
+</CodeTabs>
+
+**The states are `MobState`, and their order is their precedence**: `DEATH`,
+`SPAWN`, `ATTACK` and `HURT` play once, and only a higher one cuts them short;
+`RUN`, `WALK` and `IDLE` loop, and fall through to the next when the mob has no
+animation for them. `play(entity, state)` is refused (it returns false) when a
+higher one-shot is playing or the mob has nothing mapped for that state.
+`play(entity, name, seconds)` holds the stage for that long (0 for the
+animation's own length), then the mob goes back to what it is doing.
+
+`EntityInfo` also says how a mob looks after itself: `hurtFlash()`,
+`followRange()`, `glowing()`, `fireImmune()`, and three optional blocks:
+`bossBar()` (`color()`, `style()`, `range()`), `ranged()` (`projectile()`,
+`damage()`, `cooldown()`, `range()`) and `spawning()` (`worlds()`, `biomes()`,
+`replaces()`, `chance()`, light, time, group and `maxPerChunk()`). The builder
+takes each, so a mob you [register from code](#registering-content-from-code)
+can have them too.
+
+A projectile a custom mob fired carries the damage it was given. Setting a
+different damage on it in your own `EntityDamageByEntityEvent`, at a priority
+above `NORMAL`, wins.
+
+Listen for `MobStateChangeEvent` to follow what a mob is doing. It fires when
+what is *playing* changes, so a state the mob has no animation for never
+appears. `EntityDeathEvent` still hands you the drops list, after the mob's own
+`drops:` have replaced the vanilla loot.
+
+Everything here touches an entity, so it is main thread only, or on Folia the
+thread that owns the mob or the place. Needs RP Engine 0.2.51 or newer.
+
+### Skills
+
+A custom mob's [skills](/rp-engine/skills) are MythicMobs' skill lines, and you
+extend the language the way MythicMobs' add-ons do: register a mechanic, a
+condition or a targeter by name, and every mob file can use it. Needs RP Engine
+0.2.53 or newer.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+MobSkills skills = engine.skills();
+
+// - myplugin:smite{damage=6} @target ~onAttack 0.2
+skills.registerMechanic("myplugin:smite", cast -> {
+    cast.target().ifPresent(target -> {
+        target.getWorld().strikeLightningEffect(target.getLocation());
+        if (target instanceof LivingEntity living) {
+            living.damage(cast.number("damage", 4, "d") * cast.power(), cast.caster());
+        }
+    });
+    return true;
+}, "smite");
+
+// ?myplugin:inarena{name=pit}
+skills.registerCondition("myplugin:inarena", cast ->
+        arenas.contains(cast.string("name", ""), cast.location()));
+
+// @myplugin:team{team=red}
+skills.registerTargeter("myplugin:team", new SkillTargeter() {
+    @Override
+    public Collection<Entity> entities(SkillCast cast) {
+        return new ArrayList<>(teams.members(cast.string("team", "red")));
+    }
+});
+
+skills.cast(boss, "bosses:GroundSlam", player);   // a metaskill, cooldown and conditions applying
+skills.stance(boss);                             // Optional<String>
+skills.stance(boss, "enraged");
+```
+
+```kotlin
+val skills = engine.skills()
+
+// - myplugin:smite{damage=6} @target ~onAttack 0.2
+skills.registerMechanic("myplugin:smite", { cast ->
+    cast.target().ifPresent { target ->
+        target.world.strikeLightningEffect(target.location)
+        (target as? LivingEntity)?.damage(cast.number("damage", 4.0, "d") * cast.power(), cast.caster())
+    }
+    true
+}, "smite")
+
+// ?myplugin:inarena{name=pit}
+skills.registerCondition("myplugin:inarena") { cast ->
+    arenas.contains(cast.string("name", ""), cast.location())
+}
+
+// @myplugin:team{team=red}
+skills.registerTargeter("myplugin:team", object : SkillTargeter {
+    override fun entities(cast: SkillCast): Collection<Entity> =
+        ArrayList(teams.members(cast.string("team", "red")))
+})
+
+skills.cast(boss, "bosses:GroundSlam", player)   // a metaskill, cooldown and conditions applying
+skills.stance(boss)                             // Optional<String>
+skills.stance(boss, "enraged")
+```
+
+</CodeTabs>
+
+**`SkillCast` is what each one is handed**: `caster()`, `mob()`, `trigger()`,
+`target()` (the entity, when the target is one) and `location()` (always),
+`power()`, `stance()`, and the line's options by any of their names, with
+placeholders such as `<caster.hp>` filled in and a range like `2to5` picked:
+`string`, `number`, `integer` and `bool`, plus `fill(text)` for text of your
+own. A mechanic is called once per target, on the caster's thread. A
+targeter's own options are read the same way; the shared ones (`limit`,
+`sort`, the offsets, `conditions`) are applied to what it returns.
+
+**Names are looked up when a line runs**, so registering in `onEnable`, after
+RP Engine has loaded its content, is in time. **Give yours a prefix**
+(`myplugin:smite`). A prefixed name nobody has registered yet is kept at load
+with a note that it "is not registered yet" and runs from the moment you
+register it, with no reload, where an unknown bare name is a typo and its line
+is skipped. Registering a name that already exists replaces it, RP Engine's own
+included. Names are case-insensitive.
+
+Listen for `MobSkillEvent` to see a skill before it runs, or cancel it; see
+[Events](#events).
+
 ## Events
 
 All in `ai.resourcepack.engine.api.event`, and cancellable unless the row says
@@ -1254,6 +1411,8 @@ otherwise.
 | `VehicleStateEvent` | What a vehicle is doing changed: set off, stopped, took off, went under. Not cancellable |
 | `VehicleImpactEvent` | A vehicle hit another vehicle, the world, or the ground. See [Collisions and parts](#collisions-and-parts). Not cancellable |
 | `VehicleBailEvent` | A bad landing is about to throw a rider off. Cancelling keeps them aboard |
+| `MobStateChangeEvent` | A custom mob's animation state changed: `previous()` and `state()`, null for its rest pose. Not cancellable |
+| `MobSkillEvent` | A custom mob is about to cast a skill: one of its own `skills:` lines (`skill()` is the line as written) or a metaskill (`skill()` is its id), with `trigger()` (`attack`, `timer`, `api` and so on) and `triggerEntity()`. Fires after the line's chance, health and conditions passed. Cancelling skips it and spends no cooldown |
 | `EntityDeathEvent` | A custom entity died. Says what it was, `killer()`, and `drops()`: Bukkit's live drop list, so editing it changes the loot. Not cancellable |
 | `PlayerLiquidEvent` | Somebody went into or came out of one of your liquids. Not cancellable |
 | `EmoteStartEvent` | An emote is about to start |

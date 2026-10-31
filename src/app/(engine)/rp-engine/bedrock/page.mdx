@@ -53,15 +53,44 @@ does not draw.
 **Custom blocks.** A [custom block](/rp-engine/blocks) is a vanilla block in a
 state nothing else uses, and Bedrock players see that vanilla block.
 
-**Custom entities.** An [entity](/rp-engine/entities) is a mob made invisible
-with a display entity riding it, so a Bedrock player sees neither. It can still
-be hit where it stands.
-
 **Custom screens, HUD overlays and dialogs.** All three rely on Java-only
 font and dialog features.
 
 **A handful of vanilla sounds** that Bedrock plays itself rather than by name.
 Most vanilla sounds can be replaced on both editions.
+
+## Custom mobs and bound models
+
+A [custom mob](/rp-engine/entities), and a model put on a mob with
+[`/rp bind`](/rp-engine/mobs) or MythicMobs' [`rpmodel`](/rp-engine/mythicmobs),
+is drawn for Bedrock players as its model (RP Engine 0.2.53 or newer). Geyser
+still moves, turns, hurts and kills the mob itself, so its hitbox is where its
+model is.
+
+What crosses:
+
+- the model, at its `scale:`, turned by its `turn:`, facing the way the mob
+  faces;
+- its `idle`, `walk`, `attack` and `hurt` animations, played as the mob changes
+  what it is doing, and anything a [skill](/rp-engine/skills) plays with
+  `animate`;
+- the red flash when it is hurt, which is the Bedrock client's own;
+- a mob [synced from Studio](/mobs), drawn from the Bedrock pack Studio sends.
+
+What is different:
+
+- **A dying mob tips over** the way a Bedrock mob does, rather than playing its
+  `death` animation.
+- **Its name sits over the hitbox**, where Geyser puts a name, not just above
+  the model.
+- **Two mobs wearing one model share one `turn:`**: Bedrock uses the first
+  mob's.
+- **`/rp bind` crosses only for a model Bedrock already has**: one a custom
+  mob wears, or one with a [`place:`](/rp-engine/models) block. Any other
+  item's model stays invisible to Bedrock players.
+
+Skills, drops, boss bars and the rest of a mob's behaviour run on the server,
+so they are the same for everybody.
 
 ## New items need a restart
 
@@ -111,4 +140,4 @@ the body for Bedrock players too, when the pieces were handed out with
 If many of your players are on Bedrock, put anything they need to know in
 something that crosses over, such as an item's name and lore or chat. Bedrock
 players never see a menu that only exists as a custom screen, the HUD, a
-dialog, an emote, a vehicle, a custom block or a custom entity.
+dialog, an emote, a vehicle or a custom block.

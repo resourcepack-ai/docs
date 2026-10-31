@@ -1,0 +1,602 @@
+export const metadata = {
+  title: "Skills",
+  description:
+    "What a custom mob does besides walk and bite: timed attacks, phases, summons and auras, written as MythicMobs skill lines.",
+};
+
+# Skills
+
+A [custom mob's](/rp-engine/entities) `skills:` are what it does besides walk
+and bite: a ground slam every few seconds, minions when it drops below half
+health, a poison aura, a volley of fireballs, a second phase where it turns red
+and fast. **They are MythicMobs' skill lines, as written**, so a `Skills:` block
+copied out of a MythicMobs mob file runs here, as long as it sticks to what
+this page lists. You don't need MythicMobs installed.
+
+Skills need RP Engine 0.2.53 or newer. Mobs made in [Studio](/mobs) bring the
+abilities you gave them there and are run by the same system.
+
+```yaml
+# entities/bosses.yml
+golem_king:
+  type: ZOMBIE
+  model: bosses:golem
+  name: "&6Golem King &7{hp}/{max_hp}"
+  health: 300
+  boss-bar: {color: YELLOW}
+  stance: calm                    # the stance it starts in (optional)
+  skills:                         # or Skills:, as MythicMobs spells it
+  - message{m="&6<caster.name>&f: Who disturbs my rest?"} @PlayersInRadius{r=30} ~onSpawn
+  - skill{s=GroundSlam} @self ~onTimer:120 ?targetwithin{d=8}
+  - leap{velocity=150} @target ~onTimer:100 ?distance{d=6to20} 0.6
+  - skill{s=CallTheGuard} @self ~onDamaged =50%
+  - potion{type=SLOW;duration=60;level=2} @trigger ~onAttack 0.3
+  - command{c="say <caster.name> has fallen to <trigger.name>"} @self ~onDeath
+```
+
+## A skill line
+
+```
+mechanic{option=value;...} @targeter{...} ~trigger ?condition{...} <health> chance
+```
+
+Only the mechanic is required. Everything after it is optional and can come in
+any order:
+
+| Part | What it is |
+|---|---|
+| `mechanic{...}` | What it does: [Mechanics](#mechanics). `{...}` and `[...]` both hold options, separated by `;`. `"quotes"` keep spaces and `;` in a value |
+| `@targeter` | Who or where it aims at: [Targeters](#targeters). With none, it aims at whatever set it off (whoever hit the mob, what it hit, who clicked it), or the mob itself when nothing did. Inside a metaskill, it aims at what the call aimed at. The model mechanics, `setstance` and `cancelevent` aim at the mob itself |
+| `~onTrigger` | When it runs: [Triggers](#triggers). With none, `~onCombat` |
+| `?condition` | Must pass on the mob. `?!condition` must fail. `?~condition` tests whatever set it off instead, and `?~!` the same, negated: [Conditions](#conditions) |
+| health | `<50%`, `>200`, `=30%-50%`: the mob's health, as a share or in points. See [Phases](#stances-and-phases) |
+| chance | A number from 0 to 1 at the end: the chance it runs |
+
+Names are case-insensitive, and MythicMobs' short names work: `@PIR` for
+`@PlayersInRadius`, `a=` for `amount=`, `d=` for `damage=`. A number may be a
+range, `amount=2to5`, and a new one is picked each time.
+
+Every mechanic also takes these:
+
+| Option | What it does |
+|---|---|
+| `delay=` | Ticks before this line runs, without holding up the rest of the list |
+| `repeat=`, `repeatInterval=` (`ri`) | Runs it again this many times, this many ticks apart |
+| `cooldown=` | Seconds before this line can run again on this mob |
+
+`delay 20` on a line of its own is different: it pauses the rest of the list
+for 20 ticks.
+
+### The long form
+
+If you'd rather not write a line, each entry can be a YAML map instead. It is
+turned into the same line:
+
+```yaml
+  skills:
+  - mechanic: leap            # or do:
+    args: {velocity: 150}
+    target: "@target"         # or targeter:
+    trigger: onTimer:100
+    if: ["distance{d=6to20}"] # or conditions:
+    health: "<50%"
+    chance: 0.6
+```
+
+Both forms can sit in one list. A line with `: ` in it that YAML read as a map
+(an unquoted `message{m="Boss: hi"}`) is put back together for you.
+
+## Metaskills
+
+A metaskill is a named list of lines in `skills/`, in MythicMobs' own file
+shape, so several mobs can share it and one line can call it:
+
+```yaml
+# skills/bosses.yml
+GroundSlam:
+  Cooldown: 8                     # seconds, per mob
+  Conditions:                     # tested on the caster
+  - stance{s=calm}
+  TargetConditions:               # each target must pass
+  - isplayer
+  Skills:
+  - animate{a=attack} @self
+  - delay 10                      # ticks; the rest of the list waits
+  - vfx{id=bosses:shockwave} @selflocation
+  - damage{a=6} @PlayersInRadius{r=6}
+  - throw{velocity=12;velocityY=6} @PlayersInRadius{r=6}
+```
+
+| Key | What it does |
+|---|---|
+| `Skills` | The lines, run in order. They have no triggers of their own |
+| `Cooldown` | Seconds before this mob can cast it again |
+| `Conditions` | Must pass on the caster, or nothing runs |
+| `TargetConditions` | Each target must pass, or is left out |
+| `TriggerConditions` | Must pass on whatever set it off |
+| `OnCooldownSkill` | A metaskill to cast instead while this one is cooling down |
+| `CancelIfNoTargets` | `true`: nothing runs when no target is left after `TargetConditions` |
+
+Call one with `skill{s=GroundSlam}` (also `skill:GroundSlam`, `metaskill`,
+`meta`). A bare name is looked for in the mob's own pack first, then in any
+pack; `otherpack:GroundSlam` names another pack's. `randomskill{skills=a,b,c}`
+casts one of several at random.
+
+In `Conditions:` lists a condition may carry an action after it:
+
+| Action | Means |
+|---|---|
+| `true` | It must pass. The default |
+| `false` | It must fail |
+| `power 2` | When it passes, the skill's amounts are doubled |
+| `cast Other` | When it passes, also cast `Other` |
+| `castInstead Other` | When it passes, cast `Other` and not this |
+| `orElseCast Other` | When it fails, cast `Other` |
+
+```yaml
+Enrage:
+  Conditions:
+  - health{h=<25%} power 1.5
+  Skills:
+  - damage{a=8} @target
+```
+
+## Triggers
+
+| Trigger | When | `@trigger` is |
+|---|---|---|
+| `~onSpawn` | It was spawned: a command, an egg, a spawner, a plugin, natural spawning or `summon` | - |
+| `~onLoad` | It was found already standing: a chunk load, a restart, a reload | - |
+| `~onSpawnOrLoad` | Either | - |
+| `~onAttack` | It hit something (not with a skill's own damage or shots) | What it hit |
+| `~onDamaged` (`~onHurt`) | It was hurt. `cancelevent` and `modifydamage` work here | Who hurt it |
+| `~onDeath` | It died | Its killer |
+| `~onTimer:<ticks>` | Every so many ticks while it is loaded | - |
+| `~onInteract` | A player right-clicked it | The player |
+| `~onCombat` | The default: attack, damaged, spawn and death | As those |
+| `~onEnterCombat` | It took a target, having had none | The target |
+| `~onDropCombat` | It lost its target | - |
+| `~onChangeTarget` (`~onTarget`) | Its target changed | The new target |
+| `~onKill` | It killed anything | The victim |
+| `~onPlayerKill` (`~onKillPlayer`) | It killed a player | The player |
+| `~onShoot` (`~onBowShoot`) | It fired a projectile of its own (a bow, or [`ranged:`](/rp-engine/entities#a-mob-that-shoots)), not a skill's | Its target |
+| `~onProjectileHit` | Something it shot hit, a skill's `projectile` or `missile` included | What was hit |
+| `~onSignal:<name>` | Another mob's `signal{s=<name>}` reached it. No name hears every signal | The sender |
+
+## Targeters
+
+| Targeter | Picks |
+|---|---|
+| `@self` (`@caster`, `@boss`, `@mob`) | The mob |
+| `@target` (`@t`) | What it is fighting |
+| `@trigger` | What set the skill off |
+| `@NearestPlayer{r}` (`@NP`) | The nearest player within `r` (32) |
+| `@parent` (`@summoner`) | The mob that summoned it |
+| `@children` (`@summons`) | What it summoned |
+| `@PlayersInRadius{r}` (`@PIR`) | Players within `r` (5) |
+| `@EntitiesInRadius{r}` (`@EIR`) | Any entity within `r` |
+| `@LivingInRadius{r}` (`@LIR`) | Living things within `r` |
+| `@MobsInRadius{r;types}` (`@MIR`) | Mobs within `r`, of `types` (custom mob ids or vanilla types) |
+| `@LivingInCone{angle;range}` (`@LIC`, `@EIC`) | Living things in front of it |
+| `@EntitiesInRing{min;max}` (`@EIRR`), `@PlayersInRing` (`@PIRR`) | Between two radii |
+| `@PlayersInWorld` (`@World`), `@PlayersOnServer` (`@Server`) | Every player |
+| `@ThreatTable` (`@TT`) | Everybody on its [threat table](#threat-tables), most threatening first; without one, its target |
+| `@RandomThreatTarget` (`@RTT`), `@RandomThreatTargetLocation` (`@RTTL`) | One of them at random; where they stand |
+| `@selflocation` (`@casterLocation`), `@selfeyelocation` | Where it stands; its eyes |
+| `@forward{f;s;y}` | `f` blocks ahead of it, `s` to the right |
+| `@targetlocation` (`@TL`), `@triggerlocation` | Where they stand |
+| `@location{c=x,y,z}` (`@loc`) | A fixed spot in its world |
+| `@origin`, `@spawnlocation` | Where it is; where it was spawned |
+| `@Ring{r;points}`, `@Cone{angle;range;points}`, `@Sphere{r;points}` | Spots round it |
+| `@RandomLocationsNearCaster{a;r;minr}` (`@RLNC`), `@RLNT` | Random spots near it; near its target |
+| `@PlayerLocationsInRadius{r}` (`@PLIR`) | Where the players near it stand |
+
+Every targeter also takes:
+
+| Option | What it does |
+|---|---|
+| `limit=` | At most this many |
+| `sort=` | `NEAREST`, `FURTHEST`, `RANDOM`, `LOWEST_HEALTH` or `HIGHEST_HEALTH` |
+| `ignore=` | Entity types to leave out, comma-separated |
+| `conditions=[ - isplayer - !stance{s=x} ]` | Each target must pass |
+| `xoffset`, `yoffset`, `zoffset` (`xo`, `yo`, `zo`) | Moves a place |
+| `forwardoffset` (`fo`), `sideoffset` (`so`) | Moves a place ahead or to the side |
+| `targetself=true` | Lets a radius targeter include the mob itself |
+
+Radius targeters leave out the mob itself unless `targetself=true`, and always
+leave out spectators.
+
+## Mechanics
+
+Amounts are multiplied by the skill's power (see [Levels](/rp-engine/entities#levels)
+and the `power` condition action). A mechanic that needs an entity skips a
+place; one that needs a place uses an entity's.
+
+### Damage and health
+
+| Mechanic | Does |
+|---|---|
+| `damage{a;ignorearmor}` (`d`) | Hurts the target, credited to the mob |
+| `basedamage{m}` | `m` times the mob's own attack damage |
+| `percentdamage{p}` | A share of the target's max health |
+| `heal{a;overheal}`, `healpercent{m}` | Heals. Overheal becomes absorption |
+| `sethealth{a}`, `setmaxhealth{a;sethealth}` | Sets health; max health |
+| `shield{a}` | Absorption hearts |
+| `modifydamage{a;action=multiply/add/set}` | Changes the hit, in `~onDamaged` and `~onAttack` |
+| `cancelevent` | Cancels the hit or click that set it off |
+| `suicide`, `remove` | The mob dies; removes the target (never a player) |
+
+### Effects on the target
+
+| Mechanic | Does |
+|---|---|
+| `potion{type;duration;level;hasparticles;hasicon}` | A potion effect. Old Bukkit names (`SLOW`, `INCREASE_DAMAGE`) work. `duration` is ticks, `level` starts at 1 |
+| `potionclear{type}` (`removepotion`) | Removes one, or all |
+| `ignite{ticks}`, `extinguish`, `freeze{ticks}`, `glow{duration}` | Fire, frost, the glowing outline |
+| `speed{multiplier;duration}` (`setspeed`) | Movement speed times `multiplier` for a while (ticks) |
+| `feed{amount}` | A player's hunger |
+| `aura{auraName;duration;interval;onStart;onTick;onEnd;charges}` | Skills on the target every `interval` ticks for `duration`: damage over time. See [Auras](#auras) |
+
+### Movement
+
+| Mechanic | Does |
+|---|---|
+| `leap{velocity}` | The mob jumps to land on its target (`velocity` 100 to 200, as MythicMobs) |
+| `lunge{velocity;velocityY}`, `disengage{velocity;velocityY}` | The mob lunges at, or springs back from, its target |
+| `throw{velocity;velocityY}` | Knocks the target away (MythicMobs' scale: `velocity=15` is a big throw) |
+| `pull{velocity}`, `forcepull` | Drags the target to the mob; teleports it there |
+| `velocity{mode=set/add/multiply/remove;x;y;z}`, `jump{velocity}` | Sets the target's motion |
+| `teleport{spreadh;spreadv}` (`tp`) | The mob to its target |
+| `teleportto{location=x,y,z}` | The target to a spot |
+
+### Summons, fighting and signals
+
+| Mechanic | Does |
+|---|---|
+| `summon{type;amount;radius;level}` | A custom mob (its id, or a bare name in the same pack) or a vanilla one, up to 32 at once. It remembers its parent and takes up the mob's fight |
+| `settarget`, `cleartarget`, `setai{ai}` | Who it fights; whether it thinks |
+| `setstance{stance}` | The mob's stance. See [Stances and phases](#stances-and-phases) |
+| `signal{s}` | `~onSignal:s` on the target mobs (`@children`, `@parent`, `@MIR`) |
+| `threat{amount;mode=add/set/remove/multiply/reset}` | The target's threat on this mob's table |
+| `taunt{amount}` | Target mobs turn on this one: top of their threat tables, and their target now |
+| `clearthreat` | Empties its threat table |
+| `skill{s}`, `randomskill{skills=a,b,c}` | A metaskill, at this line's targets |
+
+### Shooting and explosions
+
+| Mechanic | Does |
+|---|---|
+| `shoot{type;velocity;damage}` | An arrow, snowball, egg, trident, small_fireball, fireball or wither_skull at the target |
+| `shootfireball{yield;incendiary}`, `shootskull`, `arrowvolley{amount;spread}` | The same, by MythicMobs' names |
+| `projectile{v;i;md;hR;vR;g;onStart;onTick;onHit;onEnd}` (`proj`) | A projectile that runs skills. See [Projectiles](#projectiles) |
+| `missile{...;inertia}` | The same, turning toward its target as it flies |
+| `totem{md;i;hR;vR;charges;onTick;onHit;onEnd}` | Stands at the target place for `md` ticks, running `onHit` on whoever comes within reach |
+| `chain{bounces;radius;bounceDelay;onBounce}` | `onBounce` on the target, then on the nearest living thing within `radius` it hasn't touched, `bounces` times |
+| `explosion{power;fire;breakblocks}` | An explosion. It **breaks no blocks** unless `breakblocks=true` |
+| `fakeexplosion`, `lightning{damage}`, `fakelightning` (`effect:lightning`) | The look, or the real thing. `lightning` with `damage` hurts the target only |
+
+### Looks, sound and text
+
+| Mechanic | Does |
+|---|---|
+| `animate{a;duration}` (`state`, `anim`) | Plays one of its model's animations, or a state (`attack`) |
+| `defaultstate{state;animation}` | Plays `animation` for a state from now on: `defaultstate{state=walk;animation=limp}`. No animation puts its own back. Kept across a restart |
+| `tint{color;duration}` | Tints its model, the way the hurt flash does |
+| `bonevisible{bone;visible}` (`partvisibility`) | Hides or shows a bone of its model and everything inside it. The bone must move in some animation; still bones are merged into the body |
+| `swapmodel{model}` (`model`) | Wears another model (an item id, as `model:` is) at its own scale and turn. Hitbox and health stay |
+| `vfx{id;scale;speed;loop;follow;tag}` | A [VFX](/rp-engine/vfx) from a pack or Studio (1.21.4 and newer) |
+| `particles{p;a;hs;vs;speed;y;color;size;material}` (`effect:particles`) | Particles. MythicMobs' and old Bukkit names (`reddust`, `largeexplode`, `mobspell`) work on every version |
+| `particlering{particle;radius;points}`, `particlesphere`, `particleline` | Shapes of particles |
+| `sound{s;v;p}` (`effect:sound`) | A pack's [sound](/rp-engine/sounds) (`zoo:roar`) or a vanilla one, by key or old constant name |
+| `message{m}`, `actionmessage{m}`, `sendtitle{title;subtitle;fadein;stay;fadeout}`, `speak{m;r}` | Text to player targets, with `&` colours and `<fx:...>` [Text Effects](/rp-engine/text-effects) |
+| `barcreate{name;display;color;style;value}`, `barset{...}`, `barremove{name}` | A boss bar of its own, shown to the player targets (no targeter: players within 32). `value` is 0 to 1, a percentage, or a placeholder. Removed when the mob goes |
+
+### Everything else
+
+| Mechanic | Does |
+|---|---|
+| `command{c;astarget}` | A command as the console, or as the player target. **Never as op**: `asop` runs it as the console |
+| `dropitem{item;amount}` | Drops a pack's or a vanilla item |
+| `setvariable{var;value}` (`setvar`), `variableadd{var;amount}`, `variablesubtract`, `variableunset` | The mob's [variables](#variables) |
+
+Plugins can add their own mechanics, conditions and targeters through the
+[Plugin API](/rp-engine/api#skills), the way MythicMobs' add-ons do. Theirs
+usually carry a prefix: `myplugin:smite{damage=6}`.
+
+## Conditions
+
+| Condition | Passes when |
+|---|---|
+| `health{h}`, `healthpercent{h}` | Health is in a range: `h=<50%`, `h=0.5to1` |
+| `distance{d}` | The target is within `d` of the mob: `d=<6`, `d=4to16` |
+| `targetwithin{d}`, `targetnotwithin{d}` | Its target is within `d` |
+| `playerwithin{d}`, `playernotwithin{d}`, `playersinradius{r;amount}` | Players are nearby |
+| `chance{c}` | At random |
+| `stance{s}` | The mob's stance is one of `s` |
+| `day`, `night`, `dusk`, `dawn`, `worldtime{t}`, `raining`, `thundering` | The world |
+| `biome{b}`, `world{w}`, `height{h}` | Where. Biomes take `*` as [`spawning:`](/rp-engine/entities#spawning-on-its-own) does |
+| `onground`, `inblock{m}`, `inwater`, `outside`, `inside` | What it stands in |
+| `haspotioneffect{type}`, `burning`, `lineofsight` | Its state; whether the mob can see it |
+| `entitytype{t}`, `mobtype{t}`, `isplayer`, `ismonster`, `isliving` | What it is |
+| `incombat` (`hastarget`) | It has a target |
+| `skilloncooldown{s}` | That metaskill is cooling down |
+| `hastag{tag}`, `haspermission{p}`, `holding{m}`, `gamemode{m}`, `sneaking`, `sprinting`, `flying`, `blocking`, `mounted` | A player's state |
+| `variableequals{var;value}`, `variableinrange{var;value=1to5}`, `variableisset{var}` | A variable of the mob (`var=caster.x` for the caster's) |
+| `level{l}`, `faction{f}`, `samefaction` | Its [level](/rp-engine/entities#levels); its faction; whether it is of the caster's faction |
+| `threat{a}` | The subject's threat on the caster's table is in range |
+
+On a line, `?` tests the mob, `?!` must fail, and `?~` tests whatever set the
+skill off. In a metaskill, `Conditions:`, `TargetConditions:` and
+`TriggerConditions:` say which.
+
+## Placeholders
+
+Text in a skill (a message, a title, a command, a bar's `value`) can carry:
+
+| Placeholder | Is |
+|---|---|
+| `<caster.hp>`, `<caster.mhp>` | Its health; its max health |
+| `<caster.name>`, `<caster.uuid>` | Its name; its UUID |
+| `<caster.stance>`, `<caster.level>` | Its stance; its level |
+| `<caster.var.phase>` | One of its [variables](#variables) |
+| `<caster.l.x>` (`.y`, `.z`, `.w`) | Where it is, and its world |
+| `<target.…>`, `<trigger.…>` | The same, for the target and for whatever set it off |
+| `<skill.power>` | The skill's power |
+| `<skill.damage>` | The hit that set it off |
+
+`{caster_hp}` is the same thing in RP Engine's own spelling, and MythicMobs'
+escapes work (`<&sc>` for `;`). A mob's `name:` can show `{hp}`, `{max_hp}`,
+`{hp%}`, `{stance}` and `{level}`; see [Its name](/rp-engine/entities#its-name).
+
+## Stances and phases
+
+A **stance** is a word the mob carries: `calm`, `angry`, `phase2`. `stance:` on
+the mob sets the first one, `setstance{stance=angry}` changes it, and
+`?stance{s=angry}` (or `?!stance{...}`) picks the lines that run in it. It shows
+in the name as `{stance}`.
+
+A **phase** is a health line with `=`:
+
+| Health part | Runs |
+|---|---|
+| `<50%` | Every time it is set off while the mob is under half health |
+| `>200` | Every time while it has more than 200 health |
+| `=50%` | **Once per mob**: the first time it is at or below half. MythicMobs' phase line |
+| `=30%-50%` | Once, the first time its health is in that band |
+
+`=` does not re-arm when the mob heals (a phase skill often heals it). It is
+remembered while the server runs, so a restart lets a phase fire once more.
+Together, a stance and a phase make a second phase:
+
+```yaml
+  skills:
+  - setstance{stance=enraged} @self ~onDamaged =50%
+  - skill{s=Enrage} @self ~onDamaged =50%
+  - damage{a=4} @target ~onTimer:60 ?stance{s=enraged}
+```
+
+### Cooldowns, delays and repeats
+
+- `Cooldown:` on a metaskill and `cooldown=` on a line are seconds, per mob.
+  `skilloncooldown{s=Name}` tests one, and `OnCooldownSkill` casts something
+  else meanwhile.
+- `delay 20` on its own line pauses the rest of the list. `delay=20` on a
+  mechanic delays only that line.
+- `repeat=4;repeatInterval=10` runs a line five times, ten ticks apart.
+
+## Auras
+
+An aura runs skills on its target for a while: damage over time, a slow that
+ticks, a buff.
+
+```yaml
+- aura{auraName=venom;duration=100;interval=20;onTick=[ - damage{a=1} - particles{p=slime} ]} @target ~onAttack 0.3
+```
+
+It runs `onStart` once, `onTick` every `interval` ticks for `duration` ticks,
+then `onEnd`. Each of those is an inline list (`[ - line - line ]`) or a
+metaskill's name. There is one aura of a name per target: casting it again
+restarts its clock rather than stacking a second one. `charges=` ends it after
+that many ticks of it. It ends early when the target dies or leaves.
+
+## Projectiles
+
+`projectile` fires a point RP Engine moves (not a Minecraft entity), so it can
+carry skills: `onStart` where it leaves, `onTick` at every step, `onHit` on each
+living thing it touches, `onEnd` where it stops.
+
+| Option | Default | What it is |
+|---|---|---|
+| `v` | 5 | Speed, blocks a second |
+| `i` | 1 | Ticks between steps |
+| `md` | 40 | How far it goes, in blocks |
+| `hR`, `vR` | 1, `hR` | How far across and up it reaches for a hit, in blocks |
+| `g` | 0 | How fast it falls |
+| `sb` | `true` | Stops at a solid block. `false` goes through |
+| `se` | `true` | Stops at its first hit. `false` pierces |
+| `hp`, `hnp` | `true`, `false` | Hits players; hits other mobs (whatever it was fired at is always hit) |
+| `bullettype` | none | `item` (with `item=` and `bulletscale=`) or `vfx` (with `vfx=`, 1.21.4 and newer) |
+
+It is invisible unless `onTick` draws it (`particles{p=flame}`, MythicMobs'
+way) or it is given a look: `bullettype=item;item=minecraft:fire_charge` (any
+pack's item), or `bullettype=vfx;vfx=zoo:fireball` (a looping VFX). `missile`
+turns toward the entity it was fired at, more sharply the lower its `inertia`
+(1.5). At most 256 fly at once across the server, and none outlives a minute or
+a reload.
+
+## Threat tables
+
+`threat-table: true` on a mob (MythicMobs' `Modules: {ThreatTable: true}` reads
+the same) makes it fight whoever has hurt it most. Damage dealt to it is threat,
+and it turns to a new target only when that one holds more than 110% of its
+current target's threat, so two players trading hits don't spin it round.
+
+Somebody who dies, leaves, goes into creative or out of twice its follow range
+drops off the table, and an empty table is a mob out of combat
+(`~onDropCombat`). `threat`, `taunt` and `clearthreat` change it; `@ThreatTable`
+and `@RandomThreatTarget` aim at it.
+
+## Variables
+
+A mob can keep variables: `variables: {phase: 1}` on the mob sets them as it
+spawns, `setvariable` and `variableadd` change them, `<caster.var.phase>` (or
+`{caster_var_phase}`) prints one, and `variableequals` and `variableinrange`
+test one. They live on the mob (`var=phase` or `var=caster.phase`), or on a
+target mob with `var=target.phase`. A variable is kept while the server runs,
+not across a restart.
+
+## Limits and debugging
+
+A few limits stop a mistake turning into lag. Each says so once in the console
+when it is hit:
+
+| Limit | |
+|---|---|
+| Lines per mob or metaskill | 64 |
+| Lines run in one go without a `delay` | 64 |
+| Skills waiting to run, per mob | 200 |
+| Metaskills calling metaskills | 16 deep |
+| Skills setting off other mobs' skills (two mobs hurting each other from `~onDamaged`) | 8 deep |
+| Projectiles in flight, server-wide | 256 |
+
+A mob's waiting skills stop when it dies (except its `~onDeath` skills, which
+finish where it fell) and on `/rp reload`.
+
+**A line that can't run is a load warning naming its file and place**, and
+only that line is skipped; the rest of the mob loads:
+
+```
+bosses/entities/bosses.yml: golem_king.skills[3]: There is no mechanic explode.
+```
+
+To see what a mob is actually doing, turn on `skills.debug` in
+[`config.yml`](/rp-engine/config#mob-skills). It logs every line as it runs and what it
+aimed at. It is noisy, so turn it off again afterwards.
+
+```yaml
+skills:
+  debug: true
+```
+
+## Worked examples
+
+### A boss that slams and summons
+
+Every six seconds, if a player is close, it rears up and slams the ground. At
+half health, once, it calls three guards and they join the fight.
+
+```yaml
+# entities/bosses.yml
+golem_king:
+  type: IRON_GOLEM
+  model: bosses:golem
+  name: "&6Golem King &7{hp}/{max_hp}"
+  health: 300
+  boss-bar: {color: YELLOW, style: SEGMENTED_10}
+  animations: {idle: idle, walk: walk, attack: attack, hurt: hurt, death: death}
+  skills:
+  - skill{s=GroundSlam} @self ~onTimer:120 ?playerwithin{d=8}
+  - skill{s=CallTheGuard} @self ~onDamaged =50%
+
+golem_guard:
+  type: ZOMBIE
+  model: bosses:guard
+  health: 30
+  faction: golems
+```
+
+```yaml
+# skills/bosses.yml
+GroundSlam:
+  Cooldown: 6
+  Skills:
+  - animate{a=slam} @self
+  - delay 10
+  - vfx{id=bosses:shockwave} @selflocation
+  - sound{s=entity.generic.explode;v=1;p=0.6} @selflocation
+  - damage{a=8} @PlayersInRadius{r=6}
+  - throw{velocity=10;velocityY=6} @PlayersInRadius{r=6}
+
+CallTheGuard:
+  Skills:
+  - message{m="&6<caster.name>&f: Guards!"} @PlayersInRadius{r=30}
+  - summon{type=golem_guard;amount=3;radius=4} @selflocation
+  - heal{a=50} @self
+```
+
+`summon` names the guard bare because it is in the same pack. The guards take
+up the boss's target as they spawn, and `@children` reaches them later.
+
+### A ranged caster with a phase two
+
+It keeps its distance and throws small fireballs. At half health, once, it
+changes stance: it goes faster, starts firing homing missiles, and limps.
+
+```yaml
+# entities/casters.yml
+ember_witch:
+  type: SKELETON
+  model: casters:witch
+  name: "&cEmber Witch &7[{stance}]"
+  health: 120
+  stance: calm
+  ranged: {projectile: small_fireball, damage: 4, range: 20}
+  animations: {idle: idle, walk: walk, attack: cast, hurt: hurt, death: death}
+  skills:
+  - setstance{stance=burning} @self ~onDamaged =50%
+  - message{m="&cThe witch's robes catch fire!"} @PlayersInRadius{r=24} ~onDamaged =50%
+  - speed{multiplier=1.4;duration=12000} @self ~onDamaged =50%
+  - defaultstate{state=walk;animation=limp} @self ~onDamaged =50%
+  - skill{s=EmberMissile} @target ~onTimer:80 ?stance{s=burning} ?targetwithin{d=24}
+```
+
+```yaml
+# skills/casters.yml
+EmberMissile:
+  Cooldown: 3
+  Skills:
+  - animate{a=cast} @self
+  - missile{v=8;md=30;hR=0.6;vR=0.6;inertia=1.2;onTick=[ - particles{p=flame;a=3} ];onHit=[ - damage{a=6} - ignite{ticks=60} ]} @target
+```
+
+The `=50%` lines each run once, together, the first time its health drops to
+half. The name shows its stance, so players can see the change.
+
+### A poison aura mob
+
+A slow mob that poisons everybody standing near it, and hurts whoever hits it.
+
+```yaml
+# entities/swamp.yml
+bog_lurker:
+  type: ZOMBIE
+  model: swamp:lurker
+  name: "&2Bog Lurker"
+  health: 50
+  speed: 0.7
+  skills:
+  - aura{auraName=bog;duration=60;interval=20;onTick=[ - potion{type=POISON;duration=40;level=1} - particles{p=item_slime;a=6} ]} @PlayersInRadius{r=4} ~onTimer:60
+  - damage{a=2} @trigger ~onDamaged 0.5
+  - particles{p=item_slime;a=20} @selflocation ~onDeath
+```
+
+Casting the aura on a player who already has it restarts its clock, so standing
+next to the lurker keeps you poisoned and walking away lets it run out.
+
+## What is not supported
+
+Each of these is a load warning naming the line:
+
+- variable maths and scopes other than the mob's (`variableMath`, `skill.`
+  and `global.` variables);
+- `switch` and `foreach`;
+- custom AI goals (`AIGoalSelectors`): pick [`type`](/rp-engine/entities#choosing-the-type)
+  for behaviour, and move it with the mechanics;
+- `disguise` and `onHear`;
+- composite conditions (`a && b`): write two conditions instead;
+- riding a mob as a player (`mountmodel`);
+- `ImmunityTables` and `Trades`;
+- `command{asop=true}` run as an op player.
+
+Bringing a whole MythicMobs mob across? See
+[Porting your MythicMobs mobs](/rp-engine/mythicmobs#porting-your-mythicmobs-mobs).

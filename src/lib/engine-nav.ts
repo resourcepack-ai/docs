@@ -273,8 +273,27 @@ export const engineNav: EngineGroup[] = [
       {
         title: "Entities",
         href: "/rp-engine/entities",
-        description: "A real mob wearing one of your models.",
-        keywords: ["entity", "mob", "spawn", "health", "tags", "ai", "loot", "guard"],
+        description: "A real mob wearing one of your models, animated by what it is doing.",
+        keywords: ["entity", "mob", "custom mob", "spawn", "health", "tags", "ai", "guard", "boss",
+          "boss bar", "ranged", "spawning", "biome", "level", "template", "extends", "equipment",
+          "faction", "despawn", "egg", "animations", "sounds"],
+        items: [
+          {
+            title: "Skills",
+            href: "/rp-engine/skills",
+            description: "Timed attacks, phases, summons and auras, as MythicMobs skill lines.",
+            keywords: ["skill", "mechanic", "targeter", "trigger", "condition", "metaskill", "phase",
+              "stance", "aura", "projectile", "missile", "threat", "boss", "mythicmobs", "summon",
+              "cooldown", "onTimer", "onDamaged"],
+          },
+          {
+            title: "Drops and spawners",
+            href: "/rp-engine/drops-and-spawners",
+            description: "Loot, weighted drop tables, and mobs kept alive round a point.",
+            keywords: ["drops", "loot", "drop table", "droptable", "xp", "experience", "spawner",
+              "leash", "mythicmobs"],
+          },
+        ],
       },
       {
         title: "Liquids",
@@ -320,8 +339,9 @@ export const engineNav: EngineGroup[] = [
       {
         title: "MythicMobs",
         href: "/rp-engine/mythicmobs",
-        description: "Three mechanics, driven from a skill tree.",
-        keywords: ["mythicmobs", "mechanic", "rpmodel", "rpanimate", "skill", "onspawn", "boss"],
+        description: "Three mechanics driven from a skill tree, and porting a MythicMobs mob.",
+        keywords: ["mythicmobs", "mechanic", "rpmodel", "rpanimate", "skill", "onspawn", "boss",
+          "port", "migrate", "modelengine"],
       },
       {
         title: "Citizens",

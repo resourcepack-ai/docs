@@ -38,12 +38,21 @@ permission. See [Pointing a command at somebody else](/rp-engine/permissions#poi
 | `/rp models [radius]` | Placed models near you, with orphans marked | `rpengine.models` |
 | `/rp purge [radius]` | Remove orphaned models near you (see [Reloading](/rp-engine/reloading#orphans)) | `rpengine.purge` |
 | `/rp entities` | Every custom entity | `rpengine.entities` |
-| `/rp spawn <id>` | Spawn a custom entity where you stand | `rpengine.spawn` |
+| `/rp spawn <id>` | Spawn a [custom mob](/rp-engine/entities#spawning-one) where you stand | `rpengine.spawn` |
+| `/rp spawn <id> <x> <y> <z> [world] [count] [level]` | Spawn up to 64 at a place, at a level. The world may also come first. This is the form the console uses | `rpengine.spawn` |
+| `/rp egg <id> [player] [amount]` | A spawn egg that hatches that mob where it is used | `rpengine.egg` |
+| `/rp spawner create <name> <mob> [x y z [world]]` | Make a [spawner](/rp-engine/drops-and-spawners#spawners), where you stand if you give no place | `rpengine.spawner.create` |
+| `/rp spawner set <name> <setting> <value>` | Change one of a spawner's settings | `rpengine.spawner.set` |
+| `/rp spawner remove <name>` | Remove a spawner made in game. Its mobs stay | `rpengine.spawner.remove` |
+| `/rp spawner list` | Every spawner | `rpengine.spawner.list` |
+| `/rp spawner info <name>` | One spawner's settings | `rpengine.spawner.info` |
 | `/rp bind <item id>` | Put that item's model on the mob you are looking at | `rpengine.bind` |
 | `/rp unbind` | Take it off again | `rpengine.unbind` |
 
 The radius is in blocks: 16 by default, 128 at most. Binding a model to
-another player, rather than a mob, needs `rpengine.bind.others`.
+another player, rather than a mob, needs `rpengine.bind.others`. Giving an egg to
+somebody else needs `rpengine.egg.others`, and `rpengine.spawner` grants every
+`/rp spawner` verb.
 
 ## Sound, text and interface
 

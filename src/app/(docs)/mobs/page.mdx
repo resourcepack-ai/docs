@@ -236,11 +236,12 @@ The **`</>`** button on an ability shows it as the
 [MythicMobs](https://mythiccraft.io) skill lines RP Engine runs, and you can
 edit it as lines: the first line says when, every line after it is a step.
 Anything RP Engine supports works there, not only what the form offers, and a
-line it can't read is pointed out as you type. Press the button again to go
+line it can't read is pointed out as you type. Every trigger, target, condition
+and step RP Engine runs is listed on [Skills](/rp-engine/skills). Press the button again to go
 back to the form, which works as long as the lines only use what the form can
 show.
 
-Abilities need RP Engine 0.2.52 or newer. They reach the server with the rest
+Abilities need RP Engine 0.2.53 or newer. They reach the server with the rest
 of the mob when you sync; a mob on an older RP Engine walks and fights as
 before without them.
 
@@ -267,12 +268,17 @@ drops nothing but its XP.
 `<id>` is the model's id, shown on its page.
 
 Bedrock players joining through Geyser see the mob as its model too, animated
-the same way, from the Bedrock pack a sync sends them (RP Engine 0.2.52 or
-newer).
+the same way, from the Bedrock pack a sync sends them (RP Engine 0.2.53 or
+newer). See [Bedrock and Geyser](/rp-engine/bedrock#custom-mobs-and-bound-models).
 
-<Card title="Entities in RP Engine" href="/rp-engine/entities" icon="server">
-  What the plugin does with a custom mob, and writing one by hand in YAML.
-</Card>
+<CardGroup cols={2}>
+  <Card title="Entities in RP Engine" href="/rp-engine/entities" icon="server">
+    What the plugin does with a custom mob, and writing one by hand in YAML.
+  </Card>
+  <Card title="Skills in RP Engine" href="/rp-engine/skills" icon="sparkles">
+    The skill lines an ability turns into, and everything they can do.
+  </Card>
+</CardGroup>
 
 ## Exports
 

@@ -1,7 +1,7 @@
 export const metadata = {
   title: "MythicMobs",
   description:
-    "Three mechanics so a MythicMobs mob can wear one of your models and animate from its skill tree.",
+    "Three mechanics so a MythicMobs mob can wear one of your models and animate from its skill tree, and how to port a MythicMobs mob to RP Engine's own custom mobs.",
 };
 
 # MythicMobs
@@ -19,6 +19,10 @@ Skills:
 ```
 
 There is nothing to enable.
+
+You can also go the other way: RP Engine's own [custom mobs](/rp-engine/entities)
+run MythicMobs' skill lines without MythicMobs installed, so a mob can move
+across whole. See [Porting your MythicMobs mobs](#porting-your-mythicmobs-mobs).
 
 ## The mechanics
 
@@ -56,3 +60,122 @@ model worn by a mob. Use `rpanimate` from whatever trigger suits:
 RP Engine changes what it looks like and nothing else. Its health, damage,
 AI, drops and skills are all still MythicMobs'. See
 [Putting a model on a mob](/rp-engine/mobs).
+
+
+## Porting your MythicMobs mobs
+
+RP Engine's [custom mobs](/rp-engine/entities) read MythicMobs' skill lines,
+drop lines, drop tables and spawners, so a mob can be moved across and
+MythicMobs (and ModelEngine) taken off the server. Needs RP Engine 0.2.53 or
+newer.
+
+1. Write the mob in `entities/` in RP Engine's shape (below), with `model:`
+   naming its Blockbench file.
+2. Copy its `Skills:` block in as it is.
+3. Copy its metaskills into `skills/`, its drop tables into `drop-tables/` and
+   its spawners into `spawners/`. Those files keep MythicMobs' own key names.
+4. `/rp reload` and read the warnings: each line that can't run is named, with
+   its file and place, and only that line is skipped.
+
+```yaml
+# MythicMobs: Mobs/golem.yml
+GolemKing:
+  Type: IRON_GOLEM
+  Display: "&6Golem King"
+  Health: 300
+  Damage: 12
+  Options:
+    MovementSpeed: 0.2
+    PreventOtherDrops: true
+  Skills:
+  - model{mid=golem} @self ~onSpawn
+  - skill{s=GroundSlam} @self ~onTimer:120
+  - state{mid=golem;s=roar} @self ~onDamaged =50%
+  Drops:
+  - diamond 1to3 0.5
+```
+
+```yaml
+# RP Engine: entities/golem.yml
+golem_king:
+  type: IRON_GOLEM
+  model: bosses:golem          # replaces the model{mid=...} line
+  name: "&6Golem King"
+  health: 300
+  damage: 12
+  speed: 0.8                   # a multiple of the golem's own speed, not a copied number
+  skills:
+  - skill{s=GroundSlam} @self ~onTimer:120
+  - animate{a=roar} @self ~onDamaged =50%
+  drops:
+  - minecraft:diamond 1to3 0.5
+```
+
+### What ports unchanged
+
+- **Skill lines**, as written: mechanics, `@targeters`, `~triggers`,
+  `?conditions`, health parts and chances, with MythicMobs' names and short
+  names. The [Skills](/rp-engine/skills) page lists every one that runs.
+- **Metaskills**, in their own file shape: `Cooldown`, `Conditions`,
+  `TargetConditions`, `TriggerConditions`, `Skills`.
+- **Drop lines** (`diamond 1to3 0.5`, `exp 10to20`, `droptable name`,
+  `command{c=...}`), **drop tables** with `TotalItems`, `MinItems`, `MaxItems`
+  and conditions, and **spawners** with their own key spellings. See
+  [Drops and spawners](/rp-engine/drops-and-spawners).
+- **Phases**: `=50%` fires once per mob, as in MythicMobs.
+
+### What to change
+
+The mob file around the skills is RP Engine's, not MythicMobs'
+(`type`, `model`, `health`, not `Type`, `Display`, `Options`):
+
+| MythicMobs | RP Engine |
+|---|---|
+| `Type`, `Display`, `Health`, `Damage`, `Armor` | `type`, `name`, `health`, `damage`, `armor` |
+| `Template:` | `extends:` (`template:` and `Template:` read the same) |
+| `Equipment:` | `equipment:` (the list form copies across) |
+| `DamageModifiers:` | `damage-modifiers:` (the list form copies across) |
+| `Faction:` | `faction:` |
+| `Options.Despawn` | `despawn:` |
+| `Options.Invincible`, `Collidable`, `NoGravity` | `invincible:`, `collidable:`, `gravity:` |
+| `Options.PreventLeashing`, `PreventRenaming` | `prevent: [leash, rename]` |
+| `Options.MovementSpeed`, `FollowRange`, `KnockbackResistance` | `speed:` (a multiple of the type's own), `follow-range:`, `knockback-resistance:` |
+| `Level`, `LevelModifiers` | `level:`, `per-level:` (`LevelModifiers` reads the same) |
+| `KillMessages:` | `kill-messages:` |
+| `Mount:` | `mount:` |
+| `BossBar:` | `boss-bar:` |
+| `Drops:`, `DropTables/` | `drops:` (the line form copies across), `drop-tables/` |
+| `Spawners/` | `spawners/` |
+| `Modules.ThreatTable` | `threat-table: true` (the MythicMobs spelling reads the same) |
+| `Variables:` | `variables:` |
+| `Skills:` | `skills:` (`Skills:` reads the same) |
+
+- **Models are `model:`**, so drop ModelEngine's `model{mid=...}` line.
+  `state{mid=...;s=attack}` runs as `animate`, and RP Engine plays `idle`,
+  `walk`, `attack` and the rest by itself from
+  [`animations:`](/rp-engine/entities#animations), so most `state` lines can go.
+- **Draw the model facing North** in Blockbench, as for ModelEngine, or set
+  [`turn:`](/rp-engine/entities#facing).
+- **`drops:` replaces the vanilla loot**, so `PreventOtherDrops` is never
+  needed.
+- **`=50%` is remembered while the server runs**, so a restart lets a phase fire
+  once more.
+
+### What isn't supported
+
+Each is a load warning naming the line:
+
+- variable maths and scopes other than the mob's (`variableMath`, `skill.` and
+  `global.` variables);
+- `switch` and `foreach`;
+- custom AI goals (`AIGoalSelectors`): pick `type` for behaviour, and move it
+  with the mechanics;
+- `disguise` and `onHear`;
+- composite conditions (`a && b`);
+- riding a mob as a player (`mountmodel`);
+- `ImmunityTables` and `Trades`;
+- `command{asop=true}` run as an op player.
+
+Mechanics, conditions and targeters a MythicMobs add-on gave you can be
+written as a plugin of your own against the
+[Plugin API](/rp-engine/api#skills).
