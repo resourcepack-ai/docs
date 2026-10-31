@@ -135,7 +135,7 @@
     },
     "not_linked": {
       "status": 409,
-      "description": "Nobody is linked to receive a push: no `/link` code for this pack has been claimed by a player of yours, and you are not on the test server with `/permlink`."
+      "description": "Nobody is linked to receive a push: your code for this pack (`GET /packs/{pack}/link`) has not been claimed with `/rp sync`, and you are not on the test server with `/permlink`."
     },
     "not_a_vehicle": {
       "status": 409,
@@ -2325,7 +2325,7 @@
       "post": {
         "operationId": "pushPack",
         "summary": "Push a pack into Minecraft",
-        "description": "What the Studio's **Sync** button does: builds the pack and sends it straight to a player in game, who gets it without rejoining. It reaches the key owner: their account if it is linked with `/permlink` and they are on the test server, otherwise whoever claimed this pack's `/link` code on a server running RP Engine. Anybody else is out of reach on purpose.\n\nWhen nothing has changed since the last push to the same person in this session, nothing is built and `status` is `unchanged`; send `force: true` to push anyway. Free.\n\nEmotes are pushed with the default player model rather than each player's own skin, which only the Studio can fetch. Press Sync in the Studio for skinned emotes.",
+        "description": "What the Studio's **Sync** button does: builds the pack and sends it straight to a player in game, who gets it without rejoining. It reaches the key owner: their account if it is linked with `/permlink` and they are on the test server, otherwise whoever claimed your code for this pack (`GET /packs/{pack}/link`) with `/rp sync` on a server running RP Engine. Anybody else is out of reach on purpose.\n\nWhen nothing has changed since the last push to the same person in this session, nothing is built and `status` is `unchanged`; send `force: true` to push anyway. Free.\n\nEmotes are pushed with the default player model rather than each player's own skin, which only the Studio can fetch. Press Sync in the Studio for skinned emotes.",
         "tags": [
           "Packs"
         ],
@@ -3574,6 +3574,206 @@
               "type": "string",
               "description": "A take's `id` from the sound's `takes`.",
               "example": "2"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/link": {
+      "get": {
+        "operationId": "getPushLink",
+        "summary": "Link a player to receive pushes",
+        "description": "The Studio's **Sync** menu: who `push_pack` and `give_asset` reach for you in this pack, and when nobody is linked yet, the code that links somebody. Type `command` (`/rp sync <code>`) on a server running RP Engine, then push. A player linked to the test server with `/permlink` and online there is reached without one. The code is yours for this pack; a collaborator has their own.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The link.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`linked` when a push would reach somebody, `waiting` while the code is unclaimed.",
+                      "enum": [
+                        "linked",
+                        "waiting"
+                      ]
+                    },
+                    "via": {
+                      "type": "string",
+                      "description": "How they are linked: `code`, or `permalink` for the test server."
+                    },
+                    "player": {
+                      "type": "string",
+                      "description": "Who a push reaches."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "The code."
+                    },
+                    "command": {
+                      "type": "string",
+                      "description": "What to type in game to claim it."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status",
+                    "via",
+                    "player",
+                    "code",
+                    "command"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "waiting",
+                  "via": null,
+                  "player": null,
+                  "code": "K7Q2MX",
+                  "command": "/rp sync K7Q2MX"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/link/unlink": {
+      "post": {
+        "operationId": "unlinkPush",
+        "summary": "Unlink the player who receives pushes",
+        "description": "The Sync menu's **Unlink**: the server that claimed your code for this pack stops receiving its pushes, and the next `get_push_link` hands out a new code. Only your own link.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Unlinked.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `unlinked`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "unlinked"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
             }
           }
         ]

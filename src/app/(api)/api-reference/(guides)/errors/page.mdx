@@ -27,6 +27,7 @@ Branch on `code`, never on `message`. The wording can change; the code won't.
 | 400 | `file_fetch_failed` | A file given by `url` couldn't be downloaded |
 | 400 | `not_a_pack` | An import's file isn't a resource pack, or holds nothing usable |
 | 400 | `no_file` | That asset has nothing in the `format` asked for: a 2D shader overlay and an emote have no picture, and only a VFX and a text effect have an animation |
+| 400 | `nothing_to_export` | The pack holds nothing that export format is built from yet, or it is all still generating |
 | 401 | `missing_api_key` | No `Authorization: Bearer` header |
 | 401 | `invalid_api_key` | The key isn't one of ours, or has been revoked |
 | 401 | `wrong_key_kind` | An MCP key sent to the REST API, or an API key sent to the MCP server |
@@ -40,16 +41,19 @@ Branch on `code`, never on `message`. The wording can change; the code won't.
 | 404 | `not_found` | No such pack, asset or job |
 | 404 | `job_not_found` | No job by that handle |
 | 404 | `upload_not_found` | No upload by that id. Uploads expire after 15 minutes and can be used once |
+| 404 | `no_such_player` | No account has verified that Minecraft username; invite them by email instead |
 | 409 | `conflict` | That vanilla target is already reskinned in this pack |
 | 409 | `already_running` | An AI edit or generation of that asset is still running |
 | 409 | `not_a_vehicle` | The model isn't a vehicle yet |
-| 409 | `not_linked` | Nobody is linked to receive a push |
+| 409 | `not_linked` | Nobody is linked to receive a push; get a code from [`GET /packs/{pack}/link`](/api-reference/get-push-link) |
 | 409 | `skin_limit_reached` | The account holds as many skins as it may |
+| 409 | `server_limit_reached` | The pack is bound to as many servers as it may |
 | 409 | `still_generating` | You asked for an asset's file before it was ready |
 | 409 | `generation_failed` | That asset's generation failed; its job has the reason |
 | 413 | `file_too_large` | The file is over the limit for its use; `message` says the limit |
 | 429 | `rate_limited` | Over this key's budget; see [Rate limits](/api-reference/rate-limits) |
-| 500 | `export_failed` | The zip couldn't be built |
+| 429 | `too_many_invites` | The pack has as many invitations waiting as it may |
+| 500 | `export_failed` | The export couldn't be built |
 | 502 | `push_failed` | The pack was built but the player's server couldn't be reached |
 | 500 | `request_failed` | Something went wrong with no more specific code |
 | 503 | `unavailable` | The feature behind this endpoint is switched off |
