@@ -282,12 +282,6 @@ export const nav: NavGroup[] = [
         keywords: ["vfx", "effect", "spell", "ability", "particles", "slash", "lightning", "preset", "cast"],
       },
       {
-        title: "Loading Screens",
-        href: "/loading-screens",
-        description: "Restyle the screen Minecraft shows while your pack loads: colours, logo, effects, bar.",
-        keywords: ["loading screen", "mojang", "splash", "logo", "progress bar", "reload", "f3+t", "background"],
-      },
-      {
         title: "Skins",
         href: "/skins",
         description: "Player skins: generated, imported or painted, and put on in game.",
