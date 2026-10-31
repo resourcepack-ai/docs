@@ -1,0 +1,175 @@
+export const metadata = {
+  title: "Drops and spawners",
+  description:
+    "What a custom mob leaves behind, MythicMobs drop lines, weighted drop tables, and spawners that keep mobs alive round a point.",
+};
+
+# Drops and spawners
+
+What a [custom mob](/rp-engine/entities) drops when it dies, and how to keep a
+number of them alive in one place. Both read MythicMobs' shapes as well as
+their own, so a MythicMobs `Drops:` list, a `DropTables/` file or a
+`Spawners/` file copies across. Drop lines, drop tables and spawners need RP
+Engine 0.2.53 or newer.
+
+## Drops
+
+```yaml
+rhino:
+  type: POLAR_BEAR
+  model: zoo:rhino
+  drops:
+    - {item: minecraft:leather, min: 1, max: 3}
+    - {item: zoo:horn, chance: 0.25}
+    - minecraft:bone
+  xp: 5
+```
+
+**`drops:` replaces the vanilla loot entirely.** A mob with no `drops:` drops
+nothing but its experience. Each entry is an item, vanilla
+(`minecraft:leather`) or one of a pack's (`zoo:horn`):
+
+| Key | Default | What it is |
+|---|---|---|
+| `item` | required | The item |
+| `min`, `max` | 1, 1 | How many |
+| `chance` | 1 | The chance it drops at all, 0 to 1 |
+
+`xp` is the experience it leaves, a number or a range (`xp: 5to10`). It
+defaults to 0.
+
+Whatever a mob wears from [`equipment:`](/rp-engine/entities#equipment) drops
+only on its own `drop-chance`, rolled on top of `drops:`. A plugin can still
+change the loot in RP Engine's `EntityDeathEvent`; see the
+[Plugin API](/rp-engine/api#events).
+
+### MythicMobs drop lines
+
+MythicMobs' one-line drops work in the same list, so a `Drops:` block copies
+straight in:
+
+```yaml
+  drops:
+    - minecraft:leather 1to3 0.5       # item, amount (or a range), chance
+    - exp 10to20                       # experience
+    - droptable rare_loot              # a table from drop-tables/ (also table, dt)
+    - command{c="give <trigger.name> diamond 1"} 1 0.1   # a console command
+```
+
+| Line | Drops |
+|---|---|
+| `<item> [amount] [chance]` | That item. The amount may be a range: `1to3` |
+| `exp <amount>` | Experience. The amount may be a range |
+| `droptable <name>` | One roll of a [drop table](#drop-tables). `table` and `dt` work too |
+| `command{c="..."} [amount] [chance]` | Runs a command as the console. The killer is `<trigger.name>` |
+| `nothing` | Nothing: a pick in a weighted table that gives nothing |
+
+## Drop tables
+
+A drop table is a loot list a mob names rather than repeats, in MythicMobs'
+`DropTables` shape. Put them in `drop-tables/` (the `droptables/` folder works
+too):
+
+```yaml
+# drop-tables/loot.yml
+RareLoot:
+  TotalItems: 2            # exactly two picks, each by weight (the third number)
+  Drops:
+  - minecraft:diamond 1 1
+  - minecraft:emerald 1to3 3
+  - nothing 1 6            # a pick that gives nothing
+
+BossChest:
+  MinItems: 1              # or a count in a range, by weight
+  MaxItems: 3
+  Conditions: [ "night" ]           # must pass on the mob as it dies
+  TriggerConditions: [ "isplayer" ] # must pass on its killer
+  Drops:
+  - minecraft:gold_ingot 2to5 1
+  - droptable RareLoot 1 1          # tables can name tables, 8 deep
+```
+
+| Key | What it does |
+|---|---|
+| `Drops` | The lines, as above |
+| `TotalItems` | Pick exactly this many lines, each by its weight (the third number on the line) |
+| `MinItems`, `MaxItems` | Pick a number of lines in this range, by weight |
+| `Conditions` | [Conditions](/rp-engine/skills#conditions) the mob must pass as it dies |
+| `TriggerConditions` | Conditions its killer must pass |
+
+Without `TotalItems`, `MinItems` or `MaxItems`, each line rolls its own chance,
+as a mob's own `drops:` do, and the third number is a chance rather than a
+weight. A table whose conditions fail drops nothing from that table.
+
+A bare table name is looked for in the mob's own pack first, then in any pack;
+`otherpack:RareLoot` names another pack's. Tables can name other tables, up to
+8 deep.
+
+```yaml
+golem_king:
+  type: IRON_GOLEM
+  model: bosses:golem
+  drops:
+    - droptable BossChest
+    - exp 50to80
+```
+
+## Spawners
+
+A spawner keeps some of one mob alive round a point while players are near,
+like MythicMobs' spawners. Write them in `spawners/`, or make them in game.
+
+```yaml
+# spawners/arena.yml
+pit:
+  mob: zoo:ghoul
+  location: world,120.5,64,-40.5   # or {world: world, x: 120.5, y: 64, z: -40.5}
+  max-mobs: 3
+  mobs-per-spawn: 1
+  cooldown: 10
+  warmup: 0
+  radius: 4
+  activation-range: 32
+  leash-range: 16
+  heal-on-leash: true
+  level: 0
+```
+
+| Key | Default | What it does |
+|---|---|---|
+| `mob` | required | The custom mob it spawns |
+| `location` | required | Where: `world,x,y,z`, or a map |
+| `max-mobs` | 1 | How many may be alive at once, 1 to 64 |
+| `mobs-per-spawn` | 1 | How many each time |
+| `cooldown` | 10 | Seconds between spawns |
+| `warmup` | 0 | Seconds a player must be near before the first |
+| `radius` | 0 | How far round the point they are spread |
+| `activation-range` | 32 | It spawns only while a player is this near. 0 is anywhere in the world |
+| `leash-range` | 16 | One that strays further is pulled back. 0 never pulls |
+| `heal-on-leash` | `true` | And healed when it is |
+| `level` | 0 | The [level](/rp-engine/entities#levels) they spawn at. 0 rolls the mob's own `level:` |
+
+MythicMobs' spellings (`MobName`, `MaxMobs`, `ActivationRange`, `LeashRange`,
+`HealOnLeash` and the rest) read the same.
+
+A spawner only spawns while its chunk is loaded and a player is in range. It
+counts its mobs again after a restart by the mark they carry, so it never
+doubles up, and its mobs never despawn. A content pack's spawners have ids like
+everything else (`arena:pit`) and change with `/rp reload`.
+
+### Making one in game
+
+Spawners made with a command are kept in `plugins/RPEngine/spawners.yml`:
+
+| Command | What it does |
+|---|---|
+| `/rp spawner create <name> <mob> [x y z [world]]` | Makes one, where you stand if you give no place |
+| `/rp spawner set <name> <setting> <value>` | Changes a setting: `max-mobs`, `cooldown`, `warmup`, `radius`, `activation-range`, `leash-range` and the rest |
+| `/rp spawner remove <name>` | Removes it. Its mobs stay |
+| `/rp spawner list` | Every spawner |
+| `/rp spawner info <name>` | One spawner's settings |
+
+Each verb has its own permission (`rpengine.spawner.create` and so on), all
+granted by `rpengine.spawner`. A content pack's spawner is listed and described
+by these commands, but changed only in its file. See
+[Permissions](/rp-engine/permissions).

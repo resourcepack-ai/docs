@@ -267,6 +267,17 @@ the oldest effects playing end to make room, so a cast always plays. 4,000 is a
 few ms of tick time; see [what it costs](/rp-engine/vfx#what-it-costs) for
 measurements and what we recommend for busy and quiet servers.
 
+## Mob skills
+
+```yaml
+skills:
+  debug: false
+```
+
+`debug: true` logs every [skill](/rp-engine/skills) line a custom mob runs, and
+what it aimed at, to the console. It is for finding out why a skill did not
+fire, and it is noisy, so leave it off otherwise.
+
 ## Dialogs
 
 ```yaml
