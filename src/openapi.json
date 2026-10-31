@@ -3783,7 +3783,7 @@
       "get": {
         "operationId": "exportPack",
         "summary": "Export the pack",
-        "description": "Anything the Studio's Export menu downloads, built on request rather than kept warm, so this is slower than the other calls on a large pack.\n\n`format` picks which: `java` (the default) is the resource pack `.zip`; `bedrock` is the Bedrock `.mcpack`; `itemsadder`, `nexo`, `oraxen` and `craftengine` are content folders for a server running that plugin, which builds the pack itself from them; `modelengine` is a `.bbmodel` blueprint per model for ModelEngine; and `datapack` is the pack's dialogs as a vanilla datapack, whose pictures are in the Java zip.\n\nA format with nothing to build from yet (a pack with no models asked for blueprints, or everything still generating) answers `nothing_to_export` with what is missing.",
+        "description": "Anything the Studio's Export menu downloads, built on request rather than kept warm, so this is slower than the other calls on a large pack.\n\n`format` picks which: `java` (the default) is the resource pack `.zip`; `bedrock` is the Bedrock `.mcpack`; `geyser` is that `.mcpack` with the Geyser item mappings beside it, as a zip that unzips into Geyser's folder on a server with no RP Engine; `itemsadder`, `nexo`, `oraxen` and `craftengine` are content folders for a server running that plugin, which builds the pack itself from them; `modelengine` is a `.bbmodel` blueprint per model for ModelEngine; and `datapack` is the pack's dialogs as a vanilla datapack, whose pictures are in the Java zip.\n\nA format with nothing to build from yet (a pack with no models asked for blueprints, or everything still generating) answers `nothing_to_export` with what is missing.",
         "tags": [
           "Packs"
         ],
@@ -3848,6 +3848,7 @@
               "enum": [
                 "java",
                 "bedrock",
+                "geyser",
                 "itemsadder",
                 "modelengine",
                 "nexo",
