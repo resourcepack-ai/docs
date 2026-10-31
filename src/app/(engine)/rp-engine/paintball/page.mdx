@@ -307,7 +307,10 @@ To play on a map you built yourself, stand in the right places and run:
   <Step title="Spawns">
     `/pb arena addspawn <id> red`, and again for `blue`. Up to five a team;
     past five the oldest goes. `/pb arena clearspawns <id> <red|blue>` starts
-    a team's over.
+    a team's over. With no colour, `/pb arena addspawn <id>` is a spawn for
+    anybody (up to ten): a free for all uses them along with the teams', and
+    a team with no spawns of its own uses them, so a free-for-all arena needs
+    no colours at all. `/pb arena clearspawns <id>` clears those.
   </Step>
   <Step title="Bounds">
     `/pb arena wand` hands you the bounds wand. Left-click a block for one
@@ -389,8 +392,8 @@ what you may run.
 | `/pb arena generate <id> at <world> <x> <y> <z> [name]` | The same, from the console |
 | `/pb arena create <id> [name]` | A new, empty arena in your world |
 | `/pb arena setwaiting <id>` | Its waiting spot, where you stand |
-| `/pb arena addspawn <id> <red\|blue>` | A team spawn, where you stand |
-| `/pb arena clearspawns <id> <red\|blue>` | Remove a team's spawns |
+| `/pb arena addspawn <id> [red\|blue]` | A team spawn where you stand, or with no colour a spawn for anybody |
+| `/pb arena clearspawns <id> [red\|blue]` | Remove a team's spawns, or with no colour the spawns for anybody |
 | `/pb arena setflag <id> <red\|blue>` | Where that team's flag stands in capture the flag, where you stand |
 | `/pb arena wand` | The bounds wand |
 | `/pb arena setbounds <id>` | Its bounds, from the two corners you marked |
