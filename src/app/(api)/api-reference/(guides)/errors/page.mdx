@@ -26,7 +26,7 @@ Branch on `code`, never on `message`. The wording can change; the code won't.
 | 400 | `invalid_job_handle` | A job handle that isn't `<pack>:<kind>:<name>` or `<pack>:import` |
 | 400 | `file_fetch_failed` | A file given by `url` couldn't be downloaded |
 | 400 | `not_a_pack` | An import's file isn't a resource pack, or holds nothing usable |
-| 400 | `no_file` | A shader, text effect, VFX, emote or emote group has no file of its own; use the export |
+| 400 | `no_file` | That asset has nothing in the `format` asked for: a 2D shader overlay and an emote have no picture, and only a VFX and a text effect have an animation |
 | 401 | `missing_api_key` | No `Authorization: Bearer` header |
 | 401 | `invalid_api_key` | The key isn't one of ours, or has been revoked |
 | 401 | `wrong_key_kind` | An MCP key sent to the REST API, or an API key sent to the MCP server |

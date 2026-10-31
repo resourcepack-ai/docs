@@ -147,7 +147,7 @@
     },
     "no_file": {
       "status": 400,
-      "description": "A shader, text effect, VFX, emote or emote group has no file of its own. It is built into the pack's zip: use the export."
+      "description": "That asset has nothing in the `format` asked for: a 2D shader overlay and an emote have no picture on the server, and only a VFX and a text effect have an animation. `message` says what there is."
     },
     "file_too_large": {
       "status": 413,
@@ -160,6 +160,10 @@
     "unavailable": {
       "status": 503,
       "description": "The feature behind this endpoint is switched off."
+    },
+    "server_limit_reached": {
+      "status": 409,
+      "description": "The pack is bound to as many servers as it may, claim codes still waiting included. Unbind one first."
     },
     "skin_limit_reached": {
       "status": 409,
@@ -1020,7 +1024,7 @@
       "get": {
         "operationId": "listAssets",
         "summary": "List a pack's assets",
-        "description": "Page until `nextCursor` is null. An asset's `id` is also its job handle, so this is how you find the handle for something generated in an earlier run.\n\nEvery asset says what it is in `type` — `block`, `item`, `item3d`, `gui`, `hud`, `dialog`, `icon`, `sound` and so on — and that is the field to filter and branch on. `kind` is the file format it is stored as (`texture`, `model`, `font`, `sound`), which several types share: a block, an item sprite, a GUI, a HUD and a dialog are all `texture`s. Some types are parts of another asset rather than assets of their own (`block_face`, `model_texture`, `item_model`).\n\n**Shaders, text effects, VFX, emotes and emote groups are listed too**, after everything else, with `kind` set to the store they live in (`shader`, `vfx`, `emote`, `emote_group`) because they have no file of their own: they are built into the pack's `.zip`. Their `name` is the id to send to `POST /packs/{pack}/assets/{kind}/{name}/edit`, and their `id` is a job handle like any other. The cursor pages across both parts as one list, so keep passing `nextCursor` until it is null.",
+        "description": "Page until `nextCursor` is null. An asset's `id` is also its job handle, so this is how you find the handle for something generated in an earlier run.\n\nEvery asset says what it is in `type` — `block`, `item`, `item3d`, `gui`, `hud`, `dialog`, `icon`, `sound` and so on — and that is the field to filter and branch on. `kind` is the file format it is stored as (`texture`, `model`, `font`, `sound`), which several types share: a block, an item sprite, a GUI, a HUD and a dialog are all `texture`s. Some types are parts of another asset rather than assets of their own (`block_face`, `model_texture`, `item_model`).\n\n**Shaders, text effects, VFX, emotes and emote groups are listed too**, after everything else, with `kind` set to the store they live in (`shader`, `vfx`, `emote`, `emote_group`) because they are documents rather than stored files: download one as JSON or as a picture with `GET /packs/{pack}/assets/{kind}/{name}` and its `format`. Their `name` is the id to send to `POST /packs/{pack}/assets/{kind}/{name}/edit`, and their `id` is a job handle like any other. The cursor pages across both parts as one list, so keep passing `nextCursor` until it is null.",
         "tags": [
           "Packs"
         ],
@@ -1072,7 +1076,7 @@
                           },
                           "kind": {
                             "type": "string",
-                            "description": "The file format it is stored as, which several types share. For a shader, text effect, VFX, emote or emote group, the store it lives in instead: those have no file of their own.",
+                            "description": "The file format it is stored as, which several types share. For a shader, text effect, VFX, emote or emote group, the store it lives in instead: those are documents rather than stored files.",
                             "enum": [
                               "texture",
                               "model",
@@ -1537,7 +1541,7 @@
       "get": {
         "operationId": "getAssetFile",
         "summary": "Download an asset file",
-        "description": "The asset's own bytes, with the matching content type: PNG for textures and icons, JSON for models, Ogg Vorbis for sounds.\n\nThe path takes an asset's `kind` and `name` exactly as the asset listing reports them — `texture/item:rusted_key` for an item sprite, `texture/gui:shop_menu` for a GUI — so copy both from there rather than building them from its type. A shader, text effect, VFX, emote or emote group has no file of its own and answers `no_file`: export the pack instead.\n\nAsking before it's ready answers 409 rather than handing back the placeholder that sits there while it generates — a blank PNG that looked like a result is the one genuinely misleading answer available here.",
+        "description": "The asset's own bytes, with the matching content type: PNG for textures and icons, JSON for models, Ogg Vorbis for sounds.\n\nThe path takes an asset's `kind` and `name` exactly as the asset listing reports them — `texture/item:rusted_key` for an item sprite, `texture/gui:shop_menu` for a GUI, `vfx/frost_burst` for a VFX — so copy both from there rather than building them from its type.\n\nA shader, text effect, VFX, emote or emote group is a document rather than stored bytes, and `format` says how to have it. `file` (the default) is that document as JSON: a VFX's recipe (what its page's **Download recipe** saves), a shader object, an emote's keyframes, an emote group's parts. `picture` is a PNG drawn on the server: a VFX as six moments across its timeline, left to right, and a 3D shader object or a text effect as its card. `animation` is a GIF of a VFX or a text effect playing. A 2D shader overlay and an emote have no picture on the server (the browser draws them) and answer `no_file` for one. A stored asset always answers its own file, whatever `format` says.\n\nAsking before it's ready answers 409 rather than handing back the placeholder that sits there while it generates — a blank PNG that looked like a result is the one genuinely misleading answer available here.",
         "tags": [
           "Packs"
         ],
@@ -1595,15 +1599,19 @@
             "name": "kind",
             "in": "path",
             "required": true,
-            "description": "The file format it is stored as: the asset's `kind`.",
+            "description": "The asset's `kind` from the listing.",
             "schema": {
               "type": "string",
-              "description": "The file format it is stored as: the asset's `kind`.",
+              "description": "The asset's `kind` from the listing.",
               "enum": [
                 "texture",
                 "model",
                 "font",
-                "sound"
+                "sound",
+                "shader",
+                "vfx",
+                "emote",
+                "emote_group"
               ]
             }
           },
@@ -1616,6 +1624,22 @@
               "type": "string",
               "description": "The asset's stored `name`, from the listing.",
               "example": "mossy_bricks"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "For a shader, text effect, VFX, emote or emote group: its JSON (`file`), a PNG of it (`picture`) or a GIF of it moving (`animation`). Ignored for every other kind.",
+            "schema": {
+              "type": "string",
+              "description": "For a shader, text effect, VFX, emote or emote group: its JSON (`file`), a PNG of it (`picture`) or a GIF of it moving (`animation`). Ignored for every other kind.",
+              "enum": [
+                "file",
+                "picture",
+                "animation"
+              ],
+              "default": "file"
             }
           }
         ]
@@ -1869,7 +1893,7 @@
                         },
                         "kind": {
                           "type": "string",
-                          "description": "The file format it is stored as, which several types share. For a shader, text effect, VFX, emote or emote group, the store it lives in instead: those have no file of their own.",
+                          "description": "The file format it is stored as, which several types share. For a shader, text effect, VFX, emote or emote group, the store it lives in instead: those are documents rather than stored files.",
                           "enum": [
                             "texture",
                             "model",
@@ -4231,7 +4255,7 @@
       "post": {
         "operationId": "generateShader",
         "summary": "Generate a shader",
-        "description": "Produces a shader object, of one of three dimensions:\n\n- `2d`: a HUD overlay drawn over the screen (a health bar with the player's head, a compass, a frame). It is laid out while the request waits, so the answer is already `ready` and its `job` needs no polling. Up to 500 characters.\n- `3d`: an object drawn in the world by a shader (a glowing portal, a hologram). Takes minutes. Up to 800 characters.\n- `text`: a text effect, a look any text in its colour wears in game (fire, a rainbow wave, a glitch). Takes minutes, and its `type` is `text_effect`. Up to 600 characters.\n\nEach dimension is billed at its own price, the one the Studio quotes, and refunded in full if it fails. A shader has no file to download: it ships inside the pack's `.zip`. A 3D object or a text effect is changed with `POST /packs/{pack}/assets/shader/{id}/edit`; a HUD overlay is changed in the Studio's shader editor.",
+        "description": "Produces a shader object, of one of three dimensions:\n\n- `2d`: a HUD overlay drawn over the screen (a health bar with the player's head, a compass, a frame). It is laid out while the request waits, so the answer is already `ready` and its `job` needs no polling. Up to 500 characters.\n- `3d`: an object drawn in the world by a shader (a glowing portal, a hologram). Takes minutes. Up to 800 characters.\n- `text`: a text effect, a look any text in its colour wears in game (fire, a rainbow wave, a glitch). Takes minutes, and its `type` is `text_effect`. Up to 600 characters.\n\nEach dimension is billed at its own price, the one the Studio quotes, and refunded in full if it fails. Download one with `GET /packs/{pack}/assets/shader/{id}`: its JSON, or a picture of a 3D object or a text effect. A 3D object or a text effect is changed with `POST /packs/{pack}/assets/shader/{id}/edit`; a HUD overlay is changed in the Studio's shader editor.",
         "tags": [
           "Generating"
         ],
@@ -4391,7 +4415,7 @@
       "post": {
         "operationId": "generateVfx",
         "summary": "Generate a VFX",
-        "description": "Produces a `vfx`: an effect played in the world out of glowing sprites (a spell burst, a shockwave, a sparkle trail), which RP Engine plays on a server. Takes a minute or two. Up to 600 characters.\n\nOne flat charge, refunded in full if it fails. A VFX has no file to download: it ships inside the pack's `.zip`. Change it with `POST /packs/{pack}/assets/vfx/{id}/edit`.",
+        "description": "Produces a `vfx`: an effect played in the world out of glowing sprites (a spell burst, a shockwave, a sparkle trail), which RP Engine plays on a server. Takes a minute or two. Up to 600 characters.\n\nOne flat charge, refunded in full if it fails. Download its recipe, or a picture or GIF of it playing, with `GET /packs/{pack}/assets/vfx/{id}`. Change it with `POST /packs/{pack}/assets/vfx/{id}/edit`.",
         "tags": [
           "Generating"
         ],
@@ -5967,7 +5991,7 @@
       "get": {
         "operationId": "getDistribution",
         "summary": "Read a pack's distribution",
-        "description": "What servers bound to this pack hand their players: which Minecraft versions are built, the live release, and the newest one, with each version's build. Poll it after `POST /packs/{pack}/publish` until `latest.status` leaves `building`.\n\n`url` is the pack's stable download address, the one a server's `server.properties` can name.",
+        "description": "What servers bound to this pack hand their players: whether serving is on, which Minecraft versions are built, the live release, and the newest one, with each version's build. Poll it after `POST /packs/{pack}/publish` until `latest.status` leaves `building`.\n\n`url` is the pack's stable download address, the one a server's `server.properties` can name. `availableVersions` is what a release can be built for: everything from `minVersion`, which the pack's newest asset decides, to the current release.",
         "tags": [
           "Distribution"
         ],
@@ -6002,6 +6026,36 @@
                     "url": {
                       "type": "string",
                       "description": "The stable download address."
+                    },
+                    "minVersion": {
+                      "type": "string",
+                      "description": "The oldest version the pack can be published for: the newest of its assets' own floors."
+                    },
+                    "minVersionReason": {
+                      "type": "string",
+                      "description": "Which asset sets `minVersion`, in words, or null when nothing raises it."
+                    },
+                    "availableVersions": {
+                      "type": "array",
+                      "description": "Every version a release can be built for, newest first: the versions the Studio's publish picker offers.",
+                      "items": {
+                        "type": "object",
+                        "description": "One version.",
+                        "properties": {
+                          "version": {
+                            "type": "string",
+                            "description": "What to send in `versions`."
+                          },
+                          "label": {
+                            "type": "string",
+                            "description": "The releases it covers, as the Studio shows it."
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "label"
+                        ]
+                      }
                     },
                     "live": {
                       "type": "object",
@@ -6158,6 +6212,9 @@
                     "versions",
                     "defaultVersion",
                     "url",
+                    "minVersion",
+                    "minVersionReason",
+                    "availableVersions",
                     "live",
                     "latest"
                   ]
@@ -6171,6 +6228,22 @@
                   ],
                   "defaultVersion": "1.21.11",
                   "url": "https://packs.resourcepack.ai/p/8f2c1d/pack.zip",
+                  "minVersion": "1.21.4",
+                  "minVersionReason": "the pale oak log block",
+                  "availableVersions": [
+                    {
+                      "version": "26.3",
+                      "label": "26.3 (latest)"
+                    },
+                    {
+                      "version": "1.21.11",
+                      "label": "1.21.11"
+                    },
+                    {
+                      "version": "1.21.4",
+                      "label": "1.21.4"
+                    }
+                  ],
                   "live": null,
                   "latest": {
                     "id": "rel_01",
@@ -6241,6 +6314,362 @@
             }
           }
         ]
+      },
+      "post": {
+        "operationId": "updateDistribution",
+        "summary": "Change a pack's distribution",
+        "description": "The Distribution tab's settings. `enabled: false` stops every bound server handing the pack out and takes down its stable `url` at once; `true` serves the live release again, with nothing rebuilt. `versions` chooses what the next release is built for (from `availableVersions`; anything older than `minVersion` is refused), and `defaultVersion` which of them the stable `url` serves. Choosing versions builds nothing: players get them on the next `POST /packs/{pack}/publish`.\n\nSend any of the three. Needs the `distribute` permission on the pack. Free.",
+        "tags": [
+          "Distribution"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved. The distribution as it is now, the same shape `GET` answers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "enabled": {
+                      "type": "boolean",
+                      "description": "Whether bound servers are serving it at all."
+                    },
+                    "versions": {
+                      "type": "array",
+                      "description": "The versions a release is built for.",
+                      "items": {
+                        "type": "string",
+                        "description": "A Minecraft version."
+                      }
+                    },
+                    "defaultVersion": {
+                      "type": "string",
+                      "description": "The version the stable `url` serves."
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "The stable download address."
+                    },
+                    "minVersion": {
+                      "type": "string",
+                      "description": "The oldest version the pack can be published for: the newest of its assets' own floors."
+                    },
+                    "minVersionReason": {
+                      "type": "string",
+                      "description": "Which asset sets `minVersion`, in words, or null when nothing raises it."
+                    },
+                    "availableVersions": {
+                      "type": "array",
+                      "description": "Every version a release can be built for, newest first: the versions the Studio's publish picker offers.",
+                      "items": {
+                        "type": "object",
+                        "description": "One version.",
+                        "properties": {
+                          "version": {
+                            "type": "string",
+                            "description": "What to send in `versions`."
+                          },
+                          "label": {
+                            "type": "string",
+                            "description": "The releases it covers, as the Studio shows it."
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "label"
+                        ]
+                      }
+                    },
+                    "live": {
+                      "type": "object",
+                      "description": "The release players get now, or null before the first.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The release's id."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Where the build is.",
+                          "enum": [
+                            "building",
+                            "ready",
+                            "failed"
+                          ]
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "Why it failed. Absent otherwise."
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "readyAt": {
+                          "type": "string",
+                          "description": "ISO 8601, once built."
+                        },
+                        "artifacts": {
+                          "type": "array",
+                          "description": "One per version, plus `bedrock` when the pack has anything that crosses over.",
+                          "items": {
+                            "type": "object",
+                            "description": "One build.",
+                            "properties": {
+                              "version": {
+                                "type": "string",
+                                "description": "A Minecraft version, or `bedrock`."
+                              },
+                              "status": {
+                                "type": "string",
+                                "description": "Where this build is.",
+                                "enum": [
+                                  "building",
+                                  "ready",
+                                  "failed"
+                                ]
+                              },
+                              "error": {
+                                "type": "string",
+                                "description": "Why it failed. Absent otherwise."
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "description": "Its size, once built."
+                              }
+                            },
+                            "required": [
+                              "version",
+                              "status",
+                              "bytes"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "status",
+                        "createdAt",
+                        "readyAt",
+                        "artifacts"
+                      ]
+                    },
+                    "latest": {
+                      "type": "object",
+                      "description": "The newest release, live or not, or null before the first.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The release's id."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Where the build is.",
+                          "enum": [
+                            "building",
+                            "ready",
+                            "failed"
+                          ]
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "Why it failed. Absent otherwise."
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "readyAt": {
+                          "type": "string",
+                          "description": "ISO 8601, once built."
+                        },
+                        "artifacts": {
+                          "type": "array",
+                          "description": "One per version, plus `bedrock` when the pack has anything that crosses over.",
+                          "items": {
+                            "type": "object",
+                            "description": "One build.",
+                            "properties": {
+                              "version": {
+                                "type": "string",
+                                "description": "A Minecraft version, or `bedrock`."
+                              },
+                              "status": {
+                                "type": "string",
+                                "description": "Where this build is.",
+                                "enum": [
+                                  "building",
+                                  "ready",
+                                  "failed"
+                                ]
+                              },
+                              "error": {
+                                "type": "string",
+                                "description": "Why it failed. Absent otherwise."
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "description": "Its size, once built."
+                              }
+                            },
+                            "required": [
+                              "version",
+                              "status",
+                              "bytes"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "status",
+                        "createdAt",
+                        "readyAt",
+                        "artifacts"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "enabled",
+                    "versions",
+                    "defaultVersion",
+                    "url",
+                    "minVersion",
+                    "minVersionReason",
+                    "availableVersions",
+                    "live",
+                    "latest"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "enabled": true,
+                  "versions": [
+                    "1.21.4",
+                    "1.21.11"
+                  ],
+                  "defaultVersion": "1.21.11",
+                  "url": "https://packs.resourcepack.ai/p/8f2c1d/pack.zip",
+                  "minVersion": "1.21.4",
+                  "minVersionReason": "the pale oak log block",
+                  "availableVersions": [
+                    {
+                      "version": "26.3",
+                      "label": "26.3 (latest)"
+                    },
+                    {
+                      "version": "1.21.11",
+                      "label": "1.21.11"
+                    },
+                    {
+                      "version": "1.21.4",
+                      "label": "1.21.4"
+                    }
+                  ],
+                  "live": null,
+                  "latest": {
+                    "id": "rel_01",
+                    "status": "building",
+                    "createdAt": "2026-10-23T09:12:00.000Z",
+                    "readyAt": null,
+                    "artifacts": [
+                      {
+                        "version": "1.21.4",
+                        "status": "ready",
+                        "bytes": 482113
+                      },
+                      {
+                        "version": "1.21.11",
+                        "status": "building",
+                        "bytes": null
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether bound servers serve the pack at all."
+                  },
+                  "versions": {
+                    "type": "array",
+                    "description": "The Minecraft versions a release is built for. Replaces the saved choice.",
+                    "items": {
+                      "type": "string",
+                      "description": "A Minecraft version.",
+                      "example": "1.21.11"
+                    }
+                  },
+                  "defaultVersion": {
+                    "type": "string",
+                    "description": "Which of the versions the stable download address serves. Absent with `versions` is the first."
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/packs/{pack}/publish": {
@@ -6376,6 +6805,1269 @@
             }
           }
         }
+      }
+    },
+    "/packs/{pack}/distribution/stats": {
+      "get": {
+        "operationId": "getDistributionStats",
+        "summary": "Read distribution numbers",
+        "description": "The Distribution tab's numbers: how many players bound servers have handed the pack to, how often, what their clients did with it, which versions they were on, and serves per day.\n\n`unsupported` counts joins on a version the release was not built for: add that version with `POST /packs/{pack}/distribution` and publish again. `unknownProtocols` is a client too new for us to name yet. Every figure is all-time except `daily`.",
+        "tags": [
+          "Distribution"
+        ],
+        "responses": {
+          "200": {
+            "description": "The numbers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "players": {
+                      "type": "integer",
+                      "description": "Unique players served, which is what the plan's player allowance counts."
+                    },
+                    "serves": {
+                      "type": "integer",
+                      "description": "Times the pack was handed to a player."
+                    },
+                    "accepted": {
+                      "type": "integer",
+                      "description": "Serves the player's client accepted and loaded."
+                    },
+                    "declined": {
+                      "type": "integer",
+                      "description": "Serves the player declined."
+                    },
+                    "failed": {
+                      "type": "integer",
+                      "description": "Serves whose download failed in the client."
+                    },
+                    "unsupported": {
+                      "type": "integer",
+                      "description": "Joins on a version the release was not built for, so nothing was served."
+                    },
+                    "byVersion": {
+                      "type": "array",
+                      "description": "Serves per Minecraft version the players were on.",
+                      "items": {
+                        "type": "object",
+                        "description": "One version.",
+                        "properties": {
+                          "version": {
+                            "type": "string",
+                            "description": "The version, or null when the client could not be placed."
+                          },
+                          "serves": {
+                            "type": "integer",
+                            "description": "Serves on it."
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "serves"
+                        ]
+                      }
+                    },
+                    "unknownProtocols": {
+                      "type": "array",
+                      "description": "Clients reporting a protocol number we cannot map to a version yet.",
+                      "items": {
+                        "type": "object",
+                        "description": "One protocol.",
+                        "properties": {
+                          "protocol": {
+                            "type": "integer",
+                            "description": "The protocol number."
+                          },
+                          "serves": {
+                            "type": "integer",
+                            "description": "Serves with it."
+                          }
+                        },
+                        "required": [
+                          "protocol",
+                          "serves"
+                        ]
+                      }
+                    },
+                    "daily": {
+                      "type": "array",
+                      "description": "Serves per day, oldest first, empty days included.",
+                      "items": {
+                        "type": "object",
+                        "description": "One day.",
+                        "properties": {
+                          "day": {
+                            "type": "string",
+                            "description": "`YYYY-MM-DD`, UTC."
+                          },
+                          "serves": {
+                            "type": "integer",
+                            "description": "Serves that day."
+                          }
+                        },
+                        "required": [
+                          "day",
+                          "serves"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "players",
+                    "serves",
+                    "accepted",
+                    "declined",
+                    "failed",
+                    "unsupported",
+                    "byVersion",
+                    "unknownProtocols",
+                    "daily"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "players": 214,
+                  "serves": 1380,
+                  "accepted": 1291,
+                  "declined": 37,
+                  "failed": 4,
+                  "unsupported": 48,
+                  "byVersion": [
+                    {
+                      "version": "1.21.11",
+                      "serves": 1102
+                    },
+                    {
+                      "version": "1.21.4",
+                      "serves": 230
+                    },
+                    {
+                      "version": null,
+                      "serves": 48
+                    }
+                  ],
+                  "unknownProtocols": [],
+                  "daily": [
+                    {
+                      "day": "2026-10-30",
+                      "serves": 61
+                    },
+                    {
+                      "day": "2026-10-31",
+                      "serves": 44
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "description": "How many days `daily` covers, ending today.",
+            "schema": {
+              "type": "integer",
+              "description": "How many days `daily` covers, ending today.",
+              "minimum": 1,
+              "maximum": 90,
+              "default": 30
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/distribution/servers": {
+      "get": {
+        "operationId": "listDistributionServers",
+        "summary": "List bound servers",
+        "description": "Every Minecraft server bound to the pack, newest first, with what it last reported about itself, plus any claim code still `waiting` to be typed. A server is bound by typing its code with RP Engine installed, and from then on hands its players the live release.",
+        "tags": [
+          "Distribution"
+        ],
+        "responses": {
+          "200": {
+            "description": "The servers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "servers": {
+                      "type": "array",
+                      "description": "Newest first.",
+                      "items": {
+                        "type": "object",
+                        "description": "One server.",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "The server's id, for renaming or unbinding it."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "What the Studio calls it."
+                          },
+                          "status": {
+                            "type": "string",
+                            "description": "`waiting` until somebody types the code on the server, `bound` after.",
+                            "enum": [
+                              "waiting",
+                              "bound"
+                            ]
+                          },
+                          "claimCode": {
+                            "type": "string",
+                            "description": "The code to type, while `waiting`. Null once bound."
+                          },
+                          "command": {
+                            "type": "string",
+                            "description": "The whole command to type in the server's console or chat, while `waiting`. Null once bound."
+                          },
+                          "claimedAt": {
+                            "type": "string",
+                            "description": "ISO 8601, when it was bound."
+                          },
+                          "pluginVersion": {
+                            "type": "string",
+                            "description": "The RP Engine version it runs, from its last check-in."
+                          },
+                          "serverVersion": {
+                            "type": "string",
+                            "description": "Its Minecraft version, from its last check-in."
+                          },
+                          "viaVersion": {
+                            "type": "boolean",
+                            "description": "Whether it runs ViaVersion, so players on other versions can join."
+                          },
+                          "geyser": {
+                            "type": "boolean",
+                            "description": "Whether it runs Geyser, so Bedrock players can join."
+                          },
+                          "lastSeenAt": {
+                            "type": "string",
+                            "description": "ISO 8601, its last check-in: the plugin is alive."
+                          },
+                          "lastServeAt": {
+                            "type": "string",
+                            "description": "ISO 8601, the last time it handed the pack to somebody."
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "status",
+                          "claimCode",
+                          "command",
+                          "claimedAt",
+                          "pluginVersion",
+                          "serverVersion",
+                          "viaVersion",
+                          "geyser",
+                          "lastSeenAt",
+                          "lastServeAt",
+                          "createdAt"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "servers"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "servers": [
+                    {
+                      "id": "8d1f6a2c-3b4e-4f5a-9c7d-1e2f3a4b5c6d",
+                      "name": "Unclaimed server",
+                      "status": "waiting",
+                      "claimCode": "482913",
+                      "command": "/rp distribute 482913",
+                      "claimedAt": null,
+                      "pluginVersion": null,
+                      "serverVersion": null,
+                      "viaVersion": false,
+                      "geyser": false,
+                      "lastSeenAt": null,
+                      "lastServeAt": null,
+                      "createdAt": "2026-10-31T10:02:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "bindDistributionServer",
+        "summary": "Bind a server",
+        "description": "What the Distribution tab's **Bind a server** does: a code for somebody to type on a Minecraft server running RP Engine. Hand `command` (`/rp distribute <code>`) to whoever runs the server, then follow `GET /packs/{pack}/distribution/servers` until its `status` is `bound`. The code is for one server and expires if nobody types it; unbind a code you no longer want.\n\nA pack can be bound to 10 servers, codes still waiting included. Needs the `distribute` permission on the pack. Free.",
+        "tags": [
+          "Distribution"
+        ],
+        "responses": {
+          "201": {
+            "description": "A claim code, waiting.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "server": {
+                      "type": "object",
+                      "description": "The server, `waiting`.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The server's id, for renaming or unbinding it."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "What the Studio calls it."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "`waiting` until somebody types the code on the server, `bound` after.",
+                          "enum": [
+                            "waiting",
+                            "bound"
+                          ]
+                        },
+                        "claimCode": {
+                          "type": "string",
+                          "description": "The code to type, while `waiting`. Null once bound."
+                        },
+                        "command": {
+                          "type": "string",
+                          "description": "The whole command to type in the server's console or chat, while `waiting`. Null once bound."
+                        },
+                        "claimedAt": {
+                          "type": "string",
+                          "description": "ISO 8601, when it was bound."
+                        },
+                        "pluginVersion": {
+                          "type": "string",
+                          "description": "The RP Engine version it runs, from its last check-in."
+                        },
+                        "serverVersion": {
+                          "type": "string",
+                          "description": "Its Minecraft version, from its last check-in."
+                        },
+                        "viaVersion": {
+                          "type": "boolean",
+                          "description": "Whether it runs ViaVersion, so players on other versions can join."
+                        },
+                        "geyser": {
+                          "type": "boolean",
+                          "description": "Whether it runs Geyser, so Bedrock players can join."
+                        },
+                        "lastSeenAt": {
+                          "type": "string",
+                          "description": "ISO 8601, its last check-in: the plugin is alive."
+                        },
+                        "lastServeAt": {
+                          "type": "string",
+                          "description": "ISO 8601, the last time it handed the pack to somebody."
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "status",
+                        "claimCode",
+                        "command",
+                        "claimedAt",
+                        "pluginVersion",
+                        "serverVersion",
+                        "viaVersion",
+                        "geyser",
+                        "lastSeenAt",
+                        "lastServeAt",
+                        "createdAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "server"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "server": {
+                    "id": "8d1f6a2c-3b4e-4f5a-9c7d-1e2f3a4b5c6d",
+                    "name": "Unclaimed server",
+                    "status": "waiting",
+                    "claimCode": "482913",
+                    "command": "/rp distribute 482913",
+                    "claimedAt": null,
+                    "pluginVersion": null,
+                    "serverVersion": null,
+                    "viaVersion": false,
+                    "geyser": false,
+                    "lastSeenAt": null,
+                    "lastServeAt": null,
+                    "createdAt": "2026-10-31T10:02:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`, `server_limit_reached`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/distribution/servers/{server}/rename": {
+      "post": {
+        "operationId": "renameDistributionServer",
+        "summary": "Rename a bound server",
+        "description": "Changes the name the Studio shows a bound server by. Needs the `distribute` permission on the pack. Free.",
+        "tags": [
+          "Distribution"
+        ],
+        "responses": {
+          "200": {
+            "description": "Renamed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "server": {
+                      "type": "object",
+                      "description": "The server as it is now.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The server's id, for renaming or unbinding it."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "What the Studio calls it."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "`waiting` until somebody types the code on the server, `bound` after.",
+                          "enum": [
+                            "waiting",
+                            "bound"
+                          ]
+                        },
+                        "claimCode": {
+                          "type": "string",
+                          "description": "The code to type, while `waiting`. Null once bound."
+                        },
+                        "command": {
+                          "type": "string",
+                          "description": "The whole command to type in the server's console or chat, while `waiting`. Null once bound."
+                        },
+                        "claimedAt": {
+                          "type": "string",
+                          "description": "ISO 8601, when it was bound."
+                        },
+                        "pluginVersion": {
+                          "type": "string",
+                          "description": "The RP Engine version it runs, from its last check-in."
+                        },
+                        "serverVersion": {
+                          "type": "string",
+                          "description": "Its Minecraft version, from its last check-in."
+                        },
+                        "viaVersion": {
+                          "type": "boolean",
+                          "description": "Whether it runs ViaVersion, so players on other versions can join."
+                        },
+                        "geyser": {
+                          "type": "boolean",
+                          "description": "Whether it runs Geyser, so Bedrock players can join."
+                        },
+                        "lastSeenAt": {
+                          "type": "string",
+                          "description": "ISO 8601, its last check-in: the plugin is alive."
+                        },
+                        "lastServeAt": {
+                          "type": "string",
+                          "description": "ISO 8601, the last time it handed the pack to somebody."
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "status",
+                        "claimCode",
+                        "command",
+                        "claimedAt",
+                        "pluginVersion",
+                        "serverVersion",
+                        "viaVersion",
+                        "geyser",
+                        "lastSeenAt",
+                        "lastServeAt",
+                        "createdAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "server"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "server": {
+                    "id": "8d1f6a2c-3b4e-4f5a-9c7d-1e2f3a4b5c6d",
+                    "name": "Survival",
+                    "status": "waiting",
+                    "claimCode": "482913",
+                    "command": "/rp distribute 482913",
+                    "claimedAt": null,
+                    "pluginVersion": null,
+                    "serverVersion": null,
+                    "viaVersion": false,
+                    "geyser": false,
+                    "lastSeenAt": null,
+                    "lastServeAt": null,
+                    "createdAt": "2026-10-31T10:02:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "server",
+            "in": "path",
+            "required": true,
+            "description": "The server's `id`, from `GET /packs/{pack}/distribution/servers`.",
+            "schema": {
+              "type": "string",
+              "description": "The server's `id`, from `GET /packs/{pack}/distribution/servers`."
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The new name.",
+                    "maxLength": 60,
+                    "example": "Survival"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/distribution/servers/{server}/unbind": {
+      "post": {
+        "operationId": "unbindDistributionServer",
+        "summary": "Unbind a server",
+        "description": "What the Distribution tab's **Unbind** does: the server stops handing out the pack on its next check-in, and its players' rows go with it. Also takes back a claim code nobody has typed. **It cannot be undone**: binding the server again needs a new code. Needs the `distribute` permission on the pack. Free.",
+        "tags": [
+          "Distribution"
+        ],
+        "responses": {
+          "200": {
+            "description": "Unbound.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "unbound": {
+                      "type": "boolean",
+                      "description": "Always true."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "server": {
+                      "type": "string",
+                      "description": "The server's id."
+                    }
+                  },
+                  "required": [
+                    "unbound",
+                    "pack",
+                    "server"
+                  ]
+                },
+                "example": {
+                  "unbound": true,
+                  "pack": "medieval-keep",
+                  "server": "8d1f6a2c-3b4e-4f5a-9c7d-1e2f3a4b5c6d"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "server",
+            "in": "path",
+            "required": true,
+            "description": "The server's `id`, from `GET /packs/{pack}/distribution/servers`.",
+            "schema": {
+              "type": "string",
+              "description": "The server's `id`, from `GET /packs/{pack}/distribution/servers`."
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/distribution/serves": {
+      "get": {
+        "operationId": "listDistributionServes",
+        "summary": "List recent serves",
+        "description": "The Distribution tab's **Recent serves**: one row per time a bound server handed the pack to a player, newest first, and what their client did with it. Page with `nextOffset` until it is null. Only the most recent few hundred are kept; the totals in `GET /packs/{pack}/distribution/stats` count everything.",
+        "tags": [
+          "Distribution"
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of serves.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "serves": {
+                      "type": "array",
+                      "description": "Newest first.",
+                      "items": {
+                        "type": "object",
+                        "description": "One serve.",
+                        "properties": {
+                          "uuid": {
+                            "type": "string",
+                            "description": "The player's UUID."
+                          },
+                          "ign": {
+                            "type": "string",
+                            "description": "Their name, when the server said."
+                          },
+                          "platform": {
+                            "type": "string",
+                            "description": "`java` or `bedrock`, when known."
+                          },
+                          "minecraftVersion": {
+                            "type": "string",
+                            "description": "The version their client was on, when it could be placed."
+                          },
+                          "protocol": {
+                            "type": "integer",
+                            "description": "Their client's protocol number."
+                          },
+                          "outcome": {
+                            "type": "string",
+                            "description": "What their client did with the pack.",
+                            "enum": [
+                              "pending",
+                              "accepted",
+                              "declined",
+                              "failed",
+                              "unsupported"
+                            ]
+                          },
+                          "at": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          }
+                        },
+                        "required": [
+                          "uuid",
+                          "ign",
+                          "platform",
+                          "minecraftVersion",
+                          "protocol",
+                          "outcome",
+                          "at"
+                        ]
+                      }
+                    },
+                    "nextOffset": {
+                      "type": "integer",
+                      "description": "The `offset` for the next page, or null at the end."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "serves",
+                    "nextOffset"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "serves": [
+                    {
+                      "uuid": "069a79f4-44e9-4726-a5be-fca90e38aaf5",
+                      "ign": "Notch",
+                      "platform": "java",
+                      "minecraftVersion": "1.21.11",
+                      "protocol": 774,
+                      "outcome": "accepted",
+                      "at": "2026-10-31T09:58:12.000Z"
+                    }
+                  ],
+                  "nextOffset": null
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many to return.",
+            "schema": {
+              "type": "integer",
+              "description": "How many to return.",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "From the previous response's `nextOffset`.",
+            "schema": {
+              "type": "integer",
+              "description": "From the previous response's `nextOffset`.",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/distribution/players": {
+      "get": {
+        "operationId": "listDistributionPlayers",
+        "summary": "List players served",
+        "description": "Every player a bound server has handed the pack to, one row per player per server, most recently seen first, with their join counts. This is who the plan's player allowance counts. Page with `nextOffset` until it is null.",
+        "tags": [
+          "Distribution"
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of players.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "players": {
+                      "type": "array",
+                      "description": "Most recently seen first.",
+                      "items": {
+                        "type": "object",
+                        "description": "One player on one server.",
+                        "properties": {
+                          "uuid": {
+                            "type": "string",
+                            "description": "The player's UUID."
+                          },
+                          "ign": {
+                            "type": "string",
+                            "description": "Their name, when the server said."
+                          },
+                          "server": {
+                            "type": "string",
+                            "description": "The id of the server that served them."
+                          },
+                          "platform": {
+                            "type": "string",
+                            "description": "`java` or `bedrock`, when known."
+                          },
+                          "minecraftVersion": {
+                            "type": "string",
+                            "description": "The version they were last on, when it could be placed."
+                          },
+                          "outcome": {
+                            "type": "string",
+                            "description": "What their client did the last time.",
+                            "enum": [
+                              "pending",
+                              "accepted",
+                              "declined",
+                              "failed",
+                              "unsupported"
+                            ]
+                          },
+                          "joins": {
+                            "type": "integer",
+                            "description": "Times they were served."
+                          },
+                          "accepted": {
+                            "type": "integer",
+                            "description": "Times their client loaded it."
+                          },
+                          "declined": {
+                            "type": "integer",
+                            "description": "Times they declined it."
+                          },
+                          "failed": {
+                            "type": "integer",
+                            "description": "Times the download failed."
+                          },
+                          "firstSeenAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          },
+                          "lastSeenAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          }
+                        },
+                        "required": [
+                          "uuid",
+                          "ign",
+                          "server",
+                          "platform",
+                          "minecraftVersion",
+                          "outcome",
+                          "joins",
+                          "accepted",
+                          "declined",
+                          "failed",
+                          "firstSeenAt",
+                          "lastSeenAt"
+                        ]
+                      }
+                    },
+                    "nextOffset": {
+                      "type": "integer",
+                      "description": "The `offset` for the next page, or null at the end."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "players",
+                    "nextOffset"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "players": [
+                    {
+                      "uuid": "069a79f4-44e9-4726-a5be-fca90e38aaf5",
+                      "ign": "Notch",
+                      "server": "8d1f6a2c-3b4e-4f5a-9c7d-1e2f3a4b5c6d",
+                      "platform": "java",
+                      "minecraftVersion": "1.21.11",
+                      "outcome": "accepted",
+                      "joins": 12,
+                      "accepted": 12,
+                      "declined": 0,
+                      "failed": 0,
+                      "firstSeenAt": "2026-10-20T18:01:44.000Z",
+                      "lastSeenAt": "2026-10-31T09:58:12.000Z"
+                    }
+                  ],
+                  "nextOffset": null
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many to return.",
+            "schema": {
+              "type": "integer",
+              "description": "How many to return.",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "From the previous response's `nextOffset`.",
+            "schema": {
+              "type": "integer",
+              "description": "From the previous response's `nextOffset`.",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ]
       }
     },
     "/packs/{pack}/gallery": {
