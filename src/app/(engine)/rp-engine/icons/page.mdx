@@ -71,9 +71,10 @@ A `file` with a namespace points at that namespace's textures:
   copying into configs.
 </Callout>
 
-Don't ship your own `assets/minecraft/font/default.json`: RP Engine builds that
-file from every pack's icons, and a copy of your own would wipe them out, so
-it's refused with an error.
+You don't need your own `assets/minecraft/font/default.json`: RP Engine builds
+that file from every pack's icons. If a pack does have one (a resource pack
+dropped into `content/`, or a Studio pack), its characters are kept and RP
+Engine's icons are given other ones, so both draw.
 
 ## Using them
 
