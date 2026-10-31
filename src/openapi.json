@@ -177,6 +177,14 @@
       "status": 402,
       "description": "The account (or team) has served its plan's players for this month, so a new release cannot be published. Players still get the live one."
     },
+    "no_such_player": {
+      "status": 404,
+      "description": "No resourcepack.ai account has verified that Minecraft username. Invite them by email instead."
+    },
+    "too_many_invites": {
+      "status": 429,
+      "description": "The pack has as many invitations waiting as it may. Withdraw one first."
+    },
     "nothing_to_export": {
       "status": 400,
       "description": "The pack holds nothing that export format is built from yet, or all of it is still generating. `message` says which."
@@ -9404,6 +9412,1421 @@
             }
           }
         ]
+      }
+    },
+    "/packs/{pack}/collaborators": {
+      "get": {
+        "operationId": "listCollaborators",
+        "summary": "List a pack's collaborators",
+        "description": "The Studio's **Collaborators** tab: who else is in the pack, who has an invitation waiting, and what each may do. A grant is two lists: the **sections** (the pack page's tabs) they reach, `*` for all of them, and the **capabilities** they hold there (`edit`, `generate`, `sync`, `export`, `distribute`). A pack can be shared with 5 people, invitations included.\n\nOnly the pack's owner, or an admin of its team, can see or change this. A member's email address is never returned; an invitation's is the one that was typed.",
+        "tags": [
+          "Collaborators"
+        ],
+        "responses": {
+          "200": {
+            "description": "The collaborators.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "creditSource": {
+                      "type": "string",
+                      "description": "Whose credits their generations spend.",
+                      "enum": [
+                        "owner",
+                        "prompter"
+                      ]
+                    },
+                    "members": {
+                      "type": "array",
+                      "description": "Who is in the pack, the owner aside.",
+                      "items": {
+                        "type": "object",
+                        "description": "A collaborator.",
+                        "properties": {
+                          "userId": {
+                            "type": "string",
+                            "description": "Their account. What updates and removes them."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Their Minecraft username, else their name."
+                          },
+                          "minecraftUsername": {
+                            "type": "string",
+                            "description": "Their verified Minecraft username."
+                          },
+                          "minecraftUuid": {
+                            "type": "string",
+                            "description": "Their Minecraft UUID."
+                          },
+                          "sections": {
+                            "type": "string",
+                            "description": "The sections they reach, a comma list, or `*`."
+                          },
+                          "caps": {
+                            "type": "string",
+                            "description": "What they may do there, a comma list."
+                          },
+                          "summary": {
+                            "type": "string",
+                            "description": "The grant in words, as the tab shows it."
+                          },
+                          "joinedAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          },
+                          "activity": {
+                            "type": "object",
+                            "description": "What the owner is told about them, as `{events, channels}`. Null when they follow the pack's default."
+                          }
+                        },
+                        "required": [
+                          "userId",
+                          "name",
+                          "minecraftUsername",
+                          "minecraftUuid",
+                          "sections",
+                          "caps",
+                          "summary",
+                          "joinedAt",
+                          "activity"
+                        ]
+                      }
+                    },
+                    "invites": {
+                      "type": "array",
+                      "description": "Invitations still waiting. `token` is what revokes one.",
+                      "items": {
+                        "type": "object",
+                        "description": "An invitation."
+                      }
+                    },
+                    "notifications": {
+                      "type": "object",
+                      "description": "What the owner is told about collaborators' work by default, as `{events, channels}`. Null for the default."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "creditSource",
+                    "members",
+                    "invites",
+                    "notifications"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "creditSource": "owner",
+                  "members": [
+                    {
+                      "userId": "u_8d2f",
+                      "name": "Notch",
+                      "minecraftUsername": "Notch",
+                      "minecraftUuid": "069a79f4-44e9-4726-a5be-fca90e38aaf5",
+                      "sections": "*",
+                      "caps": "edit,generate,sync,export",
+                      "summary": "Editor",
+                      "joinedAt": "2026-08-12T10:00:00.000Z",
+                      "activity": null
+                    }
+                  ],
+                  "invites": [],
+                  "notifications": null
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/collaborators/invite": {
+      "post": {
+        "operationId": "inviteCollaborator",
+        "summary": "Invite somebody to a pack",
+        "description": "Invites a person by Minecraft `username` (one a resourcepack.ai account has verified) or by `email`, with what they may do once they accept: Discord and email tell them. By username it says whether there is such a player; **by email it always answers `invited`**, whether or not that address has an account, so it cannot be used to find out who does. Owner or team admin only.",
+        "tags": [
+          "Collaborators"
+        ],
+        "responses": {
+          "200": {
+            "description": "Invited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `invited`."
+                    },
+                    "invitedName": {
+                      "type": "string",
+                      "description": "By username: their name as their account has it."
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "By email: the address, as sent."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "invited",
+                  "invitedName": "Notch",
+                  "minecraftUuid": "069a79f4-44e9-4726-a5be-fca90e38aaf5"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `no_such_player`, `too_many_invites`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "Their Minecraft username. Send this or `email`.",
+                    "example": "Notch"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Their email address."
+                  },
+                  "sections": {
+                    "type": "string",
+                    "description": "The sections they reach: a comma list of `models`, `vehicles`, `blocks`, `items`, `armor`, `guis`, `hud`, `dialogs`, `icons`, `sounds`, `emotes`, `shaders`, `distribution`, or `*` for all of them.",
+                    "default": "*"
+                  },
+                  "caps": {
+                    "type": "string",
+                    "description": "What they may do there, a comma list of `edit`, `generate`, `sync`, `export`, `distribute`. None by default, which is looking only.",
+                    "example": "edit,generate"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/collaborators/{user}": {
+      "post": {
+        "operationId": "updateCollaborator",
+        "summary": "Change what a collaborator may do",
+        "description": "Replaces a member's grant: the sections they reach and the capabilities they hold there, as the tab's dialog saves it. Owner or team admin only.",
+        "tags": [
+          "Collaborators"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "userId": {
+                      "type": "string",
+                      "description": "The member."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `updated`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "userId",
+                    "status"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "userId": "u_8d2f",
+                  "status": "updated"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "The member's `userId` from the collaborator list.",
+            "schema": {
+              "type": "string",
+              "description": "The member's `userId` from the collaborator list."
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sections": {
+                    "type": "string",
+                    "description": "A comma list of sections, or `*` for all of them.",
+                    "default": "*"
+                  },
+                  "caps": {
+                    "type": "string",
+                    "description": "A comma list of capabilities. Empty is looking only.",
+                    "example": "edit,generate,sync"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/collaborators/{user}/remove": {
+      "post": {
+        "operationId": "removeCollaborator",
+        "summary": "Remove a collaborator",
+        "description": "Takes somebody out of the pack. Their `/link` code for it goes with them, so their server can no longer be pushed to. What they made stays. Owner or team admin only.",
+        "tags": [
+          "Collaborators"
+        ],
+        "responses": {
+          "200": {
+            "description": "Removed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "userId": {
+                      "type": "string",
+                      "description": "Who was removed."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `removed`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "userId",
+                    "status"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "userId": "u_8d2f",
+                  "status": "removed"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "The member's `userId` from the collaborator list.",
+            "schema": {
+              "type": "string",
+              "description": "The member's `userId` from the collaborator list."
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/invites/{invite}/revoke": {
+      "post": {
+        "operationId": "revokeInvite",
+        "summary": "Withdraw an invitation",
+        "description": "Cancels an invitation that has not been accepted, by the `token` the collaborator list gives it. Its link stops working. Owner or team admin only.",
+        "tags": [
+          "Collaborators"
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdrawn.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `revoked`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "revoked"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "invite",
+            "in": "path",
+            "required": true,
+            "description": "The invitation's `token`.",
+            "schema": {
+              "type": "string",
+              "description": "The invitation's `token`."
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/collaborators/notifications": {
+      "post": {
+        "operationId": "setCollaboratorNotifications",
+        "summary": "Choose what you're told about collaborators",
+        "description": "Which of the collaborators' actions the owner hears about, and where, for the whole pack or (with `member`) for one person. An empty `events` list on a member mutes them; `inherit: true` puts a member back on the pack's default. Events: `asset.created`, `asset.edited`, `asset.deleted`, `ai.generated`, `pack.synced`, `pack.exported`, `member.joined`. Channels: `email`, `discord`, `minecraft`.",
+        "tags": [
+          "Collaborators"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`saved`, or `inherited` for `inherit`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "saved",
+                  "events": [
+                    "ai.generated"
+                  ],
+                  "channels": [
+                    "discord"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "member": {
+                    "type": "string",
+                    "description": "A member's `userId`. The pack's default when absent."
+                  },
+                  "events": {
+                    "type": "array",
+                    "description": "What to be told about.",
+                    "items": {
+                      "type": "string",
+                      "description": "An event.",
+                      "enum": [
+                        "asset.created",
+                        "asset.edited",
+                        "asset.deleted",
+                        "ai.generated",
+                        "pack.synced",
+                        "pack.exported",
+                        "member.joined"
+                      ]
+                    }
+                  },
+                  "channels": {
+                    "type": "array",
+                    "description": "Where.",
+                    "items": {
+                      "type": "string",
+                      "description": "A channel.",
+                      "enum": [
+                        "email",
+                        "discord",
+                        "minecraft"
+                      ]
+                    }
+                  },
+                  "inherit": {
+                    "type": "boolean",
+                    "description": "For a member: follow the pack's default again."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/folders": {
+      "get": {
+        "operationId": "listFolders",
+        "summary": "List a pack's folders",
+        "description": "The folders on the pack page and which asset is filed in each. A folder holds one tab's assets (`kind`, a pack tab such as `models` or `blocks`). Folders are only layout: nothing an export or a push builds reads them. `assignments` maps an asset, as `<type>:<id>`, to its folder's id.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The folders.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "folders": {
+                      "type": "array",
+                      "description": "The folders, as `{id, name, color, kind, createdAt}`."
+                    },
+                    "assignments": {
+                      "type": "object",
+                      "description": "Asset (`<type>:<id>`) to folder id. An asset in no folder has no entry."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "folders",
+                    "assignments"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "folders": [
+                    {
+                      "id": "f_1",
+                      "name": "Furniture",
+                      "color": "orange",
+                      "kind": "models",
+                      "createdAt": "2026-08-10T16:02:11.000Z"
+                    }
+                  ],
+                  "assignments": {
+                    "model:lantern": "f_1"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "createFolder",
+        "summary": "Make a folder",
+        "description": "A new folder for one tab's assets, optionally filing some in it straight away (any of another tab are listed in `refused`). A pack holds up to 100. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "201": {
+            "description": "Made.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "folders": {
+                      "type": "array",
+                      "description": "The folders, as `{id, name, color, kind, createdAt}`."
+                    },
+                    "assignments": {
+                      "type": "object",
+                      "description": "Asset (`<type>:<id>`) to folder id. An asset in no folder has no entry."
+                    },
+                    "folder": {
+                      "type": "object",
+                      "description": "The new folder."
+                    },
+                    "refused": {
+                      "type": "array",
+                      "description": "Assets it would not take."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "folders",
+                    "assignments",
+                    "folder",
+                    "refused"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "folder": {
+                    "id": "f_1",
+                    "name": "Furniture",
+                    "color": "orange",
+                    "kind": "models"
+                  },
+                  "folders": [],
+                  "assignments": {},
+                  "refused": []
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Its name.",
+                    "maxLength": 40,
+                    "example": "Furniture"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "description": "The tab whose assets it holds.",
+                    "enum": [
+                      "models",
+                      "vehicles",
+                      "blocks",
+                      "items",
+                      "armor",
+                      "guis",
+                      "hud",
+                      "dialogs",
+                      "icons",
+                      "sounds",
+                      "emotes",
+                      "shaders"
+                    ]
+                  },
+                  "color": {
+                    "type": "string",
+                    "description": "Its colour.",
+                    "enum": [
+                      "gray",
+                      "red",
+                      "orange",
+                      "yellow",
+                      "green",
+                      "cyan",
+                      "blue",
+                      "purple"
+                    ],
+                    "default": "gray"
+                  },
+                  "assets": {
+                    "type": "array",
+                    "description": "Assets to file in it, as `{kind, name}` from the listing.",
+                    "items": {
+                      "type": "object",
+                      "description": "One asset."
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "kind"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/folders/{folder}": {
+      "post": {
+        "operationId": "updateFolder",
+        "summary": "Change a folder",
+        "description": "Renames, recolours, or changes the tab a folder holds; assets of another tab are taken out of it and listed in `ejected`.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "folders": {
+                      "type": "array",
+                      "description": "The folders, as `{id, name, color, kind, createdAt}`."
+                    },
+                    "assignments": {
+                      "type": "object",
+                      "description": "Asset (`<type>:<id>`) to folder id. An asset in no folder has no entry."
+                    },
+                    "ejected": {
+                      "type": "array",
+                      "description": "Assets taken out of it."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "folders",
+                    "assignments",
+                    "ejected"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "folder",
+            "in": "path",
+            "required": true,
+            "description": "The folder's `id` from the folder list.",
+            "schema": {
+              "type": "string",
+              "description": "The folder's `id` from the folder list.",
+              "example": "f_1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Its name.",
+                    "maxLength": 40
+                  },
+                  "kind": {
+                    "type": "string",
+                    "description": "The tab whose assets it holds.",
+                    "enum": [
+                      "models",
+                      "vehicles",
+                      "blocks",
+                      "items",
+                      "armor",
+                      "guis",
+                      "hud",
+                      "dialogs",
+                      "icons",
+                      "sounds",
+                      "emotes",
+                      "shaders"
+                    ]
+                  },
+                  "color": {
+                    "type": "string",
+                    "description": "Its colour.",
+                    "enum": [
+                      "gray",
+                      "red",
+                      "orange",
+                      "yellow",
+                      "green",
+                      "cyan",
+                      "blue",
+                      "purple"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/folders/{folder}/delete": {
+      "post": {
+        "operationId": "deleteFolder",
+        "summary": "Delete a folder",
+        "description": "Removes a folder. What it held goes back to the top of the pack; no asset is deleted.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted. The folders that remain.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "folders": {
+                      "type": "array",
+                      "description": "The folders, as `{id, name, color, kind, createdAt}`."
+                    },
+                    "assignments": {
+                      "type": "object",
+                      "description": "Asset (`<type>:<id>`) to folder id. An asset in no folder has no entry."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "folders",
+                    "assignments"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "folder",
+            "in": "path",
+            "required": true,
+            "description": "The folder's `id` from the folder list.",
+            "schema": {
+              "type": "string",
+              "description": "The folder's `id` from the folder list.",
+              "example": "f_1"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/folders/move": {
+      "post": {
+        "operationId": "fileAssets",
+        "summary": "File assets in a folder",
+        "description": "Puts assets in a folder, or with `folder: null` takes them out of every folder. An asset of another tab than the folder's is listed in `refused`. Up to 1000 at a time.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Filed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "folders": {
+                      "type": "array",
+                      "description": "The folders, as `{id, name, color, kind, createdAt}`."
+                    },
+                    "assignments": {
+                      "type": "object",
+                      "description": "Asset (`<type>:<id>`) to folder id. An asset in no folder has no entry."
+                    },
+                    "moved": {
+                      "type": "array",
+                      "description": "Refs filed."
+                    },
+                    "refused": {
+                      "type": "array",
+                      "description": "Refs it would not take."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "folders",
+                    "assignments",
+                    "moved",
+                    "refused"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "folder": {
+                    "type": "string",
+                    "description": "The folder's id, or null for the top of the pack."
+                  },
+                  "assets": {
+                    "type": "array",
+                    "description": "The assets, as `{kind, name}` from the listing.",
+                    "items": {
+                      "type": "object",
+                      "description": "One asset."
+                    }
+                  }
+                },
+                "required": [
+                  "folder",
+                  "assets"
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "/packs/{pack}/distribution": {
