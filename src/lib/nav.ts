@@ -292,6 +292,12 @@ export const nav: NavGroup[] = [
         href: "/transitions",
         description: "Full-screen transitions that cover the screen while your server teleports someone, then uncover it.",
         keywords: ["stinger", "transition", "wipe", "iris", "fade", "splat", "teleport", "loading", "title", "cutscene"],
+        },
+        {
+        title: "Loading Screens",
+        href: "/loading-screens",
+        description: "Restyle the screen Minecraft shows while your pack loads: colours, logo, effects, bar.",
+        keywords: ["loading screen", "mojang", "splash", "logo", "progress bar", "reload", "f3+t", "background"],
       },
       {
         title: "Skins",
