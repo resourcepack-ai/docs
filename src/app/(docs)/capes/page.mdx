@@ -1,0 +1,115 @@
+export const metadata = {
+  title: "Capes",
+  description:
+    "Custom player capes: making one in Studio from words or a picture, painting it, and wearing it in game with RP Engine.",
+};
+
+# Capes
+
+A cape hangs from a player's back, the way a Minecon or migrator cape does,
+except that you design it and any player on your server can wear it. Capes
+live on a pack's **Armor** tab.
+
+Capes are worn through [RP Engine](/testing/plugin) 0.2.53 or newer, on a
+Minecraft 1.21.4 or newer server.
+
+## Making one
+
+On the pack page, press **Add asset** and open the **Armor** tab.
+
+### From words
+
+1. On **Generate**, set **Shape** to **Cape**.
+2. Give it a name and describe it: *"a royal red cape with a gold lion"*,
+   *"a starry night sky"*, *"a moss-covered cloak with mushrooms"*. A reference
+   picture works here too.
+3. Pick a **Resolution**. **HD** (the default) is 128×64, twice the detail of a
+   vanilla cape. **Classic** is 64×32, the size of a vanilla cape, pixel for
+   pixel.
+4. Press **Generate**. It takes a few minutes, and its card says it's
+   generating until it lands. The price is shown under the prompt before you
+   start.
+
+### From a file
+
+On **Upload**, drop a PNG. A picture that is 64×32 could be an armour sheet or
+a cape, so set the chip on its row to **Cape**. These sizes are taken:
+
+| Size | What it is |
+| --- | --- |
+| 64×32 | A vanilla cape file |
+| 128×64, 256×128, … | The same layout at a higher resolution |
+| 22×17 | Just the cape, cut out of a 64×32 file |
+| 46×22 | The cape and the elytra beside it, as some cape files come |
+
+The two cut-out sizes are put back onto a full canvas. Anything else is
+refused, with the reason on the row.
+
+## The cape editor
+
+Open a cape from its card. The file is on the left and a player wearing it on
+the right, swaying a little, so you see each stroke where the game puts it.
+
+The file is vanilla's cape layout. The large panel at the top left is the
+**outside**, what people see from behind the player. To its right is the
+**lining**, against the player's back, and the thin strips round them are the
+edges. The rest of the file is never drawn by the game, so it is dimmed and
+paint stops at it.
+
+- **Tools**: brush, eraser, fill, colour picker, line and rectangle, with
+  layers and undo, as in the other pixel editors.
+- **Edit with AI** redraws the cape from how it looks now with the change you
+  describe, such as *"add a gold trim round the edge"*. It costs the same as
+  generating one.
+- **Download** saves the PNG, which you can upload again later or use anywhere
+  else that takes a cape file.
+- Click the name at the top to rename it.
+
+## Wearing it in game
+
+1. **Sync the pack** to a server running RP Engine.
+2. Press **Wear in-game** on the cape's card to put it on yourself.
+3. Or use the commands:
+
+| Command | What it does |
+| --- | --- |
+| `/rp cape` | Opens a picker of every cape the server has |
+| `/rp cape wear <id> [player]` | Puts a cape on you, or on another player |
+| `/rp cape off [player]` | Takes it off |
+| `/rp cape list` | Lists the capes the server has |
+
+A cape from Studio is `studio:<id>`, where `<id>` is the cape's id from its
+page's address. A player keeps the cape they chose when they leave and come
+back.
+
+| Permission | What it allows |
+| --- | --- |
+| `rpengine.cape` | Choosing and taking off your own cape |
+| `rpengine.cape.others` | Putting a cape on, or taking it off, another player |
+
+A player who already owns a cape from Mojang still has it, under the one they
+chose here: the worn cape is drawn a little larger so it covers the other.
+
+## Capes without Studio
+
+RP Engine also reads capes from its content folder, so a server can add its own
+without Studio. Put a PNG under the namespace's `assets/textures/` and describe
+it in a file under `capes/`:
+
+```yaml
+# content/<namespace>/capes/capes.yml
+founder:
+  name: "Founder"
+  # Under assets/textures, without .png. Defaults to capes/<id>.
+  texture: capes/founder
+```
+
+That cape is `<namespace>:founder`. The PNG is a cape file at any of the full
+sizes above (64×32 or a whole multiple).
+
+## Exports
+
+The texture and the model for each cape go into the exported Java pack and into
+every sync, and the list of capes is written into the pack's
+`studio-content.json`, which RP Engine reads when the zip is dropped into its
+content folder. Bedrock exports leave capes out.
