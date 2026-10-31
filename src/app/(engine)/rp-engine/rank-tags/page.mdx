@@ -120,6 +120,36 @@ needs [PlaceholderAPI](/rp-engine/placeholderapi), and a plugin that reads
 placeholders where you put it. `%rpengine_tag_id%` prints which tag it is,
 for a plugin that shows different things per rank.
 
+The tag goes wherever you put the placeholder, so for a tag after the name,
+put it after the name: `{player} %rpengine_tag%`.
+
+### More than one tag
+
+A player wears one tag per **slot**. Tags with no `slot:` share the main one,
+which is `%rpengine_tag%`. Give a tag a slot and it gets a winner of its own,
+printed by `%rpengine_tag_<slot>%`, so a player can wear a rank in front of
+their name and a badge after it:
+
+```yaml
+# fonts/ranks.yml
+owner:
+  priority: 100
+  tag:
+    text: OWNER
+supporter:
+  slot: badge        # letters, digits and _
+  tag:
+    text: SUPPORTER
+```
+
+```yaml
+format: "%rpengine_tag% {player} %rpengine_tag_badge%: {message}"
+```
+
+Within a slot, `priority` still picks the one tag shown. `%rpengine_tags%`
+prints every tag they wear in one go, one per slot, highest priority first,
+with a space between. `%rpengine_tag_id_<slot>%` is which tag a slot shows.
+
 <Callout type="tip" title="Made in Studio?">
   A rank tag made in [ResourcePack AI Studio](/rank-tags) keeps its character
   forever, so it can go straight into a LuckPerms prefix: its page writes the
