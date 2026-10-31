@@ -248,6 +248,22 @@
                               "collaborator"
                             ]
                           },
+                          "description": {
+                            "type": "string",
+                            "description": "What Minecraft shows under the pack's name. Null when none is set."
+                          },
+                          "creditSource": {
+                            "type": "string",
+                            "description": "Whose AI Credits a generation in it spends: the owner's, or whoever asked for it. A team pack is paid by the team either way.",
+                            "enum": [
+                              "owner",
+                              "prompter"
+                            ]
+                          },
+                          "hasIcon": {
+                            "type": "boolean",
+                            "description": "Whether the pack has an icon of its own."
+                          },
                           "createdAt": {
                             "type": "string",
                             "description": "ISO 8601."
@@ -290,6 +306,9 @@
                           "name",
                           "minecraftVersion",
                           "role",
+                          "description",
+                          "creditSource",
+                          "hasIcon",
                           "createdAt",
                           "updatedAt",
                           "assetCounts"
@@ -396,6 +415,22 @@
                             "collaborator"
                           ]
                         },
+                        "description": {
+                          "type": "string",
+                          "description": "What Minecraft shows under the pack's name. Null when none is set."
+                        },
+                        "creditSource": {
+                          "type": "string",
+                          "description": "Whose AI Credits a generation in it spends: the owner's, or whoever asked for it. A team pack is paid by the team either way.",
+                          "enum": [
+                            "owner",
+                            "prompter"
+                          ]
+                        },
+                        "hasIcon": {
+                          "type": "boolean",
+                          "description": "Whether the pack has an icon of its own."
+                        },
                         "createdAt": {
                           "type": "string",
                           "description": "ISO 8601."
@@ -438,6 +473,9 @@
                         "name",
                         "minecraftVersion",
                         "role",
+                        "description",
+                        "creditSource",
+                        "hasIcon",
                         "createdAt",
                         "updatedAt",
                         "assetCounts"
@@ -555,6 +593,22 @@
                             "collaborator"
                           ]
                         },
+                        "description": {
+                          "type": "string",
+                          "description": "What Minecraft shows under the pack's name. Null when none is set."
+                        },
+                        "creditSource": {
+                          "type": "string",
+                          "description": "Whose AI Credits a generation in it spends: the owner's, or whoever asked for it. A team pack is paid by the team either way.",
+                          "enum": [
+                            "owner",
+                            "prompter"
+                          ]
+                        },
+                        "hasIcon": {
+                          "type": "boolean",
+                          "description": "Whether the pack has an icon of its own."
+                        },
                         "createdAt": {
                           "type": "string",
                           "description": "ISO 8601."
@@ -601,6 +655,9 @@
                         "name",
                         "minecraftVersion",
                         "role",
+                        "description",
+                        "creditSource",
+                        "hasIcon",
                         "createdAt",
                         "updatedAt",
                         "assetCounts",
@@ -668,6 +725,613 @@
             }
           }
         ]
+      },
+      "post": {
+        "operationId": "updatePack",
+        "summary": "Change a pack's settings",
+        "description": "Its name, its description (the line Minecraft shows under the name in the pack list) and whose AI Credits a generation in it spends, as the Studio's pack settings change them. Send only what changes; an empty `description` clears it.\n\nOnly the pack's owner, or an admin of its team, may: the credit source decides whose balance every collaborator's generations draw on. The slug never changes, so nothing that names the pack breaks.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved. The pack as it now stands.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "object",
+                      "description": "The pack.",
+                      "properties": {
+                        "slug": {
+                          "type": "string",
+                          "description": "The pack's id. Every other path takes this."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its display name."
+                        },
+                        "minecraftVersion": {
+                          "type": "string",
+                          "description": "The version the pack is authored against."
+                        },
+                        "role": {
+                          "type": "string",
+                          "description": "Whether this key's owner owns the pack or was added to it.",
+                          "enum": [
+                            "owner",
+                            "collaborator"
+                          ]
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "What Minecraft shows under the pack's name. Null when none is set."
+                        },
+                        "creditSource": {
+                          "type": "string",
+                          "description": "Whose AI Credits a generation in it spends: the owner's, or whoever asked for it. A team pack is paid by the team either way.",
+                          "enum": [
+                            "owner",
+                            "prompter"
+                          ]
+                        },
+                        "hasIcon": {
+                          "type": "boolean",
+                          "description": "Whether the pack has an icon of its own."
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "assetCounts": {
+                          "type": "object",
+                          "description": "How much the pack holds, by kind.",
+                          "properties": {
+                            "textures": {
+                              "type": "integer",
+                              "description": "Block textures, item sprites and GUI sheets."
+                            },
+                            "models": {
+                              "type": "integer",
+                              "description": "3D models."
+                            },
+                            "icons": {
+                              "type": "integer",
+                              "description": "Font glyphs."
+                            },
+                            "sounds": {
+                              "type": "integer",
+                              "description": "Sound events."
+                            }
+                          },
+                          "required": [
+                            "textures",
+                            "models",
+                            "icons",
+                            "sounds"
+                          ]
+                        },
+                        "minVersion": {
+                          "type": "string",
+                          "description": "Oldest Minecraft version this pack's contents will load on."
+                        }
+                      },
+                      "required": [
+                        "slug",
+                        "name",
+                        "minecraftVersion",
+                        "role",
+                        "description",
+                        "creditSource",
+                        "hasIcon",
+                        "createdAt",
+                        "updatedAt",
+                        "assetCounts",
+                        "minVersion"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack"
+                  ]
+                },
+                "example": {
+                  "pack": {
+                    "slug": "medieval-keep",
+                    "name": "Medieval Keep",
+                    "description": "Stone, oak and iron.",
+                    "creditSource": "owner",
+                    "minVersion": "1.21.4"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The display name.",
+                    "maxLength": 100,
+                    "example": "Medieval Keep"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "What Minecraft shows under the name. Empty clears it."
+                  },
+                  "creditSource": {
+                    "type": "string",
+                    "description": "Whose credits a generation spends: the pack owner's, or whoever asked for it. Ignored on a team pack, which the team pays for.",
+                    "enum": [
+                      "owner",
+                      "prompter"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/icon": {
+      "post": {
+        "operationId": "setPackIcon",
+        "summary": "Set a pack's icon",
+        "description": "The picture beside the pack's name, in the Studio and in Minecraft's pack list. Either a `file` (a PNG, JPEG, WebP or GIF, up to 2MB) or the `name` of one of the pack's block textures, which is what a block's **Set as icon** does: that texture is the icon from then on, so deleting it leaves the pack without one. Owner or team admin only.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Set.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `ok`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "ok"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `upload_not_found`, `file_too_large`, `file_fetch_failed`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "texture": {
+                    "type": "string",
+                    "description": "A block texture's `name` from the asset listing. Send this or `file`.",
+                    "example": "mossy_bricks"
+                  },
+                  "file": {
+                    "type": "object",
+                    "description": "The picture. Exactly one of `upload`, `url`, `base64` or `text`.",
+                    "properties": {
+                      "upload": {
+                        "type": "string",
+                        "description": "The `upload` id from `POST /uploads`, after PUTting the file to its URL. The way to send anything big, or anything already on disk.",
+                        "example": "up_3f2a9c0e5b7d41c8a6e2f19b0d4c7a35"
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "A public https URL to fetch the file from."
+                      },
+                      "base64": {
+                        "type": "string",
+                        "description": "The file's bytes as base64 (a `data:` URI is fine). Up to 8MB."
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "The file as text, for formats that are text (model JSON, .bbmodel). Up to 8MB."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/duplicate": {
+      "post": {
+        "operationId": "duplicatePack",
+        "summary": "Duplicate a pack",
+        "description": "A new pack holding a copy of every asset in this one, under a new slug: the Studio's **Duplicate**. Read the new slug from the response. Free, but it is a pack like any other, so it counts against the plan's pack limit. Owner or team admin only.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "201": {
+            "description": "The copy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "object",
+                      "description": "The new pack.",
+                      "properties": {
+                        "slug": {
+                          "type": "string",
+                          "description": "The pack's id. Every other path takes this."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its display name."
+                        },
+                        "minecraftVersion": {
+                          "type": "string",
+                          "description": "The version the pack is authored against."
+                        },
+                        "role": {
+                          "type": "string",
+                          "description": "Whether this key's owner owns the pack or was added to it.",
+                          "enum": [
+                            "owner",
+                            "collaborator"
+                          ]
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "What Minecraft shows under the pack's name. Null when none is set."
+                        },
+                        "creditSource": {
+                          "type": "string",
+                          "description": "Whose AI Credits a generation in it spends: the owner's, or whoever asked for it. A team pack is paid by the team either way.",
+                          "enum": [
+                            "owner",
+                            "prompter"
+                          ]
+                        },
+                        "hasIcon": {
+                          "type": "boolean",
+                          "description": "Whether the pack has an icon of its own."
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "assetCounts": {
+                          "type": "object",
+                          "description": "How much the pack holds, by kind.",
+                          "properties": {
+                            "textures": {
+                              "type": "integer",
+                              "description": "Block textures, item sprites and GUI sheets."
+                            },
+                            "models": {
+                              "type": "integer",
+                              "description": "3D models."
+                            },
+                            "icons": {
+                              "type": "integer",
+                              "description": "Font glyphs."
+                            },
+                            "sounds": {
+                              "type": "integer",
+                              "description": "Sound events."
+                            }
+                          },
+                          "required": [
+                            "textures",
+                            "models",
+                            "icons",
+                            "sounds"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "slug",
+                        "name",
+                        "minecraftVersion",
+                        "role",
+                        "description",
+                        "creditSource",
+                        "hasIcon",
+                        "createdAt",
+                        "updatedAt",
+                        "assetCounts"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack"
+                  ]
+                },
+                "example": {
+                  "pack": {
+                    "slug": "q7m2kd9x",
+                    "name": "Medieval Keep (copy)",
+                    "role": "owner"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`, `pack_limit_reached`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/delete": {
+      "post": {
+        "operationId": "deletePack",
+        "summary": "Delete a pack",
+        "description": "Deletes the pack and everything in it, and stops every bound server handing out what it published. **It cannot be undone**, so `confirm` must repeat the pack's slug. Owner or team admin only.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack that was deleted."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `deleted`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "confirm": {
+                    "type": "string",
+                    "description": "The pack's slug again.",
+                    "example": "medieval-keep"
+                  }
+                },
+                "required": [
+                  "confirm"
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "/packs/{pack}/style": {
@@ -9458,6 +10122,22 @@
                             "collaborator"
                           ]
                         },
+                        "description": {
+                          "type": "string",
+                          "description": "What Minecraft shows under the pack's name. Null when none is set."
+                        },
+                        "creditSource": {
+                          "type": "string",
+                          "description": "Whose AI Credits a generation in it spends: the owner's, or whoever asked for it. A team pack is paid by the team either way.",
+                          "enum": [
+                            "owner",
+                            "prompter"
+                          ]
+                        },
+                        "hasIcon": {
+                          "type": "boolean",
+                          "description": "Whether the pack has an icon of its own."
+                        },
                         "createdAt": {
                           "type": "string",
                           "description": "ISO 8601."
@@ -9500,6 +10180,9 @@
                         "name",
                         "minecraftVersion",
                         "role",
+                        "description",
+                        "creditSource",
+                        "hasIcon",
                         "createdAt",
                         "updatedAt",
                         "assetCounts"
