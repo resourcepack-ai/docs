@@ -233,6 +233,30 @@ NPCs, command blocks and anything else that can only run console commands:
 an NPC that runs `/pb as <player> join` for whoever clicks it is a join button. What the player runs
 is checked against **their** permissions, not the sender's.
 
+### Bots
+
+Computer players can fill a match up, so two people can play a four against
+four, and nobody plays one against two. They are off until you turn them on in
+config.yml, or for one arena with `/pb arena set`:
+
+- **`bots.fill`**: each side is filled with bots up to this many in a team
+  match, and everybody up to this many in a free for all.
+- **`bots.even-teams`**: in a team match, a bot for every person the other side
+  has more, so three against one becomes three against three.
+
+A bot plays like anybody else: it has a side or a colour, it is in the kill
+feed, on the scoreboard and in the score, and its paint is the same paint. It
+looks for the nearest enemy it can see, takes a moment to react
+(`bots.reaction-ticks`), fires in bursts with some spread (`bots.spread-degrees`)
+and sidesteps while it shoots. In capture the flag half of each side's bots go
+for the other flag and carry it home, and the rest guard their own. Bots do not
+throw grenades or set mines.
+
+People always come first: somebody who joins a match takes a bot's place, and
+when the last person leaves, the match ends, bots and all. Bots never count
+towards anybody's stats. They are mannequins, so they need Minecraft 1.21.9 or
+newer.
+
 ## Building an arena
 
 An arena is a waiting spot, at least one spawn for each team, and bounds: the
@@ -505,6 +529,18 @@ ffa:
 # Whether players choose their colour (/pb colour, or the lobby's marker) out
 # of ffa.colours: their paint in a free for all, their marker in a team match.
 colour-pick: true
+
+bots:
+  # Each side filled up to this many in a team match, everybody up to this
+  # many in a free for all. 0 for none.
+  fill: 0
+  # A bot for every person the other side has more.
+  even-teams: false
+  # How far a shot strays, in degrees, and how long before they fire at
+  # somebody who comes into view, in ticks.
+  spread-degrees: 4.0
+  reaction-ticks: 12
+  names: [Splotch, Drip, Smudge, Blot, Streak, Dab, Speckle, Spritz, Gloop, Swatch]
 
 ctf:
   # Captures to win. The team with more when the clock runs out wins.
