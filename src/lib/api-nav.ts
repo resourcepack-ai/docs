@@ -104,7 +104,7 @@ const GUIDES: ApiNavItem[] = [
 // after them: publishing is the last thing done with a finished pack. Origin check is
 // last because it is the one group that isn't for our own customers — a
 // marketplace arrives at it from its own guide rather than by reading down.
-const GROUP_ORDER = ["Account", "Packs", "Uploading", "Generating", "Jobs", "Skins", "Collaborators", "Distribution", "Origin check"];
+const GROUP_ORDER = ["Account", "Packs", "Uploading", "Generating", "Jobs", "Skins", "Gallery", "Collaborators", "Distribution", "Origin check"];
 
 export const apiNav: ApiNavGroup[] = [
   { title: "Get started", items: GUIDES },
