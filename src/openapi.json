@@ -3235,9 +3235,11 @@
                     "description": "Which reticle shape to draw. Composed, so it costs no image call.",
                     "enum": [
                       "cross",
+                      "plus",
                       "dot",
                       "bracket",
                       "circle",
+                      "diamond",
                       "chevron"
                     ],
                     "default": "cross"
