@@ -6934,6 +6934,616 @@
         }
       }
     },
+    "/packs/{pack}/models/{model}": {
+      "get": {
+        "operationId": "getModel",
+        "summary": "Read a model's settings",
+        "description": "What a model is (`model`, `vehicle`, or `item3d` for a 3D item's geometry), whether a placed copy stops a vehicle, and the names of its animations: what `give_asset`'s `animation` and Animate with AI's `fromAnimation` take.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The model.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "model": {
+                      "type": "object",
+                      "description": "The model.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The model's id, its `name` in the asset listing."
+                        },
+                        "type": {
+                          "type": "string",
+                          "description": "What it is.",
+                          "enum": [
+                            "model",
+                            "vehicle",
+                            "item3d",
+                            "item_model"
+                          ]
+                        },
+                        "stopsVehicles": {
+                          "type": "boolean",
+                          "description": "Whether a placed copy stops a vehicle."
+                        },
+                        "animations": {
+                          "type": "array",
+                          "description": "Its animations' names.",
+                          "items": {
+                            "type": "string",
+                            "description": "An animation's name."
+                          }
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "`generating`, `ready` or `error`."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "type",
+                        "stopsVehicles",
+                        "animations",
+                        "status"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "model"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "model": {
+                    "id": "lantern",
+                    "type": "model",
+                    "stopsVehicles": true,
+                    "animations": [
+                      "swing"
+                    ],
+                    "status": "ready"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "description": "The model's `name` from the asset listing.",
+            "schema": {
+              "type": "string",
+              "description": "The model's `name` from the asset listing.",
+              "example": "lantern"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "updateModel",
+        "summary": "Change a model's settings",
+        "description": "The model page's **Placed behaviour** (`stopsVehicles`: whether a placed copy blocks a vehicle driving into it, on by default) and **Convert to vehicle** (`type`). Converting back to a `model` keeps the vehicle's settings, so converting again brings them back; a vehicle's own settings are `set_vehicle`. A 3D item's geometry can't be converted. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved. The model as it now stands.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "model": {
+                      "type": "object",
+                      "description": "The model.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The model's id, its `name` in the asset listing."
+                        },
+                        "type": {
+                          "type": "string",
+                          "description": "What it is.",
+                          "enum": [
+                            "model",
+                            "vehicle",
+                            "item3d",
+                            "item_model"
+                          ]
+                        },
+                        "stopsVehicles": {
+                          "type": "boolean",
+                          "description": "Whether a placed copy stops a vehicle."
+                        },
+                        "animations": {
+                          "type": "array",
+                          "description": "Its animations' names.",
+                          "items": {
+                            "type": "string",
+                            "description": "An animation's name."
+                          }
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "`generating`, `ready` or `error`."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "type",
+                        "stopsVehicles",
+                        "animations",
+                        "status"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "model"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "model": {
+                    "id": "lantern",
+                    "type": "model",
+                    "stopsVehicles": false,
+                    "animations": [
+                      "swing"
+                    ],
+                    "status": "ready"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "description": "The model's `name` from the asset listing.",
+            "schema": {
+              "type": "string",
+              "description": "The model's `name` from the asset listing.",
+              "example": "lantern"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "stopsVehicles": {
+                    "type": "boolean",
+                    "description": "Whether a placed copy stops a vehicle."
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Make it a vehicle, or a plain model again.",
+                    "enum": [
+                      "model",
+                      "vehicle"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/items/{item}/states": {
+      "get": {
+        "operationId": "getItemStates",
+        "summary": "Read an item's states",
+        "description": "The states the game draws an item in, as its page's **States** card lists them: a bow drawn back three ways, a crossbow loaded with an arrow or a firework, a fishing rod cast and so on, with the look each has now. An item with no states (a custom item, which rides paper) answers an empty list.\n\n`{item}` is the item's name: an item sprite's listing `name` (with or without its `item:`), or a 3D item's model `name`.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The states.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "item": {
+                      "type": "string",
+                      "description": "The item's name."
+                    },
+                    "target": {
+                      "type": "string",
+                      "description": "The vanilla item whose states these are. Null when it has none."
+                    },
+                    "states": {
+                      "type": "array",
+                      "description": "One per state.",
+                      "items": {
+                        "type": "object",
+                        "description": "A state.",
+                        "properties": {
+                          "key": {
+                            "type": "string",
+                            "description": "Pass as `state`."
+                          },
+                          "label": {
+                            "type": "string",
+                            "description": "What the Studio calls it."
+                          },
+                          "hint": {
+                            "type": "string",
+                            "description": "When the game draws it."
+                          },
+                          "look": {
+                            "type": "object",
+                            "description": "`{model}` for another of the pack's models, `{sprite: true}` for a picture of its own, null for the item's ordinary look."
+                          }
+                        },
+                        "required": [
+                          "key",
+                          "label",
+                          "hint",
+                          "look"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "item",
+                    "target",
+                    "states"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "item": "bow",
+                  "target": "bow",
+                  "states": [
+                    {
+                      "key": "pulling_0",
+                      "label": "Drawing 1",
+                      "hint": "From the moment it starts drawing",
+                      "look": null
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "item",
+            "in": "path",
+            "required": true,
+            "description": "The item's name.",
+            "schema": {
+              "type": "string",
+              "description": "The item's name.",
+              "example": "bow"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "setItemState",
+        "summary": "Set an item's look for one state",
+        "description": "Gives an item a look of its own for one state: another of the pack's models (`model`, a model's `name`), or a picture (`file`, a PNG up to 256KB). `clear: true` puts that state back to the item's ordinary look. A 2D reskin's states are pictures only. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved: every state that has a look of its own.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "item": {
+                      "type": "string",
+                      "description": "The item's name."
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "State key to `{model}` or `{sprite: true}`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "item",
+                    "states"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "item": "bow",
+                  "states": {
+                    "pulling_2": {
+                      "sprite": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `upload_not_found`, `file_too_large`, `file_fetch_failed`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "item",
+            "in": "path",
+            "required": true,
+            "description": "The item's name.",
+            "schema": {
+              "type": "string",
+              "description": "The item's name.",
+              "example": "bow"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "state": {
+                    "type": "string",
+                    "description": "The state's `key`.",
+                    "example": "pulling_2"
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "One of the pack's models, by `name`. Send one of this, `file` or `clear`."
+                  },
+                  "file": {
+                    "type": "object",
+                    "description": "The state's picture, a PNG. Exactly one of `upload`, `url`, `base64` or `text`.",
+                    "properties": {
+                      "upload": {
+                        "type": "string",
+                        "description": "The `upload` id from `POST /uploads`, after PUTting the file to its URL. The way to send anything big, or anything already on disk.",
+                        "example": "up_3f2a9c0e5b7d41c8a6e2f19b0d4c7a35"
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "A public https URL to fetch the file from."
+                      },
+                      "base64": {
+                        "type": "string",
+                        "description": "The file's bytes as base64 (a `data:` URI is fine). Up to 8MB."
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "The file as text, for formats that are text (model JSON, .bbmodel). Up to 8MB."
+                      }
+                    }
+                  },
+                  "clear": {
+                    "type": "boolean",
+                    "description": "Put the state back to the item's ordinary look."
+                  }
+                },
+                "required": [
+                  "state"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/packs/{pack}/vehicles/{model}": {
       "get": {
         "operationId": "getVehicle",
