@@ -13246,6 +13246,499 @@
         }
       }
     },
+    "/gallery": {
+      "get": {
+        "operationId": "listGallery",
+        "summary": "Browse the gallery",
+        "description": "What people have published to the public gallery at resourcepack.ai/gallery, searched and filtered as the Studio's Gallery page does: by `type`, by words in the title or description, by tag. `hot` (the default) favours what is good right now, `popular` what has been used most, `new` what is newest. Copy one into a pack with `POST /gallery/{item}/copy`. Free.",
+        "tags": [
+          "Gallery"
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of items.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "description": "This page.",
+                      "items": {
+                        "type": "object",
+                        "description": "An item.",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Its id, the last part of its page's address."
+                          },
+                          "type": {
+                            "type": "string",
+                            "description": "What it is."
+                          },
+                          "title": {
+                            "type": "string",
+                            "description": "Its title."
+                          },
+                          "description": {
+                            "type": "string",
+                            "description": "Its description."
+                          },
+                          "prompt": {
+                            "type": "string",
+                            "description": "What it was generated from, when its publisher shared it."
+                          },
+                          "url": {
+                            "type": "string",
+                            "description": "Its page."
+                          },
+                          "anonymous": {
+                            "type": "boolean",
+                            "description": "Published without a byline."
+                          },
+                          "views": {
+                            "type": "integer",
+                            "description": "How often its page was seen."
+                          },
+                          "uses": {
+                            "type": "integer",
+                            "description": "How often it was downloaded, copied or tried in game."
+                          },
+                          "publishedAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "type",
+                          "title",
+                          "description",
+                          "prompt",
+                          "url",
+                          "anonymous",
+                          "views",
+                          "uses",
+                          "publishedAt"
+                        ]
+                      }
+                    },
+                    "nextOffset": {
+                      "type": "integer",
+                      "description": "Pass as `offset` for the next page. Null on the last."
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "nextOffset"
+                  ]
+                },
+                "example": {
+                  "items": [
+                    {
+                      "id": "oak-lantern-q7m2",
+                      "type": "model",
+                      "title": "Oak lantern",
+                      "description": "A hanging lantern in dark oak.",
+                      "prompt": "a hanging lantern",
+                      "url": "https://resourcepack.ai/gallery/oak-lantern-q7m2",
+                      "anonymous": false,
+                      "views": 412,
+                      "uses": 37,
+                      "publishedAt": "2026-08-10T16:02:11.000Z"
+                    }
+                  ],
+                  "nextOffset": 24
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Only items of this type.",
+            "schema": {
+              "type": "string",
+              "description": "Only items of this type.",
+              "enum": [
+                "model",
+                "block",
+                "item",
+                "item3d",
+                "armor",
+                "armor3d",
+                "gui",
+                "hud",
+                "dialog",
+                "icon",
+                "rank_tag",
+                "sound",
+                "emote",
+                "shader",
+                "text_effect",
+                "vfx",
+                "skin"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Words to look for in the title and description.",
+            "schema": {
+              "type": "string",
+              "description": "Words to look for in the title and description."
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "required": false,
+            "description": "Only items with this tag.",
+            "schema": {
+              "type": "string",
+              "description": "Only items with this tag."
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "The order.",
+            "schema": {
+              "type": "string",
+              "description": "The order.",
+              "enum": [
+                "hot",
+                "popular",
+                "new"
+              ],
+              "default": "hot"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many to return.",
+            "schema": {
+              "type": "integer",
+              "description": "How many to return.",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 24
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "From the previous page's `nextOffset`.",
+            "schema": {
+              "type": "integer",
+              "description": "From the previous page's `nextOffset`.",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ]
+      }
+    },
+    "/gallery/{item}": {
+      "get": {
+        "operationId": "getGalleryItem",
+        "summary": "Read a gallery item",
+        "description": "One published item, by the `id` the gallery listing gives it.",
+        "tags": [
+          "Gallery"
+        ],
+        "responses": {
+          "200": {
+            "description": "The item.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "type": "object",
+                      "description": "The item.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id, the last part of its page's address."
+                        },
+                        "type": {
+                          "type": "string",
+                          "description": "What it is."
+                        },
+                        "title": {
+                          "type": "string",
+                          "description": "Its title."
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "Its description."
+                        },
+                        "prompt": {
+                          "type": "string",
+                          "description": "What it was generated from, when its publisher shared it."
+                        },
+                        "url": {
+                          "type": "string",
+                          "description": "Its page."
+                        },
+                        "anonymous": {
+                          "type": "boolean",
+                          "description": "Published without a byline."
+                        },
+                        "views": {
+                          "type": "integer",
+                          "description": "How often its page was seen."
+                        },
+                        "uses": {
+                          "type": "integer",
+                          "description": "How often it was downloaded, copied or tried in game."
+                        },
+                        "publishedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "type",
+                        "title",
+                        "description",
+                        "prompt",
+                        "url",
+                        "anonymous",
+                        "views",
+                        "uses",
+                        "publishedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "item"
+                  ]
+                },
+                "example": {
+                  "item": {
+                    "id": "oak-lantern-q7m2",
+                    "type": "model",
+                    "title": "Oak lantern"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "item",
+            "in": "path",
+            "required": true,
+            "description": "The item's `id` from the gallery listing.",
+            "schema": {
+              "type": "string",
+              "description": "The item's `id` from the gallery listing.",
+              "example": "oak-lantern-q7m2"
+            }
+          }
+        ]
+      }
+    },
+    "/gallery/{item}/copy": {
+      "post": {
+        "operationId": "copyFromGallery",
+        "summary": "Copy a gallery item into a pack",
+        "description": "A gallery page's **Add to a pack**: the item, as its publisher made it, into a pack this key can edit (`pack`) or a new pack made for it (`newPackName`). It is then yours to change like anything else. A skin goes to your skins instead and needs neither. Free, but it counts against the plan's limits as any new asset or pack does.",
+        "tags": [
+          "Gallery"
+        ],
+        "responses": {
+          "201": {
+            "description": "Copied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "type": "string",
+                      "description": "The gallery item."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What it is."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it landed in. Null for a skin."
+                    },
+                    "assetId": {
+                      "type": "string",
+                      "description": "Its id there. Find it in `GET /packs/{pack}/assets`."
+                    }
+                  },
+                  "required": [
+                    "item",
+                    "type",
+                    "pack",
+                    "assetId"
+                  ]
+                },
+                "example": {
+                  "item": "oak-lantern-q7m2",
+                  "type": "model",
+                  "pack": "medieval-keep",
+                  "assetId": "oak_lantern"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `pack_limit_reached`, `asset_limit_reached`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "item",
+            "in": "path",
+            "required": true,
+            "description": "The item's `id` from the gallery listing.",
+            "schema": {
+              "type": "string",
+              "description": "The item's `id` from the gallery listing.",
+              "example": "oak-lantern-q7m2"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pack": {
+                    "type": "string",
+                    "description": "The slug of the pack it goes into. Send this or `newPackName`."
+                  },
+                  "newPackName": {
+                    "type": "string",
+                    "description": "Make a new pack of this name for it instead.",
+                    "maxLength": 100
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/skins": {
       "get": {
         "operationId": "listSkins",
