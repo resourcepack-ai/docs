@@ -84,6 +84,7 @@ behaviour decides which one, and so how it moves and fights.
 | **Hostile** | Chases and hits players |
 | **Brute** | Big, slow, hits hard |
 | **Climber** | Hostile, and climbs walls |
+| **Ranged** | Keeps its distance and shoots |
 | **Neutral** | Wanders, and fights back when hit |
 | **Guardian** | Fights hostile mobs |
 | **Passive** | Wanders, and runs when hit |
@@ -92,6 +93,16 @@ behaviour decides which one, and so how it moves and fights.
 | **Statue** | Never moves |
 
 **Burns in daylight** is off unless you tick it, whatever the mob walks like.
+**Flashes red when hurt** is on: the model goes red for a moment when it takes
+damage, like a vanilla mob. On servers older than 1.21.4 it shows a red outline
+instead. **Fire immune** stops fire and lava hurting it, and **Glowing outline**
+gives it the outline a spectral arrow does.
+
+A **Ranged** mob gets a **Shooting** section: what it fires (an arrow, a
+snowball, a small fireball, a fireball, a wither skull or a trident), the damage
+per hit (0 keeps the projectile's own), and how far away it shoots from. It
+keeps its distance like a skeleton and plays its Attack animation each time it
+shoots. A fireball or a skull never breaks blocks.
 
 ### Stats
 
@@ -102,6 +113,33 @@ behaviour decides which one, and so how it moves and fights.
 | **Speed** | A multiple of the vanilla mob's own speed |
 | **Knockback resistance** | How much of a hit's knockback it ignores |
 | **XP** | Experience it drops when killed |
+| **Notices targets from** | How far away, in blocks, it spots something to chase. Blank keeps the vanilla mob's own |
+
+### Boss bar
+
+Turn on **Show a boss bar** for a bar across the top of the screen with the
+mob's name and health, shown to every player within **Seen within** blocks.
+Pick its colour and how many notches it has.
+
+### Spawning
+
+Turn on **Spawns on its own** and the mob appears in the world by itself. It
+**takes the place of** some of the mobs the game spawns naturally rather than
+adding to them, so your world never holds more mobs than it would have:
+
+| Setting | What it does |
+| --- | --- |
+| **Share of natural spawns** | How many of the matching natural spawns become this mob |
+| **Replaces** | The vanilla mobs it stands in for. None picked is any natural spawn of its own kind: monsters for a Hostile, Brute, Climber, Ranged or Flying hostile mob, animals for a Neutral or Passive one. Guardian and Flying mobs need at least one picked |
+| **Biomes** | Where it spawns. None picked is every biome. Type a name with `*` in it, like `*forest*`, to match several |
+| **When** | Any time, only by day, or only at night |
+| **Light** | The light level where it appears, 0 to 15 |
+| **Group** | How many appear together |
+| **Per chunk** | Spawning stops adding more once a chunk holds this many |
+| **Worlds** | The world names it spawns in. None picked is every world |
+
+A mob that spawned on its own despawns when nobody is near, the way the mob it
+replaced would have. One you spawn with a command or an egg stays.
 
 ### Size and facing
 
