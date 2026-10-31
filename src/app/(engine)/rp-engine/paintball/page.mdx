@@ -114,7 +114,9 @@ slowly circling them, then you come back at one of your team's spawns, protected
 that hits you in that time does nothing. There is no friendly fire. Enemy name
 tags are hidden, so you find people by looking for them. Your teammates' show
 through walls, as the game's own always do, unless the server turns on
-`nametags.hide-behind-blocks`.
+`nametags.hide-behind-blocks`, which puts a name over each head that walls hide
+and keeps the game's own off for the match, even on a server whose tab or name
+tag plugin draws them.
 
 A pling sounds with a minute and with thirty seconds left, and the time left
 shows in the middle of the screen; for the last ten seconds it is the number
@@ -458,13 +460,16 @@ hud:
 
 nametags:
   # The names over players' heads. The game's own show through walls; with this
-  # on they are text that blocks in front of it hide, like anything else.
+  # on they are text that blocks in front of it hide, like anything else, and
+  # the game's own are hidden for the match even when a tab or name tag plugin
+  # draws them.
   hide-behind-blocks: false
   # Whether you see the other team's names too, not only your own team's. With
   # hide-behind-blocks off, that means through walls as well.
   enemies: false
   # How a name reads, in MiniMessage, with hide-behind-blocks on. {player} is
-  # the name and {team_colour} its team's colour (#FF4655 or #2E9BFF).
+  # the name and {team_colour} its paint colour (#FF4655 or #2E9BFF in a team
+  # match), which colours what follows it whether or not it is in <>.
   format: "<{team_colour}>{player}"
 
 # What an arena plays unless it sets its own: teams, ffa or ctf.
