@@ -2426,6 +2426,1151 @@
         }
       }
     },
+    "/packs/{pack}/assets/{kind}/{name}/give": {
+      "post": {
+        "operationId": "giveAsset",
+        "summary": "Give an asset in game",
+        "description": "What an asset's **Give in game** button does, for whoever is linked to receive a push (see `POST /packs/{pack}/push`): a model, block or item lands in their hands, a GUI or dialog opens, an icon or text effect is said in chat, a sound plays, an armour set is worn, a VFX is cast and a 3D shader object is placed in front of them. The command is built from the pack, never sent: you name the asset, by the `kind` and `name` the asset listing reports (`shader/<id>` and `vfx/<id>` for those two).\n\nThe pack itself has to be on their client for most of these to look right, so push it first. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Done in game.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `given`."
+                    },
+                    "player": {
+                      "type": "string",
+                      "description": "Who it reached."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status",
+                    "player"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "given",
+                  "player": "Notch"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `not_linked`, `still_generating`, `push_failed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `kind` from the listing, or `shader` or `vfx`.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `kind` from the listing, or `shader` or `vfx`.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound",
+                "shader",
+                "vfx"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `name` from the listing.",
+              "example": "lantern"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "string",
+                    "description": "For a model or item: which Minecraft version's command syntax to use. The pack's own by default."
+                  },
+                  "animation": {
+                    "type": "string",
+                    "description": "For an animated model: which of its animations the placed copy plays."
+                  },
+                  "scale": {
+                    "type": "number",
+                    "description": "For a model: how big the placed copy is, one of the Studio's size choices."
+                  },
+                  "page": {
+                    "type": "string",
+                    "description": "For a dialog with pages: which page to open, by its page id. The first by default."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/sounds/{sound}": {
+      "get": {
+        "operationId": "getSound",
+        "summary": "Read a sound's settings and takes",
+        "description": "A sound's event (the name `/playsound` and a `sounds.json` know it by: a vanilla one is replaced, any other is new), its volume category, subtitle and whether it loops, and its **takes**: every candidate a generation or an edit made, with the one that ships in `selectedTake`. Listen to a take with `GET /packs/{pack}/sounds/{sound}/takes/{take}` and choose it with `POST /packs/{pack}/sounds/{sound}`.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The sound.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "sound": {
+                      "type": "object",
+                      "description": "The sound.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The sound's id, its `name` in the asset listing."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its label."
+                        },
+                        "event": {
+                          "type": "string",
+                          "description": "The sound event it plays as. A vanilla event is replaced; any other is new."
+                        },
+                        "category": {
+                          "type": "string",
+                          "description": "Which volume slider controls it.",
+                          "enum": [
+                            "master",
+                            "music",
+                            "record",
+                            "weather",
+                            "block",
+                            "hostile",
+                            "neutral",
+                            "player",
+                            "ambient",
+                            "voice"
+                          ]
+                        },
+                        "subtitle": {
+                          "type": "string",
+                          "description": "Its subtitle. Null when it has none."
+                        },
+                        "durationSeconds": {
+                          "type": "number",
+                          "description": "How long the shipping take is."
+                        },
+                        "loop": {
+                          "type": "boolean",
+                          "description": "Whether it is meant to loop."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "`generating`, `ready` or `error`.",
+                          "enum": [
+                            "generating",
+                            "ready",
+                            "error"
+                          ]
+                        },
+                        "prompt": {
+                          "type": "string",
+                          "description": "What it was generated from. Null for an upload."
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "Why its generation failed. Null unless `status` is `error`."
+                        },
+                        "takes": {
+                          "type": "array",
+                          "description": "Every candidate, in the order they were made. Empty for a sound older than takes.",
+                          "items": {
+                            "type": "object",
+                            "description": "One take.",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "The take's id within this sound."
+                              },
+                              "durationSeconds": {
+                                "type": "number",
+                                "description": "Its length."
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "description": "ISO 8601."
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "durationSeconds",
+                              "createdAt"
+                            ]
+                          }
+                        },
+                        "selectedTake": {
+                          "type": "string",
+                          "description": "The take the pack ships. Null for a sound older than takes."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "event",
+                        "category",
+                        "subtitle",
+                        "durationSeconds",
+                        "loop",
+                        "status",
+                        "prompt",
+                        "error",
+                        "takes",
+                        "selectedTake"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "sound"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "sound": {
+                    "id": "gate_open",
+                    "name": "Gate open",
+                    "event": "custom.gate_open",
+                    "category": "block",
+                    "subtitle": "Gate creaks",
+                    "durationSeconds": 2.4,
+                    "loop": false,
+                    "status": "ready",
+                    "prompt": "a heavy iron gate creaking open",
+                    "error": null,
+                    "takes": [
+                      {
+                        "id": "1",
+                        "durationSeconds": 2.4,
+                        "createdAt": "2026-08-10T16:02:11.000Z"
+                      },
+                      {
+                        "id": "2",
+                        "durationSeconds": 2.1,
+                        "createdAt": "2026-08-10T16:02:11.000Z"
+                      }
+                    ],
+                    "selectedTake": "1"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "sound",
+            "in": "path",
+            "required": true,
+            "description": "The sound's `name` from the asset listing.",
+            "schema": {
+              "type": "string",
+              "description": "The sound's `name` from the asset listing.",
+              "example": "gate_open"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "updateSound",
+        "summary": "Change a sound, or choose its take",
+        "description": "Changes the fields you send and keeps the rest. **Choosing a take** is `{\"take\": \"2\"}` sent on its own: that take becomes the audio the pack ships, instantly and for free, and the others stay to choose between. Its label is changed with `POST /packs/{pack}/assets/sound/{sound}/rename`.\n\nAn `event` that names a vanilla sound (`entity.creeper.primed`) replaces it in game; any other (`custom.laser`) is a new one `/playsound` and RP Engine's `/rp sound` can play.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved. The sound as it now stands.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "sound": {
+                      "type": "object",
+                      "description": "The sound.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The sound's id, its `name` in the asset listing."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its label."
+                        },
+                        "event": {
+                          "type": "string",
+                          "description": "The sound event it plays as. A vanilla event is replaced; any other is new."
+                        },
+                        "category": {
+                          "type": "string",
+                          "description": "Which volume slider controls it.",
+                          "enum": [
+                            "master",
+                            "music",
+                            "record",
+                            "weather",
+                            "block",
+                            "hostile",
+                            "neutral",
+                            "player",
+                            "ambient",
+                            "voice"
+                          ]
+                        },
+                        "subtitle": {
+                          "type": "string",
+                          "description": "Its subtitle. Null when it has none."
+                        },
+                        "durationSeconds": {
+                          "type": "number",
+                          "description": "How long the shipping take is."
+                        },
+                        "loop": {
+                          "type": "boolean",
+                          "description": "Whether it is meant to loop."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "`generating`, `ready` or `error`.",
+                          "enum": [
+                            "generating",
+                            "ready",
+                            "error"
+                          ]
+                        },
+                        "prompt": {
+                          "type": "string",
+                          "description": "What it was generated from. Null for an upload."
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "Why its generation failed. Null unless `status` is `error`."
+                        },
+                        "takes": {
+                          "type": "array",
+                          "description": "Every candidate, in the order they were made. Empty for a sound older than takes.",
+                          "items": {
+                            "type": "object",
+                            "description": "One take.",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "The take's id within this sound."
+                              },
+                              "durationSeconds": {
+                                "type": "number",
+                                "description": "Its length."
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "description": "ISO 8601."
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "durationSeconds",
+                              "createdAt"
+                            ]
+                          }
+                        },
+                        "selectedTake": {
+                          "type": "string",
+                          "description": "The take the pack ships. Null for a sound older than takes."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "event",
+                        "category",
+                        "subtitle",
+                        "durationSeconds",
+                        "loop",
+                        "status",
+                        "prompt",
+                        "error",
+                        "takes",
+                        "selectedTake"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "sound"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "sound": {
+                    "id": "gate_open",
+                    "selectedTake": "2"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "sound",
+            "in": "path",
+            "required": true,
+            "description": "The sound's `name` from the asset listing.",
+            "schema": {
+              "type": "string",
+              "description": "The sound's `name` from the asset listing.",
+              "example": "gate_open"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "take": {
+                    "type": "string",
+                    "description": "The take to ship, by its id from `takes`. Send it alone."
+                  },
+                  "event": {
+                    "type": "string",
+                    "description": "The sound event it plays as.",
+                    "example": "custom.gate_open"
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "Which volume slider in the game's settings controls it.",
+                    "enum": [
+                      "master",
+                      "music",
+                      "record",
+                      "weather",
+                      "block",
+                      "hostile",
+                      "neutral",
+                      "player",
+                      "ambient",
+                      "voice"
+                    ]
+                  },
+                  "subtitle": {
+                    "type": "string",
+                    "description": "The words shown with subtitles on. Empty clears it.",
+                    "maxLength": 80
+                  },
+                  "loop": {
+                    "type": "boolean",
+                    "description": "Whether it is meant to loop: a note about what it is, which the Studio's loop tools and a vehicle's sounds read."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/sounds/{sound}/takes/{take}": {
+      "get": {
+        "operationId": "getSoundTake",
+        "summary": "Listen to a sound's take",
+        "description": "One take's audio as Ogg Vorbis, to hear before choosing it. The sound as it ships is `GET /packs/{pack}/assets/sound/{sound}`.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "An `audio/ogg` body."
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "sound",
+            "in": "path",
+            "required": true,
+            "description": "The sound's `name` from the asset listing.",
+            "schema": {
+              "type": "string",
+              "description": "The sound's `name` from the asset listing.",
+              "example": "gate_open"
+            }
+          },
+          {
+            "name": "take",
+            "in": "path",
+            "required": true,
+            "description": "A take's `id` from the sound's `takes`.",
+            "schema": {
+              "type": "string",
+              "description": "A take's `id` from the sound's `takes`.",
+              "example": "2"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/sounds/{sound}/takes/{take}/copy": {
+      "post": {
+        "operationId": "copySoundTake",
+        "summary": "Copy a take into a sound of its own",
+        "description": "Makes a new sound from one take, so two takes you like can both ship. Free, but it is a new asset, so it counts against the pack's asset limit.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "201": {
+            "description": "The new sound.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "sound": {
+                      "type": "object",
+                      "description": "The new sound.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The sound's id, its `name` in the asset listing."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its label."
+                        },
+                        "event": {
+                          "type": "string",
+                          "description": "The sound event it plays as. A vanilla event is replaced; any other is new."
+                        },
+                        "category": {
+                          "type": "string",
+                          "description": "Which volume slider controls it.",
+                          "enum": [
+                            "master",
+                            "music",
+                            "record",
+                            "weather",
+                            "block",
+                            "hostile",
+                            "neutral",
+                            "player",
+                            "ambient",
+                            "voice"
+                          ]
+                        },
+                        "subtitle": {
+                          "type": "string",
+                          "description": "Its subtitle. Null when it has none."
+                        },
+                        "durationSeconds": {
+                          "type": "number",
+                          "description": "How long the shipping take is."
+                        },
+                        "loop": {
+                          "type": "boolean",
+                          "description": "Whether it is meant to loop."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "`generating`, `ready` or `error`.",
+                          "enum": [
+                            "generating",
+                            "ready",
+                            "error"
+                          ]
+                        },
+                        "prompt": {
+                          "type": "string",
+                          "description": "What it was generated from. Null for an upload."
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "Why its generation failed. Null unless `status` is `error`."
+                        },
+                        "takes": {
+                          "type": "array",
+                          "description": "Every candidate, in the order they were made. Empty for a sound older than takes.",
+                          "items": {
+                            "type": "object",
+                            "description": "One take.",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "The take's id within this sound."
+                              },
+                              "durationSeconds": {
+                                "type": "number",
+                                "description": "Its length."
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "description": "ISO 8601."
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "durationSeconds",
+                              "createdAt"
+                            ]
+                          }
+                        },
+                        "selectedTake": {
+                          "type": "string",
+                          "description": "The take the pack ships. Null for a sound older than takes."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "event",
+                        "category",
+                        "subtitle",
+                        "durationSeconds",
+                        "loop",
+                        "status",
+                        "prompt",
+                        "error",
+                        "takes",
+                        "selectedTake"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "sound"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "sound": {
+                    "id": "gate_open_2",
+                    "takes": [
+                      {
+                        "id": "1"
+                      }
+                    ],
+                    "selectedTake": "1"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `asset_limit_reached`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "sound",
+            "in": "path",
+            "required": true,
+            "description": "The sound's `name` from the asset listing.",
+            "schema": {
+              "type": "string",
+              "description": "The sound's `name` from the asset listing.",
+              "example": "gate_open"
+            }
+          },
+          {
+            "name": "take",
+            "in": "path",
+            "required": true,
+            "description": "A take's `id` from the sound's `takes`.",
+            "schema": {
+              "type": "string",
+              "description": "A take's `id` from the sound's `takes`.",
+              "example": "2"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/sounds/{sound}/takes/{take}/delete": {
+      "post": {
+        "operationId": "deleteSoundTake",
+        "summary": "Delete a sound's take",
+        "description": "Throws one candidate away. A sound's last take can't be deleted (delete the sound instead), and deleting one refunds nothing.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The sound without it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "sound": {
+                      "type": "object",
+                      "description": "The sound.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The sound's id, its `name` in the asset listing."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its label."
+                        },
+                        "event": {
+                          "type": "string",
+                          "description": "The sound event it plays as. A vanilla event is replaced; any other is new."
+                        },
+                        "category": {
+                          "type": "string",
+                          "description": "Which volume slider controls it.",
+                          "enum": [
+                            "master",
+                            "music",
+                            "record",
+                            "weather",
+                            "block",
+                            "hostile",
+                            "neutral",
+                            "player",
+                            "ambient",
+                            "voice"
+                          ]
+                        },
+                        "subtitle": {
+                          "type": "string",
+                          "description": "Its subtitle. Null when it has none."
+                        },
+                        "durationSeconds": {
+                          "type": "number",
+                          "description": "How long the shipping take is."
+                        },
+                        "loop": {
+                          "type": "boolean",
+                          "description": "Whether it is meant to loop."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "`generating`, `ready` or `error`.",
+                          "enum": [
+                            "generating",
+                            "ready",
+                            "error"
+                          ]
+                        },
+                        "prompt": {
+                          "type": "string",
+                          "description": "What it was generated from. Null for an upload."
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "Why its generation failed. Null unless `status` is `error`."
+                        },
+                        "takes": {
+                          "type": "array",
+                          "description": "Every candidate, in the order they were made. Empty for a sound older than takes.",
+                          "items": {
+                            "type": "object",
+                            "description": "One take.",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "The take's id within this sound."
+                              },
+                              "durationSeconds": {
+                                "type": "number",
+                                "description": "Its length."
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "description": "ISO 8601."
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "durationSeconds",
+                              "createdAt"
+                            ]
+                          }
+                        },
+                        "selectedTake": {
+                          "type": "string",
+                          "description": "The take the pack ships. Null for a sound older than takes."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "event",
+                        "category",
+                        "subtitle",
+                        "durationSeconds",
+                        "loop",
+                        "status",
+                        "prompt",
+                        "error",
+                        "takes",
+                        "selectedTake"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "sound"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "sound": {
+                    "id": "gate_open",
+                    "takes": [
+                      {
+                        "id": "1"
+                      }
+                    ],
+                    "selectedTake": "1"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "sound",
+            "in": "path",
+            "required": true,
+            "description": "The sound's `name` from the asset listing.",
+            "schema": {
+              "type": "string",
+              "description": "The sound's `name` from the asset listing.",
+              "example": "gate_open"
+            }
+          },
+          {
+            "name": "take",
+            "in": "path",
+            "required": true,
+            "description": "A take's `id` from the sound's `takes`.",
+            "schema": {
+              "type": "string",
+              "description": "A take's `id` from the sound's `takes`.",
+              "example": "2"
+            }
+          }
+        ]
+      }
+    },
     "/packs/{pack}/export": {
       "get": {
         "operationId": "exportPack",
