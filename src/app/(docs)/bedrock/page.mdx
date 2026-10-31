@@ -1,0 +1,113 @@
+export const metadata = {
+  title: "Bedrock and Geyser",
+  description:
+    "Getting a pack to Bedrock players: on a Java server with Geyser, with RP Engine, or in a Bedrock world.",
+};
+
+# Bedrock and Geyser
+
+Every pack you make in Studio is also built for **Minecraft: Bedrock
+Edition**, converted rather than copied: Bedrock has a different pack format,
+different texture names and no custom item system of its own. You don't do the
+conversion by hand. Pick the route that matches where your Bedrock players are.
+
+| Where they play | What to use | What they get |
+| --- | --- | --- |
+| A Java server running [Geyser](https://geysermc.org/) and [RP Engine](/rp-engine) | Nothing extra. [Sync](/testing/plugin) or [Distribution](/distribution) | Everything below, plus placed models with their animations and 3D armour |
+| A Java server running Geyser, without RP Engine | **Export › Bedrock players on a Java server** | Custom items with their icons, reskins, sounds, armour and chat icons |
+| A Bedrock world or Realm | **Export › Minecraft: Bedrock Edition** | Reskins, sounds, armour and chat icons |
+
+## On a Java server with Geyser
+
+[Geyser](https://geysermc.org/) lets Bedrock players (phones, consoles,
+Windows) join a Java server. It translates the game, but it cannot read a Java
+resource pack: Bedrock players need a Bedrock pack, and Geyser needs to be told
+which Java items are which Bedrock items. Studio writes both.
+
+### With RP Engine
+
+If the server runs RP Engine, there is nothing to set up. Each time you press
+**Sync**, a Bedrock player on the receiving end gets the Bedrock build of the
+pack; they are disconnected and rejoined for a few seconds, because Bedrock
+only accepts packs while joining. A pack served with
+[Distribution](/distribution) always includes the Bedrock build too.
+
+RP Engine registers your items with Geyser itself and draws placed models for
+Bedrock players near them. See [RP Engine › Bedrock and Geyser](/rp-engine/bedrock)
+for exactly what crosses over.
+
+### Without RP Engine
+
+Press **Export** on the pack and choose **Bedrock players on a Java server**.
+You get one zip laid out like Geyser's own folder:
+
+```
+packs/<your pack>.mcpack              the Bedrock pack Geyser sends players
+custom_mappings/resourcepack-ai-<pack>.json   which Java items are which Bedrock items
+README.txt
+```
+
+1. Unzip it into Geyser's folder: `plugins/Geyser-Spigot/` on Paper or Spigot
+   (`plugins/Geyser-Velocity/`, `config/Geyser-Fabric/` and so on elsewhere).
+2. Restart the server. Geyser reads packs and mappings only when it starts.
+3. Give Java players the Java pack as usual (**Export › Minecraft: Java
+   Edition**, set in `server.properties`).
+
+That's it. A custom item is the same item for both editions: the give command
+on its page works for everyone, and Bedrock players see it with its own icon
+and name instead of a piece of paper.
+
+<Callout type="warning" title="Not with RP Engine">
+  If the server runs RP Engine, leave `custom_mappings/` out. RP Engine
+  registers the same items with Geyser, and two mappings for one item is one too
+  many. The one part worth taking from this zip there is `packs/`, and only if
+  you put the Java pack in RP Engine's `content/` folder by hand: Sync and
+  Distribution send Bedrock players the pack themselves.
+</Callout>
+
+The mappings cover servers on either side of Minecraft 1.21.4, so the same file
+works whatever version your server runs. They use Geyser's version 2 mapping
+format, so keep Geyser up to date.
+
+## In a Bedrock world or Realm
+
+**Export › Minecraft: Bedrock Edition** gives you a `.mcpack`. Open it on any
+Bedrock device and it imports itself; then turn it on under the world's
+**Resource Packs**. Without a server there's nothing to hand out custom items
+or place models, so a world shows the reskins, sounds, armour and chat icons.
+
+## What crosses over
+
+| Asset | On Bedrock |
+| --- | --- |
+| Block and item reskins | Under Bedrock's own texture names |
+| Custom items | Their sprite, or a picture of the model, as the item's icon |
+| Models | Bedrock entities with native animations, placed by RP Engine |
+| Armour | The same sheets, under Bedrock's names |
+| 3D armour | Drawn on the body, with RP Engine |
+| Sounds | Under your event names |
+| Icons | Bedrock's glyph sheets, so they work in chat |
+
+These have no Bedrock equivalent and are left out: GUI screens, the HUD,
+shaders, text effects, dialogs, emotes, vehicles, models placed as blocks,
+per-face block textures and item variants.
+
+A few renames are worth knowing about. Bedrock calls some textures differently
+(`golden_apple` is `apple_golden`, `wooden_sword` is `wood_sword`), and Studio
+handles the ones it knows. A reskin of a texture Bedrock names some other way
+we haven't mapped simply doesn't show; it never breaks the pack.
+
+Chat icons replace whole pages of Bedrock's own symbols. Bedrock keeps a few
+of its button prompts in the same character range, and a page holding one of
+your icons replaces the page it's on.
+
+## Designing for both
+
+If many of your players are on Bedrock, put anything they need to know
+somewhere that crosses over, such as an item's name and lore, or chat. A menu
+that only exists as a custom screen, the HUD or a dialog is invisible to them.
+
+## Testing it
+
+The [test server](/testing/test-server) runs Geyser: join from Bedrock on the
+same address and Sync as usual.

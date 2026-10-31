@@ -343,12 +343,14 @@ export const nav: NavGroup[] = [
       {
         title: "Exporting",
         href: "/exporting",
-        description: "The seven exports, what lands in the file, and how to install it.",
+        description: "The nine exports, what lands in the file, and how to install it.",
         keywords: [
           "export",
           "download",
           "zip",
           "mcpack",
+          "geyser",
+          "bedrock",
           "version",
           "itemsadder",
           "modelengine",
@@ -362,6 +364,12 @@ export const nav: NavGroup[] = [
           "blueprint",
           "plugin",
         ],
+      },
+      {
+        title: "Bedrock and Geyser",
+        href: "/bedrock",
+        description: "Getting a pack to Bedrock players: Geyser, RP Engine, or a Bedrock world.",
+        keywords: ["bedrock", "geyser", "mcpack", "pocket edition", "console", "mobile", "custom_mappings", "cross-play", "crossplay"],
       },
       {
         title: "Moving assets between packs",

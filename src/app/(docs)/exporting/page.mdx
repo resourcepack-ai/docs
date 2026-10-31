@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Exporting",
   description:
-    "The eight exports, what lands in each file, and how to install it.",
+    "The nine exports, what lands in each file, and how to install it.",
 };
 
 # Exporting
@@ -25,6 +25,7 @@ involved:
 | --- | --- | --- |
 | **Minecraft: Java Edition** | `.zip` | The ordinary resource pack. Goes in `resourcepacks`, or on a server |
 | **Minecraft: Bedrock Edition** | `.mcpack` | The Bedrock version, converted. Open it on any Bedrock device to import it |
+| **Bedrock players on a Java server** | `.zip` | The `.mcpack` plus Geyser's item mappings, for a server running Geyser without RP Engine |
 | **Dialogs (minecraft:dialog)** | `.zip` | Your dialogs as a vanilla datapack |
 
 **Plugin Support** is for servers running another content plugin. These are not
@@ -86,9 +87,12 @@ a conversion rather than a copy.
 | 3D armour | Drawn on the body when worn on a server running RP Engine |
 | Icons | Drawn into Bedrock's glyph sheets |
 
-Models and 3D armour need something to put them in the world: on a server,
-that's [RP Engine with Geyser](/rp-engine/bedrock). Installed on its own, a
-`.mcpack` shows the reskins, sounds, armour and icons, and no models.
+Custom items, models and 3D armour need a server. With
+[RP Engine and Geyser](/rp-engine/bedrock) everything in the table works; with
+Geyser alone, the **Bedrock players on a Java server** export adds the mappings
+Geyser needs for your custom items. Installed in a Bedrock world on its own, a
+`.mcpack` shows the reskins, sounds, armour and icons. See
+[Bedrock and Geyser](/bedrock) for the three routes side by side.
 
 These don't exist on Bedrock and are left out: GUI screens, the HUD, shaders,
 dialogs, emotes, vehicles, models placed as blocks, per-face block textures and
