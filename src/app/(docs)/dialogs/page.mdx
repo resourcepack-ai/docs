@@ -596,6 +596,15 @@ picked one gets the first control's default. Only segmented controls share a
 setting this way (not the cycle look); for any other control, the first one
 with that name is the one that works.
 
+A segmented control or dropdown shows its choices as you typed them. To show
+something else, tick **Show something else for each choice** under **Shown
+as**, and a box appears for each choice. Colour codes work there (`&c`, `&l`,
+`&#91b8b2`), so the choices `Human` and `Demon` can be shown as
+`&#91b8b2Human` and `&#ff2424Demon`. Pick one of your pack's fonts under it to
+draw them all in that font. The setting still stores the choice itself
+(`human`, `demon`), so commands, conditions and `{character_race}` never see
+the colours. An empty box shows the choice as it is.
+
 Other plugins read a setting as `%rpengine_var_show_sidebar%` through
 PlaceholderAPI, or through [RP Engine's API](/rp-engine/api#player-settings).
 Inside the dialog, `{show_sidebar}` is its value. A player can only set a
