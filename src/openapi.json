@@ -4690,8 +4690,12 @@
                   "size": {
                     "type": "integer",
                     "description": "Sprite edge length. 2D only.",
-                    "minimum": 16,
-                    "maximum": 128
+                    "enum": [
+                      16,
+                      32,
+                      64
+                    ],
+                    "default": 16
                   },
                   "name": {
                     "type": "string",
@@ -5548,7 +5552,7 @@
       "post": {
         "operationId": "generateIcon",
         "summary": "Generate a font icon",
-        "description": "Produces an `icon` — a bitmap glyph you can type into chat, signs and books. Omit `width` for a square glyph.",
+        "description": "Produces an `icon` — a bitmap glyph you can type into chat, signs and books. Generated icons are square; for another shape, upload one with `POST /packs/{pack}/assets`.",
         "tags": [
           "Generating"
         ],
@@ -5691,15 +5695,13 @@
                   },
                   "height": {
                     "type": "integer",
-                    "description": "Glyph height in pixels.",
-                    "minimum": 1,
-                    "maximum": 256
-                  },
-                  "width": {
-                    "type": "integer",
-                    "description": "Glyph width. Square if omitted.",
-                    "minimum": 1,
-                    "maximum": 256
+                    "description": "Glyph height and width in pixels.",
+                    "enum": [
+                      8,
+                      12,
+                      16,
+                      32
+                    ]
                   },
                   "name": {
                     "type": "string",
