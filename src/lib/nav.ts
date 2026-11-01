@@ -282,6 +282,12 @@ export const nav: NavGroup[] = [
         keywords: ["vfx", "effect", "spell", "ability", "particles", "slash", "lightning", "preset", "cast"],
       },
       {
+        title: "Stinger Transitions",
+        href: "/stinger-transitions",
+        description: "Full-screen transitions that cover the screen while your server teleports someone, then uncover it.",
+        keywords: ["stinger", "transition", "wipe", "iris", "fade", "splat", "teleport", "loading", "title", "cutscene"],
+      },
+      {
         title: "Skins",
         href: "/skins",
         description: "Player skins: generated, imported or painted, and put on in game.",
