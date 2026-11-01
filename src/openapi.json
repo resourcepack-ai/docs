@@ -14702,6 +14702,7 @@
               "description": "Only items of this type.",
               "enum": [
                 "model",
+                "mob",
                 "block",
                 "item",
                 "item3d",
@@ -14710,6 +14711,7 @@
                 "gui",
                 "hud",
                 "dialog",
+                "custom_gui",
                 "icon",
                 "rank_tag",
                 "sound",
