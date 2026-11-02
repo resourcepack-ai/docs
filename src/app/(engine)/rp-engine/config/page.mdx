@@ -146,7 +146,9 @@ part of the pack.
 | Key | Default | What it does |
 |---|---|---|
 | `player-commands` | `true` | Registers `/emote`. Turn it off if another plugin already has `/emote`; `/rp emote` still works, and `/emotereply` is always registered |
-| `rigs` | `true` | Builds a rig for every player who has joined, plus a shared default, so emotes and vehicle seats work without Studio. Needs Minecraft 1.21.4 or newer |
+| `rigs` | `true` | Builds a rig for players who have joined, plus a shared default, so emotes and vehicle seats work without Studio. Needs Minecraft 1.21.4 or newer |
+| `rig-days` | `30` | Only players seen in this many days get a rig. Anybody else wears the default until they come back. `0` is no limit |
+| `rig-players` | `64` | The most players with a rig, newest first. Each is about 20 KB of every player's download. `0` is no limit |
 | `bake-on-join` | `true` | Rebuilds the rigs when somebody joins who has none yet. See below |
 | `cast-permission` | `rpengine.emote.cast` | The node needed to pull other players into an emote. Empty for no check |
 | `nametag-see-through` | `false` | Whether an emoting player's name shows through walls. Off, because a see-through name tends to vanish behind nearby models |
