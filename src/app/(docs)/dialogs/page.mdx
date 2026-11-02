@@ -858,7 +858,7 @@ Under **Behaviour**, choose what the dialog does once something is clicked:
 | --- | --- |
 | **Seamless** (default) | Stays on screen until the server answers. A dialog the click opens replaces it without a flash, and otherwise it closes. In a datapack it acts as **Close**. |
 | **Close** | Closes at once, so the next dialog arrives after a glimpse of the world. |
-| **Stay open** | Stays as it is. |
+| **Stay open** | Stays open. After a **Run as console** button, or a **Run command** button with several lines, it's drawn again so live values and **Show when** catch up with what the commands changed (RP Engine 0.2.57 or newer). |
 | **Wait** | Shows the game's "Waiting for Server" screen. A dialog with a link or copy button closes instead. |
 
 A seamless dialog stays open after a click the server never hears, such as a
@@ -912,6 +912,7 @@ least:
 | Colour codes from a placeholder in a Pack glyph | 0.2.34 |
 | The Quick Actions key | 0.2.17 |
 | Sorting a box's pieces | 0.2.46 |
+| Stay open redrawn after a button's commands | 0.2.57 |
 
 On an older RP Engine the feature fails quietly: a bound control shows every
 state at once, a live bar is empty, a conditioned piece is drawn for everybody,
