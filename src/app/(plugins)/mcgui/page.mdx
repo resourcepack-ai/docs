@@ -223,6 +223,39 @@ world shows live round the panel. On a wall, the wall behind shows through.
 
 `market-overlay` and `market-blur` in the examples are the market as an overlay.
 
+## The sidebar, boss bars and action bar
+
+While a player has a page open (fullscreen or an overlay), MC GUI hides the
+sidebar scoreboard, boss bars and action bar that other plugins draw, and puts
+them back when the page closes. MC GUI's own pack already hides the HUD, but a
+pack that replaces its shaders (Dialog Engine's drawn dialogs merged into
+another plugin's pack, for one) takes that away, so since 0.7.0 the server
+hides them too, whichever pack wins:
+
+```yaml
+views:
+  hide-hud:
+    scoreboard: true
+    boss-bars: true
+    action-bar: true
+```
+
+It is done with packets, for that player alone. When the page opens their game
+drops the sidebar and each boss bar and gets an empty action bar; what the
+server sends them meanwhile (TAB's lines, a boss bar's progress, a plugin's
+action bar every second) is held back. When the page closes, however it
+closes, they get each sidebar and boss bar as the server last had it, and the
+next action bar shows as usual. It reads packets rather than the scoreboard
+API, so it works with TAB, ProtocolLib, PacketEvents and anything else that
+draws them, and does not fight them.
+
+All three are on by default: with MC GUI's shaders in use nobody sees a
+difference. Turn one off to keep a plugin's sidebar, bar or action bar on
+screen at pages. MC GUI's own action bar messages still show, and the tab
+list, chat, titles and the text under names are never touched. A HUD drawn
+some other way (glyphs in a resource pack, a title) stays. These settings are
+read when the server starts.
+
 ## In a page
 
 | Write | In game |
@@ -475,7 +508,9 @@ cursors, or changing anything under `resource-pack`.
 
 MC GUI's pack replaces the game's text shader, as some other plugins' packs do
 (HUD and font plugins, mostly). If two of them reach a player, one silently
-loses: merge packs with care.
+loses: merge packs with care. When MC GUI's loses, pages still hide the
+sidebar, boss bars and action bar from the server side
+([The sidebar, boss bars and action bar](#the-sidebar-boss-bars-and-action-bar)).
 
 ## Commands
 
@@ -540,6 +575,7 @@ explained in the file itself.
 | `allow-web` | `true` | Lets pages load fonts, stylesheets and pictures from the web |
 | `views.size` | `16x9` | Fullscreen size in maps, unless a page sets its own |
 | `views.pointer-speed` | `1.0` | How far the pointer moves for the mouse |
+| `views.hide-hud.scoreboard`, `.boss-bars`, `.action-bar` | `true` | Hide that part of other plugins' HUD while a page is open ([more](#the-sidebar-boss-bars-and-action-bar)) |
 | `walls.right-click-fullscreen` | `true` | Right-clicking a wall screen opens its page fullscreen |
 | `screens.view-distance` | `48` | Blocks from a wall screen beyond which it is not sent |
 | `resource-pack.mode` | `upload` | See [The resource pack](#the-resource-pack) |
@@ -608,6 +644,11 @@ clicking, scrolling, keys and chat: implement the ones you need. Every callback
 runs on the server thread, and a wall can show each viewer a canvas of their
 own. `canvas.transparency(true)` lets the world show through where a picture is
 see-through, and `ViewOptions.DEFAULT.blur(true)` blurs it.
+
+A view hides the sidebar, boss bars and action bar as the server's
+`views.hide-hud` says, unless its options choose: `ViewOptions.DEFAULT.hud(HudParts.NONE)`
+leaves them all on screen, and `ViewOptions.DEFAULT.hud(HudParts.ALL.actionBar(false))`
+hides all but the action bar (0.7.0 and newer).
 
 The [examples](https://github.com/resourcepack-ai/mcgui/tree/main/examples) are
 whole plugins built this way: an arcade of games on cabinets and fullscreen, a
