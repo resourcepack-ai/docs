@@ -34,6 +34,10 @@ chair:
     light: 0             # 0-15, what it gives off
     surface: floor       # floor | wall | ceiling | any
     drop: mypack:shard   # what breaking it gives back. Default: itself
+    random:              # each one put down a little different
+      rotation: 180      # degrees either side of its facing. 180 is any way
+      rotation-step: 90  # optional: turn in whole steps
+      scale: [0.8, 1.2]  # or 0.8-1.2: a size between the two
   permission: mypack.chair
 ```
 
@@ -49,6 +53,23 @@ A placed model is the size the Blockbench file says it is: 16 model units to
 the block, so a model built to y=32 stands two blocks tall. If a lamp looks a
 block tall when you built it three, check the cube coordinates in the model.
 `scale:` multiplies the size, for when you want the same model in two sizes.
+
+## Random turn and size
+
+`random:` gives every copy a player puts down a turn and a size of its own, so
+decorations placed in a row don't all look the same. Needs RP Engine 0.2.57.
+
+| Key | What it does |
+|---|---|
+| `rotation` | Degrees either side of the way `facing:` would have turned it, 0 to 180. 180 is any direction |
+| `rotation-step` | Turns only in whole steps of this many degrees. `90` keeps a boxy piece on the grid, `45` gives eight ways. Leave it out for any angle |
+| `scale` | Two numbers, `[0.8, 1.2]` or `0.8-1.2`: a multiplier picked between them, on top of `scale:`. 0.1 to 10 |
+
+Each copy rolls once, when it's placed, and the result is stored with it, so a
+restart doesn't reshuffle anything and seats, states and growing use the turn
+and size it went down with. A plugin placing a model through
+`Models.place` gets exactly what it asked for, with nothing random. A model
+pushed from Studio can carry the same settings, set on its page.
 
 ## Which way it faces
 
