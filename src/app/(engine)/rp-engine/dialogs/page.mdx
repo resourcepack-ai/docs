@@ -138,7 +138,8 @@ command. After a restart, page turns happen on the client with no wait.
 
 `after:` decides. `seamless`, the default, keeps the dialog up until the
 engine has answered the click, so a dialog the click opens takes its place
-with nothing in between. `close` closes at once, `none` stays open, and
+with nothing in between. `close` closes at once, `none` stays open (and from 0.2.57 is drawn again
+after a `console:` button or a `command:` list runs, so placeholders catch up), and
 `wait_for_response` shows the game's waiting screen.
 
 ## Click sounds
