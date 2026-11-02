@@ -101,6 +101,12 @@ player, for good, publish it instead (below).
 is per player on purpose: it's for seeing a pack while it's made, not for
 serving one to the public.
 
+Console commands in a pushed pack (a dialog button set to run as the console, a
+mob skill using `command`) are only kept when the player who started the sync
+has `rpengine.sync.console`, which defaults to operators. Anyone else's push
+arrives without them, so granting `rpengine.sync` widely never hands out
+console access.
+
 ### Serving your published pack to everyone
 
 For launch. `/rp distribute <code>` binds the server to a pack from
