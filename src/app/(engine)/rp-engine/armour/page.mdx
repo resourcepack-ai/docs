@@ -102,9 +102,9 @@ You can also make a set yourself in Blockbench and put it in `armor3d/`:
 santa:
   name: "Santa Suit"     # optional; the ID when left out
   model: armor_santa     # assets/models/armor_santa.bbmodel; the ID when left out
-  displays: false        # optional, default true; see below
-  shaders: false         # optional, default true; see below
-  shader-helmet: true    # optional, default false; see below
+  displays: true         # optional, default true; see below
+  shaders: true          # optional, default true; see below
+  shader-helmet: false   # optional, default false; see below
 ```
 
 That is the set `mypack:santa`. The model is a `.bbmodel` project built on
@@ -196,7 +196,8 @@ support. A player whose computer lacks them (older integrated graphics, or a
 Mac) does not just miss the armour: Minecraft rejects the whole pack and shows
 "Resource reload failed". Add `shaders: false` to the set (RP Engine 0.2.45 or
 newer) and the pack carries no shader for it, so it loads for everybody and
-every player sees the display entities instead.
+every player sees the display entities instead. Leave `displays` on when you
+do: with both turned off, nobody sees more of the set than the helmet.
 </Callout>
 
 What to expect with display entities:
