@@ -5699,9 +5699,10 @@
                     "description": "Glyph height and width in pixels.",
                     "enum": [
                       8,
-                      12,
                       16,
-                      32
+                      32,
+                      64,
+                      128
                     ]
                   },
                   "name": {
