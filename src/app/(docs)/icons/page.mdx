@@ -34,13 +34,15 @@ stops reading. Get the silhouette right first.
 | Size | How it sits in text |
 | --- | --- |
 | **8px** | Fits inside one line of text. The only size guaranteed not to overlap |
-| **12px** | A readable chat icon that sits on the line |
+| **12px** | Blank and Upload only. A readable chat icon that sits on the line |
 | **16px** | The default for Blank and Upload. Overlaps the lines above and below a little |
 | **32px** | The default for Generate. A big icon that overlaps neighbouring lines, like a large emoji |
+| **64px** and **128px** | Generate only. For GUIs, HUDs and screens rather than chat |
 | **Custom** | Blank and Upload only: any width and height, up to 256 |
 
-A generated icon is always square and one of the four sizes above. For a wide
-or tall icon, draw it from blank or upload one.
+A generated icon is always square: 8, 16, 32, 64 or 128 pixels, the same sizes
+as [Items](/items) plus 8. For a wide or tall icon, or a 12px one, draw it from
+blank or upload one.
 
 Minecraft's lines of text are about 9 pixels apart and the game doesn't make
 room for taller icons, so 16 and 32 overlap on purpose. Use 8 or 12 when an
