@@ -92,7 +92,7 @@ it away.
 | **Background** | The **Shape** (Square, Rounded, Pill, Chamfer, Ribbon, Slant or Arrow), the **Surface** (Flat, Gradient, Gloss, Panel, Stripes, Dither, Sparkle, or **Block**: a real block texture tinted toward the tag's colour) and the **Fill** colour. Block offers iron, gold, diamond and emerald, and the **+** opens every block in the game |
 | **Frame** | The **Outline** (automatic, your own colour, or none), an **Inner rim**, a **3D edge** that stands the tag up off the line, and the **Padding** round the words |
 | **Icon** | Over a hundred built-in icons, or one of your pack's own [Icons](/icons) under **This pack**, placed **In a cell**, **Beside** the words or on a **Tile** of its own. If you redraw a pack icon later, the section offers **Use the new one** |
-| **Motion** | None, **Glint** (a shine sweeps across), **Rainbow** (the letters cycle colours), **Twinkle** (sparkles come and go) or **Pulse** (the frame breathes). Point at one to preview it |
+| **Motion** | None, **Glint** (a shine sweeps across), **Rainbow** (the letters cycle colours), **Twinkle** (sparkles come and go), **Pulse** (the frame breathes), or **Custom**: your own, on a timeline (see [Your own animation](#your-own-animation)). Point at one to preview it. **Animate with AI** under them makes a custom one from a sentence |
 | **In game** | **Size**, from a quarter to 4x, and **Height**, to sit it higher or lower on the line |
 
 Click any colour swatch for the picker. A **+** beside the letter colour fades
@@ -140,10 +140,61 @@ tag at an in-between size becomes the next whole size up.
 ## Animated tags
 
 An animated tag plays in chat, the tab list, the scoreboard, and anywhere a
-menu or the HUD draws text: sixteen frames looping at ten a second, as the
-editor plays it. The animation is played by a text shader that comes inside
+menu or the HUD draws text. A built-in animation loops sixteen frames at ten
+a second, as the editor plays it. The animation is played by a text shader that comes inside
 your pack, so players need the pack and the command's colour (see above). Over
 a player's head it shows its first frame.
+
+## Your own animation
+
+Pick **Custom** under **Motion** and a timeline opens under the tag, like the
+one in the model editor's Animate mode. It starts from the animation the tag
+had, so a Glint becomes a shine you can change.
+
+Each row is a **track**: one effect on one part of the tag.
+
+| Effect | What it does | Its value |
+| --- | --- | --- |
+| **Tint** | Washes the part toward a colour: white to flash, black to dim, red to burn | How far, 0 to 100% |
+| **Hue** | Turns the colours round the colour wheel. **Spread** turns each column a little more, which makes a rainbow across. White, black and greys have no hue to turn, so tint white words first (Start from Rainbow does) | How far, 0 to 360° |
+| **Shine** | A diagonal band of light with soft edges, as wide as you set | Where the band is, 0% (before the tag) to 100% (past it) |
+| **Sparkle** | Stars, somewhere new every frame | How many |
+| **Wave** | Bands of light running along the tag, as long and as fast as you set (a negative speed runs them backwards) | How bright, 0 to 100% |
+
+A track lights the **Whole tag**, the **Face**, the **Words**, the **Frame**
+(outline and rim), the **Icon cell** or the **Icon**. The outline and shadow of
+the words are never touched, so the words stay readable whatever the face is
+doing. Tracks run top to bottom, each on what the one above left.
+
+The diamonds are **keyframes**. Each sits at a frame and at a height, which is
+its value: drag one sideways to move it in time and up or down to change it, or
+pick it and set its value exactly under the timeline. Double-click a row for a
+new one, and <kbd>Delete</kbd> takes the picked one away. **To the next key**
+says how a key travels to the next: **Linear**, **Smooth** (eases in and out) or
+**Hold** (stays put, then jumps). The line through the diamonds is what the
+game plays.
+
+The keys loop: after the last one the value travels back to the first, so a
+loop that starts and ends on the same value never jumps. For a shine that
+crosses and starts again, put a key at 0% on the first frame and one at 100% on
+the last.
+
+Above the rows: **Frames** is one loop's length (4 to 48; changing it stretches
+the keys to fit), and **5, 10 or 20 fps** is how fast it plays. <kbd>Space</kbd>
+plays and pauses, the arrow keys step a frame, and clicking the ruler jumps
+there. **+ Track** adds one (up to six), the eye mutes one without losing it,
+and **Start from** replaces the timeline with one of the built-in animations to
+build on.
+
+**Animate with AI**, on the timeline or under **Motion**, writes the timeline
+from a sentence: "a slow gold shimmer", "flash white every second", "rainbow
+letters with sparkles on the face", "the frame burns like lava". On a tag that
+already has one, it changes it as asked. It lands on the tracks as an unsaved
+edit, like Edit with AI, and costs the same.
+
+A custom animation plays in game the same way the built-in ones do, in its own
+colour, which the tag's page puts in the command. A pack can hold sixteen tags
+with their own animation.
 
 ## Sharing it
 
