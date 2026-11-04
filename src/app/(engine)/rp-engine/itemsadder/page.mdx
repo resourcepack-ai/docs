@@ -6,25 +6,38 @@ export const metadata = {
 
 # Moving from ItemsAdder
 
-RP Engine reads ItemsAdder config files as they are, so an ItemsAdder pack
-loads without converting anything. Copy a pack folder out of ItemsAdder's
-`contents/` into `plugins/RPEngine/content/` and start the server. Bring its
-`configs/` folder (or loose config files), `textures/` and `models/` with it,
-and leave out any `pack.yml`.
+RP Engine reads ItemsAdder's config files as they are, so you can move an
+ItemsAdder pack (including one bought on a marketplace) to RP Engine without
+converting anything.
+
+1. Copy the pack's folder out of ItemsAdder's `contents/` into
+   `plugins/RPEngine/content/`, everything in it included: `configs/`,
+   `textures/`, `models/`, `resourcepack/`.
+2. You do not need a `pack.yml` (RP Engine's own pack file). Leave one out.
+3. Start the server, or run `/rp reload`, and read the console for warnings.
 
 ```
 plugins/RPEngine/content/
   my_content/            ← straight out of ItemsAdder's contents/
     configs/             ← read at any depth
       items.yml
-    textures/
+    textures/            ← older layout: art at the pack root
     models/
+    resourcepack/        ← ItemsAdder 4 layout
+      assets/my_content/
+        textures/
+        models/
 ```
 
-There is nothing to turn on. A file is recognised by its own shape (an
-`info:` block beside `items:`, `font_images:` or `recipes:`), which no RP
-Engine file looks like. So one of their files also works inside a pack of
-yours, which is a handy way to move over a piece at a time.
+Both layouts work, and art kept in folders of its own (`textures/<set>/`
+rather than `textures/item/`) is found too. There is nothing to turn on: a
+file is recognised by its own shape (an `info:` block beside `items:`,
+`font_images:` or `recipes:`). So one of their files also works inside a pack
+of yours, which is a handy way to move over a piece at a time.
+
+The folder's name becomes the **namespace**: the first half of every item's
+ID, as in `my_content:ruby`. Keep the folder name ItemsAdder used and your
+existing IDs keep working.
 
 ## What comes across
 
@@ -127,16 +140,29 @@ first, because an RP Engine sound plays one file, and `weight`,
 audio stays where it is: their `sounds/` folder and resource pack folder are
 both packed where an RP Engine sound looks.
 
+## If the console warns
+
+**`info.namespace says galaxy_set but the folder is galaxyset, and the folder wins`**
+
+The pack's configs declare one namespace and its folder has another name (a
+pack is often unzipped into a folder named differently). The items load as
+`galaxyset:...`, and their models and textures are still found under
+`resourcepack/assets/galaxy_set/`, so they look right. If other plugins, shops
+or commands name the items as `galaxy_set:...`, rename the folder to
+`galaxy_set` and `/rp reload`. Otherwise the warning is harmless.
+
+**An item shows the missing texture (black and pink)**
+
+Check the warning above it for the path RP Engine looked at. The usual causes
+are a folder renamed after the pack was made (see above), or a pack whose
+art was left out when it was copied. Copy the whole pack folder, `resourcepack/`
+included.
+
 ## Good to know
 
-**The folder name is the namespace.** A file whose `info.namespace` says
-something else loads under the folder's name, with a warning. Its models and
-textures are still found in `resourcepack/assets/<namespace>/`, so the items
-look right either way. Rename the folder if your IDs should keep their old
-namespace.
-
-**Their art lives at the pack root**, ours under `assets/`. Both are read, so
-their `textures/item/ruby.png` and `models/lamp.json` need no moving. For new content
+**Their art can stay where it is.** ItemsAdder keeps art at the pack root or in
+`resourcepack/assets/`, and RP Engine reads both, so
+`textures/item/ruby.png` and `models/lamp.json` need no moving. For new content
 you write beside it, use `assets/`, as the [content folder](/rp-engine/content)
 page describes.
 

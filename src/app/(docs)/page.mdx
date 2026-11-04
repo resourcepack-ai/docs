@@ -6,19 +6,28 @@ export const metadata = {
 
 # ResourcePack AI
 
-ResourcePack AI is a web app for making Minecraft resource packs. A resource
-pack is the folder of textures, models and sounds that changes how the game
-looks and sounds. You describe what you want in plain words, the AI makes a
-first version, you finish it in the editors, and then you try it in Minecraft
-on a real server.
+ResourcePack AI makes Minecraft resource packs. A resource pack is the set of
+textures, models and sounds that changes how the game looks and sounds: a new
+look for stone, a sword with a custom model, a restyled inventory.
 
-The app is called **Studio**, and it runs in your browser at
+You do it in **Studio**, a web app at
 [studio.resourcepack.ai](https://studio.resourcepack.ai). There's nothing to
-install.
+install. It works like this:
+
+1. **Describe** what you want ("weathered copper roof tiles") and the AI makes
+   a first version. Generating costs **AI Credits**, the app's currency; a
+   free account gets 50 a month.
+2. **Finish it** in the editors: a pixel editor for textures, a 3D editor for
+   models, and editors for sounds, screens and the rest.
+3. **Try it in Minecraft.** Join our free test server, press **Sync** in
+   Studio, and the pack loads on your game in seconds.
+4. **Export** it when it's done, as an ordinary pack file anyone can use.
+
+## Where to start
 
 <CardGroup>
   <Card title="Quickstart" href="/quickstart" icon="rocket">
-    From an empty pack to a block you can stand next to in game.
+    Five minutes from sign-up to your first Block in game.
   </Card>
   <Card title="Our test server" href="/testing/test-server" icon="server">
     Join <ServerAddress /> and see what you made.
@@ -27,8 +36,10 @@ install.
 
 ## What a pack can hold
 
-Every pack has a tab for each of these. All of them can be generated, started
-blank, and most can be uploaded from files you already have.
+A **pack** is one project: everything for one server or one look. Each thing
+in it is an **asset** (one Block, one Model, one Sound), and each kind has its
+own tab. All of them can be generated or started blank, and most can be
+uploaded from files you already have.
 
 <CardGroup cols={3}>
   <Card title="Models" href="/models" icon="boxes">
@@ -37,14 +48,17 @@ blank, and most can be uploaded from files you already have.
   <Card title="Vehicles" href="/vehicles" icon="gauge">
     Models people can ride: seats, handling, sounds and effects.
   </Card>
+  <Card title="Mobs" href="/mobs" icon="paw">
+    Models turned into creatures that walk, fight and drop loot.
+  </Card>
   <Card title="Blocks" href="/blocks" icon="blocks">
     New textures for any vanilla block.
   </Card>
   <Card title="Items" href="/items" icon="item">
     Flat item sprites or 3D items, for the hand and the inventory.
   </Card>
-  <Card title="Armour" href="/armor" icon="wrench">
-    Reskinned vanilla armour sets, or 3D armour.
+  <Card title="Armor" href="/armor" icon="wrench">
+    Reskinned vanilla Armor sets, or 3D Armor.
   </Card>
   <Card title="GUIs" href="/guis" icon="gui">
     Restyled chests, furnaces, the inventory and other screens.
@@ -56,46 +70,57 @@ blank, and most can be uploaded from files you already have.
     Hearts, hunger, the hotbar and the crosshair.
   </Card>
   <Card title="Shaders" href="/shaders" icon="sparkles">
-    Sharp shapes, labels and bars drawn over the screen or in the world.
+    Shapes, labels and bars over the screen, objects in the world, Text
+    Effects and VFX.
   </Card>
   <Card title="Icons" href="/icons" icon="brush">
-    Small pictures you can type into chat, signs and books.
+    Small pictures you can type into chat, signs and books, and Rank Tags.
   </Card>
   <Card title="Sounds" href="/sounds" icon="sound">
     Sound effects that replace a vanilla one or add a new one.
   </Card>
+  <Card title="Emotes" href="/emotes" icon="users">
+    A wave, a dance, or a set of movements a player wears while walking.
+  </Card>
 </CardGroup>
 
-Models can also be **animated**, and players can have **emotes**: a wave, a
-dance, or a whole set of movements they wear while they walk around. See
-[Animations](/animations) and [Emotes in RP Engine](/rp-engine/emotes).
+Models can also be [animated](/animations). [Skins](/skins) live on your
+account rather than in a pack.
 
 ## Testing it in Minecraft
 
 You don't have to export anything to see your work in game. Join our test
-server (<ServerAddress />, Java or Bedrock), link your account once with
-`/permlink`, and from then on the **Sync** button in Studio sends the pack
-straight to you while you stand there. The [Quickstart](/quickstart) walks
-through it.
+server (<ServerAddress />, Java or Bedrock) and link your Minecraft account
+once with `/permlink`. From then on, the **Sync** button in Studio sends the
+pack to you while you stand there. Only you see it. The
+[Quickstart](/quickstart) walks through it.
 
-Some things a resource pack can't do by itself: place a model and have it
-animate, drive a vehicle, play an emote, open a custom screen. Those need
-[RP Engine](/testing/plugin), our server plugin. The test server already runs
-it, and you can install it on your own Paper or Spigot server.
+## The plugins
+
+A resource pack can only change how things look. Some things need a plugin on
+the server too: placing a model that animates, driving a Vehicle, playing an
+Emote, opening a custom screen.
+
+- **[RP Engine](/testing/plugin)** is our main plugin, and the one Studio is
+  built around. The test server already runs it, and you can install it on
+  your own Paper, Spigot or Folia server, which also lets you sync to it.
+- **[Our other plugins](/plugins)** each do one job and don't need RP Engine:
+  MC GUI for menus and shops written in HTML, Dialog Engine for Minecraft's own
+  dialog menus, 3D Engine for real 3D models from `.glb` or `.obj` files.
 
 <Callout type="note" title="Java and Bedrock">
   Bedrock players can join, link and receive packs too. Bedrock only accepts
-  a pack while joining, so applying one disconnects you and reconnects you
-  automatically, which takes a few seconds.
+  a pack while joining, so they're disconnected and reconnected for a few
+  seconds each time. See [Bedrock and Geyser](/bedrock).
 </Callout>
 
 ## When it's finished
 
-A pack you [export](/exporting) is an ordinary resource pack: the same
+An [exported](/exporting) pack is an ordinary resource pack, with the same
 folders, JSON and PNGs the game expects. It works anywhere a pack works,
-including on a server that has nothing of ours installed. You can export a
-Java `.zip`, a Bedrock `.mcpack`, or content for server plugins such as
-ItemsAdder, Nexo, Oraxen, CraftEngine and ModelEngine.
+including a server with nothing of ours installed. You can export a Java
+`.zip`, a Bedrock `.mcpack`, or content for other server plugins such as
+ItemsAdder, Nexo, Oraxen, CraftEngine and Model Engine.
 
 ## Where to go next
 

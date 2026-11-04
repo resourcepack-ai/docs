@@ -22,53 +22,53 @@ where they were.
 Tab completion lists every emote on the server, and for an emote that needs a
 partner it offers the players who could join in.
 
-## The rig is not the animation
+## Every player needs a rig
 
-These are two separate things:
+An emote has two parts:
 
-- **The rig** is a model of that player, cut out of their skin. It is made
-  automatically, never drawn by hand.
-- **The animation** is keyframes, made once for everybody. It moves bones by
-  name, so the same wave fits every player.
+- **The rig** is a model of the player, cut out of their skin. It is made
+  automatically.
+- **The animation** is keyframes, made once. It moves bones by name, so the
+  same wave fits every player.
 
-A resource pack is built before anybody moves and can't fetch a live skin, so
-the pack has to carry a rig for every player who will emote. A player with no
-rig in the pack can't emote, and the command tells them so.
-
-RP Engine bakes rigs itself from the skin of everyone who joins, so a server
-with no Studio pack still has them. Somebody joining for the first time shows
-as a default figure until the rebuild finishes (you often notice it when they
-sit in a seat or a vehicle). The rebuild starts straight away; the new pack
-goes to whoever joins next, and to players already online the next time
-they're sent a pack. It doesn't reload everyone's client the moment someone
-walks in.
+Rigs travel inside the resource pack, so the pack needs one for each player who
+emotes. RP Engine builds them itself from the skin of everyone who joins. A
+player joining for the first time shows as a default figure until that rebuild
+finishes (you often notice it when they sit in a seat or a vehicle). The new
+pack goes to whoever joins next, and to players already online the next time
+they are sent a pack: nobody's game reloads just because someone walked in.
 
 | config.yml | Default | What it does |
 |---|---|---|
-| `emotes.bake-on-join` | `true` | Rebuild when someone new joins. Off, and `/rp reload` bakes whoever has arrived |
+| `emotes.rigs` | `true` | Build rigs on this server at all |
+| `emotes.bake-on-join` | `true` | Rebuild when someone new joins. Off, and `/rp reload` builds whoever has arrived |
+| `emotes.rig-days`, `emotes.rig-players` | 30, 64 | Only players seen in the last 30 days get a rig, at most 64, newest first. Each rig adds about 20 KB to everybody's download. 0 is no limit |
 | `emotes.player-commands` | `true` | Registers `/emote`. Off, and it's still there as `/rp emote` |
 | `emotes.cast-permission` | `rpengine.emote.cast` | Who may pull other players into an emote. Empty for no check |
 
-Baking rigs needs Minecraft 1.21.4 or newer. On older servers, rigs that arrive
-in a Studio push still work.
+Building rigs needs Minecraft 1.21.4 or newer. On older servers, rigs that
+arrive in a Studio push still work.
 
 ## Getting emotes onto a server
 
-Make them in [Studio](https://studio.resourcepack.ai), then push:
+Make them in [Studio](https://studio.resourcepack.ai), then send the pack
+straight to your game (a **push**):
 
 <Steps>
   <Step title="Pair">
     In Studio, open your pack and press **Sync** to get a pairing code. In
-    game, run `/rp sync <code>`.
+    game, run `/rp sync <code>`. See [Testing on your server](/testing/plugin).
   </Step>
   <Step title="Push">
     Push from Studio. The pack arrives with the emotes in it, and rigs are
-    baked for everyone on that sync.
+    built for everyone on that sync.
   </Step>
   <Step title="Emote">
     Type `/emote` and press Tab.
   </Step>
 </Steps>
+
+Or write them by hand: see [Hand-authored emotes](#hand-authored-emotes).
 
 `/rp emotes` lists what the server has right now. If somebody joined after the
 push, push again.
@@ -143,7 +143,16 @@ blends between them.
 Being hit, moving (for most emotes), `/emote stop`, or a plugin
 (`EmoteStartEvent` can be cancelled, and `Emotes.stop` ends one). Any
 invisibility the player had before comes back afterwards, minus the time the
-emote took, so emotes can't stretch a potion.
+emote took.
+
+## Playing one automatically, such as on join
+
+RP Engine has no "on join" trigger for emotes. Use a plugin that runs commands
+when a player joins, and have it run `/emote <name>` **as that player** (the
+command only plays on whoever runs it), or call `engine.emotes()` from your own
+plugin. Give the rebuild a few seconds for a first-time player, or they emote as
+the default figure. A
+[VFX](/rp-engine/vfx#playing-one) can be played the same way with `/rp cast`.
 
 ## Hand-authored emotes
 

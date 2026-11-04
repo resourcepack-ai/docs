@@ -20,9 +20,11 @@ sword:
   ascent: 8
 ```
 
-Put one into any text with `:mypack:sword:`. Icons go into the game's default
-font, so nothing has to know about RP Engine to show one: by the time the text
-reaches the player it's an ordinary character.
+The YAML goes in a `fonts/` folder of your [content folder](/rp-engine/content)
+(here `mypack`), and the PNG in its `assets/textures/font/`. After `/rp reload`,
+put the icon into any text with `:mypack:sword:`. By the time the text reaches
+the player it's an ordinary character, so other plugins can show it without
+knowing about RP Engine.
 
 <Callout type="tip" title="Rank Tags">
   For the badge in front of a player's name, a [rank tag](/rp-engine/rank-tags)
@@ -168,14 +170,8 @@ text that keeps being re-sent:
 - a plugin's own text, redrawn through [the API](/rp-engine/api).
 
 Anything sent once (chat, item names, signs, books, dialogs, `/rp say`) shows
-the first frame and stays on it.
-
-<Callout type="note" title="Why chat shows the first frame">
-  Nexo and Oraxen animate in the player's game by replacing its text shader.
-  A player can only have one text shader, and other packs (Studio's among
-  them) already use it, so whichever loaded last would break the other.
-  Choosing frames on the server can't clash with anything.
-</Callout>
+the first frame and stays on it. (Animating in the player's own game would mean
+replacing their text shader, which would clash with other packs that use it.)
 
 If frames are different widths, the text after the icon shifts as it plays. To
 avoid that, give every frame a pixel in the far right column (the faintest

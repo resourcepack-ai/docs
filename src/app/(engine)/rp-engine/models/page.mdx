@@ -7,12 +7,20 @@ export const metadata = {
 # Placing a model
 
 A placed model is furniture, decoration or a prop: a chair, a lamp, a statue.
-You give an item a `place:` block, and right-clicking a block with that item
-puts the model down in the world at its true size. It is drawn by a **display
-entity** (an invisible entity whose only job is to show a model), not a block
-and not an armour stand wearing a helmet.
+A player holds the item, right-clicks the ground, and the model appears there
+at its true size. Punching it picks it back up.
+
+You make one by giving an [item](/rp-engine/items) a `place:` block. The model
+is drawn by a **display entity** (an invisible entity whose only job is to show
+a model), not a block, so it can be any shape and there is no limit on how many
+kinds you have.
 
 ![Models you can place with RP Engine](/images/models.webp)
+
+## Making one
+
+Put the Blockbench project and a YAML file in your pack's folder inside
+`plugins/RPEngine/content/` (your [content folder](/rp-engine/content)):
 
 ```
 content/mypack/
@@ -41,20 +49,21 @@ chair:
   permission: mypack.chair
 ```
 
-`/rp give mypack:chair` gives you the item. Right-click the ground to place it,
-and punch it to take it back. Breaking it in creative mode gives nothing back.
+Run `/rp reload`, then `/rp give mypack:chair` to get the item. Right-click
+the ground to place it, and punch it to take it back. Breaking it in creative
+mode gives nothing back.
 
-The item and the placed model share one ID (`mypack:chair`), so there is no
-separate "placed" entry to keep in step with the item.
+The item and the placed model share one ID (`mypack:chair`). Every key under
+`place:` is optional: `place: {}` is a model that just stands there.
 
-## Size
+## How big it is
 
 A placed model is the size the Blockbench file says it is: 16 model units to
 the block, so a model built to y=32 stands two blocks tall. If a lamp looks a
 block tall when you built it three, check the cube coordinates in the model.
 `scale:` multiplies the size, for when you want the same model in two sizes.
 
-## Random turn and size
+## Making each copy a little different
 
 `random:` gives every copy a player puts down a turn and a size of its own, so
 decorations placed in a row don't all look the same. Needs RP Engine 0.2.57.
@@ -65,11 +74,11 @@ decorations placed in a row don't all look the same. Needs RP Engine 0.2.57.
 | `rotation-step` | Turns only in whole steps of this many degrees. `90` keeps a boxy piece on the grid, `45` gives eight ways. Leave it out for any angle |
 | `scale` | Two numbers, `[0.8, 1.2]` or `0.8-1.2`: a multiplier picked between them, on top of `scale:`. 0.1 to 10 |
 
-Each copy rolls once, when it's placed, and the result is stored with it, so a
-restart doesn't reshuffle anything and seats, states and growing use the turn
-and size it went down with. A plugin placing a model through
-`Models.place` gets exactly what it asked for, with nothing random. A model
-pushed from Studio can carry the same settings, set on its page.
+Each copy rolls once, when it's placed, and keeps that turn and size for good,
+through restarts too. The final size is kept between 0.125 and 8 times the
+model's own. A plugin placing a model through `Models.place` gets exactly what
+it asked for, with nothing random. A model sent from Studio can carry the same
+settings, set on its page there.
 
 ## Which way it faces
 
@@ -80,7 +89,7 @@ pushed from Studio can carry the same settings, set on its page.
 | `free` | Exactly the way you were looking |
 | `fixed` | Always the same way, for something with no front |
 
-## The hitbox
+## What players can hit and walk into
 
 The hitbox (what you can punch) is measured off the model, so a two-block
 statue can be hit anywhere you can see it. `width:` and `height:`, in blocks,
@@ -91,7 +100,7 @@ model. `solid: true` puts an invisible barrier block in the model's own block
 space and removes it when the model is broken. That suits a bench, not a rug.
 The barrier is one block, whatever shape the model is.
 
-## Vehicles
+## Whether vehicles drive through it
 
 `vehicle-collision` decides whether [vehicles](/rp-engine/vehicles) are stopped
 by the model. It is on by default and separate from `solid:`, which is about
@@ -156,12 +165,10 @@ Placing never replaces a block: the space has to be empty. Right-clicking a
 chest, door or other block you can use opens it as normal; sneak to place
 against it.
 
-## What is stored
+## After a restart, or when a model is removed from the pack
 
-A placed model is two entities saved with the chunk: a display for what you
-see and an interaction entity for what you can hit. Nothing is kept in a
-separate file or database, so a model survives a restart and moves with a
-world you copy.
+A placed model is saved with the chunk it stands in, not in a separate file, so
+it survives a restart and moves with a world you copy.
 
 If a pack stops declaring a model, everything already placed stays where it is
 with no art until the pack declares it again. `/rp models` lists the models

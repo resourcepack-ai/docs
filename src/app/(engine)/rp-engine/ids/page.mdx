@@ -6,8 +6,10 @@ export const metadata = {
 
 # IDs and namespaces
 
-Everything RP Engine holds has one ID, written like a Minecraft resource
-location (`namespace:path`):
+Everything RP Engine holds (an item, a sound, a model, a dialog) has one ID.
+You use it in commands (`/rp give mypack:ruby`), in other plugins' configs and
+in the API. It is written like a Minecraft resource location
+(`namespace:path`):
 
 ```
 mypack:ruby
@@ -45,8 +47,12 @@ Only the texture is yours to ship. The other two files are generated.
 
 ## Namespaces
 
-The namespace is the folder name under `content/`. There is nothing to
-declare or register.
+The namespace is the folder name under `content/`, and the path is the key
+in a definition file. `ruby:` in `content/mypack/items/gems.yml` is
+`mypack:ruby`. There is nothing to declare or register.
+
+Shader objects and dialogs from a Studio pack have the namespace `studio`, as
+in `/rp shader studio:my_hud`.
 
 Two packs collide only if they use the same folder name, and that is caught at
 load with both sources named.

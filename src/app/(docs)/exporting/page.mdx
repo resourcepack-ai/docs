@@ -1,36 +1,56 @@
 export const metadata = {
   title: "Exporting",
   description:
-    "The nine exports, what lands in each file, and how to install it.",
+    "Which export to pick, what lands in each file, and how to install it.",
 };
 
 # Exporting
 
-Exporting turns a pack into a file you can take somewhere else: a launcher, a
-server host, a friend, or a server plugin that builds packs of its own. You
-don't need to export to test a pack; [Sync](/testing/plugin) pushes it to you
-directly.
+Exporting turns your pack into a file you can install, upload to a server, or
+hand to a friend. You don't need to export to test a pack: **Sync** sends it
+straight to your game (see the [Quickstart](/quickstart)).
 
-Open a pack and press **Export**, or right-click its card and choose
-**Export**. Every file is built on the spot from what's in the pack right now.
+## Which export do I need?
 
-## What you can export
+There are several **export targets**, one for each place a pack can go. Pick
+by where it's going:
+
+| You want to | Choose |
+| --- | --- |
+| Use it in your own Java game, or send it to every player from `server.properties` | **Minecraft: Java Edition** |
+| Use it in a Bedrock world or Realm | **Minecraft: Bedrock Edition** |
+| Give it to Bedrock players on a Java server running Geyser (without RP Engine) | **Bedrock players on a Java server** |
+| Use your Dialogs without RP Engine | **Dialogs (minecraft:dialog)** |
+| Add it to a server running ItemsAdder, Nexo, Oraxen, CraftEngine or Model Engine | That plugin's name, on the **Plugin Support** tab |
+
+Running [RP Engine](/testing/plugin), our plugin? You don't need any of these
+for your server: [Distribution](/distribution) sends the pack to your players
+for you.
+
+## Exporting a pack
+
+Open the pack and press **Export** (or right-click its card and choose
+**Export**), then pick a target. The file is built on the spot from what's in
+the pack right now, and downloads.
+
+## All the targets
 
 The Export dialog has two tabs.
 
-**Default Pack** is for files you install or serve yourself, with no plugins
-involved:
+**Default Pack** is for files you install or serve yourself, with no other
+plugins involved:
 
 | Export | File | Use it for |
 | --- | --- | --- |
 | **Minecraft: Java Edition** | `.zip` | The ordinary resource pack. Goes in `resourcepacks`, or on a server |
 | **Minecraft: Bedrock Edition** | `.mcpack` | The Bedrock version, converted. Open it on any Bedrock device to import it |
-| **Bedrock players on a Java server** | `.zip` | The `.mcpack` plus Geyser's item mappings, for a server running Geyser without RP Engine |
-| **Dialogs (minecraft:dialog)** | `.zip` | Your dialogs as a vanilla datapack |
+| **Bedrock players on a Java server** | `.zip` | The `.mcpack` plus the item list Geyser needs, for a server running Geyser without RP Engine |
+| **Dialogs (minecraft:dialog)** | `.zip` | Your Dialogs as a vanilla datapack |
 
-**Plugin Support** is for servers running another content plugin. These are not
-resource packs: the plugin builds the pack itself, and the export is the
-content it builds from.
+**Plugin Support** is for servers running another plugin that makes custom
+items and builds its own resource pack. What you get isn't a resource pack:
+it's your content in that plugin's format, and the plugin builds the pack from
+it.
 
 | Export | File | Use it for |
 | --- | --- | --- |
@@ -45,10 +65,10 @@ that couldn't be carried over and why, and any model left out because it
 hadn't finished generating.
 
 <Callout type="warning" title="Animations need RP Engine">
-  In the Java `.zip`, a model's animations are stored in fields vanilla
-  ignores, so the model shows but stands still. Playing them needs
-  [RP Engine](/testing/plugin) on the server. Bedrock has keyframe animation
-  of its own, so the `.mcpack` converts them into the real thing.
+  In the Java `.zip`, a model shows but stands still: vanilla Minecraft can't
+  play model animations. Playing them needs [RP Engine](/testing/plugin) on
+  the server. Bedrock can play animations itself, so the `.mcpack` keeps
+  them.
 </Callout>
 
 ## Installing the Java pack
@@ -67,41 +87,30 @@ Resource Packs**:
 ~/.minecraft/resourcepacks
 ```
 
-To send it to everyone on a server, host the file and set `resource-pack` (and
-its SHA-1) in `server.properties`. That needs nothing of ours installed. Apart
-from animations, nothing in an exported file depends on us: it keeps working if
-you never open Studio again.
+To send it to everyone on a server, upload the file somewhere players can
+download it and set `resource-pack` (its link) and `resource-pack-sha1` in
+`server.properties`. That needs nothing of ours installed, and the file keeps
+working if you never open Studio again.
 
 ## Bedrock
 
-Bedrock is a different game with a different pack format, so the `.mcpack` is
-a conversion rather than a copy.
+Bedrock uses a different pack format, so the `.mcpack` is a conversion. Open
+it on any Bedrock device and it imports itself; then turn it on under the
+world's **Resource Packs**.
 
-| Asset | On Bedrock |
-| --- | --- |
-| Models | Bedrock entities, with animations as native keyframes |
-| Block and item reskins | Under Bedrock's own texture names |
-| Custom items | Their sprite, or the model's icon |
-| Sounds | Under your event names |
-| Armour | The same sheets, under Bedrock's names |
-| 3D armour | Drawn on the body when worn on a server running RP Engine |
-| Icons | Drawn into Bedrock's glyph sheets |
-
-Custom items, models and 3D armour need a server. With
-[RP Engine and Geyser](/rp-engine/bedrock) everything in the table works; with
-Geyser alone, the **Bedrock players on a Java server** export adds the mappings
-Geyser needs for your custom items. Installed in a Bedrock world on its own, a
-`.mcpack` shows the reskins, sounds, armour and icons. See
-[Bedrock and Geyser](/bedrock) for the three routes side by side.
-
-These don't exist on Bedrock and are left out: GUI screens, the HUD, shaders,
-dialogs, emotes, vehicles, models placed as blocks, per-face block textures and
-item variants.
+In a world on its own, a `.mcpack` shows your Block and Item reskins, Sounds,
+Armor and Icons. Custom items, models and 3D Armor need a server: a Java
+server running Geyser (with RP Engine for all of it, or with the **Bedrock
+players on a Java server** export for custom items). GUI screens, the HUD,
+Shaders, Dialogs, Emotes and Vehicles don't exist on Bedrock and are left out.
+[Bedrock and Geyser](/bedrock) has the full list and the steps for each
+route.
 
 ## Dialogs as a datapack
 
-A [dialog](/dialogs) is datapack data, which a resource pack can't carry, so it
-has an export of its own:
+A [Dialog](/dialogs) is a menu screen with real buttons. Minecraft keeps
+Dialogs in a datapack (a world's data folder), not a resource pack, so they
+have an export of their own:
 
 ```
 pack.mcmeta
@@ -113,21 +122,22 @@ Put the zip in your world's `datapacks` folder and **restart the server**
 (`/reload` isn't enough, because dialogs are loaded with the world). Then open
 one with `/dialog show @s studio:<id>`. Dialogs need Minecraft 1.21.6 or newer.
 
-Everything drawn inside a dialog is pictures in the Java pack, so players also
-need the Java pack from the same export, or the screen is blank. If you keep a
+The pictures inside a Dialog are in the Java pack, so players also need the
+Java pack exported at the same time, or the screen is blank. If you keep a
 resource pack of your own, the dialog editor's **JSON › minecraft:dialog ›
 Resource pack (.zip)** downloads just that dialog's pictures and fonts; see
 [Dialogs › Without RP Engine](/dialogs#without-rp-engine).
 
-On a server without RP Engine, the parts that change per player stay inert:
+On a server without RP Engine, the parts that change per player don't work:
 `{placeholders}` show as typed, settings switches stay on their default, live
 heads, inventory slots and bars are empty, and `/rp` clicks do nothing. The
 editor's **JSON › minecraft:dialog** view lists which of those a dialog uses.
 
 ## Model Engine and BetterModel
 
-Your models as Blockbench blueprints, one `.bbmodel` per model, with every
-texture (vanilla ones included) embedded in the file.
+Model Engine and BetterModel are server plugins for animated models. This
+export gives them your 3D Models as Blockbench files, one `.bbmodel` per
+model, with every texture it uses packed inside.
 
 ```
 blueprints/
@@ -161,8 +171,8 @@ What to expect:
 
 - **Models only.** Block textures, item sprites, GUIs and icons belong in the
   Java zip or one of the other plugin exports.
-- **Bones are flat.** No bone sits inside another. A model with no bones gets
-  one `root` bone.
+- **Bones keep their tree.** A child bone sits inside its parent, so it moves
+  with it. A model with no bones gets one `root` bone.
 - **A `hitbox` bone is added**, sized to the model. Redraw it in Blockbench for
   a different collision box. Mount and seat bones (`mount`, `p_*`) are not
   written.
@@ -180,8 +190,9 @@ there is what Model Engine renders.
 
 ## ItemsAdder
 
-ItemsAdder builds and serves the pack itself, so this export is your pack as
-ready-made ItemsAdder content, config written for you.
+ItemsAdder is a server plugin for custom items, blocks and furniture. It
+builds and sends its own resource pack, so this export is your pack as
+ready-made ItemsAdder content, with the config written for you.
 
 ```
 contents/<your-pack>/
@@ -278,7 +289,7 @@ Unzip it straight into `plugins/`, then:
 | GUI overlay | A glyph, with its title string (such as `<shift:-48><glyph:my_pack_gui_shop>`) in the `README.txt` |
 | Pause-menu buttons | The redrawn buttons |
 | Sounds | Merged in under your event names |
-| Block, item, armour or GUI reskin | A vanilla file replacement |
+| Block, Item, Armor or GUI reskin | A vanilla file replacement |
 | Dialog | A datapack folder |
 
 Both plugins merge fonts, `sounds.json` and language files, so the export sits
@@ -292,7 +303,7 @@ apply to every player: delete any you don't want from the pack folder's
 
 Some things only RP Engine can draw while the game runs, so they can't be
 expressed in these plugins' config. The `README.txt` names each one your pack
-has: shader objects, 3D armour, model animations (models place as still
+has: shader objects, 3D Armor, model animations (models place as still
 furniture), driving (vehicles are furniture you sit in) and dialog settings
 switches (they open, but only RP Engine remembers a choice).
 

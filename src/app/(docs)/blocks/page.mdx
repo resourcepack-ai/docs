@@ -6,15 +6,16 @@ export const metadata = {
 
 # Blocks
 
-A block texture changes how a vanilla block looks. You pick the block it
+A Block is a new texture for one of Minecraft's blocks. You pick the block it
 replaces (stone, oak planks, diamond ore) and every copy of that block in the
-world shows your art instead.
+world shows your art instead. It's the simplest thing to make, and a good
+first asset.
 
 ![Block textures made in Studio, shown on blocks](/images/blocks.webp)
 
 A resource pack can only change how existing blocks look. It can't add a new
 kind of block. If you want something with its own shape, make a
-[model](/models) instead.
+[3D Model](/models) instead.
 
 ## Making one
 
@@ -38,21 +39,66 @@ model are made from inside the model editor instead, and replace nothing.
 | --- | --- |
 | **16×16** | Vanilla's own resolution, and the default. Sits naturally next to vanilla blocks |
 | **32×32**, **64×64** | "HD" packs. More room for detail, and four or sixteen times the pixels to finish |
-| **Custom** | Any square size, up to 256 when drawing from blank |
+| **Custom** | Any square size: 16 to 128 when generating, up to 256 when drawing from blank |
 
 <Callout type="note" title="Generated blocks are drawn at 16×16">
-  The AI always paints a block at 16×16, vanilla's resolution. If you pick a
-  bigger size, that drawing is scaled up without blurring, so it looks the same
-  in game. Use the extra pixels to add detail by hand.
+  The AI always paints a block at 16×16. At a bigger size that drawing is
+  scaled up without blurring, and the extra pixels are yours to add detail by
+  hand.
 </Callout>
 
 Once you have a draft, the block's page has **Regenerate** (same prompt, new
 attempt) and **Edit with AI** (describe one change, keep the rest).
 
+## Seeing it in game
+
+The fastest way is **Sync**: on a server running [RP Engine](/testing/plugin)
+(our free plugin, and [our test server](/testing/test-server) has it), Sync
+sends the pack straight to you in game, and every copy of that block changes
+at once. **Give in-game** on the block's page hands you some to place.
+
+Without a plugin, [export](/exporting) the pack as a `.zip` and add it to
+Minecraft like any resource pack.
+
+Blocks are worth judging in the world rather than in the editor: a texture that
+looks great zoomed in can turn into noise in a wall of itself.
+
+<Callout type="tip">
+  On [our test server](/testing/test-server), `/floor <block>`, `/time` and
+  `/weather` change what your block sits against. Try it on grass, on white
+  concrete and at night.
+</Callout>
+
+## Giving each side its own texture
+
+A full-cube block doesn't have to look the same on every side. On the block's
+page, the **Faces** card shows each face, and each can have its own texture.
+Click a face to generate it, edit it, or reset it to the base texture.
+
+Blocks that vanilla already textures in parts (logs, sandstone, deepslate)
+show their own parts instead, such as **Top**, **Bottom** and **Sides**.
+Blocks that aren't simple cubes (stairs, flowers, doors) don't have a Faces
+card; retexture them as a single texture.
+
+**Edit** on a block opens the block editor: a **Block** tab with the block in
+3D, plus one tab per face. On the Block tab you paint directly on the cube
+(drag to paint, drag empty space to orbit). Double-click a face, or click its
+tab, to open it in the pixel editor. A face's menu has **Apply to all faces**,
+which copies it onto every side. The block editor saves as you go.
+
+<Callout type="warning" title="Some blocks rotate randomly when placed">
+  Stone, dirt, sand, netherrack and a few other natural blocks are given a
+  random rotation each time they're placed, to hide repetition. Their top and
+  bottom are safe, but a distinct north, south, east or west face points a
+  different way on each block. Building blocks (planks, wool, concrete,
+  bricks) don't rotate.
+</Callout>
+
 ## The pixel editor
 
-The pixel editor opens full screen from a block, and from the model editor
-when you want to paint a face properly.
+The pixel editor is where you finish a texture by hand. It opens full screen
+when you edit a block's texture, and from the model editor when you want to
+paint a face properly. Items, Icons and HUDs use it too.
 
 ### Tools
 
@@ -98,47 +144,7 @@ layer above it, so you can always go back.
 
 The editor saves when you press **Save**. **Export PNG** downloads the image.
 
-## Per-face blocks
-
-A full-cube block doesn't have to look the same on every side. On the block's
-page, the **Faces** card shows each face, and each can have its own texture.
-Click a face to generate it, edit it, or reset it to the base texture.
-
-Blocks that vanilla already textures in parts (logs, sandstone, deepslate)
-show their own parts instead, such as **Top**, **Bottom** and **Sides**.
-Blocks that aren't simple cubes (stairs, flowers, doors) don't have a Faces
-card; retexture them as a single texture.
-
-**Edit** on a block opens the block editor: a **Block** tab with the block in
-3D, plus one tab per face. On the Block tab you paint directly on the cube
-(drag to paint, drag empty space to orbit). Double-click a face, or click its
-tab, to open it in the pixel editor. A face's menu has **Apply to all faces**,
-which copies it onto every side. The block editor saves as you go.
-
-<Callout type="warning" title="Some blocks rotate randomly when placed">
-  Stone, dirt, sand, netherrack and a few other natural blocks are given a
-  random rotation each time they're placed, to hide repetition. Their top and
-  bottom are safe, but a distinct north, south, east or west face points a
-  different way on each block. Building blocks (planks, wool, concrete,
-  bricks) don't rotate.
-</Callout>
-
-## Seeing it in game
-
-[Sync](/testing/plugin) the pack to a linked player and every copy of that
-block changes at once. **Give in-game** on the block's page hands you some to
-place.
-
-Blocks are worth judging in the world rather than in the editor: a texture that
-looks great zoomed in can turn into noise in a wall of itself.
-
-<Callout type="tip">
-  On [our test server](/testing/test-server), `/floor <block>`, `/time` and
-  `/weather` change what your block sits against. Try it on grass, on white
-  concrete and at night.
-</Callout>
-
-## Exporting
+## What's in the exported pack
 
 In the exported `.zip`, a block texture is a PNG at
 `assets/minecraft/textures/block/<name>.png`, named after the vanilla block it

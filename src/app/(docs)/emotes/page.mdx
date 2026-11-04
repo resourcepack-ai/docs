@@ -6,23 +6,23 @@ export const metadata = {
 
 # Emotes
 
-An emote is an animation played on a player, in their own skin: a wave, a
+An Emote is an animation played on a player, in their own skin: a wave, a
 dance, a handshake, a bench press. You make it once in Studio and every player
-on your server can play it with `/emote <name>`.
+on your server can play it with `/emote <name>`. A **movement group** goes
+further and replaces how a player walks, runs and stands while they wear it.
 
 ![Players doing emotes: a wave, a cheer, a dance and a point](/images/emotes.webp)
 
-Emotes need [RP Engine](/rp-engine) on the server. They don't exist in a plain
-resource pack, and they aren't in a Bedrock `.mcpack`.
+Emotes need the [RP Engine](/rp-engine) plugin on your server. A plain
+resource pack can't play them, and they aren't in a Bedrock `.mcpack`.
 
 ## Making one
 
 Open a pack, press **Add asset** and pick **Emote**. There are two ways in:
 
 - **Generate**: describe the motion and the AI animates it. It costs 25
-  credits and takes one to five minutes. An emote carrying models the AI has to
-  rig first can cost more, once: the bones it adds are saved on the model and
-  reused next time.
+  credits and takes one to five minutes. An emote that uses one of your models
+  (a chair, a sword) can cost more the first time, while that model is rigged.
 - **Blank**: opens the editor with nothing on the timeline, to key by hand.
 
 When generating, describe the movement, not the character:
@@ -36,8 +36,9 @@ When generating, describe the movement, not the character:
 | **Playback** | **Play once** holds the last frame at the end. **Loop** repeats until the player moves or runs `/emote stop` |
 | **Models** | Up to 4 of this pack's models for the emote to use: a chair to sit on, a sword to swing. Mention them in the description |
 
-Add models here rather than afterwards if the emote should use them. The AI
-animates around what it can see; a model added later just stands there.
+Add models here rather than afterwards if the emote should use them: the AI
+only animates around what it can see, so a model added later just stands
+there.
 
 A pack holds up to 64 emotes.
 
@@ -108,8 +109,8 @@ armour stomp, a strut, a zombie shuffle. It holds one emote per movement state:
 | **Crouching while moving** | Sneak-walking |
 | **Jumping** | Off the ground, jumping or falling |
 
-A state left empty uses the player's own vanilla animation. That's a real
-choice, not a gap: many sets look best with only a walk and an idle.
+A state left empty uses the player's normal animation. Many sets look best
+with only a walk and an idle.
 
 To make one, press **Add asset**, pick **Emote**, then **Group** (groups are
 made blank, since they're built from emotes). Name the group, then for each
@@ -123,7 +124,7 @@ jump and fight.
 **Draw walk cycles at Minecraft's normal pace.** In game a walk, sprint or
 crouch-walk cycle is driven by how far the player moves, not by time, so the
 feet don't slide on ice, soul sand or with a speed potion. Draw each one for
-the speed below and it plays as drawn:
+the normal speed below and it plays as drawn:
 
 | State | Draw it for |
 | --- | --- |
@@ -154,7 +155,9 @@ other players in it, since they're held in place around the lead.
   </Step>
   <Step title="Sync">
     Press **Sync** in the pack or the emote editor, and run the
-    `/rp sync <code>` it shows in game. The emotes arrive with the pack.
+    `/rp sync <code>` it shows in game. That sends the pack, emotes included,
+    to you on that server. For every player, serve the pack with
+    [Distribution](/distribution).
   </Step>
   <Step title="Play it">
     `/emote <name>`, or `/emote` and Tab to list them. Each emote's card on the
@@ -162,9 +165,9 @@ other players in it, since they're held in place around the lead.
   </Step>
 </Steps>
 
-A player needs a rig of their own in the pack before they can emote. RP Engine
-makes these automatically from each player's skin, and someone who joined
-after the last push may need another push first.
+A player needs a rig (a copy of the emote built from their own skin) in the
+pack before they can emote. RP Engine makes these automatically. If someone
+who joined after the last sync can't emote, sync again.
 
 Hand-written emote files, permissions, what stops an emote and the server's
 settings are all on [Emotes in RP Engine](/rp-engine/emotes).

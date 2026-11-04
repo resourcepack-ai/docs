@@ -20,11 +20,23 @@ all skateable.
 ## Installing
 
 Drop `RPE-skateboards.jar` in `plugins/` beside `RPEngine.jar` and start the
-server. Its content (the board's model, textures, item, vehicle definition
-and rider animations, and every skatepark piece) installs itself into
-`plugins/RPEngine/content/skateboards/` on first boot, and the engine reloads
-once to pick it up. That folder is yours: edit anything in it, and a new
-version of the plugin overwrites only its own files.
+server. The board, its animations and every skatepark piece install
+themselves into `plugins/RPEngine/content/skateboards/` (RP Engine's content
+folder, which the engine builds its resource pack from), and the engine
+reloads once to pick them up. That folder is yours to edit.
+
+## Getting a board
+
+`/skateboard` gives you a board. Right-click the ground to set it down, then
+right-click it to get on. Sneak and right-click a board to pick it back up.
+
+| Command | What it does |
+|---|---|
+| `/skateboard` | Gives you a board |
+| `/skateboard controls` | Lists the keys in chat |
+| `/skateboard stance left\|right` | Which foot you lead with |
+| `/skateboard here` | Puts a board down where you stand, no item needed (staff) |
+| `/skateboard reload` | Rereads `config.yml` |
 
 ## Riding
 
@@ -40,9 +52,9 @@ version of the plugin overwrites only its own files.
 
 Two more worth knowing:
 
-- **Stance.** `/skateboard stance left|right` names the foot you lead with. It
-  is remembered per player and for every board you ever step on, and a
-  right-footed rider gets the mirrored copy of every animation.
+- **Stance.** `/skateboard stance left|right` sets the foot you lead with. It
+  is remembered for you on every board, and a right-footed rider gets mirrored
+  animations.
 - **Bailing.** Land a long way round from the way you are travelling and you
   come off. Straight is fine, and so is straight backwards: that is a fakie,
   not a fall. You take half a heart.
@@ -53,10 +65,9 @@ Two more worth knowing:
 `/skatepark all` gives you the lot. Right-click the ground to place one, punch
 it to take it back.
 
-Every piece is a placed model with vehicle collision on, so a board rolls up
-a ramp's face and grinds along the top of a box. Slabs and platforms to build the ground, banks, quarter
-pipes and a wall ride to launch off, boxes, ledges and rails to grind, and the
-park furniture round the edges.
+There are slabs and platforms for the ground, banks, quarter pipes and a wall
+ride to launch off, boxes, ledges and rails to grind, and park furniture.
+A board rolls up every ramp and grinds along every box.
 
 ## Permissions
 
@@ -70,20 +81,15 @@ park furniture round the edges.
 | `skateboards.park` | `/skatepark` and its pieces | Operators |
 | `skateboards.reload` | `/skateboard reload` | Operators |
 
-Everybody else puts a board down with the item. `/skateboard here` makes one
-from nothing, so it is for staff, and it has a cooldown and a cap on how many
-boards a player can have standing at once (`spawn-limits` in the config).
-Every way of putting a board down, the item included, respects protection: a
-WorldGuard region with `rpengine-place` denied, or anything else that keeps
-models out of a place, keeps boards out too. Sneak and right-click a board to
-pick it up; only the player who put it down can, unless they have
-`skateboards.pickup.others`.
+`/skateboard here` has a cooldown and a cap on how many boards a player can
+have standing at once (`spawn-limits` in the config). Every way of putting a
+board down respects protection: a WorldGuard region with `rpengine-place`
+denied keeps boards out too. Only the player who put a board down can pick it
+up, unless they have `skateboards.pickup.others`.
 
-`skateboards.use` and `skateboards.ride` are separate because a board left in
-a public square is one anybody can right-click. Revoke `ride` and a player can
-still put a board down for somebody else; revoke `use` and they cannot get one
-at all. Negate both in LuckPerms (or your permissions plugin) to turn the addon
-off for a group without uninstalling it.
+Revoke `skateboards.ride` and a player can still hand out boards but not ride
+one; revoke `skateboards.use` and they cannot get one. Negate both to turn the
+addon off for a group.
 
 `skateboards.update` (operators) is told when a newer version is out, if
 `update-check` is on.

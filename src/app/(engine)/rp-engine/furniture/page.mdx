@@ -6,8 +6,11 @@ export const metadata = {
 
 # Working furniture
 
-A [placed model](/rp-engine/models) can do more than stand there. Five keys in
-its `place:` block make it a working piece:
+A [placed model](/rp-engine/models) (furniture or decoration put down from an
+item) can do more than stand there. It can be a cabinet you fill, a gramophone
+that plays discs, a lamp a click switches on, a sofa that joins the pieces
+beside it, or a sapling that grows. Each is one key in the item's `place:`
+block, and a piece can have several:
 
 ![Furniture models: a stool, a sofa, a desk setup and a drum kit](/images/furniture.webp)
 
@@ -89,7 +92,8 @@ gramophone:
       playing-model: mypack:gramophone_on   # what it looks like while a disc is in it
 ```
 
-`jukebox: true` is one with every default. Right-click it holding a music disc
+`jukebox: true` is one with every default. A piece can't be a jukebox and a
+container at once: the container takes the click, and the load warns you. Right-click it holding a music disc
 to put the disc in (it leaves your hand unless you are in creative) and the
 record plays at the piece. Right-click again and the disc pops out and the
 music stops for everyone. Breaking the piece also gives the disc back.

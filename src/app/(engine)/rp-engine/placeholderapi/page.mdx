@@ -6,11 +6,16 @@ export const metadata = {
 
 # PlaceholderAPI
 
-PlaceholderAPI lets scoreboards, chat formats, holograms and menu plugins
-print live values. With PlaceholderAPI installed, RP Engine adds placeholders
-for what a player is holding, which bundle they have, how much content the
-server has, and more. There is nothing to enable and no expansion to
-download.
+[PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) lets
+scoreboards, chat formats, holograms and menu plugins print live values. It
+works both ways with RP Engine:
+
+- RP Engine **adds** `%rpengine_...%` placeholders, listed below, for what a
+  player is holding, which bundle they have, how much content the server has,
+  and more. There is nothing to enable and no expansion to download.
+- RP Engine's own [HUDs](/rp-engine/hud) and [Dialogs](/rp-engine/dialogs)
+  **show** any PlaceholderAPI placeholder, from any plugin. See
+  [Other plugins' placeholders](#other-plugins-placeholders).
 
 Yes/no answers are `true` or `false`.
 
@@ -72,6 +77,15 @@ list or hologram asks again each time it redraws, and each answer is the next
 frame, so the icon moves as fast as that plugin refreshes. It works for the
 console and offline players too. See
 [Animated icons](/rp-engine/icons#animated-icons).
+
+## Other plugins' placeholders
+
+With PlaceholderAPI installed, a HUD or Dialog can print any placeholder it
+knows, written either way: `{vault_eco_balance}` or `%vault_eco_balance%`.
+Placeholders with arguments work too, such as `%server_time_HH:mm%` or
+`%statistic_{player_name}%`, as long as there is no space in them. They are
+filled in for the player looking at the screen. Arguments need RP Engine
+0.2.48 or newer.
 
 ## Good to know
 

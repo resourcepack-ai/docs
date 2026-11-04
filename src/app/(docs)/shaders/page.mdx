@@ -1,183 +1,136 @@
 export const metadata = {
   title: "Shaders",
   description:
-    "Custom HUD overlays you draw and place anywhere on screen, 3D objects in the world that no block model can be, and Text Effects that make text wave, burn or shine.",
+    "Custom HUD overlays you draw and place anywhere on screen, and 3D objects in the world that no block model can be.",
 };
 
 # Shaders
 
-A shader asset is drawn by a small program in your resource pack rather than
-by a flat picture. Shaders come in two kinds, picked with the **2D / 3D**
-switch on the Shader tab:
+A Shader is part of your resource pack that the player's graphics card draws,
+instead of a flat picture. Studio makes two kinds:
 
 ![Shader objects made in Studio: a black hole, a ringed planet, a galaxy in a globe and a fireball](/images/shaders.webp "plain")
 
-- **2D: shapes over the screen (HUD-style).** Most of this page.
-- **3D: objects in the world.** A black hole, a soap bubble, a ball of fire:
-  things a block model can't be. See [3D objects](#3d-objects).
+- **2D: a piece of HUD you design.** A health bar in the corner, a nameplate at
+  the top of the screen, a badge beside the hotbar. It can show live values
+  such as the player's health. Needs [RP Engine](/rp-engine) on the server.
+- **3D: an object in the world.** A black hole, a soap bubble, a ball of fire:
+  things a block model can't be. Works with a plain `/summon` command, no
+  plugin needed. See [3D objects](#3d-objects).
 
-Two more live beside them, with tabs of their own in **Add asset** and pages of
-their own here: [Text Effects](/text-effects), which make text wave, burn or
-shine, and [VFX](/vfx), spell effects drawn in the world.
+Studio calls each one a **shader object**. Two related kinds have their own
+pages: [Text Effects](/text-effects) make text wave, burn or shine, and
+[VFX](/vfx) are spell effects in the world.
 
-A 2D shader object is a piece of HUD you design yourself: a health bar in the
-corner, a nameplate at the top of the screen, a badge beside the hotbar. You
-draw it, place it anywhere on screen, and it stays put at every window size and
-GUI scale.
+## Making a 2D shader object
 
-Some of it can **change while people play**. A label can read `{health}`, a bar
-can fill as a value rises and falls, and a player head shows the face of
-whoever is looking at it.
+1. Open a pack, press **Add asset**, pick the **Shader** tab and leave the
+   switch on **2D**.
+2. Press **Blank** to build it yourself, or **Generate** and describe it (10
+   credits), for example "health, hunger and level in the bottom left". A
+   generated one is made of ordinary pieces you can keep editing.
+3. Draw and place it in the editor (below).
+4. Press **Sync** and run the `/rp sync <code>` it shows in game. Sync sends
+   the pack straight to you on your server and puts the object on your screen.
+5. Decide when players see it: see [Showing it in game](#showing-it-in-game).
 
 <Callout type="warning" title="A 2D shader object needs RP Engine">
-  The art is in your resource pack, but something on the server has to put it
-  on a player's screen and fill in the live values. That is [RP
-  Engine](/rp-engine). Without it the pack loads and nothing appears.
+  The art is in your resource pack, but the server has to put it on each
+  player's screen and fill in the live values. That is [RP Engine](/rp-engine).
+  Without it the pack loads and nothing appears.
 </Callout>
-
-## How it works
-
-A server can't draw a picture on somebody's screen. What it can do is send a
-line of text to the **action bar** or the **boss bar**, and a resource pack can
-make a character in a font look like anything.
-
-So your object ships as special characters in the pack's font. RP Engine sends
-them to the action bar or boss bar, and a custom text shader in the pack spots
-them by their exact colour and moves them to wherever you placed the object.
-Everything else the game draws as text is left alone.
-
-That is also where the limits come from, and they are covered in
-[Limits](#limits) below.
-
-## Making one
-
-Open a pack, press **Add asset** and pick the **Shader** tab.
-
-- **Blank** gives you an empty object to build yourself.
-- **Generate** lays one out from a description, such as "health, hunger and
-  level in the bottom left". What comes back is ordinary elements you can keep
-  editing, not a flat picture.
 
 ## The editor
 
 It is laid out like the GUI editor: tools down the left, the **Elements** list
 beside them, the canvas in the middle, and settings on the right.
 
-### What an object is made of
+### What you can put in it
 
-Everything sits in the Elements list under **Canvas**, and the top of the list
-is drawn on top. There are three kinds of thing, and the game always draws them
-in the same order:
+Everything sits in the Elements list under **Canvas**. Whatever is higher in
+the list is drawn on top. Use the arrows on a row to move it.
 
-1. **Components**, on top: labels, player heads, progress bars and pictures.
-   These are placed and edited as objects, and the first three can change live.
-2. **Paint**, in the middle: freehand pixels on layers, drawn with the tools on
-   the left.
-3. **Shapes**, at the bottom: rectangles, circles, triangles and polygons,
-   drawn as smooth maths so they stay crisp at any GUI scale.
+- **Components**: labels, player heads, progress bars and pictures. The first
+  three can change while people play.
+- **Paint**: freehand pixels on layers.
+- **Shapes**: rectangles, circles, triangles and polygons, drawn as smooth
+  maths so they stay crisp at any GUI scale.
 
-Use the arrows on a row to move it up or down. Each kind moves within its own
-group: components among components, paint layers among paint layers, shapes
-among shapes. An arrow at the edge of a group is greyed out, because the game
-always draws shapes, then paint, then components.
-
-### Painting
-
-Pick a brush on the left (pencil, eraser, fill, colour picker, line,
-rectangle, ellipse or pixel text) and draw on the canvas. It draws on the paint
-layer selected in the list, and if there are none, picking a brush makes one.
-
-Paint layers can be hidden, renamed (double-click), reordered, duplicated,
-merged down, cleared or deleted. With the **Select** tool, dragging on paint
-picks up that layer and moves it.
-
-Pixel text stamped with the brush is ordinary pixels. For text that changes in
-game, add a **Label** instead.
+Add components and shapes with the **+** beside Elements.
 
 ### Components
 
-Add them with the **+** button beside Elements.
+| Component | What it is |
+| --- | --- |
+| **Label** | A line of Minecraft text. It can include [live values](#live-values) like `{player}` or `{health}` |
+| **Player head** | The face of the player looking at it. In the editor, and in an exported or distributed pack, it is Steve. A pack sent with **Sync** shows the real faces of the players it was sent to |
+| **Progress bar** | Fills from a live value, solid or in segments. It can change colour as the value passes thresholds you set, and **Glow** gives it a soft halo (leave room round it: the glow stops at the canvas edge) |
+| **Picture** | An image you upload or have drawn. Pictures are shared across the pack, so one upload can be used by any number of objects |
 
-- **Label**: a line of Minecraft text. It can contain
-  [placeholders](#live-values) like `{player}` or `{health}`.
-- **Player head**: the face of the player looking at it. In the editor, and in
-  any exported or distributed pack, it is Steve. A pack sent with **Sync** bakes
-  in the real faces of the players it is sent to.
-- **Progress bar**: fills from a live value, either solid or in segments, and
-  can change colour as the value passes thresholds you set. Tick **Glow** to
-  give it a soft halo in any colour; like a shape, the glow stops at the
-  canvas edge, so leave room around the bar.
-- **Picture**: an image you upload or have drawn, placed and sized like
-  everything else. Pictures are shared across the pack, so one upload can be
-  used by any number of objects.
+Drag components to move them, or nudge the selected one with the arrow keys
+(hold Shift for 10 pixels).
 
-Drag components on the canvas to move them, or nudge the selected one with the
-arrow keys (hold Shift for 10 pixels).
+### Paint
+
+Pick a brush on the left (pencil, eraser, fill, colour picker, line,
+rectangle, ellipse or pixel text) and draw. It draws on the paint layer
+selected in the list, and picking a brush makes one if there are none. Layers
+can be hidden, renamed (double-click), duplicated, merged down, cleared or
+deleted. With the **Select** tool, dragging on paint moves that layer.
+
+Paint is pixel art, one pixel per GUI pixel, so it looks blocky on a large
+canvas where shapes stay smooth. Pixel text is ordinary pixels: for text that
+changes in game, use a **Label**.
 
 ### Shapes
 
 **Rectangle**, **Circle**, **Triangle** and **Polygon**. A rectangle's
 **Corners** setting rounds it, and a circle's **Outline** setting turns it into
-a ring. Drag the handles on the canvas to resize.
+a ring. Drag the handles to resize.
 
-Shapes combine with each other. **Add** draws on top, **Cut** removes a shape
-from what is beneath it, **Keep overlap** keeps only where both exist, and
-**Blend** joins two shapes with a smooth curve. Because a Cut removes what is
-*beneath* it, moving a shape up or down changes what gets cut.
+Shapes combine with the shapes directly below them in the list: **Add** draws
+on top, **Cut** removes itself from them, **Keep overlap** keeps only where
+both exist, and **Blend** joins them with a smooth curve.
 
-### The canvas
+### The canvas: size and place on screen
 
-Select **Canvas** in the list to set the object's size, where it goes on screen
-and what shows it.
+Select **Canvas** in the list.
 
 - **Size**: up to 1024 by 1024, in steps of 8. Paint and shapes are clipped to
-  the canvas; labels, heads and bars are not, and can sit outside it. Shrinking
-  the canvas hides paint outside it rather than deleting it.
+  the canvas; labels, heads and bars can sit outside it.
 - **Where on screen**: snap it to a corner, an edge or the middle, then nudge it
-  by pixels. Snapping follows the player's window and GUI scale, so a corner
-  stays a corner on every screen. **Reposition on screen** lets you drag it
-  around a full game screen instead.
-- **Action bar or boss bar**: which of the two the object is sent through. The
-  action bar fades after a few seconds, so RP Engine keeps re-sending it. The
-  boss bar stays until it is hidden, and shows and hides instantly.
+  by pixels. A corner stays a corner at every window size and GUI scale.
+  **Reposition on screen** lets you drag it around a full game screen.
+- **Action bar or boss bar**: which of the two the object travels through. The
+  action bar fades, so RP Engine keeps re-sending it. The boss bar shows and
+  hides instantly.
 
-**Preview**, in the header, shows the object on a game screen at the size it
-will really be.
+**Preview**, in the header, shows the object on a game screen at its real size.
 
-### Full screen
+### Covering the whole screen
 
-A canvas has a fixed size, but a player's screen doesn't: at the default GUI
-scale a 1080p monitor is 480 by 270 GUI pixels, and at GUI scale 1 it is 1920
-by 1080. For something that should cover the whole screen, like a tint, a
-vignette, a frame around the edges or a HUD with a piece in every corner, tick
-**Fill the whole screen** on the Canvas row.
+For a tint, a vignette, a frame round the edges or a HUD with a piece in every
+corner, tick **Fill the whole screen** on the Canvas row. The object then
+covers every player's screen at any size.
 
-The object then covers every player's screen at any size, and each element is
-**pinned** to one of nine points of it: a corner, the middle of an edge, or the
-centre. Its X and Y are measured from that point to the same point of the
-element, so a bar pinned bottom-right at −4, −4 always sits four pixels in from
-the bottom-right corner. Pick the point in the element's **On the screen**
-settings.
+Each element is then **pinned** to one of nine points of the screen (a corner,
+the middle of an edge, or the centre), chosen in its **On the screen**
+settings. Its X and Y are measured from that point, so a bar pinned
+bottom-right at -4, -4 always sits four pixels in from that corner.
 
-- **Labels** line up on their point to match: pinned right, the words end
-  there and grow leftward as the value changes; pinned to the middle, they
-  centre on it.
-- **Shapes** can also **Stretch with the screen**. A stretched shape is sized on
-  a 640 by 360 screen and scales with the real one, so a rectangle as wide as
-  that is as wide as any screen. Round shapes scale by the shorter side and stay
-  round.
-- **Paint** keeps a box of its own, set under **Paint area**, which is placed
-  on the screen like a normal canvas.
+- **Labels** line up on their point: pinned right, the words end there and grow
+  leftward.
+- **Shapes** can **Stretch with the screen**. They are sized on a 640 by 360
+  screen and scale with the real one.
+- **Paint** keeps its own box, set under **Paint area**.
 
-The buttons above the canvas show the object on four common screen sizes, so
-you can check that everything keeps its place.
-
-Unticking it turns the object back into a canvas, with everything where it was.
+The buttons above the canvas preview four common screen sizes. Unticking the
+box turns it back into a normal canvas.
 
 ## Live values
 
-A label or a progress bar can read a value that changes per player. Write it in
-curly braces, like `{health}`.
+A label or progress bar can show a value that is different for each player.
+Write it in curly braces, like `{health}`.
 
 | Placeholder | What it is |
 |---|---|
@@ -195,143 +148,129 @@ curly braces, like `{health}`.
 | `{online}`, `{max_online}` | Players online, and the server's cap |
 | `{uuid}` | Their account UUID |
 
-A progress bar fills from a value and a maximum: `{health}` out of
+A progress bar fills from a value out of a maximum: `{health}` out of
 `{health_max}`, `{food}` out of 20, `{xp}` out of 100, `{air}` out of 15.
 
-**A plugin can publish any value it likes** under any name, and a label or bar
-can read it the same way. See [the RP Engine API](/rp-engine/api#hud-overlays)
-for `overlays().set(player, "stamina", "40")`.
+PlaceholderAPI values work too, and **your own plugin can publish any value**
+under any name with `overlays().set(player, "stamina", "40")`. See [the RP
+Engine API](/rp-engine/api#hud-overlays).
 
 ## Changing it from code
 
 Every label, head, picture and progress bar has a **From code** section at the
-bottom of its settings. Each field reads a value the same way a `{name}` does,
-so a plugin, the built-in values above or PlaceholderAPI can drive it, per
-player.
+bottom of its settings. Each field takes a live value, the same way a
+`{name}` does.
 
-- **Show when** hides the piece while a condition is false, for example
-  `{rank} == "vip"`, `{mana} > 10` or `perm:hud.extra`, joined with `&&` and
-  `||`. It is the same language as a dialog's Show when. Nothing else moves
-  when a piece is hidden.
-- **Other colours** gives a label, a picture's tint or a bar's fill named
-  colours, such as `poisoned` or `frozen`, and the value that picks one. Set
-  that value to a name and the piece switches; anything else draws its own
-  colour. On a bar, a named colour wins over the colour-by-value thresholds.
-- **Length from** sets a progress bar's length in pixels from a value. A bar
-  that is always full is a box your code can resize.
-- **Thresholds from** moves a colour threshold from a value, as a percentage.
+| Field | What it does |
+| --- | --- |
+| **Show when** | Hides the piece while a condition is false, such as `{rank} == "vip"`, `{mana} > 10` or `perm:hud.extra`, joined with `&&` and `\|\|`. The same language as a dialog's Show when |
+| **Add a colour** / **Picked by** | Named colours (such as `poisoned`, `frozen`) and the value that picks one. Any other value draws the normal colour. On a bar, a named colour wins over the thresholds |
+| **Length from** | A progress bar's length in pixels |
+| **Thresholds from** | Moves a colour threshold, as a percentage |
 
 ```java
 engine.overlays().set(player, "status", "poisoned");
 engine.overlays().set(player, "mana_len", "120");
 ```
 
-Shapes and paint are part of the pack, so their size and colour can't change
-while the game is running. Colours are picked from the ones you set in Studio;
-code can't make up a new one. Each named colour costs one of the object's 32
-pieces.
+Shapes and paint are fixed in the pack, so their size and colour can't change
+in game, and code can only pick colours you set in Studio.
 
 ## Showing it in game
 
-An object does nothing until something shows it. There are three ways.
+An object does nothing until something shows it. There are three ways:
 
-- **A rule**, set on the Canvas. **Always** keeps it on screen while the player
-  is online, **On join** shows it once as they join, **While crouching** and
-  **While holding** an item show it only while that is true. Any rule can also
-  require a permission.
-- **A command**: `/rp shader studio:<id> [player]` shows it, and
-  `/rp shader clear` takes them all off. `/rp shaders` lists every shader on the
-  server. The full command is under **In game** on the Canvas, the first thing
-  the editor shows, and the copy button on the object's card on the pack page
-  copies it too. The id comes from the name the object was created with, so
-  renaming it later does not change it. These need the `rpengine.shader`
-  permissions, which are op by default.
-- **A plugin**: `overlays().show(player, "studio:<id>")` and
+- **A rule**, set on the Canvas: **Always** (the whole time they're online),
+  **On join** (once, as they join), **While crouching**, or **While holding**
+  an item. Any rule can also require a permission.
+- **A command**: `/rp shader studio:<id> [player]` shows it, `/rp shader clear`
+  takes them all off, and `/rp shaders` lists every one on the server. These
+  need the `rpengine.shader` permissions (op by default).
+- **Your plugin**: `overlays().show(player, "studio:<id>")` and
   `overlays().hide(...)`. See [the RP Engine API](/rp-engine/api#hud-overlays).
 
-When you're testing, **Sync** in the editor pushes the pack to you and puts the
-object on your screen straight away. For everyone on your server, serve the pack
-with [Distribution](/distribution), or drop its exported `.zip` into RP Engine's
-`content/` folder ([Adding a resource pack](/rp-engine/resource-packs#a-pack-from-resourcepack-ai-studio)).
-Both need RP Engine 0.2.38 or newer.
+**Finding the id.** Open the shader: the **In game** section at the top of the
+Canvas settings shows the full command and the `overlays().show` line, with copy
+buttons. The copy button on the shader's card on the pack page copies the
+command too. The id is made from the name the object was **created** with, and
+renaming it later doesn't change the id, so don't guess it from the current
+name.
+
+To get it to everyone on your server, not just you, serve the pack with
+[Distribution](/distribution) (players get it as they join), or export the pack
+as a `.zip` and drop it into RP Engine's `content/` folder ([Adding a resource
+pack](/rp-engine/resource-packs#a-pack-from-resourcepack-ai-studio)). Both need
+RP Engine 0.2.38 or newer.
 
 ## Limits
 
-- **32 pieces per object.** Each label, player head and picture takes one. A
-  progress bar takes two, plus one for each colour threshold, and each named
-  colour (see Changing it from code) takes one more. Paint takes one
-  per 256-pixel tile of drawing, so a small drawing is one. The status bar at
+- **32 pieces per object.** A label, player head or picture takes one. A
+  progress bar takes two, plus one per colour threshold. Each named colour
+  takes one. Paint takes one per 256-pixel tile of drawing. The status bar at
   the bottom of the editor counts them, and anything past 32 isn't drawn.
-- **Paint is pixel art.** It is drawn one pixel per GUI pixel, so it looks
-  blocky if the canvas is large, where shapes stay smooth.
-- **A full-screen object draws over the hotbar and crosshair**, and under chat
-  and titles, whichever bar it is sent through. A tint over the whole screen
-  tints the hotbar too. Its shapes are worked out for every pixel of the screen,
-  every frame, so a handful is fine and fifty is worth thinking twice about.
-- **Only players who have your pack see it.** RP Engine only sends an object to
-  players holding the pack it came from, so nobody else gets a row of
-  missing-character boxes.
-- **Minecraft 1.19.4 to 26.2.** The text shader is rebuilt for each version the
-  pack might be loaded on. 26.3 isn't supported yet.
-- **Not in the ItemsAdder export.** That format has to leave the pack's font to
-  ItemsAdder, and a shader object is drawn through it.
+- **A full-screen object draws over the hotbar and crosshair** and under chat
+  and titles. Keep it to a handful of shapes: each is worked out for every
+  pixel of the screen, every frame.
+- **Only players with your pack see it.** RP Engine doesn't send an object to
+  anyone who lacks the pack it came from.
+- **Minecraft 1.19.4 to 26.3.**
+- **Not in the ItemsAdder export.**
+
+If something looks wrong, it helps to know how it works: the server can only
+send a line of text to the action bar or boss bar. Your object ships as special
+characters in the pack's font, and a text shader in the pack recognises them by
+their exact colour and moves them where you placed them. Another plugin's
+resource pack that also replaces the text shader can stop it drawing.
 
 ## 3D objects
 
-A 3D object is something that sits in the world and looks like nothing a cube
-model can make: a swirling portal, a planet, a glowing orb, a black hole with
-a lensed disk. It is drawn by a shader in your pack, worked out fresh for every
-pixel, so it is smooth and round from every side and can move.
+A 3D object sits in the world and looks like nothing a cube model can make: a
+swirling portal, a planet, a glowing orb, a black hole. It is smooth and round
+from every side and can move.
 
 ### Making one
 
 Press **Add asset**, pick the **Shader** tab, switch to **3D** and describe it,
 for example "a slowly spinning plasma orb with a purple core and crackling
-white arcs". A 3D object is always generated: there is nothing to draw by hand,
-so **Blank** isn't offered. It takes a few minutes.
+white arcs". It costs 30 credits and takes a few minutes. There is nothing to
+draw by hand, so **Blank** isn't offered.
 
-Things with glow, smoke, energy, glass or motion work best. One centred object
-works better than a whole scene.
+Glow, smoke, energy, glass and motion work best. One centred object works
+better than a whole scene.
 
-### The object's page
+### Its page
 
-There is no editor. The page is the object running live, and three things to do
-with it.
+There is no editor. The page shows the object running live:
 
-- **Look at it.** Drag to orbit and scroll to zoom. The floor squares are
-  blocks, so you can judge its size.
-- **Change it.** Write what to change ("make the glow bluer", "spin it
-  slower", "add a second ring") and press **Change with AI**. The object keeps
-  what it was until the change is done, and keeps it if the change fails.
-- **Place it.** See below.
+- **Drag to orbit, scroll to zoom.** The floor squares are blocks, so you can
+  judge its size.
+- **Edit with AI**: describe a change ("make the glow bluer", "spin it
+  slower"). The object keeps its old look until the change is done, and if the
+  change fails.
+- The line under the name says how hard it is on a player's graphics card:
+  **light**, **moderate** or **heavy** to draw. Several heavy ones on screen at
+  once can cost frame rate on a slow machine.
 
-**Cost to draw** says how hard the object is on a player's graphics card:
-Light, Moderate or Heavy. Several Heavy objects on screen at once can cost
-frame rate on a slow machine.
+### Putting it in the world
 
-**Show the shader code** shows what was written, for reading. It can't be
-edited: one line that doesn't compile would stop the whole pack loading.
+Under **Get in-game**, set the **Size** (a quarter of a block to 64 blocks
+across), then either:
 
-### Placing it
+- **Copy the `/summon` command** and run it where you stand, with the pack
+  applied. **No plugin is needed**: it works on any server or in single
+  player. The object appears just above you and always faces the camera.
+  Players can't hit or break it; remove it with `/kill`.
+- **Place in game** puts it in front of you on the server your pack is
+  [synced](/testing/plugin) to. Sync first.
 
-Set the **Size** (from a quarter of a block to 64 blocks across), then either:
+Blocks in front of it hide it, like any other object.
 
-- **Copy /summon** and run the command where you stand, with the pack applied.
-  **No plugin is needed**: it is a plain vanilla command, so it works on any
-  server or in single player. The object appears above you and always
-  faces the camera.
-- **Place in game** puts it in front of you on the server the pack is
-  [synced](/testing/plugin) to, at its stored size. Sync the pack first.
+### Moving and changing it from a server
 
-Once placed it behaves like any entity: it stays where it is, blocks in front
-of it hide it, and killing it removes it.
-
-### Driving it from a server
-
-With [RP Engine](/rp-engine) **0.2.10 or newer**, a server can control each
-placed object: switch it between the looks (states) its code defines, such as
-a portal opening and closing, and move, turn and resize it smoothly. Sequences
-of those steps can be written in RP Engine's `objects/` content folder.
+With [RP Engine](/rp-engine) 0.2.10 or newer, a server can switch a placed
+object between the looks its code defines (a portal opening and closing, say)
+and move, turn and resize it smoothly. Sequences of these steps go in RP
+Engine's `objects/` content folder.
 
 | Command | Does |
 | --- | --- |
@@ -343,30 +282,24 @@ of those steps can be written in RP Engine's `objects/` content folder.
 | `/rp object remove [all]` | Takes it away |
 
 Each verb has its own permission, `rpengine.object.<verb>`, all granted by
-`rpengine.object`, and every verb works from a command block. A driven object
-needs a 26.2 pack and a server on Minecraft 1.21.4 or newer. See
-[3D objects](/rp-engine/objects) for sequences and the full command reference.
+`rpengine.object`, and every verb works from a command block. This needs a
+pack set to 26.2 or newer and a server on Minecraft 1.21.4 or newer. See
+[3D objects](/rp-engine/objects) for sequences and the full reference.
 
 ### Bubbles, glass and black holes
 
 Some objects bend the world behind them: a bubble refracts it, and a black hole
 pulls it into a curve. That needs a **26.2** pack and **Improved Transparency**
-turned on in the player's Video Settings. Without it, a bubble shows as a faint
-outline. On 26.2 with Improved Transparency, blocks that cut through any 3D
-object also get a bright edge where they meet it.
+turned on in the player's Video Settings; without it, a bubble shows as a faint
+outline. With both, blocks that cut through any 3D object get a bright edge.
+On 26.3 neither effect is drawn.
 
 ### 3D limits
 
-- **What it draws is all it can change.** Apart from the bending above, it
-  can't distort the world behind it, and it casts no shadow.
-- **Fog doesn't reach it**, so a distant object stays as bright as a near one.
-- **A summoned object always faces the camera.** Only one placed and driven by
-  RP Engine can be turned.
-- **It needs your pack.** Players without it don't see the object.
-- **Not in the Bedrock or ItemsAdder exports.**
-
-## Text Effects and VFX
-
-Two more kinds of shader-made asset have pages of their own:
-[Text Effects](/text-effects), which make any text wave, burn or shine, and
-[VFX](/vfx), spell effects drawn in the world.
+- Apart from the bending above, it can't distort the world behind it, and it
+  casts no shadow.
+- Fog doesn't reach it, so a distant object stays as bright as a near one.
+- A summoned object always faces the camera. Only one placed by RP Engine can
+  be turned.
+- Players without your pack don't see it.
+- Not in the Bedrock or ItemsAdder exports.

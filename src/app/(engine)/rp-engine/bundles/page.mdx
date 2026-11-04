@@ -1,55 +1,60 @@
 export const metadata = {
   title: "Bundles",
   description:
-    "The built resource packs, giving players more than one at a time, and why swapping is instant.",
+    "The resource packs RP Engine builds, which one players get, and why a rebuild that changes nothing costs nobody a download.",
 };
 
 # Bundles
 
-A **bundle** is one built resource pack. Most servers have one, called `main`,
-and never think about it.
+A **bundle** is one resource pack RP Engine builds from your content folder.
+Most servers have one, called `main`, and never need to think about it: every
+content pack goes into `main` unless it says otherwise, and every joining
+player is sent `main`.
+
+`/rp bundles` lists the bundles with their sizes, hashes and the link each one
+is served at.
+
+## Choosing which bundle a pack goes into
 
 ```yaml
 # in a pack's pack.yml
 bundles: [main]
 ```
 
+A content pack lists the bundles it belongs to (`main` if it says nothing),
+and a bundle can hold many packs. One pack can be in several bundles, which is
+how a shared base pack gets into each of them without being copied.
+
+## Which bundle players get
+
 ```yaml
 # in config.yml
 default-bundle: main     # what every joining player is sent; empty sends nothing
 ```
 
-`/rp bundles` lists them with their sizes and hashes.
+Every player is sent the default bundle. Other bundles are still built (into
+`output/`) and served, so you can hand their link to another plugin, but RP
+Engine has no command or API that sends a player a different one.
 
-A content pack lists the bundles it belongs to (`main` if it says nothing),
-and a bundle can hold many packs. One pack can be in several bundles, which is
-how a shared base pack gets into every bundle without being copied.
+On top of the default bundle, a player can be sent small extra packs: their
+[emote rigs](/rp-engine/config#emotes), and a pack they are testing from Studio
+with [`/rp sync`](/rp-engine/commands#studio). From Minecraft 1.20.3 these are
+stacked on the bundle. Below 1.20.3 a player holds one pack at a time, so the
+last one sent is the one they have.
 
-## More than one at a time
-
-From Minecraft 1.20.3 a server can add and remove resource packs per player.
-So a lobby can use one bundle, a dungeon another, and an event pack can sit on
-top of whatever a player already has.
-
-Two rules come from the game itself:
-
-- **A later bundle overrides an earlier one** where both change the same file.
-- **A bundle the player already has downloads nothing.** Swapping back to it
-  is instant.
-
-Below 1.20.3 a player holds one pack at a time, so a player due more than one
-bundle gets only the last. A server with a single bundle is unaffected.
+Set `default-bundle: ""` if another plugin sends your players their resource
+pack and you only want RP Engine to build it.
 
 ## Rebuilding changes nothing unless the content did
 
-The same content always builds to exactly the same zip. The client recognises
-a pack it already has by its hash, so a restart or a reload that changes
-nothing makes nobody download anything.
+The same content always builds to exactly the same zip. The game recognises a
+pack it already has by its hash, so a restart or a reload that changes nothing
+makes nobody download anything.
 
 ## Serving them
 
-By default the plugin uploads each built pack to ResourcePack AI's pack host
-and sends players the link to it, so there is nothing to open or configure.
-It can serve them from your own server instead, on the game port or a port of
-its own, or leave hosting to you. See
-[Configuration](/rp-engine/config#serving-the-pack).
+By default each bundle is uploaded to ResourcePack AI's free pack host and
+players are sent the link to it, so there is nothing to open or configure. RP
+Engine can serve them from your own server instead, on the game port or a port
+of its own, or leave hosting to you. See
+[Serving the pack](/rp-engine/config#serving-the-pack).

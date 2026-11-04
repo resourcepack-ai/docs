@@ -6,7 +6,10 @@ export const metadata = {
 
 # Seats, light and surfaces
 
-Four more things a [`place:`](/rp-engine/models) block can say.
+A [placed model](/rp-engine/models) (furniture or decoration put down from an
+item) can be sat on, give off light, be limited to floors, walls or ceilings,
+and drop something other than itself. Each is one key in the item's `place:`
+block.
 
 ```yaml
 chair:
@@ -47,11 +50,10 @@ If every chair on your server sits people a little high or low, nudge them all
 at once with `models.seat-offset` in [`config.yml`](/rp-engine/config)
 (positive is higher), then `/rp reload`. No restart needed.
 
-The seat is an invisible marker the player rides. It is never saved: it is
-removed when the player gets up or leaves, when the model is broken, and when
-the server stops, so nothing is left behind in the world.
+Nothing is left behind in the world when somebody gets up, leaves, or the
+server stops.
 
-What else a click does comes first in some cases. A model with a right-click
+Sometimes a click does something else first. A model with a right-click
 animation, [states](/rp-engine/furniture#states-lamps-doors-and-screens) or
 [storage](/rp-engine/furniture#storage) does that on a plain click, and you
 sit by sneaking and right-clicking. See

@@ -6,8 +6,9 @@ export const metadata = {
 
 # Stats and components
 
-A custom item behaves like the vanilla item under it, so a sword built on a
-stick hits as hard as a stick. These settings change the numbers:
+A custom [item](/rp-engine/items) behaves like the vanilla item under it (its
+`material:`), so a sword built on a stick hits as hard as a stick. These
+settings, added to the item's definition, change the numbers:
 
 ```yaml
 sword:
@@ -58,8 +59,8 @@ The long form adds an operation and a slot:
 | `multiply_base` | Adds a fraction of the base value |
 | `multiply` | Multiplies the total |
 
-`slot` is where the item has to be for it to apply: `hand`, `head`, `chest`,
-`legs`, `feet` or `any`.
+`slot` is where the item has to be for it to apply: `hand`, `offhand`, `head`,
+`chest`, `legs`, `feet`, `armor` (any armour slot) or `any`.
 
 ## Durability
 

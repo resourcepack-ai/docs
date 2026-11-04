@@ -6,12 +6,35 @@ export const metadata = {
 
 # Sounds
 
-A sound is an audio clip in your pack, usually generated from a description.
+A Sound is an audio clip in your pack, usually generated from a description.
 It either replaces a noise the game already makes (a creeper's hiss, a chest
-opening) or becomes a new sound that commands and plugins can play. Which one
-depends only on its event name.
+opening) or becomes a new sound that commands and plugins can play, such as a
+laser or a level-up jingle for your server.
 
 ![Sounds made in Studio](/images/sounds.webp)
+
+## Replacing a sound, or adding a new one
+
+Every sound in Minecraft has an **event name**, such as
+`entity.creeper.primed`. You set it under **Sound event** when you add a sound,
+and it alone decides what your sound does. There is no separate "replace"
+setting.
+
+<Steps>
+  <Step title="Name it after a vanilla event">
+    `entity.creeper.primed`, `block.chest.open`, `entity.player.levelup`. The
+    pack's audio replaces the game's, everywhere the game would have played
+    it. Nothing has to run a command, and nothing has to know your pack
+    exists.
+  </Step>
+  <Step title="Name it something new">
+    `custom.laser`, `boss.phase_two`. Nothing triggers it on its own; it's a
+    sound waiting for something to play it, by command or from a plugin.
+  </Step>
+</Steps>
+
+Both land in the `minecraft` namespace, so a new event is played as
+`minecraft:custom.laser`.
 
 ## Making one
 
@@ -22,6 +45,7 @@ describe it to someone who has to make it:
 
 | Setting | What it does |
 | --- | --- |
+| **Sound event** | Its name, which decides whether it replaces a vanilla sound. See [above](#replacing-a-sound-or-adding-a-new-one) |
 | **Play as** | The volume slider the play command uses. See [Categories](#categories-are-not-a-pack-setting) |
 | **Length** | 0.5 to 30 seconds. Leave it blank and the AI picks. A sound padded with silence feels sluggish in game |
 | **Loop** | **One-shot**, or **Seamless loop** for something that plays continuously |
@@ -40,33 +64,22 @@ picks the one the pack ships; the rest stay for comparison until you delete
 them. **Generate another take** adds a new one to the list without replacing
 any.
 
+- **Make this take its own sound** copies a take you also want to keep into a
+  new sound on the next free event name (`custom.laser` becomes
+  `custom.laser_2`), since one event plays one file.
+- **Edit with AI** describes a change ("deeper", "less echo") and generates it
+  as a new take, so the take you had stays in the list. Audio can't be changed
+  in place.
+
 The event name and category can be changed later, so a sound made as a new
 event can be renamed onto a vanilla one without generating it again.
 
-## The event name decides everything
+## Hearing it in game
 
-There is no setting for "replace" versus "add". There is only the name.
-
-<Steps>
-  <Step title="Name it after a vanilla event">
-    `entity.creeper.primed`, `block.chest.open`, `entity.player.levelup`. The
-    pack's audio replaces the game's, everywhere the game would have played
-    it. Nothing has to run a command, and nothing has to know your pack
-    exists.
-  </Step>
-  <Step title="Name it something new">
-    `custom.laser`, `boss.phase_two`. Nothing triggers it on its own; it's a
-    sound waiting for something to play it, by command or from a plugin.
-  </Step>
-</Steps>
-
-Both land in the `minecraft` namespace, so a new event is played as
-`minecraft:custom.laser`.
-
-## Playing one by command
-
-The sound's page has a play command and a button that plays it to you on your
-linked server:
+A replacement plays wherever the game would have played the vanilla sound.
+To hear any sound on demand, first send the pack to yourself: on a server
+running [RP Engine](/testing/plugin), our free plugin, press **Sync**. The
+sound's page then has a play command, and a button that plays it to you:
 
 ```
 /rp sound studio:<id> @p
@@ -84,6 +97,12 @@ operators:
   A player can only hear a sound their pack has. Sync the pack to them first;
   playing an event they don't have does nothing, with no error.
 </Callout>
+
+## Several sounds on one event
+
+Give two sounds the same event name and Minecraft picks between them at
+random each time it fires, the way vanilla gives a block several footstep
+noises. Nothing extra to switch on.
 
 ## Categories are not a pack setting
 
@@ -106,7 +125,7 @@ you. It isn't stored in the exported Java pack.
   you've read Bedrock docs, this is the difference that catches people.
 </Callout>
 
-## Exporting
+## What's in the exported pack
 
 ```
 assets/minecraft/sounds.json
@@ -123,12 +142,6 @@ Files are **Ogg Vorbis, mono**. Both parts matter:
 
 Sounds longer than ten seconds are marked `stream`, which is what vanilla does
 for music and records: decoded as they play rather than loaded whole.
-
-## Several sounds on one event
-
-Give two sounds the same event name and Minecraft picks between them at
-random each time it fires, the way vanilla gives a block several footstep
-noises. Nothing extra to switch on.
 
 ## On Bedrock
 

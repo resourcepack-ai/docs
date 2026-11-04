@@ -6,7 +6,18 @@ export const metadata = {
 
 # Armour
 
-Any item can be worn, with your own art drawn on the player's body:
+Any item can be worn as armour, with your own art drawn on the player's body.
+There are two kinds:
+
+- **Flat armour**: a texture painted onto the player's body shape, like vanilla
+  armour. Set up below.
+- **3D armour**: a set built from cubes that stands off the body (pauldrons, a
+  tall crown). Made in [Studio](#3d-armour-from-studio) or
+  [in Blockbench](#3d-armour-in-your-content-folder).
+
+## Flat armour
+
+Add `armor:` to an [item](/rp-engine/items), saying which slot it goes in:
 
 ![Custom armour sets worn by a player](/images/armor.webp)
 
@@ -26,7 +37,7 @@ Leggings use their own, narrower sheet in the game, so art drawn for the main
 sheet does not line up on legs. That is why each slot asks for exactly one
 texture.
 
-## Using art from somewhere else
+### Using art from somewhere else
 
 `armor-art` takes a texture path under `assets/textures/` (or a resource
 location) and the build puts it at the right equipment path for you:
@@ -57,7 +68,7 @@ crown:
 `namespace:name` means the PNG at
 `assets/<namespace>/textures/entity/equipment/<layer>/<name>.png`.
 
-## The model and the armour are separate
+### The model and the armour are separate
 
 `model:` is what the item looks like in a hand or a chest. `armor:` is what it
 looks like on a body. A crown can be a 3D model in your hand and a flat texture
@@ -79,15 +90,15 @@ on your head; the game draws the two separately. An item with `armor:` and no
 ## 3D armour from Studio
 
 Flat armour is a texture on the player's body shape. A
-[3D armour set from Studio](/armor#3d-armour) is built from cubes instead
+[3D armour set from Studio](/armor#3d-armor) is built from cubes instead
 (pauldrons that stand off the shoulder, a crown taller than the head), and RP
-Engine puts it on the player. Sync the pack and use:
+Engine puts it on the player. [Push the pack to your server](/testing/plugin) from Studio, then:
 
 ```
-/rp armor                              # list the sets
-/rp armor wear studio:hazmat_suit      # put the whole set on
-/rp armor give studio:hazmat_suit      # or hand over the pieces
-/rp armor self                         # see your own pieces in F5
+/rp armor                                     # list the sets
+/rp armor wear studio:hazmat_suit [player]    # put the whole set on
+/rp armor give studio:hazmat_suit [player]    # or hand over the pieces
+/rp armor self                                # see your own pieces in F5
 ```
 
 The pieces are ordinary items. Wear them however you wear armour (shift-click,

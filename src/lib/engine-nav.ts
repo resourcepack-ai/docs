@@ -439,9 +439,16 @@ export const engineNav: EngineGroup[] = [
       {
         title: "Paintball",
         href: "/rp-engine/paintball",
-        description: "5v5 paintball: one hit and you are out for three seconds, most kills when the clock runs out wins.",
+        description: "Paintball as team deathmatch, free for all or capture the flag, with bots and a field it builds for you.",
         keywords: ["addon", "paintball", "minigame", "game", "5v5", "team", "red", "blue", "arena", "marker",
-          "gun", "grenade", "aim", "scoreboard", "hud", "/pb", "1.21.11"],
+          "gun", "grenade", "aim", "scoreboard", "hud", "/pb", "1.21.11", "ffa", "ctf", "capture the flag", "bots"],
+      },
+      {
+        title: "Go Karts",
+        href: "/rp-engine/gokarts",
+        description: "Go-kart racing: drifting, boost pads, jumps, item boxes and bots, on circuits it builds for you.",
+        keywords: ["addon", "gokarts", "go kart", "kart", "karts", "racing", "race", "track", "circuit", "drift",
+          "minigame", "bots", "/kart", "vehicle"],
       },
     ],
   },

@@ -6,9 +6,16 @@ export const metadata = {
 
 # Moving from CraftEngine
 
-RP Engine reads CraftEngine pack folders as they are. Copy a pack out of
-`plugins/CraftEngine/resources/` into `plugins/RPEngine/content/` and start the
-server.
+RP Engine reads CraftEngine pack folders as they are, so you can move your
+items, furniture, blocks, images, emoji, sounds and recipes across without
+rewriting them.
+
+1. Copy a pack folder out of `plugins/CraftEngine/resources/` into
+   `plugins/RPEngine/content/`.
+2. Rename the folder to the `namespace:` its `pack.yml` declares (see the
+   warning below).
+3. If the pack uses CraftEngine's templates, copy `default_templates/` in too.
+4. Start the server, or run `/rp reload`, and read the console for warnings.
 
 ```
 plugins/RPEngine/content/
@@ -20,15 +27,13 @@ plugins/RPEngine/content/
 ```
 
 There is nothing to turn on. A folder with a `pack.yml` and a `configuration/`
-folder is read as CraftEngine's, and so is a single CraftEngine file inside a
-pack of yours: one with an `items:`, `blocks:`, `furniture:`, `images:` or
-another of CraftEngine's sections holding namespaced ids. That is the useful
-shape for moving over a piece at a time. CraftEngine 26.9 is what it was built
-against.
+folder is read as CraftEngine's, and a single CraftEngine file also works
+inside a pack of yours, which is handy for moving over a piece at a time. It
+is built against CraftEngine 26.9.
 
 <Callout type="warning" title="The folder is the namespace">
-  An RP Engine pack's namespace is its folder name, not the `namespace:` in
-  `pack.yml`. CraftEngine's own `default_assets` declares `namespace: default`,
+  The **namespace** is the first half of every ID (`default:topaz`). In RP
+  Engine it is the folder's name, not the `namespace:` in `pack.yml`. CraftEngine's own `default_assets` declares `namespace: default`,
   so as it stands it loads as `default_assets:topaz`. Rename the folder to
   `default` and the ids match. The load warns once per namespace that differs.
 </Callout>

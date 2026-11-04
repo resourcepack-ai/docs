@@ -6,15 +6,21 @@ export const metadata = {
 
 # Skills
 
-A [custom mob's](/rp-engine/entities) `skills:` are what it does besides walk
-and bite: a ground slam every few seconds, minions when it drops below half
-health, a poison aura, a volley of fireballs, a second phase where it turns red
-and fast. **They are MythicMobs' skill lines, as written**, so a `Skills:` block
-copied out of a MythicMobs mob file runs here, as long as it sticks to what
-this page lists. You don't need MythicMobs installed.
+Skills are what a [custom mob](/rp-engine/entities) does besides walk and bite:
+a ground slam every few seconds, minions when it drops below half health, a
+poison aura, a volley of fireballs, a second phase where it gets faster.
 
-Skills need RP Engine 0.2.53 or newer. Mobs made in [Studio](/mobs) bring the
-abilities you gave them there and are run by the same system.
+You write them as **MythicMobs skill lines**, one per line under the mob's
+`skills:`. A `Skills:` block copied from a MythicMobs mob file runs here as it
+is, as long as it uses only what this page lists. You don't need MythicMobs
+installed. Needs RP Engine 0.2.53 or newer.
+
+Mobs made in [Studio](/mobs) bring the abilities you gave them there, and run
+the same way.
+
+The example below is a boss in `entities/` of a [content folder](/rp-engine/content).
+Each line under `skills:` says *what* to do, *at whom* (`@...`), *when*
+(`~on...`) and *if* (`?...`). The next section takes a line apart.
 
 ```yaml
 # entities/bosses.yml
@@ -322,6 +328,7 @@ usually carry a prefix: `myplugin:smite{damage=6}`.
 | `skilloncooldown{s}` | That metaskill is cooling down |
 | `hastag{tag}`, `haspermission{p}`, `holding{m}`, `gamemode{m}`, `sneaking`, `sprinting`, `flying`, `blocking`, `mounted` | A player's state |
 | `variableequals{var;value}`, `variableinrange{var;value=1to5}`, `variableisset{var}` | A variable of the mob (`var=caster.x` for the caster's) |
+| `dead`, `iscaster` (`isself`) | The subject is dead; the subject is the mob itself |
 | `level{l}`, `faction{f}`, `samefaction` | Its [level](/rp-engine/entities#levels); its faction; whether it is of the caster's faction |
 | `threat{a}` | The subject's threat on the caster's table is in range |
 
@@ -401,8 +408,7 @@ that many ticks of it. It ends early when the target dies or leaves.
 
 ## Projectiles
 
-`projectile` fires a point RP Engine moves (not a Minecraft entity), so it can
-carry skills: `onStart` where it leaves, `onTick` at every step, `onHit` on each
+`projectile` fires a shot that can carry skills of its own: `onStart` where it leaves, `onTick` at every step, `onHit` on each
 living thing it touches, `onEnd` where it stops.
 
 | Option | Default | What it is |
@@ -447,8 +453,8 @@ not across a restart.
 
 ## Limits and debugging
 
-A few limits stop a mistake turning into lag. Each says so once in the console
-when it is hit:
+A few limits stop a mistake (say, a mob that summons itself on spawn) turning
+into lag. Each says so once in the console when it is hit:
 
 | Limit | |
 |---|---|
@@ -458,6 +464,7 @@ when it is hit:
 | Metaskills calling metaskills | 16 deep |
 | Skills setting off other mobs' skills (two mobs hurting each other from `~onDamaged`) | 8 deep |
 | Projectiles in flight, server-wide | 256 |
+| Mobs summoned by skills and alive at once, per world | 100 |
 
 A mob's waiting skills stop when it dies (except its `~onDeath` skills, which
 finish where it fell) and on `/rp reload`.

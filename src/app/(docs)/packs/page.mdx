@@ -6,44 +6,38 @@ export const metadata = {
 
 # Packs
 
-A pack is the container for everything you make (models, vehicles, blocks,
-items, armor, GUIs, HUDs, dialogs, icons, sounds, emotes and shaders), and the
-unit you test, share and export. Everything in Studio happens inside one.
-Each kind has its own tab on the pack page; 2D and 3D items share Items, and
-armor and 3D armor share Armor.
+A pack is one project: everything for one server or one look. It becomes one
+resource pack in Minecraft. Each thing in it (one Block texture, one 3D Model,
+one Sound) is an **asset**. You test, share and export a whole pack at once.
 
-## Creating one
+The pack page has a tab for each kind of asset: Models, Vehicles, Mobs, Blocks,
+Items, Armor, GUIs, HUD, Dialogs, Icons, Sounds, Emotes and Shaders. 2D and 3D
+Items share Items, 2D and 3D Armor share Armor, Rank Tags sit under Icons, and
+Text Effects and VFX under Shaders.
 
-**New pack** on the dashboard. Studio suggests a name and an icon; use the
-dice to pick others, or upload your own image. Both can be changed any time.
+## Making a pack
 
-If what you want already exists as a `.zip`, use
-[Import](/importing) beside it instead: import always creates a new pack from
-the file.
+Press **New pack** on the dashboard. Studio suggests a name and an icon; use
+the dice to pick others, or upload your own image. Both can be changed any
+time.
 
-## Managing one
+Already have a resource pack as a `.zip`? Press [Import](/importing) beside
+it instead, which makes a new pack from the file.
+
+## Copying, renaming and deleting
 
 Right-click a pack card (or open its menu) for **Open pack**, **Edit pack**,
 **Duplicate**, **Export**, **Change icon** and **Delete pack**. Duplicate
 copies the whole pack, assets and all, so you can experiment without risking
 the original.
 
-**Edit pack** changes the name and description, and holds one setting that
-matters once other people are involved: whose credits the pack spends. See
-[Collaborators](/collaborators#whose-credits-get-spent).
+**Edit pack** changes the name and description. It also has one setting that
+matters once you've invited other people: whose AI Credits they spend when
+they generate. See [Collaborators](/collaborators#whose-credits-get-spent).
 
-## How many packs you can have
+## Sorting a pack into folders
 
-| Plan | Packs | Assets per pack |
-| --- | --- | --- |
-| Starter | 5 | 50 |
-| Creator | 20 | Unlimited |
-| Studio | 20 | Unlimited |
-| Team | 20 per seat | Unlimited |
-
-## Folders
-
-Sort a big pack into folders. They're listed beside the grid like folders in
+Folders keep a big pack tidy. They're listed beside the grid like folders in
 a file manager (on a narrower screen, as a row above the tabs). Click one and
 the grid shows what's in it; click the pack's name above them to see
 everything again.
@@ -74,32 +68,42 @@ To take something out, drag it onto the pack's name in the folder list, or use
 **Move to folder → Take out of folder**. Searching from the top of the pack
 looks inside every folder, and each result shows which folder it's in.
 
-Folders only change how the pack page is laid out. They never change an asset,
-what the pack exports or what reaches a server, and deleting a folder puts
-everything in it back at the top of the pack rather than deleting it. Folders
+Folders only change how the pack page is laid out, never what the pack exports
+or what reaches a server. Deleting a folder puts everything in it back at the
+top of the pack rather than deleting it. Folders
 are one level deep, and an asset is in at most one.
 
-## Where your work lives
+## Saving
 
-Assets are saved as you go, so testing a pack in game is always testing what's
-currently in the editor. There's no build step to remember and nothing to
-re-upload between edits: pushing to a linked player rebuilds and re-applies
-the pack for you, and [exporting](/exporting) zips whatever is current.
+Everything saves as you go; there's no save button and no build step. **Sync**
+(which sends the pack to your game, see the [Quickstart](/quickstart)) and
+[Export](/exporting) always use what's in the pack right now.
 
-## Minecraft versions
+## Which Minecraft versions it works on
 
-Every pack works on a range of Minecraft versions, and the range is derived
-from what's in it rather than set anywhere. The baseline is **1.19.4**. Some
-assets raise that floor:
+You don't set this. Studio works it out from what's in the pack, and the pack
+card shows the oldest version that will load it, for example "1.21.4+".
 
-- A reskin of a block or item that **vanilla added later** needs the version
-  that added it. Pale oak planks can't exist on a version without pale oak.
-- **Item variants** dispatch through item model definitions, which are 1.21.4+.
-- A model using **light emission** needs 1.21.2+.
+A pack with nothing special in it works on **1.19.4** and newer. Some assets
+need a newer game:
 
-Each asset shows its own floor as a chip on its page, with the reason; for a
-model, it names the cubes responsible. The pack's floor is the highest of its
-assets', and the pack card shows it, for example "1.21.4+".
+| Asset | Needs |
+| --- | --- |
+| A reskin of a block or item added in a later update (pale oak, say) | The update that added it |
+| An Item variant (a second look for an item, handed out by command) | 1.21.4+ |
+| A 3D Model with glowing parts (light emission) | 1.21.3+ |
+| A 3D Model with its own position for shelves | 1.21.9+ |
+| A Dialog | 1.21.6+ |
 
-The floor only ever reflects content. Delete or retarget the asset that
-raised it and the pack's range widens again.
+Each asset shows its own minimum as a chip on its page, with the reason; for a
+model, it names the cubes responsible. Delete or change that asset and the
+pack works on older versions again.
+
+## How many packs you can have
+
+| Plan | Packs | Assets per pack |
+| --- | --- | --- |
+| Starter | 5 | 50 |
+| Creator | 20 | Unlimited |
+| Studio | 20 | Unlimited |
+| Team | 20 per seat | Unlimited |

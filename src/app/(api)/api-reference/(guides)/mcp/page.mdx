@@ -6,14 +6,14 @@ export const metadata = {
 
 # MCP server
 
-ResourcePack AI speaks the **Model Context Protocol**, so an AI agent can build
-a pack for you: create it, generate blocks, models, items, GUIs, dialogs, icons
-and sounds, bring in files you already have, look at what came back, and try
-again where it's wrong.
+Connect an AI agent (Claude, Cursor or any client that speaks the **Model
+Context Protocol**) and it can build a pack for you: create it, generate Blocks,
+3D Models, Items, GUIs, Dialogs, Icons and Sounds, bring in files you already
+have, look at what came back, and try again where it's wrong.
 
-It is the same API as the rest of this reference, with the same AI Credits and
-a key of its own. The difference is that an agent gets a list of tools to call
-instead of URLs it has to be programmed against.
+It is the same API as the rest of this reference, with the same AI Credits, and
+it needs a key of its own. The difference is that the agent gets a list of
+tools to call instead of URLs somebody has to program against.
 
 <Callout type="note" title="On every plan">
   MCP keys are available on every plan, the free one included, and the MCP
@@ -199,6 +199,32 @@ lost or charged twice.
 `get_asset_file` returns a generated texture, sprite or icon **as an image**, so
 the agent can actually look at what it made before telling you it is done, and
 regenerate it if it is wrong. Sounds come back as audio, models as their JSON.
+
+### Changing what's there, and what it costs
+
+There are three ways to change an asset, and only one is free:
+
+| Change | Tools | AI Credits |
+| --- | --- | --- |
+| By hand, from a file | `upload_asset` (a file you made), `update_custom_gui` (a Custom GUI's HTML and CSS), the settings tools (`update_sound`, `set_vehicle`, `update_model`, `set_item_state`...) | Free |
+| Housekeeping | `rename_asset`, `duplicate_asset`, `delete_asset`, `file_assets`, `restore_asset_version` (undo an AI change) | Free |
+| With AI | `edit_asset`, `regenerate_asset`, `rig_vehicle`, `generate_custom_gui_page`, every `generate_*` | Spends credits, at Studio's prices |
+
+**Dialogs have no hand-edit tool.** A Dialog can't be uploaded or written as
+JSON, so an agent changes one only through `edit_asset`, addressed as
+`texture/gui:<id>`. This works on Dialogs in Minecraft's own look (Dialog
+style):
+
+- `mode: "edit"` changes one page from a sentence ("add a Close button",
+  "reword the title").
+- `mode: "restyle"` gives one page a new look with nothing moved or reworded.
+- `page` picks the page (the first by default).
+
+Each call is one page and costs a flat 15 AI Credits, finished when it answers.
+`regenerate_asset` makes a whole new Dialog at the price of generating one.
+`restore_asset_version` puts back an earlier version for free. To move pieces,
+change a button's command or fix a word without spending credits, open the
+Dialog in Studio's editor.
 
 ### Sending files in
 

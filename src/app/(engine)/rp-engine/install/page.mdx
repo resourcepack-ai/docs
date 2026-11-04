@@ -6,10 +6,21 @@ export const metadata = {
 
 # Installing
 
-To install RP Engine you need a **Spigot, Paper or Folia server on Minecraft
-1.19.4 or newer**, running **Java 17 or newer**. On Folia it is the same jar and
-the same setup: it notices Folia and does each piece of its work on the region
-that owns it.
+RP Engine is one jar. You put it in `plugins/`, start the server, and players
+are sent its resource pack when they join. There is nothing else to set up.
+
+## What your server needs
+
+- **Spigot, Paper or Folia**, on **Minecraft 1.19.4 or newer**. Folia uses
+  the same jar.
+- **Java 17 or newer.**
+
+Everything works on a current server. Older versions lose a few features (one
+pack at a time below 1.20.3, no dialogs below 1.21.6, and so on), and the
+plugin prints exactly which ones at startup. [Minecraft versions](/rp-engine/versions)
+has the full list.
+
+## Putting it on your server
 
 <Steps>
   <Step title="Get the jar">
@@ -30,21 +41,14 @@ that owns it.
     ```
   </Step>
   <Step title="Join">
-    There is nothing to set up for players to get the pack. By default the
-    plugin uploads it to ResourcePack AI's pack host and players download it
-    from there, so no port has to be opened and no address typed in. To serve
-    it from your own server instead, see
-    [Configuration](/rp-engine/config#serving-the-pack).
+    You are asked to accept the server's resource pack. That is RP Engine's.
+
+    By default the pack is uploaded to ResourcePack AI's free pack host and
+    players download it from there, so no port has to be opened and it works
+    behind Velocity or BungeeCord. To serve it from your own machine instead,
+    see [Serving the pack](/rp-engine/config#serving-the-pack).
   </Step>
 </Steps>
-
-<Callout type="note" title="Older servers lose a few things, and the plugin tells you which">
-  Everything works on a current server. Below 1.21.4 a handful of features
-  are reduced: one pack at a time below 1.20.3, no per-item stack sizes below
-  1.20.5, no custom armour art below 1.21.4, no dialogs below 1.21.6. At
-  startup the plugin prints exactly what your version cannot do and what you
-  get instead. [Minecraft versions](/rp-engine/versions) has the full list.
-</Callout>
 
 You do not set a pack format number. The plugin reads your server's version
 and writes the right one itself.
@@ -53,6 +57,9 @@ and writes the right one itself.
 
 <Steps>
   <Step title="Make a pack">
+    A pack is a folder in `content/`. Its name, here `mypack`, becomes the
+    first half of every ID in it.
+
     ```
     content/mypack/
       pack.yml
@@ -75,9 +82,9 @@ and writes the right one itself.
       name: "&cRuby"
     ```
 
-    That is `mypack:ruby`. The folder name is the namespace and the key is the
-    ID. The texture is found from the ID, at `assets/textures/item/ruby.png`,
-    with nothing pointing at it.
+    That is `mypack:ruby`: the folder name, then the key. Its texture is found
+    from the ID, at `assets/textures/item/ruby.png`, with nothing pointing at
+    it.
   </Step>
   <Step title="Reload and take one">
     ```
@@ -85,12 +92,20 @@ and writes the right one itself.
     /rp give mypack:ruby
     ```
 
-    Players are asked to accept the pack when it is sent to them.
+    Everybody online is sent the new pack.
   </Step>
 </Steps>
 
 If the item shows as a purple-and-black square, the texture is not where the
-ID says it should be. `/rp reload` names every missing file in the console.
+ID says it should be. `/rp reload` names every missing file in the console;
+[the content folder](/rp-engine/content#if-the-console-warns-you) explains
+each warning.
+
+## Already have a pack?
+
+An exported [Studio](https://studio.resourcepack.ai) pack or any other resource
+pack `.zip` goes straight into `content/`: drop it in and run `/rp reload`.
+See [Adding a resource pack](/rp-engine/resource-packs).
 
 ## Where to go next
 

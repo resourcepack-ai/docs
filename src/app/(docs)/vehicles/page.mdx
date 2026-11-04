@@ -6,16 +6,16 @@ export const metadata = {
 
 # Vehicles
 
-A vehicle is a model people can ride: a go-kart, a rowing boat, a biplane.
-You make the model as usual, convert it, and then say where people sit, how it
-handles, which animation plays when, what it sounds like, and what comes out
-of its exhaust. Converting changes nothing about the model itself. The cubes,
-textures and animations are still edited in the model editor.
+A Vehicle is a 3D Model people can ride and drive: a go-kart, a rowing boat, a
+biplane. You make the model as usual and convert it. Then you say where people
+sit, how it handles, which animation plays when, what it sounds like, and what
+comes out of its exhaust. The cubes, textures and animations are still edited
+in the model editor.
 
 ![A player driving a go-kart, in game](/images/vehicles.webp)
 
-Vehicles are driven by [RP Engine](/testing/plugin), so they need it on the
-server. Our test server has it.
+Vehicles need the [RP Engine](/rp-engine) plugin on your server, which is
+what makes them drivable. Our [test server](/testing/test-server) has it.
 
 ## Making one
 
@@ -29,8 +29,8 @@ server. Our test server has it.
 3. **Add a driver seat**, then as much of the rest as it needs. A vehicle
    without a driver does nothing in game.
 
-Most vehicles are finished with [Animate with AI](#animate-with-ai), which
-sets up the moving parts and the riders in one go.
+Then press [Animate with AI](#animate-with-ai): it sets up the moving parts
+and the riders in one go, and is how most vehicles get finished.
 
 ## The vehicle editor
 
@@ -114,7 +114,7 @@ the next.
 
 ### Animate with AI
 
-**Animate with AI** does all of this for you. It groups the model's cubes into
+**Animate with AI** (15 credits) does all of this for you. It groups the model's cubes into
 bones (wheels, steering, rotor, paddle), puts a rider in every seat, and
 writes a looping animation for each state, bodywork and people together:
 wheels rolling, hands on the wheel, a passenger holding on. A part a rider
@@ -163,8 +163,9 @@ parts, makes it handle worse, and a destroyed vehicle stops responding.
 
 ## Seeing it in game
 
-1. **Sync the pack** to a server running RP Engine, or press **Give in-game**
-   on the model's page while you're on the test server.
+1. **Sync the pack**: press **Sync** and run the `/rp sync <code>` it shows on
+   a server running RP Engine. That sends the pack to you there. Or press
+   **Give in-game** on the model's page while you're on the test server.
 2. **Use the item** to park the vehicle where you're looking. It stays where
    you leave it.
 3. **Right-click to get in.** On Paper 1.21.4 and newer, W and S drive, A and
@@ -182,8 +183,7 @@ parts, makes it handle worse, and a destroyed vehicle stops responding.
 
 ## Exports
 
-A resource pack has no way to say a model is a vehicle, so the vehicle
-settings travel alongside a synced pack and RP Engine reads them there. The
-plain Java and Bedrock downloads and the ModelEngine export carry the model,
-but not the vehicle. The ItemsAdder, Nexo, Oraxen and CraftEngine exports
+The vehicle settings reach RP Engine when you sync the pack or serve it with
+[Distribution](/distribution). The plain Java and Bedrock downloads and the
+ModelEngine export carry the model, but not the vehicle. The ItemsAdder, Nexo, Oraxen and CraftEngine exports
 turn it into furniture you can sit in, but those plugins can't drive it.

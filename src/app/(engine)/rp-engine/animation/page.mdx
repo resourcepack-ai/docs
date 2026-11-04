@@ -14,9 +14,10 @@ change how each one plays on your server without editing the model.
 
 ## Where animations come from
 
-**From Blockbench.** Put the Blockbench project in `assets/models/` and RP
-Engine reads its bones and keyframes. There is nothing to declare and nothing
-to export.
+**From Blockbench.** Put the Blockbench project in `assets/models/` in your
+[content folder](/rp-engine/content) and RP Engine reads its bones and
+keyframes. There is nothing to declare and nothing to export. Projects saved by
+Blockbench 5 work too.
 
 ```
 content/mypack/
@@ -50,9 +51,10 @@ sitting on it. Sneak and right-click to sit, if it has a `seat`.
 
 ### Playing from a plugin
 
-Plugins and commands play an animation by its name in Blockbench. From your
-own plugin, use `Placement.play` in [the API](/rp-engine/api). On a model worn
-by a mob, [MythicMobs](/rp-engine/mythicmobs) can play one with `rpanimate`.
+There is no `/rp` command that plays an animation. Other plugins play one by
+its name in Blockbench: from your own plugin, `Placement.play` in
+[the API](/rp-engine/api), and on a model worn by a mob,
+[MythicMobs](/rp-engine/mythicmobs)' `rpanimate`.
 
 ## Controlling playback
 

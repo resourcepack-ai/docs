@@ -14,12 +14,23 @@ Citizens NPC, a shopkeeper, a mob another plugin owns. Look at it and run:
 /rp unbind                take it off again
 ```
 
+Look at it from within 12 blocks. Both commands are for operators by default
+(`rpengine.bind`, `rpengine.unbind`). Putting a model on another **player**
+also needs `rpengine.bind.others`.
+
 The entity is not replaced. It keeps its AI, loot, health, hitbox and UUID, and
 every plugin that knows about it still has the same entity. Only its vanilla
 body is made invisible, and `/rp unbind` brings it back.
 
-To spawn a new mob that comes with a model from your content folder, use
-[custom entities](/rp-engine/entities) instead.
+To spawn a new mob that comes with a model, use
+[custom entities](/rp-engine/entities) from your content folder, or a
+[Mob made in Studio](/mobs).
+
+## Drawing the model so it fits
+
+- **Face it North** in Blockbench (the -Z side is the front), as for Model
+  Engine. A model drawn facing South walks backwards.
+- **Its bottom stands on the ground** under the mob, whatever the mob's size.
 
 ## The model is an item ID
 

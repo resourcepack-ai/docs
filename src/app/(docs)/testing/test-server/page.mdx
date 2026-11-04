@@ -6,8 +6,10 @@ export const metadata = {
 
 # Our test server
 
-Our test server is the quickest way to see a pack in Minecraft. There's
-nothing to install and no server of your own to run.
+Our test server is the quickest way to see a pack in Minecraft. It's free,
+already runs everything a Studio pack needs, and you don't need a server of
+your own. You link your Minecraft account once, then press **Sync** in Studio
+and your pack loads on your game.
 
 ```
 play.resourcepack.ai
@@ -15,6 +17,54 @@ play.resourcepack.ai
 
 Join on Minecraft Java or Bedrock. It's the same address and the same worlds,
 so Java and Bedrock players see each other.
+
+## Linking your account
+
+Do this once. It tells Studio which player is you, so **Sync** knows where to
+send your pack. It also gives you your [in-game rank](#your-in-game-rank).
+
+<Steps>
+  <Step title="Get a code from Studio">
+    On your [account page](https://studio.resourcepack.ai/account), under
+    **Minecraft account**, press **Get link code**. It's good for ten
+    minutes.
+  </Step>
+  <Step title="Run it in game">
+    ```
+    /permlink 48213097
+    ```
+    The account page updates on its own once it works.
+  </Step>
+</Steps>
+
+## Seeing your pack
+
+Once you're linked there's no per-pack setup: press **Sync** on any pack while
+you're on the server and it arrives. On Java it loads where you stand; on
+Bedrock you're briefly disconnected and reconnected.
+
+<Callout type="note">
+  The pack goes to **you**, not to the whole server. Someone standing next to
+  you won't see it.
+</Callout>
+
+## Trying out each asset
+
+Reskins are live as soon as the pack loads: every reskinned block, item or
+sound in the world uses your version. For everything else, the asset's page in
+Studio has a button that does it for you while you're on the server:
+
+| Asset | Button | What happens in game |
+| --- | --- | --- |
+| Model | **Give in-game** | The model's item lands in your hand. Right-click a block to place it; punch it to pick it back up |
+| Block | **Give in-game** | You're handed the vanilla block it reskins |
+| Item | **Give in-game** | You're handed the item, tagged so it wears your sprite |
+| GUI | **Open in-game** | The reskinned screen opens in front of you |
+| Icon | **Send in-game** | The Icon arrives in your chat |
+| Sound | **Play in-game** | The Sound plays where you're standing |
+
+Each button sits next to the matching command, so you can copy that instead to
+type it yourself or use it on your own server.
 
 ## Where to build
 
@@ -49,7 +99,9 @@ It's removed after **a week without a visit**; any visit resets the clock.
 | `/shared` (or `/plot`) | Straight to the shared sandbox in the lobby |
 | `/leave` | Leave the sandbox you're in |
 | `/hub`, `/lobby`, `/spawn` | Back to the lobby |
-| `/cinematic` | Play the server's intro flythrough |
+| `/builder` | Every model in the pack you synced, in a menu to take them from. The Builder NPC in both sandboxes opens the same menu |
+| `/arena` | Go to the boss arena and fight the Brass Colossus. `/arena leave` brings you back |
+| `/cinematic` | Take the balloon tour of the server |
 
 <Callout type="tip">
   Use `/floor`, `/time` and `/weather` to judge a texture against white
@@ -78,51 +130,3 @@ from your ResourcePack AI account. A Creator or Studio subscription shows as
 the **Creator** or **Studio** rank. **Early Access** and **Supporter** are
 badges that sit alongside your plan rank. Your rank colours your name.
 Starter has no rank.
-
-## Linking your account
-
-Do this once. It's what lets **Sync** find you on the server, and what gives
-you the rank above.
-
-<Steps>
-  <Step title="Get a code from the Studio">
-    On your [account page](https://studio.resourcepack.ai/account), under
-    **Minecraft account**, press **Get link code**. It's good for ten
-    minutes.
-  </Step>
-  <Step title="Run it in game">
-    ```
-    /permlink 48213097
-    ```
-    The account page updates on its own once it works.
-  </Step>
-</Steps>
-
-## Loading your pack
-
-Once you're linked there's no per-pack setup: press **Sync** on any pack while
-you're on the server and it arrives. On Java it loads where you stand; on
-Bedrock you're briefly disconnected and reconnected.
-
-<Callout type="note">
-  The pack goes to **you**, not to the whole server. Someone standing next to
-  you won't see it.
-</Callout>
-
-## Getting what you made in front of you
-
-Reskins are live as soon as the pack loads: every reskinned block, item or
-sound in the world uses your version. For everything else, the asset's page in
-Studio has a button that does it for you while you're on the server:
-
-| Asset | Button | What happens in game |
-| --- | --- | --- |
-| Model | **Give in-game** | The model's item lands in your hand. Right-click a block to place it; punch it to pick it back up |
-| Block | **Give in-game** | You're handed the vanilla block it reskins |
-| Item | **Give in-game** | You're handed the item, tagged so it wears your sprite |
-| GUI | **Open in-game** | The reskinned screen opens in front of you |
-| Icon | **Send in-game** | The glyph arrives in your chat |
-| Sound | **Play in-game** | The event plays where you're standing |
-
-Each button sits next to the matching command, so you can copy that instead to
-type it yourself or use it on your own server.

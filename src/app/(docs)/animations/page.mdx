@@ -47,8 +47,14 @@ Vanilla Minecraft can't animate a model, so playback in game is done by
     Before the first keyframe and after the last, the value holds still.
   </Step>
   <Step title="Choose when it plays">
-    Pick one or more triggers (below). An animation with no triggers never
+    Pick one or more [triggers](#triggers): on a loop, when placed, when
+    clicked, when a player comes near. An animation with no triggers never
     plays on its own, though a plugin can still play it by name.
+  </Step>
+  <Step title="Try it in game">
+    On a server running RP Engine, press **Sync** (it sends the pack to you in
+    game), then **Give in-game** on the model's page and right-click a block
+    to place it. Sync again after each change.
   </Step>
 </Steps>
 
@@ -69,6 +75,14 @@ build something in stages. It costs about 15 credits.
 
 Edits you make while it runs are kept: the result is merged onto your latest
 save.
+
+### Importing from another model
+
+**Import animation** in Animate mode copies an animation from any other
+animated model in the pack. An animation that moves every part the same way
+(a tilt, a bob) goes onto every part of this model; anything else is matched
+by bone and cube names, or by order when both models have the same number of
+cubes. The dialog says how many parts it reached before you import.
 
 ## Triggers
 
@@ -98,8 +112,7 @@ How they behave:
   come back.
 
 <Callout type="note" title="Left click makes a model unbreakable">
-  A model with an "On left click" trigger can't be punched to pick it up,
-  otherwise the first hit would break it instead of animating it. Give
+  A model with an "On left click" trigger can't be punched to pick it up. Give
   players another way to remove it if they need one.
 </Callout>
 
@@ -125,19 +138,15 @@ Call these on the main thread, and remember a model in an unloaded chunk
 isn't found. The full API, including listening for clicks on a model, is in
 [For plugin developers](/rp-engine/api).
 
-## How playback works
+## If it looks different in game
 
-Useful to know when something looks wrong in game:
-
-- When you Sync, the animations go to the server with the pack. RP Engine
-  saves them, so placed models keep animating after a restart.
-- A placed animated model is several display entities, one per moving part,
-  plus one for everything that doesn't move.
-- On Java the server updates moving parts ten times a second and the client
-  smooths between updates. That keeps a build full of animated props cheap
-  for the server.
-- The editor and RP Engine use the same keyframe maths, so what you preview
-  is what plays.
+- What you preview in the editor is what plays: the editor and RP Engine use
+  the same keyframe maths.
+- RP Engine saves the animations it was sent, so placed models keep animating
+  after a restart. If a model plays an old version, Sync again.
+- On Java the server updates moving parts ten times a second and the player's
+  game smooths between updates, which keeps a build full of animated props
+  cheap for the server.
 
 ## On Bedrock
 

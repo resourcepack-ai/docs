@@ -1,28 +1,40 @@
 export const metadata = {
   title: "RP Engine",
   description:
-    "A custom content engine for Spigot, Paper and Folia: items, models, emotes, sounds, icons, screens, recipes, entities and liquids, from a folder on your server.",
+    "A custom content engine for Spigot, Paper and Folia: items, models, emotes, sounds, icons, screens, recipes, mobs, vehicles and liquids, from a folder on your server.",
 };
 
 # RP Engine
 
-RP Engine is a plugin for Spigot, Paper and Folia servers (Minecraft 1.19.4 and newer)
-that adds things vanilla Minecraft does not have: swords with their own
+RP Engine is a plugin for Spigot, Paper and Folia servers (Minecraft 1.19.4 and
+newer). It adds things vanilla Minecraft does not have: swords with their own
 models, chairs you can sit in, emotes, custom sounds, icons in chat, artwork
 behind your menus, recipes, mobs, vehicles and liquids.
 
-You describe each one in a few lines of YAML in a folder on your server. The
-plugin turns that folder into a resource pack (the zip of textures, models and
-sounds a Minecraft client downloads), sends it to every player who joins, and
-makes the content work on the server side.
+You describe each one in a few lines of YAML in a folder on your server, the
+**content folder**. The plugin turns that folder into a resource pack (the zip
+of textures, models and sounds a Minecraft client downloads), sends it to every
+player who joins, and makes the content work on the server side. You never
+build or upload a zip yourself.
 
-You never build or upload a zip yourself. The plugin builds the pack and
-serves it.
+## Getting your content onto the server
+
+There are three ways in, and you can mix them:
+
+| You have | Do this |
+|---|---|
+| Your own YAML and art | Make a folder in `plugins/RPEngine/content/`. See [The content folder](/rp-engine/content) |
+| A pack exported from [Studio](https://studio.resourcepack.ai), or any resource pack `.zip` | Drop the `.zip` into `plugins/RPEngine/content/` and run `/rp reload`. See [Adding a resource pack](/rp-engine/resource-packs) |
+| A pack published in Studio that you want to keep up to date | Run `/rp distribute <code>`, with the code from the pack's Distribution page. New releases arrive by themselves. See [Distribution](/distribution) |
+
+To try a Studio pack on yourself before anybody else sees it, use
+[`/rp sync`](/rp-engine/commands#studio) instead: it sends the pack to you
+alone and changes nothing on the server.
 
 <Callout type="note" title="Studio is optional">
-  RP Engine works entirely from files on disk. [Studio](https://studio.resourcepack.ai)
-  makes the art with AI and can push it straight to a running server, which is
-  faster, but you never need it.
+  RP Engine works entirely from files on disk. Studio makes the art with AI
+  and can send it straight to a running server, which is faster, but you never
+  need it.
 </Callout>
 
 ## What it can hold
@@ -34,35 +46,37 @@ serves it.
 | [Actions](/rp-engine/actions) | What an item does when it is used, hit with, and so on |
 | [Models](/rp-engine/models) | Put down, [sat on](/rp-engine/placement-options), [animated](/rp-engine/animation), [worn by a mob](/rp-engine/mobs) |
 | [Emotes](/rp-engine/emotes) | Worn or performed, alone or with other players |
-| [Sounds](/rp-engine/sounds) | Real sound events, with subtitles |
+| [Sounds](/rp-engine/sounds) and [music](/rp-engine/music) | Real sound events with subtitles, and background playlists |
 | [Icons](/rp-engine/icons) | Pictures that behave like letters, anywhere text shows |
 | [GUIs](/rp-engine/screens) | A picture drawn behind a chest-style menu |
 | [HUD](/rp-engine/hud) | Overlays drawn over the game screen |
+| [Dialogs](/rp-engine/dialogs) | Minecraft's own pop-up screens, with buttons and inputs (1.21.6+) |
+| [Text Effects](/rp-engine/text-effects) and [VFX](/rp-engine/vfx) | Text that waves or burns, and spell effects in the world |
+| [Rank Tags](/rp-engine/rank-tags) | Drawn rank badges for chat and name tags |
 | [Recipes](/rp-engine/recipes) | Crafting, cooking, stonecutting, smithing, brewing, anvils |
-| [Entities](/rp-engine/entities) | A real mob wearing a model |
+| [Entities](/rp-engine/entities) | Custom mobs wearing a model, with [skills](/rp-engine/skills), drops and spawners |
 | [Vehicles](/rp-engine/vehicles) | Cars, boats and aircraft players drive |
 | [Liquids](/rp-engine/liquids) | Pools with their own rules |
 
 ## Two ideas worth knowing
 
-**One ID for everything.** `mypack:ruby` is the item, the path to its model
-and what is stored on the item stack. There are no numbers to allocate or keep
-in sync. If you refer to content from another plugin's config, store the ID.
-See [IDs and namespaces](/rp-engine/ids).
+**One ID for everything.** `mypack:ruby` is the item, the path to its art and
+what is stored on the item stack. There are no numbers to allocate. If another
+plugin's config refers to your content, write the ID. See
+[IDs and namespaces](/rp-engine/ids).
 
-**Players can hold several packs at once.** Content is built into
-[bundles](/rp-engine/bundles), and on 1.20.3 and newer a player can hold more
-than one, so a lobby pack and a dungeon pack can be separate. Swapping back to
-a bundle a player already has is instant.
+**Reloads are cheap for players.** The same content always builds to the same
+pack, so a restart that changes nothing makes nobody download anything. See
+[Bundles](/rp-engine/bundles) and [Reloading](/rp-engine/reloading).
 
 ## Where to go next
 
 <CardGroup>
   <Card title="Installing" href="/rp-engine/install">
-    The jar, the version floor, and your first item.
+    The jar, what your server needs, and your first item.
   </Card>
   <Card title="The content folder" href="/rp-engine/content">
-    How a pack is laid out on disk.
+    How a pack is laid out on disk, and what the warnings mean.
   </Card>
   <Card title="Commands" href="/rp-engine/commands">
     Every command and the permission it needs.

@@ -20,7 +20,8 @@ ruby_block:
     R: mypack:ruby       # a space in the pattern is an empty slot
 ```
 
-`/rp recipes` lists what loaded.
+Put recipes in a `recipes/` folder of your [content folder](/rp-engine/content)
+(here `mypack`) and run `/rp reload`. `/rp recipes` lists what loaded.
 
 ## Types
 
@@ -156,7 +157,7 @@ plain_stick:
 `items.vanilla-recipes: true` in the [config](/rp-engine/config#vanilla-recipes)
 does the same for every item.
 
-## Replacing a vanilla recipe
+## Replacing or removing a vanilla recipe
 
 To swap one of the game's recipes for your own, add `replaces:` with its ID:
 
@@ -179,6 +180,10 @@ The ID is the one `/recipe give` lists, which isn't always the item's name:
 iron from raw iron in a furnace is `minecraft:iron_ingot_from_smelting_raw_iron`.
 A wrong ID shows a warning when the pack loads. If your recipe fails to load,
 the vanilla one is left alone.
+
+RP Engine can only take a vanilla recipe away by replacing it with one of yours:
+there is no option that just removes one. To remove a recipe outright, use a
+datapack or a plugin made for that.
 
 ## Naming
 

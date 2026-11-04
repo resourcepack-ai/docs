@@ -35,6 +35,9 @@ you recover handles from an earlier run.
 Treat the handle as an opaque string. To tell assets apart, read the asset's
 `type` field (`block`, `item3d`, `dialog` and so on), not the handle.
 
+A player [Skin](/api-reference/generate-skin) belongs to no pack, so its handle
+is `skin:<id>` and its answer carries `skin` instead of `asset`.
+
 A [pack import](/api-reference/import-pack) has a different handle,
 `<pack>:import`. Polling it returns the same three statuses, plus an `import`
 report of what came in and what was left out.
@@ -42,20 +45,17 @@ report of what came in and what was left out.
 Shaders, VFX and emotes are kept apart from a pack's files, and an
 [AI edit](/api-reference/edit-asset) changes an asset that already exists, so
 their handles name that instead of a file format: `<pack>:shader:<id>`,
-`<pack>:vfx:<id>`, `<pack>:emote:<id>` and `<pack>:edit:<key>`. They poll the
+`<pack>:vfx:<id>`, `<pack>:emote:<id>`, `<pack>:emote_group:<id>` and
+`<pack>:edit:<key>`. They poll the
 same way and answer the same three statuses, without an `asset` in the answer.
 An edit's job reads `ready` once the change is saved. The [asset listing](/api-reference/list-assets) includes shaders, VFX,
 emotes and emote groups, with these handles as their ids.
 
 ## Polling always ends
 
-A loop that waits for the status to leave `generating` is safe to write:
-
-| | Limit |
-| --- | --- |
-| A generation run | Stopped after 20 minutes |
-| A run that dies without reporting | Reads as `error` after 25 minutes |
-| A model | Reads as `error` after 45 minutes |
+A loop that waits for the status to leave `generating` is safe to write. A
+run that dies without reporting reads as `error` after 25 minutes (45 for a 3D
+Model), so the loop always ends.
 
 <Callout type="tip" title="How often to poll">
   Every couple of seconds is plenty for blocks, items and icons, which come

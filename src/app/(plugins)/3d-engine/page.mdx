@@ -17,12 +17,12 @@ download from Sketchfab or export from Blender.
 The plugin bakes each file into a form the game can draw, builds a resource
 pack from them and sends it to players as they join. Players install nothing.
 
-## Requirements
+## What you need
 
 - **Spigot or Paper on Minecraft 26.3**, with **Java 21**. Players need to be
   on 26.3 too.
-- Models that walk use Paper's mob pathfinding on Paper and the engine's own
-  path search on Spigot. Everything else is the same on both.
+- Nothing else. Models that walk use Paper's pathfinding on Paper and the
+  engine's own on Spigot; everything else is the same on both.
 
 ## Installing
 
@@ -71,6 +71,11 @@ one when a reload changes it.
 **Already sending your own pack?** Set `pack.send: false` and merge
 `pack.zip` into yours after every reload. `/3d pack` sends you the engine's
 pack again, to check it arrives.
+
+**Adding your own files to it.** Anything in `plugins/3DEngine/pack/` goes into
+the pack at the same path, on the next reload: `assets/myserver/sounds.json`
+and its sounds, a font, an item model. Use a namespace of your own. A file at a
+path the engine writes itself (its shaders and models) is left out.
 
 <Callout type="warning" title="The pack replaces some of the game's shaders">
   Models are drawn by core shaders, so the pack replaces the game's `block`,
@@ -439,7 +444,7 @@ first bake waits for the first tick.
 
 | Type | What it is |
 |---|---|
-| `Engine3D` | Models and instances: `spawn` (not saved), `place` (saved), `mover`, `item(model, state)` for an item that looks like the model, and `effect`, `particle` and their variants |
+| `Engine3D` | Models and instances: `spawn` (not saved), `place` (saved), `mover`, `item(model, state)` for an item that looks like the model, `effect`, `particle` and their variants, and `packFolder()` for files your plugin adds to the pack |
 | `Model` | A baked model: its states, points, seats, height, and the extra keys from its `.yml` |
 | `ModelInstance` | One model in the world: change state, find where a point is on any frame, scale, seat riders, look at things, turn hitboxes on and off |
 | `Mover` | Legs for a model: an invisible mob that follows, goes to a place, faces, and plays walk, run and turn to match its speed |

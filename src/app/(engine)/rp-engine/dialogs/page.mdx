@@ -1,17 +1,22 @@
 export const metadata = {
   title: "Dialogs",
   description:
-    "Menus the game draws itself (1.21.6+): buttons that run commands, pages, a command of their own, per-player settings, and Studio's drawn dialogs.",
+    "Menus the game draws itself (1.21.6+): buttons that run commands, pages, a command of their own, per-player settings, the Quick Actions key, and Studio's drawn dialogs.",
 };
 
 # Dialogs
 
-A dialog is the screen a server opens on a player, in Minecraft 1.21.6 and
-newer. Unlike a [GUI](/rp-engine/screens), it is not a container wearing a
-picture: it is a real menu the game draws, with real buttons that run real
-commands.
+A dialog is a menu the server opens on a player's screen, in Minecraft 1.21.6
+and newer: a title, some text, and buttons that run commands. Use one for a
+welcome screen, a warp menu, a settings page or a staff tool. Unlike a
+[screen](/rp-engine/screens), it isn't a chest wearing a picture; the game draws
+real buttons.
 
 ![A settings dialog open in game](/images/dialogs.webp)
+
+## Making one
+
+Write it in a `dialogs/` folder of your [content folder](/rp-engine/content):
 
 ```yaml
 # mypack/dialogs/menus.yml
@@ -31,24 +36,41 @@ welcome:
       url: https://example.com
 ```
 
-`/rp dialogs` lists them and `/rp dialog mypack:welcome` opens one.
+Run `/rp reload`, then `/rp dialogs` lists them and `/rp dialog mypack:welcome
+[player]` opens one.
 
-A button does exactly one thing, named by its key: `command:`, `console:`,
-`suggest:`, `url:`, `copy:` or `dialog:` (another dialog's id). A button with
-none of them just closes the screen, which is what an Ok button is. One button
-makes a notice, two a yes/no, three or more a grid.
+<Callout title="RP Engine or Dialog Engine?">
+  [Dialog Engine](/dialog-engine) is a separate plugin for dialogs only. The two
+  don't share dialogs: a dialog written here opens with `/rp dialog`, and one
+  written for Dialog Engine opens with `/de open`. Use RP Engine's if you already
+  run RP Engine; use Dialog Engine if dialogs are all you need, or you want its
+  inputs and click events.
+</Callout>
 
-`console:` (0.2.41 and newer) is for a command only the dialog should give a
-player. The server runs it as the console, with `{player}` and the dialog's
-other placeholders filled for whoever clicked. The command never reaches their
-game: the button runs `/rp click <key>`, and RP Engine runs the command only for
-a player whose open dialog has that button. Typing it in chat does nothing, and
-nobody can change a word of it. Studio's **Run as console** action is the same
-thing. A button pressed twice runs twice, so for something given once, check
-first or close the dialog after it.
+## What a button does
 
-A list under `command:` or `console:` (0.2.51 and newer) is several commands on
-one button, up to 16, run in order and stopping at the first that fails:
+Each button does one thing, named by its key:
+
+| Key | What happens on a click |
+|---|---|
+| `command:` | The player runs the command, with their own permissions |
+| `console:` | The console runs it, with `{player}` filled in for whoever clicked |
+| `suggest:` | The command is typed into their chat box, not sent |
+| `url:` | Opens a link (the game asks first) |
+| `copy:` | Copies the text to their clipboard |
+| `dialog:` | Opens another dialog by its id |
+| none | Just closes the dialog, like an Ok button |
+
+A button also takes `label:` (default "Ok"), `tooltip:` and `width:` (default
+150). One button makes a notice, two a yes/no, three or more a grid.
+
+**`console:`** is for a command a player should only get from the dialog, such
+as a warp they can't type. Typing it in chat does nothing, and nobody can change
+a word of it. A button pressed twice runs twice, so for something given once,
+check first or close the dialog after it.
+
+**Several commands on one button**: give `command:` or `console:` a list, up
+to 16. They run in order and stop at the first that fails.
 
 ```yaml
     - label: Starter kit
@@ -59,12 +81,7 @@ one button, up to 16, run in order and stopping at the first that fails:
       command: [spawn, "kit starter"]   # the PLAYER runs both
 ```
 
-A game click runs one command, so a `command:` list runs `/rp run <key>`
-instead, and the engine runs each command as that player, with their own
-permissions, under the same check as `/rp click`. Studio writes the same for a
-**Run command** with more than one line.
-
-## A command of its own
+## Opening it with a command of its own
 
 ```yaml
 shop:
@@ -73,13 +90,13 @@ shop:
   title: Shop
 ```
 
-`/shop` opens the dialog on the player who typed it. A name another plugin
-already has is left to that plugin, and the console says so.
+If another plugin already has `/shop`, that plugin keeps it and the console
+says so.
 
 ## Dialogs about somebody
 
 Write `{target}`, or any name, anywhere a dialog has words or a command, and
-say what it is when you open it:
+give it a value when you open it:
 
 ```yaml
 punish:
@@ -93,14 +110,14 @@ punish:
 /rp dialog mypack:punish target=Steve Admin
 ```
 
-opens it for Admin, titled "Punish Steve". `{player}` and the other built-ins
-describe whoever the dialog is shown to, and PlaceholderAPI answers the rest
-when it is installed.
+opens it for Admin, titled "Punish Steve". `{player}` and the other
+[built-ins](/rp-engine/hud#live-values-in-text) describe whoever the dialog is
+shown to, and PlaceholderAPI answers the rest when it is installed.
 
 ## Settings per player
 
 Declare settings under `vars:` with every value they may take, and a button
-sets one with `/rp var`:
+changes one with `/rp var`:
 
 ```yaml
 settings:
@@ -113,8 +130,9 @@ settings:
 ```
 
 `{name?value:words|...}` picks the words for the player's value, and the last
-entry when none matches. Settings survive restarts, and other plugins read
-them as `%rpengine_var_show_sidebar%`. Quote `on`, `off`, `yes` and `no`.
+entry when none matches. Settings survive restarts, and other plugins read them
+as `%rpengine_var_show_sidebar%`. Quote `on`, `off`, `yes` and `no`, or YAML
+reads them as true and false.
 
 ## Pages
 
@@ -132,15 +150,22 @@ settings:
 ```
 
 A player can only reach a page through a button that runs exactly that
-command. After a restart, page turns happen on the client with no wait.
+command. After a server restart, page turns happen instantly on the client.
 
-## After a click
+## What happens after a click
 
-`after:` decides. `seamless`, the default, keeps the dialog up until the
-engine has answered the click, so a dialog the click opens takes its place
-with nothing in between. `close` closes at once, `none` stays open (and from 0.2.57 is drawn again
-after a `console:` button or a `command:` list runs, so placeholders catch up), and
-`wait_for_response` shows the game's waiting screen.
+`after:` decides:
+
+| Value | What the player sees |
+|---|---|
+| `seamless` (default) | The dialog stays up until the server has answered, so a dialog the click opens replaces it with no flicker |
+| `close` | Closes at once |
+| `none` | Stays open. It is drawn again after a `console:` button or a command list runs, so changed values show |
+| `wait_for_response` | The game's "waiting for response" screen |
+
+`can_close_with_escape: false` stops Esc closing it (a dialog with no buttons
+always closes with Esc). `pause: true` pauses a single-player world, and only
+works with `close` or `wait_for_response`.
 
 ## Click sounds
 
@@ -154,17 +179,58 @@ shop:
     - { command: "buy {item}", sound: "" }   # this click is silent
 ```
 
+## On the Quick Actions key (G)
+
+Minecraft 1.21.6 added a Quick Actions key, G by default. `quick-action:` puts a
+dialog on it; with several, G shows a list.
+
+```yaml
+hub:
+  title: "Hub for {player}"
+  quick-action: true             # G opens the dialog itself (Paper only)
+warps:
+  title: Warps
+  quick-action:
+    mode: launcher               # G opens a button that opens it fresh
+    label: Warps                 # its name in G's list
+```
+
+The key opens a copy the player received as they joined, so with `true` its
+placeholders show what was true at join time. `launcher` opens a one-button
+screen instead, whose button opens the dialog fresh. Spigot, and any dialog with
+a `permission:` or the player's items in it, always uses the launcher. **A
+change takes a server restart**, and the console says when one is due.
+
+## Reacting to a click in your own plugin
+
+RP Engine has no "button clicked" event: a button runs a command, so register
+that command in your plugin and handle it there. To change what a dialog shows,
+set values from code with `dialogs().set(...)` and open it again. See
+[Dialogs in the API](/rp-engine/api#dialogs). Moving an item in a Studio dialog's slots
+fires `DialogSlotMoveEvent`, which you can cancel.
+
 ## Dialogs from Studio
 
-A [dialog made in Studio](/dialogs) arrives with a sync, as `studio:<id>`
-(and `studio:<id>.<page>` for its pages), drawn in Studio's art. Everything
-above is set in Studio's editor: live values, player settings on switches and
-sliders, pieces shown only to some players ("Show when"), item slots, live
-progress bars, player heads and click sounds. RP Engine fills each in for the
-player it is shown to.
+A [dialog made in Studio](/dialogs) arrives when you push the pack to your
+server (see [Testing on your server](/testing/plugin)), with the id `studio:<id>` (and
+`studio:<id>.<page>` for its pages), drawn in Studio's art. Everything above is
+set in Studio's editor instead: live values, settings on switches and sliders,
+pieces shown only to some players ("Show when"), item slots, live progress
+bars, player heads and click sounds. RP Engine fills each in for the player it
+is shown to.
+
+A dialog exported from Studio as a JSON file works without a push too:
+
+```yaml
+shop:
+  json: mypack/dialogs/shop.json   # path inside the content folder
+```
+
+The same `json:` key takes any `minecraft:dialog` file you wrote yourself, for
+anything the keys on this page can't say.
 
 ## Versions
 
-A dialog needs **Minecraft 1.21.6**. Below it the definitions still load and
-`/rp dialogs` says why nothing opens. A [GUI](/rp-engine/screens) is the older
-way to do the same job and works everywhere.
+A dialog needs **Minecraft 1.21.6**. On an older server the definitions still
+load and `/rp dialogs` says why nothing opens. A [screen](/rp-engine/screens) is
+the older way to make a menu and works on every version.

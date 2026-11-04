@@ -6,13 +6,15 @@ export const metadata = {
 
 # Reloading
 
+After you change anything in the content folder, run:
+
 ```
 /rp reload
 ```
 
-Re-reads every pack and `config.yml`, rebuilds every bundle, and sends the new
-pack to everybody holding one. Players see a short reload of their resource
-pack.
+It re-reads every pack and `config.yml`, rebuilds the resource pack, and sends
+it to everybody online. Players see a short reload of their resource pack. If
+nothing changed, nobody downloads anything.
 
 ## A pack is replaced whole
 
@@ -28,7 +30,8 @@ A bad definition is skipped and the rest of the pack loads. A broken pack
 never stops another one loading.
 
 The console lists every problem in one go, with the file and the ID, so you
-can fix them all before reloading again.
+can fix them all before reloading again. [The content folder](/rp-engine/content#if-the-console-warns-you)
+explains the common warnings.
 
 ## What survives
 

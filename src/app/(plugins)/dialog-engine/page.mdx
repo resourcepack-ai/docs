@@ -23,6 +23,15 @@ A dialog is drawn by the game itself, so it needs no resource pack. The one
 exception is a [drawn dialog](#drawn-dialogs), which is a picture designed in
 the browser and comes with a small pack of its own.
 
+<Callout title="Dialog Engine or RP Engine?">
+  [RP Engine](/rp-engine/dialogs) has dialogs too, but the two plugins don't
+  share or sync them: a Dialog Engine dialog opens with `/de open`, an RP
+  Engine one with `/rp dialog`. Use Dialog Engine when dialogs are all you
+  need, or you want text boxes, conditions, lists and a click event in Java.
+  For a screen with a mouse pointer written in HTML, see [MC GUI](/mcgui).
+  [Which plugin for menus](/plugins#which-plugin-for-menus) compares them all.
+</Callout>
+
 ## Installing
 
 <Steps>
@@ -203,7 +212,7 @@ A body entry is a string (one line of text) or a map:
 | Key | What it does |
 |---|---|
 | `text:` | MiniMessage. A list is several lines. `width:` 1 to 1024, default 200 |
-| `item:` | An item id, drawn with `description:` beside it. Also takes `name:`, `lore:`, `amount:`, `model:` (an item model id), `glow:`, `tooltip:` (`false` turns off its hover tooltip), `decorations:` (`false` hides its count and durability bar), and `width:`/`height:` 1 to 256 |
+| `item:` | An item id, drawn with `description:` beside it. Also takes `name:`, `lore:`, `amount:`, `model:` (an item model id), `custom-model-data:`, `glow:`, `tooltip:` (`false` turns off its hover tooltip), `decorations:` (`false` hides its count and durability bar), and `width:`/`height:` 1 to 256 |
 | `head:` | A player's name, drawn as their head |
 | `if:` | Only drawn when this holds. See [Conditions](#conditions) |
 | `for-each:` | Drawn once per row of a list. See [Lists and pages](#lists-and-pages) |
@@ -218,6 +227,22 @@ body:
       - "<white>1.</white> <gray>Be kind."
       - "<white>2.</white> <gray>No cheats."
     width: 260
+```
+
+An item from ItemsAdder, Nexo, Oraxen or your own resource pack is drawn as
+itself with `model:` or `custom-model-data:`, the same way the plugin gives the
+real item:
+
+```yaml
+body:
+  - item: paper
+    model: nexo:ruby            # its item model
+  - item: paper
+    custom-model-data: 1001     # a custom model data number
+  - item: paper
+    custom-model-data:          # or the game's own lists, by name
+      floats: [1001]
+      strings: ["{gem}"]        # placeholders are filled first
 ```
 
 ### Inputs
@@ -565,8 +590,7 @@ there are two modes:
 Direct needs Paper. On Spigot, and for a dialog with a `permission:` or a
 `json:` dialog, G opens the launcher instead. A drawn dialog goes on the key
 with `quickAction: true` in its `dialog.yml` (or the editor's Quick Actions
-switch), and opens directly too since 0.6.5; `quickAction: launcher` keeps the
-launcher, and a drawn dialog showing the player's own items always uses it.
+switch), and opens directly too; `quickAction: launcher` keeps the launcher, and a drawn dialog showing the player's own items always uses it.
 While a drawn dialog is on the key, players are sent the drawn dialog pack as
 they join, so it is ready before they first press G.
 

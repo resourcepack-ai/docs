@@ -9,18 +9,21 @@ export const metadata = {
 A VFX is a spell or ability effect drawn in the world out of glowing sprites:
 a sword slash, a ring of ice spikes, a lightning storm, a black hole, a
 tornado, a shield that takes a hit and shatters. It plays where a player
-stands, facing the way they face, with its own sounds.
+stands, facing the way they face, with its own sounds. Use one for a class
+ability, a boss attack, a rank's arrival or a minigame moment. It needs
+[RP Engine](/rp-engine/vfx) on the server to play.
 
 ![VFX made in Studio: a shield dome, a black hole, a pillar of light and a slash](/images/vfx.webp "plain")
 
 ## Making one
 
-Press **Add asset** and pick the **VFX** tab. Either describe it ("a meteor
-shower that leaves glowing craters") and Studio builds the whole effect, which
-costs AI Credits (from 30) and takes a minute or two, or pick one of the 10
-presets, which are free and ready at once: Void Slash, Frost Nova,
-Thunderstorm, Pillar of Light, Black Hole, Starfall, Sanctuary Bloom, Rift Eye,
-Tornado and Aegis Dome.
+Press **Add asset** and pick the **VFX** tab. Then either:
+
+- **Describe it** ("a meteor shower that leaves glowing craters"). It costs 30
+  credits and takes a minute or two.
+- **Pick one of the 10 free presets**, ready at once: Void Slash, Frost Nova,
+  Thunderstorm, Pillar of Light, Black Hole, Starfall, Sanctuary Bloom, Rift
+  Eye, Tornado and Aegis Dome.
 
 ## The VFX's page
 
@@ -33,11 +36,10 @@ game. Drag to look around it, and scrub through it to stop on a moment.
   to.
 - **Recipe**: downloads the effect as JSON, which RP Engine can play from a
   server's own content folder.
-- **Publish to the Gallery**: anybody can then copy it into a pack of their
+- **Publish to Gallery**: anybody can then copy it into a pack of their
   own.
 
-There is no editor: a VFX is a timeline of sprites, sounds and sparks, and you
-change it by asking.
+There is no editor: you change a VFX by asking.
 
 ## Effects that loop
 
@@ -53,14 +55,19 @@ and Studio gives it a loop section, or ask an existing one with **Edit with AI**
 
 ## Playing it in game
 
-A VFX needs [RP Engine](/rp-engine/vfx) 0.2.20 or newer on the server and
-Minecraft 1.21.4 or newer. Sync your pack, then press **Play in game**, or run
-`/rp cast studio:<id>`, where the id is the last part of the page's address. `/rp cast stop` ends every
-effect playing.
+You need [RP Engine](/rp-engine/vfx) 0.2.20 or newer on a Minecraft 1.21.4+
+server.
 
-The sprites travel in your pack, so a player sees a VFX only when their pack
-has it. Players who haven't synced see nothing, rather than missing-texture
-cubes.
+1. Press **Sync** and run the `/rp sync <code>` it shows in game. That sends
+   your pack, VFX included, to you on that server.
+2. Press **Play in game**, or run `/rp cast studio:<id>`. The id is the last
+   part of the VFX page's address. `/rp cast studio:<id> at <x> <y> <z>`
+   plays it at a place instead. `/rp cast stop` ends every effect playing.
+
+For every player, not just you, serve the pack with
+[Distribution](/distribution). A player whose pack doesn't have the VFX sees
+nothing. Playing it from other plugins, at coordinates, or on a loop is on
+[VFX in RP Engine](/rp-engine/vfx).
 
 ## Limits
 
@@ -72,5 +79,5 @@ cubes.
   server keeps 4,000 alive across every effect by default (the oldest effects
   end to make room). Server owners can change that; see
   [what it costs](/rp-engine/vfx#what-it-costs).
-- **A plain exported zip can't play one.** The zip carries the pictures; what
-  plays them is RP Engine.
+- **A plain exported zip can't play one.** The zip carries the pictures; RP
+  Engine plays them.

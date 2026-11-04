@@ -20,21 +20,19 @@ and again to open it.
 
 ## Installing
 
-Portals needs **Spigot or Paper 26.2** with players on **Java Edition 26.2** (the window
-is drawn by the game's own shaders, through a resource pack, and that part is
-written for 26.2), and **RP Engine 0.2.11** or newer, which draws the ring. No
-client mods. Bedrock players do not see portals.
+Portals needs **Spigot or Paper 26.2** with players on **Java Edition 26.2**
+(the window is drawn by shaders written for 26.2) and **RP Engine 0.2.11** or
+newer. No client mods. Bedrock players do not see portals.
 
 Drop `RPE-portals.jar` in `plugins/` beside `RPEngine.jar` and start the
-server. Its content (the ring, its sounds and the shaders that draw the window)
-installs itself into `plugins/RPEngine/content/portals/` on first boot, and the
-engine reloads once to pick it up.
+server. The ring, its sounds and its shaders install themselves into
+`plugins/RPEngine/content/portals/` (RP Engine's content folder, which the
+engine builds its resource pack from), and the engine reloads once.
 
-The window is drawn with the game's own block textures, which a server does not
-have, so on first start the plugin downloads the Minecraft client jar for your
-server's version from Mojang, once, into `plugins/RPEPortals/cache/`. Set
-`textures.download: false` to skip that, and every block is drawn in a flat
-colour instead.
+To draw real block textures in the window, the plugin downloads the Minecraft
+client jar for your version from Mojang once, into `plugins/RPEPortals/cache/`.
+Set `textures.download: false` to skip that; blocks are then drawn in flat
+colours.
 
 ## Placing portals
 
@@ -45,8 +43,8 @@ colour instead.
    at your mark.
 3. Walk into the ring. You come out of the other one.
 
-`/portals place` again moves your pair: a player has one pair at a time
-(`pairs-per-player` in the config), and placing another takes the oldest away.
+A player has one pair at a time (`pairs-per-player` in the config), so
+placing another takes the oldest away.
 
 | Command | What it does |
 |---|---|
@@ -85,8 +83,8 @@ your own portals.
 | `portals.reload` | `/portals reload` | Operators |
 | `portals.debug` | `/portals debug` | Operators |
 
-`portals.player` hands out everything a player needs and `portals.admin`
-everything; nothing checks either directly. Negate `portals.travel` to make
+`portals.player` grants every node a player needs (the ones defaulting to
+everyone) and `portals.admin` grants all of them. Negate `portals.travel` to make
 portals something to look through only.
 
 ## Configuration
@@ -95,6 +93,8 @@ portals something to look through only.
 
 ```yaml
 portal:
+  # The 3D shader object that draws a portal (an RP Engine object id).
+  object: portals:portal
   # Diameter in blocks. The hole is 80% of it.
   size: 5.8
   # How far in front of you a portal opens, in blocks.
@@ -113,6 +113,9 @@ sounds:
   loop: portals:portal_loop
   close: portals:portal_close
   volume: 1.5
+  # Ticks after opening before the hum starts, and between hums.
+  loop-first: 57
+  loop-every: 120
 ```
 
 Every message the plugin sends is under `messages:` in the same file, in
@@ -120,27 +123,20 @@ MiniMessage.
 
 ## What you see through one
 
-The window shows the blocks on the far side, ray-traced by the game's text
-shader from maps the plugin sends: 128 blocks across, 63 deep and 28 tall in
-full detail, with the block textures, plants, water, the biome's grass and leaf
-colours, the light, and the game's own ambient occlusion. Beyond that the land
-carries on for a few hundred blocks in coarser columns, treetops included, then
-the sky, drawn with the game's own sky colours and the very clouds the far side
-has, where it has them. Through a portal to the Nether you see its fog and its
-light.
+The window shows the far side's blocks in full detail for 128 blocks across,
+63 deep and 28 tall, with textures, water, biome colours and light. Beyond that
+the land carries on in coarser columns for a few hundred blocks, then the far
+side's sky and clouds. A block changed over there shows up within a second or
+so.
 
-It shows **blocks only**: players, mobs and dropped items on the far side are
-not in the window. What is drawn is read as the far side changes, a slice at a
-time, so a block placed over there appears within a second or so.
+Limits worth knowing:
 
-Two limits worth knowing:
-
-- **One mod of the text shader at a time.** The window is drawn by the game's
-  text shader, which a resource pack can replace only once. Another plugin that
-  replaces it too (RP Engine's own HUD shader objects, for one) and only one of
-  them works.
-- **It costs frame rate up close.** The window is a stack of maps in invisible
-  item frames, each drawn by the game. A shut portal, or one seen from behind,
+- **Blocks only.** Players, mobs and dropped items on the far side are not
+  shown.
+- **One text shader at a time.** The window is drawn by the game's text
+  shader, which only one resource pack can replace. If another plugin's pack
+  replaces it too, one of them stops working.
+- **It costs frame rate up close.** A shut portal, or one seen from behind,
   draws nothing.
 
 ## For plugin developers

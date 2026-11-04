@@ -9,7 +9,7 @@ export const metadata = {
 A vehicle is a model people can get into and drive: a car, a boat, a
 skateboard, a helicopter, a plane. It has up to eight seats, it stays parked
 where you left it (through restarts too), and anyone who right-clicks it gets
-in.
+in. Players drive with WASD on Paper 1.21.4 and newer.
 
 ![A player driving a go-kart, in game](/images/vehicles.webp)
 
@@ -18,8 +18,8 @@ There are two ways to make one:
 - **In Studio**: open any model, press **Vehicle** to make it one, place the
   seats in the vehicle editor and sync. Everything on this page is filled in
   for you.
-- **By hand**: a file in `vehicles/` in your content folder. The vehicle wears
-  the model of an item you already have.
+- **By hand**: a file in `vehicles/` in your [content folder](/rp-engine/content).
+  The vehicle wears the model of an [item](/rp-engine/items) you already have.
 
 ```yaml
 # vehicles/cars.yml
@@ -48,8 +48,9 @@ hatchback:
     moving: mypack:engine
 ```
 
-The vehicle's own id (`hatchback` here) can't also be the `model:` item's id,
-since that id is already taken by the item.
+Every key except `model:` and one driver seat is optional. The vehicle's own
+ID (`hatchback` here) can't be the same as the `model:` item's ID, which the
+item already uses.
 
 ## Parking and getting in
 
@@ -264,7 +265,7 @@ its own pace.
 
 There's one `turning` state for turning either way, so an animation on it can
 only steer one way. For front wheels that follow the steering, name an
-animation as `steering` (RP Engine 0.2.51 and newer):
+animation as `steering` (RP Engine 0.2.49 and newer):
 
 ```yaml
   steering: steer
@@ -426,12 +427,22 @@ every player nearby, so keep `count` and `interval` modest.
 
 ## For plugin developers
 
-Fuel, ownership, speed limits and no-vehicle zones are your plugin's job, and
-the [Plugin API](/rp-engine/api#vehicles) covers it: who is in what, seating
-and unseating people, switching a vehicle off, capping its speed, detaching
-named parts, and events for getting in and out, moving, state changes, crashes
-(`VehicleImpactEvent`) and bails (`VehicleBailEvent`, cancellable).
-`Vehicle.wallRiding()` says whether one is on a wall right now.
+Fuel, ownership, speed limits and no-vehicle zones are your plugin's job. The
+[Plugin API](/rp-engine/api#vehicles) gives you:
+
+- **Who is in what**: `driver()`, `occupants()`, `seat()`, `eject()`.
+- **Switching off and limiting**: `setEnabled(false)`, `setSpeedLimit()`,
+  `stop()`.
+- **Pushing it about**: `nudge()` (a kick along its heading), `spin()`,
+  `applyImpulse()` (also lifts a vehicle off the ground, from RP Engine 0.2.45).
+- **Reading and faking the controls**: `input()` is what the driver is
+  pressing. `drive(keys)` drives it as if somebody held those keys, and
+  `carry(entity, seat)` sits a non-player figure in a seat, so a plugin can run
+  bot racers (RP Engine 0.2.50).
+- **Tricks and parts**: `perform()` plays a one-off animation, `detachPart()`
+  throws a named part off, `wallRiding()` says whether it is on a wall.
+- **Events** for getting in and out, moving, state changes, crashes
+  (`VehicleImpactEvent`) and bails (`VehicleBailEvent`, cancellable).
 
 Addons can keep their own settings on a vehicle under an `addons:` key. The
 engine carries it through Studio syncs and `/rp edit` untouched; see the
