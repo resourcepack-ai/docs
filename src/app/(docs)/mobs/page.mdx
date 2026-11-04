@@ -6,16 +6,16 @@ export const metadata = {
 
 # Mobs
 
-A mob is a model that walks around and fights: a golem boss, a raccoon, a
-beetle. You make the model as usual, convert it, and then choose how it
-behaves, how tough it is, which animation plays when, what it sounds like and
-what it drops. Converting changes nothing about the model itself. The cubes,
-textures and animations are still edited in the model editor.
+A Mob is a custom creature for your server: a golem boss, a raccoon, a beetle.
+It's a 3D Model that walks around and fights. You can generate one from words,
+or convert a model you already have, and then choose how it behaves, how tough
+it is, which animation plays when, what it sounds like, what special attacks
+it has and what it drops.
 
 ![Mobs made in Studio: a cake golem, a baby dragon, a pumpkin reaper, a cave spider, a crystal penguin and a raccoon](/images/mobs.webp)
 
-Mobs are run by [RP Engine](/testing/plugin) 0.2.51 or newer, so they need it
-on the server. Our test server has it.
+Mobs need the [RP Engine](/rp-engine) plugin, 0.2.51 or newer, on your server.
+Our [test server](/testing/test-server) has it.
 
 ## Generating one from words
 
@@ -26,20 +26,17 @@ The quickest way to a mob is to describe it.
 2. Describe the creature: *"a waffle and cake golem boss with a crocodile
    jaw"*, *"a raccoon"*, *"a purple cave spider"*. A reference picture works
    here as it does for any model.
-3. Press **Generate**. The model is built as a creature made to be animated
-   (its head, jaw, legs, arms, tail and wings are separate parts), then it's
-   set up and animated in the same run: idle, walk, attack, hurt and death.
-   Last, it gets **sounds of its own**: an idle call, a hurt yelp, a death cry
-   and an attack, designed from what the creature is (a raccoon chitters, a
-   golem rumbles). Its card says it's generating, then animating.
+3. Press **Generate** (about 113 credits; the exact price is shown under the
+   prompt). It takes roughly 7 to 18 minutes and makes everything in one run:
+   the model, with its head, jaw, legs, tail and wings as separate moving
+   parts; its animations (idle, walk, attack, hurt and death); and its own
+   sounds (an idle call, a hurt yelp, a death cry and an attack). Its card
+   says it's generating, then animating.
 
-The price shown under the prompt covers all of it, and it's held while it runs
-and settled to what the run actually used. If the model is built but the
-animating fails, you keep the mob without animations and aren't charged for
-the animating. A sound that can't be made is skipped the same way: the mob
-keeps the vanilla sound for it and you aren't charged for it. The mob editor
-says what went wrong, and **Animate with AI** or **Generate sounds with AI**
-tries again.
+If a part of the run fails, you keep the rest and aren't charged for the part
+that failed: a mob whose animating failed has no animations, and a sound that
+couldn't be made keeps the vanilla one. The mob editor says what went wrong,
+and **Animate with AI** or **Generate sounds with AI** tries again.
 
 ## Making one by hand
 
@@ -55,9 +52,10 @@ tries again.
 
 ## Animate with AI
 
-At the foot of the mob editor's left column. It gives every part that moves a
-bone with the right pivot, then writes one animation for each state you tick,
-all at once, and points each state at its animation.
+For a mob you converted from a model. It's at the foot of the mob editor's
+left column and costs about 25 credits. It splits the model into moving parts
+(bones), writes one animation for each state you tick, and sets each state to
+play it.
 
 - **What is it, and how does it move?** Optional words that steer it: *"a
   heavy golem that stomps and bites"*, *"hops instead of walking"*.
@@ -65,21 +63,18 @@ all at once, and points each state at its animation.
   experience from the description, measures the hitbox off the model, works out
   which way it faces and picks its head. It's on for a mob that has no
   animations yet. Off, your settings are left alone and it only animates.
-  For a mob with no abilities yet, it also gives it the ones your words ask
-  for: *"a boss that slams the ground and summons minions at half health"*
-  comes back with a Ground Slam and a phase that calls minions, and with a
-  `slam` and a `summon` animation written for them beside the states (up to
-  two such animations, inside the same price). A VFX or sound an ability
-  wants that the pack doesn't have is left as a button on that step, with its
-  price, for you to make or not; nothing extra is generated on its own.
+  For a mob with no [abilities](#abilities) yet, it also adds the ones your
+  words ask for: *"a boss that slams the ground and summons minions at half
+  health"* comes back with a Ground Slam, a phase that calls minions, and an
+  animation for each (up to two, at no extra cost). If an ability wants a VFX
+  or sound the pack doesn't have, that step shows a button to make it, with
+  its price. Nothing extra is generated without you pressing it.
 - **States to animate**: Idle, Walk, Attack, Hurt and Death are ticked to start
   with. Run and Spawn are there if you want them; a blank Run plays Walk.
 
-Walk and the other loops repeat without a jump, death ends with the mob lying
-still, and the one-shots return to the rest pose so the next state starts
-cleanly. Running it again replaces the animations it writes and keeps any other
-animation the model has. It runs in the background: leave the editor and come
-back, and the states fill in when it finishes.
+Running it again replaces the animations it wrote and keeps any others the
+model has. It runs in the background, so you can leave the editor and come
+back.
 
 ## The mob editor
 
@@ -195,15 +190,12 @@ a mob with none set keeps its own sounds. Ambient plays every so often while a
 player is nearby.
 
 **Generate sounds with AI**, under the slots, makes the ambient, hurt, death
-and attack sounds for you, which is how a mob made before generated mobs had
-sounds, or one converted from a model, gets its own. Describe the creature
-(it starts from how the mob was asked for) and tick the sounds to make. Each
-comes out short (about half a second for hurt and attack, one and a half to
-two for ambient and death), mono so it comes from the mob in game, and
-levelled so the four sit together. They're ordinary sounds of the pack, named
-after the mob, with a second take on each sound's page if you prefer it. It's
-charged like generating a sound, per take, and the price is shown before you
-start.
+and attack sounds for a mob that doesn't have them, such as one converted from
+a model. Describe the creature and tick the sounds to make. They come out
+short, in mono (so they're heard from the mob in game) and at matching
+volumes, and are saved as ordinary Sounds in the pack, each with a second take
+to choose from. Each take is charged like generating a Sound; the price is
+shown before you start.
 
 ### Abilities
 
@@ -234,18 +226,15 @@ Plus a cooldown and a chance. **Add an ability** starts from nothing or from
 one of six: Ground slam, Summon minions at half health, Leap at its target,
 Poison aura, Fireball volley and Enrage phase.
 
-The **`</>`** button on an ability shows it as the
-[MythicMobs](https://mythiccraft.io) skill lines RP Engine runs, and you can
-edit it as lines: the first line says when, every line after it is a step.
-Anything RP Engine supports works there, not only what the form offers, and a
-line it can't read is pointed out as you type. Every trigger, target, condition
-and step RP Engine runs is listed on [Skills](/rp-engine/skills). Press the button again to go
-back to the form, which works as long as the lines only use what the form can
-show.
+**Writing abilities as text.** The **`</>`** button on an ability shows it as
+skill lines in [MythicMobs](https://mythiccraft.io) syntax, which RP Engine
+runs. The first line says when, every line after it is a step. Lines can use
+anything RP Engine supports, not only what the form offers (see
+[Skills](/rp-engine/skills) for the full list), and a line it can't read is
+pointed out as you type. Press the button again to go back to the form.
 
-Abilities need RP Engine 0.2.53 or newer. They reach the server with the rest
-of the mob when you sync; a mob on an older RP Engine walks and fights as
-before without them.
+Abilities need RP Engine 0.2.53 or newer. On an older version the mob walks
+and fights without them.
 
 ### Drops
 
@@ -256,7 +245,9 @@ drops nothing but its XP.
 
 ## Spawning it in game
 
-1. **Sync the pack** to a server running RP Engine.
+1. **Sync the pack**: press **Sync** and run the `/rp sync <code>` it shows on
+   a server running RP Engine. That sends the pack, mobs included, to you
+   there. For every player, serve it with [Distribution](/distribution).
 2. Press **Spawn in game** on the model's page (or **Give** on its card) to get
    a spawn egg for it. Use the egg on a block to hatch the mob there. This needs
    a 1.20.5 or newer pack.
@@ -284,8 +275,7 @@ newer). See [Bedrock and Geyser](/rp-engine/bedrock#custom-mobs-and-bound-models
 
 ## Exports
 
-A resource pack has no way to say a model is a mob, so the mob settings travel
-alongside a synced pack and RP Engine reads them there. They're also written
-into an exported Java pack's `studio-content.json`, which RP Engine reads when
-the zip is dropped into its content folder. The other exports carry the model,
-but not the mob.
+The mob settings reach RP Engine when you sync the pack or serve it with
+Distribution. An exported Java `.zip` carries them too (in its
+`studio-content.json`), and RP Engine reads them when the zip is dropped into
+its `content/` folder. The other exports carry the model, but not the mob.

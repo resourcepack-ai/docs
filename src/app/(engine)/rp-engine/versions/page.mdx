@@ -6,7 +6,9 @@ export const metadata = {
 
 # Minecraft versions
 
-RP Engine runs on **Paper, Folia or Spigot 1.19.4 or newer**, on Java 17 or newer.
+RP Engine runs on **Paper, Folia or Spigot 1.19.4 or newer**, on Java 17 or
+newer. This page says what you lose on an older version, so you can decide
+which version to run.
 
 Everything works on a current server. On an older one most of the plugin works
 the same and a few things are reduced. At startup the plugin checks your
@@ -17,7 +19,8 @@ because placed models are display entities, which do not exist before 1.19.4.
 
 <Callout type="note" title="If you can choose, choose 1.20.3 or newer">
   The two losses you would notice most, stacked bundles and models that glide
-  when they move, are both below 1.20.3. For dialogs, choose 1.21.6 or newer.
+  when they move, are both below 1.20.3. Emotes from your own content folder,
+  VFX and 3D objects need 1.21.4, and dialogs need 1.21.6.
 </Callout>
 
 ## What always works
@@ -27,7 +30,7 @@ These do not change with your version at all:
 - **Custom items**: their models, textures, names, lore, permissions and actions
 - **Custom blocks**, including hardness and the right tool
 - **Models** you place, sit on, animate and bind to entities
-- **Emotes**, including worn sets and held items
+- **Emotes pushed from Studio**, including worn sets and held items
 - **Sounds**, and the sound categories
 - **Icons** in chat, **GUI screens**, and **HUD overlays**
 - **Recipes**, apart from the smithing details below (and brewing, which needs Paper rather than a version), **custom entities** and **custom liquids**
@@ -44,6 +47,9 @@ These do not change with your version at all:
 | Any item wearable as armour | 1.21.2 | Only materials that are already armour can be worn. |
 | Per-item armour artwork | 1.21.4 | Worn armour draws with vanilla artwork. |
 | Item models addressed by name | 1.21.4 | Items are addressed by an allocated number instead. See below. |
+| Emotes from the content folder | 1.21.4 | No emote rigs (the copy of a player's skin an emote plays on) are built from players' skins, so a hand-written emote plays on nobody and `/emote` says so. Emotes pushed from Studio still work. |
+| VFX | 1.21.4 | VFX do not play, and `/rp cast` says so. |
+| 3D objects | 1.21.4 | [3D objects](/rp-engine/objects) are not available. |
 | Tinted water and lava | 1.21.6 | Liquids keep their vanilla colour. Everything else about a custom liquid works. |
 | Dialogs | 1.21.6 | Dialogs do not open: the game has no dialog screen before this. A [screen](/rp-engine/screens) is the older way to do the same job, and works everywhere. |
 | Player heads in dialogs | 1.21.9 | A Studio dialog's live player head is left empty. The rest of the dialog, its live words included, works as usual. |
@@ -78,8 +84,8 @@ things follow:
 ## The pack format
 
 The pack format is the number in a resource pack that tells the client which
-Minecraft version it was made for. You do not set it. RP Engine reads your server's version and writes the right
-`pack_format` into the built pack.
+Minecraft version it was made for. You do not set it. RP Engine reads your
+server's version and writes the right `pack_format` into the built pack.
 
 `config.yml` still has a `pack.format` key, commented out. It exists for one
 case: a Minecraft newer than your copy of RP Engine, whose format number the
@@ -92,7 +98,7 @@ On a current server, nothing. On an older one, it names each reduced feature,
 the version it needs, and what you get instead:
 
 ```
-[RPEngine] Running on Minecraft 1.20.1, so 10 features are reduced:
+[RPEngine] Running on Minecraft 1.20.1, so 12 features are reduced:
 [RPEngine]   - Multiple resource packs per player (needs 1.20.3). Players hold one
              pack at a time, so a player due more than one bundle gets only the last
              of them and the rest do not arrive. Swapping bundles still works and

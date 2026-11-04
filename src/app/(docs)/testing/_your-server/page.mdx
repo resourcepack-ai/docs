@@ -1,12 +1,12 @@
 export const metadata = {
   title: "Your own server",
   description:
-    "Install the ResourcePack AI plugin on your Paper or Spigot server so the Studio can push packs to your players.",
+    "Install RP Engine on your Paper, Spigot or Folia server so the Studio can push packs to your players.",
 };
 
 # Your own server
 
-The plugin gives you [our test server](/testing/test-server) on your own
+[RP Engine](/testing/plugin) gives you [our test server](/testing/test-server) on your own
 server. Not a cut-down version of it: pack pushes, placing and picking up
 models, the animation engine, sound playback and custom GUI screens all work
 exactly as they do on <ServerAddress />.
@@ -18,14 +18,14 @@ uploading a zip anywhere.
 
 <Callout type="note" title="A building tool, not a distribution channel">
   Linking is per player, so it's how you and the people building with you see
-  a pack while it's being made. A public server serves its pack the ordinary
-  way, from an exported `.zip` in `server.properties`, and that needs nothing
-  of ours installed. See [Exporting a pack](/exporting).
+  a pack while it's being made. To serve a pack to every player, use
+  [Distribution](/distribution), or point `server.properties` at an
+  [exported](/exporting) `.zip`, which needs nothing of ours installed.
 </Callout>
 
 <Callout type="note" title="Requirements">
-  A Paper or Spigot server on **1.21.4 or newer**, running **Java 21+**, and
-  permission to install plugins on it.
+  A Paper, Spigot or Folia server on **1.19.4 or newer**, running **Java 17+**,
+  and permission to install plugins on it.
 </Callout>
 
 ## Install the plugin
@@ -33,36 +33,34 @@ uploading a zip anywhere.
 <Steps>
   <Step title="Download the jar">
     ```
-    https://cdn.resourcepack.ai/resourcepackai.jar
+    https://cdn.resourcepack.ai/RPEngine.jar
     ```
   </Step>
   <Step title="Drop it in /plugins">
     Put the jar in your server's `plugins/` folder, alongside everything else.
   </Step>
   <Step title="Restart the server">
-    A `/reload` won't do it — plugin jars are only picked up on a real
+    A `/reload` won't do it: plugin jars are only picked up on a real
     restart. Check the console for RP Engine's startup banner: its
     version, its links, and what it loaded.
   </Step>
 </Steps>
 
-<Callout type="note" title="Why 1.21.4">
-  Placed models use display entities and string-valued custom model data,
-  which don't exist on older versions. There's no build that works on 1.8 —
-  the features it exists to deliver aren't there to use.
+<Callout type="note" title="Why 1.19.4">
+  Placed models are made of display entities, which 1.19.4 added. Below 1.21.4
+  a few things are reduced, and the plugin says which at startup.
 </Callout>
 
 ## Link a player
 
 <Steps>
   <Step title="Get a pairing code from the Studio">
-    Open the live-test panel for the pack you want to push. It shows an
-    8-digit code as a ready-to-paste command. There's no "generate" button —
-    a pack gets its code the first time you look.
+    Press **Sync** on the pack and choose **Testing on your own server
+    instead?** to get an 8-digit code as a ready-to-paste command.
   </Step>
-  <Step title="Run /link in game">
+  <Step title="Run /rp sync in game">
     ```
-    /link 48213097
+    /rp sync 48213097
     ```
 
     Whoever runs the command claims the code, so the pairing is to that
@@ -76,13 +74,13 @@ uploading a zip anywhere.
 </Steps>
 
 <Callout type="note" title="A code belongs to a pack, not to a session">
-  The code stays the same for that pack — it doesn't expire, and you can
-  re-run `/link` with it after a restart. Studio only mints a replacement
+  The code stays the same for that pack. It doesn't expire, and you can
+  re-run `/rp sync` with it after a restart. Studio only mints a replacement
   once the old pairing has been unlinked.
 </Callout>
 
 <Callout type="note" title="If a client turns the pack down">
-  Studio reports a push as sent, because that's all this end can see — the
+  Studio reports a push as sent, because that's all this end can see: the
   client decides separately, and it can refuse without ever showing a prompt
   if that server entry's **Server Resource Packs** setting is "Disabled". When
   that happens the plugin walks the player through fixing it in chat, step by
@@ -91,31 +89,24 @@ uploading a zip anywhere.
 
 ## Commands and permissions
 
-| Command | Permission | What it does |
-| --- | --- | --- |
-| `/link <code>` | `resourcepackai.link` — everyone | Claim a pairing code |
-| `/rpai status` | `resourcepackai.admin` — op | Show the connection and current pairings |
-| `/rpai reconnect` | `resourcepackai.admin` — op | Force a reconnect to the sync service |
+| Command | What it does |
+| --- | --- |
+| `/rp sync <code>` | Pair yourself with a pack in Studio |
+| `/rp sync add <player>` | Share your pushes with someone building alongside you |
+| `/rp sync stop` | End your sync |
 
-The plugin only holds a connection open while something is actually linked, so
-a server with no active pairings sits idle.
-
-<Callout type="note">
-  `/link` is open to every player on purpose. A claim only ever affects the
-  player who ran it — they get a pack on their own client — so there's nothing
-  to gate, and restricting it makes `/link` read as "Unknown command" to
-  everyone else, which looks like a broken plugin.
-</Callout>
+All of them need `rpengine.sync`, which defaults to operators; grant it to your
+builders. The full list is on [Commands and permissions](/rp-engine/commands).
 
 ## Bedrock players
 
 If your server runs [Geyser](https://geysermc.org/) alongside the plugin,
-linked Bedrock players are handled too — they link with `/link` like anyone
-else, and the Studio tags them as Bedrock in the panel.
+linked Bedrock players are handled too: they pair with `/rp sync` like anyone
+else, and Studio tags them as Bedrock in the panel.
 
 The one visible difference is how a pack arrives. Bedrock clients only accept
 Resource Packs while joining, so applying one means the player is transferred
-back to the server they're already on — a few seconds of rejoin — and served
+back to the server they're already on (a few seconds of rejoin) and served
 the pack on the way in. Studio tells you this before it happens, and the
 pairing survives it.
 
@@ -126,7 +117,7 @@ keyframes, which is actually smoother than the Java side's server-driven
 playback.
 
 <Callout type="note">
-  New models added since a player's last pack apply ride in on the next one —
+  New models added since a player's last pack apply ride in on the next one:
   the reconnect that installs the pack is also what teaches their client the
   new models. No server restart needed.
 </Callout>
@@ -135,9 +126,9 @@ playback.
 
 | Symptom | Usually means |
 | --- | --- |
-| `/link` is an unknown command | The jar didn't load — check `plugins/` and restart properly |
-| "Unknown code" | It expired or was already claimed. Generate a new one |
-| Pack pushes but nothing changes | The client declined it. The plugin tells that player how to fix it in chat — it's the **Server Resource Packs** setting on the server entry |
-| Works for you, not for others | Each player links separately; one `/link` doesn't cover the server |
-| Linked, then went quiet | The pairing drops when the player quits. Re-link on rejoin |
-| "Lost the connection to that server", but the server is fine | The plugin's link to the sync service dropped. It reconnects and re-announces every pairing on its own within a few seconds — just push again |
+| `/rp` is an unknown command | The jar didn't load. Check `plugins/` and restart properly |
+| "Unknown code" | It was mistyped or the pairing was unlinked. Get the code again from Sync |
+| Pack pushes but nothing changes | The client declined it. The plugin tells that player how to fix it in chat: it's the **Server Resource Packs** setting on the server entry |
+| Works for you, not for others | Each player pairs separately; one `/rp sync` doesn't cover the server. `/rp sync add <player>` shares yours |
+| Linked, then went quiet | A push lasts until the player leaves. Press Sync again after they rejoin |
+| "Lost the connection to that server", but the server is fine | The plugin's link to the sync service dropped. It reconnects and re-announces every pairing on its own within a few seconds, so push again |

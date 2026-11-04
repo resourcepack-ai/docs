@@ -6,18 +6,20 @@ export const metadata = {
 
 # Items
 
-An item sprite is the flat picture Minecraft draws for an item: in your hand,
-in the hotbar, in an inventory and in an item frame. It's pixel art, like a
-block texture, drawn for a different place.
+An Item is the flat picture Minecraft draws for an item: in your hand, in the
+hotbar, in an inventory and in an item frame. It's pixel art, like a Block,
+and Studio calls the picture a **sprite**. Use it to redraw a vanilla item
+(every diamond sword looks like yours) or to make a special item for your
+server (a quest key, a coin).
 
 ![Item sprites made in Studio, in an inventory](/images/items.webp)
 
 <Callout type="note" title="Want depth? Pick 3D">
-  Choosing **3D** under **Shape** makes a [model](/models) instead of a sprite,
-  and opens the model editor. See [Models](/models).
+  Choosing **3D** under **Shape** makes a 3D item out of cubes instead of a
+  flat sprite, edited in the model editor. See [Models](/models).
 </Callout>
 
-## Three kinds
+## Which kind do you need?
 
 A resource pack can't add a brand new item to the game, so every sprite is
 attached to an item that already exists. How it's attached decides who sees it:
@@ -58,17 +60,17 @@ Then either:
 | **128×128** | HD packs: the most detail, still with the pixel-art outline |
 | **Custom** | Blank only: any size up to 256 |
 
-A generated sprite comes in those four sizes only, the ones the image model
-is made for. For any other size, draw it from blank or upload it.
+A generated sprite comes in those four sizes only. For any other size, draw it
+from blank or upload it.
 
 On the item's page, **Regenerate** tries the same prompt again and **Edit with
 AI** changes one thing about the sprite you have, which is usually what you
 want when only a detail is wrong.
 
-## In the editor
+### Drawing a good sprite
 
-Sprites open in the same [pixel editor](/blocks#the-pixel-editor) as blocks,
-with the same tools and layers. Two habits help:
+Click a sprite to open it in the [pixel editor](/blocks#the-pixel-editor),
+the same one Blocks use. Two habits help:
 
 - **Keep the outline dark and unbroken.** An item is seen small, against both
   a light inventory and a dark hotbar, and the outline stops it disappearing
@@ -78,8 +80,10 @@ with the same tools and layers. Two habits help:
 
 ## Seeing it in game
 
-[Sync](/testing/plugin) the pack to a linked player and the sprite is live. A
-reskin needs nothing else: every copy of that item already shows it.
+On a server running [RP Engine](/testing/plugin), our free plugin, press
+**Sync**: Studio sends the pack straight to you in game. A reskin needs nothing
+else, since every copy of that item already shows it. Without a plugin,
+[export](/exporting) the pack and add it like any resource pack.
 
 For a variant or a custom item, the item's page has the give command and a
 **Give in-game** button that hands you one directly. A variant's command looks
@@ -126,7 +130,24 @@ of its own to replace; make it 3D to give it states.
 A custom item is carried on paper, which has no states. To make your own bow,
 make a variant of a bow.
 
-## Exporting
+**A crossbow (or bow) from another pack.** Importing a pack whose crossbow has
+several models gives you each model as a separate 3D Model on paper, which
+can't be turned into a crossbow afterwards. Instead, add the main look as an
+**Item**: **Item to reskin** set to **Crossbow**, **Shape** **3D**, and
+**Upload** its model (`.json` or `.bbmodel`), as a **Custom** variant or a
+reskin. Its page then has the **States** card, where each state picks another
+model in the pack: the pulling and loaded models you imported. Needs Minecraft
+1.21.4 or newer.
+
+## Several versions of one item
+
+There's no variant switch on a single item. Make each version its own Item:
+right-click it on the pack page, **Duplicate**, then change the copy with
+**Edit with AI** (a Christmas version, another colour) or in the editor. Each
+copy has its own custom_model_data and give command. A reskin is one per item,
+so extra versions of a reskinned item have to be variants.
+
+## What's in the exported pack
 
 In the exported `.zip`, a sprite is a PNG at
 `assets/minecraft/textures/item/<name>.png`, which is where vanilla looks. For

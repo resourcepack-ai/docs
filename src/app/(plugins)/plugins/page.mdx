@@ -1,30 +1,30 @@
 export const metadata = {
   title: "Plugins",
   description:
-    "Our Minecraft server plugins besides RP Engine: MC GUI for screens written in HTML and CSS, Dialog Engine for dialog screens in YAML, Punishments for moderation, 3D Engine for real 3D models from .glb, .gltf and .obj files, and 3D Pets.",
+    "Our Minecraft server plugins besides RP Engine, and which one to pick: MC GUI for screens written in HTML and CSS, Dialog Engine for dialog screens in YAML, Punishments for moderation, 3D Engine for real 3D models from .glb, .gltf and .obj files, and 3D Pets.",
 };
 
 # Plugins
 
 Besides [RP Engine](/rp-engine), we make a few server plugins that each do one
 thing. None of them needs RP Engine installed, and none needs a ResourcePack AI
-account. Two are addons for another one here, and say so.
+account. Two are addons: they need another plugin here to run, and say so.
 
 <CardGroup cols={3}>
   <Card title="MC GUI" href="/mcgui" icon="gui">
-    Real screens written in HTML and CSS, fullscreen or on walls.
+    Web pages in the game: menus and shops in HTML and CSS, fullscreen with a mouse pointer or on walls.
   </Card>
   <Card title="Dialog Engine" href="/dialog-engine" icon="gui">
-    Minecraft's own dialog screens, written in YAML, with a Java API.
+    Minecraft's own dialog menus, written in YAML: buttons, text boxes and sliders, with a Java API.
   </Card>
   <Card title="Punishments" href="/punishments" icon="gavel">
-    Warn, mute, kick and ban from a real menu, built on Dialog Engine.
+    Warn, mute, kick and ban from a menu or plain commands. Uses Dialog Engine for the menu.
   </Card>
   <Card title="3D Engine" href="/3d-engine" icon="boxes">
-    Drop in a .glb, .gltf or .obj file and it is in the game.
+    Real 3D models: drop in a .glb, .gltf or .obj file and place it in the world.
   </Card>
   <Card title="3D Pets" href="/3d-pets" icon="paw">
-    A 3D dog that follows you and plays fetch, built on 3D Engine.
+    A 3D dog that follows you and plays fetch. Needs 3D Engine.
   </Card>
 </CardGroup>
 
@@ -32,11 +32,28 @@ account. Two are addons for another one here, and say so.
 
 | Plugin | Server | Minecraft | Needs |
 | --- | --- | --- | --- |
-| [MC GUI](/mcgui) | Spigot or Paper | 1.21.11 and newer | Nothing else |
+| [MC GUI](/mcgui) | Spigot, Paper or Folia | 1.21.11 and newer | Nothing else |
 | [Dialog Engine](/dialog-engine) | Spigot or Paper | 1.21.7 and newer | Nothing else |
-| [Punishments](/punishments) | Spigot or Paper | 1.21.7 and newer | Dialog Engine, for the panel |
+| [Punishments](/punishments) | Spigot or Paper | 1.21.7 and newer | Dialog Engine, for the menu |
 | [3D Engine](/3d-engine) | Spigot or Paper | 26.3 | Nothing else |
 | [3D Pets](/3d-pets) | Spigot or Paper | 26.3 | 3D Engine |
 
 Players install nothing for any of them. Where a plugin needs a resource pack,
 it builds that pack and sends it to players itself.
+
+## Which plugin for menus
+
+Minecraft has three kinds of menu screen, and we make something for each. They
+are separate: a menu made for one doesn't open in another.
+
+| You want | Use | What players see |
+| --- | --- | --- |
+| A restyled chest, furnace or anvil, with items players can pick up and move | A [GUI](/guis) designed in Studio, opened by [RP Engine](/rp-engine/screens) or by any menu plugin that uses its title | The game's own container screen, with your art drawn over it |
+| A menu of buttons, text boxes, toggles and sliders that opens instantly | A dialog, in [Dialog Engine](/dialog-engine) or [RP Engine](/rp-engine/dialogs) (Minecraft 1.21.6+). Studio can [design one](/dialogs) for either | The game's own dialog screen. A plain dialog needs no resource pack; one drawn in Studio comes with a small one |
+| A full page with a mouse pointer, laid out however you like, or a screen on a wall | [MC GUI](/mcgui) | A web page rendered into the game. The player sits while it is open |
+
+**Dialog Engine or RP Engine for dialogs?** Both open the same kind of screen,
+but they don't share or sync dialogs: each opens its own (`/de open` and
+`/rp dialog`). If you already run RP Engine, use its dialogs. If dialogs are all you
+need, or your own plugin needs to hear button presses (`DialogClickEvent`), use
+Dialog Engine. A dialog drawn in Studio can be exported for either.

@@ -27,18 +27,20 @@ flame_sword:
     - "&7A <fx:fire>blazing</fx> &7blade"
 ```
 
-That is all it takes. RP Engine puts the effect into the server's pack, and
-`<fx:fire>` works in every name, lore line, message and title a content file
-writes.
+Put the first file in a `text-effects/` folder of your
+[content folder](/rp-engine/content) (here `mypack`) and run `/rp reload`. RP
+Engine adds the effect to the server's pack, and `<fx:fire>` works in every
+name, lore line, message and title a content file writes.
+
+There are three ways to get an effect: name one of the
+[presets](#presets), [write your own](#making-your-own-effect) in the same
+folder, or make one in [Studio](#effects-from-studio).
 
 ## How it works
 
-An effect is drawn by the pack's text shader, and it is keyed to **one exact
-colour**. Any text in that colour wears the effect, however it got there.
-`<fx:fire>` is the colour, written for you.
-
-This is why it works with other plugins too: anything that can colour text can
-use an effect. `/rp effects` shows each effect's colour, so you can write it as
+Each effect is tied to **one exact colour**. Any text in that colour wears the
+effect, however it got there; `<fx:fire>` just writes that colour for you. So
+any plugin that can colour text can use an effect. `/rp effects` shows each effect's colour, so you can write it as
 `&#fc80f8` in a plugin that takes hex, `<#fc80f8>` in MiniMessage, or
 `{"color":"#fc80f8"}` in `/tellraw`.
 
@@ -75,9 +77,10 @@ rainbow:
 | `fishtank` | Each letter is a tank of water with a rolling surface |
 | `corrupted` | Bursts of glitching, colour splitting and dead pixels |
 
-## Your own code
+## Making your own effect
 
-An effect is one GLSL function. It is given a pixel of a letter and returns
+Your own effect goes in the same `text-effects/` YAML as the presets. It is one
+GLSL (shader code) function. It is given a pixel of a letter and returns
 that pixel's colour:
 
 ```yaml

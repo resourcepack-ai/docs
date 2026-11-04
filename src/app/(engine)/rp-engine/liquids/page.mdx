@@ -37,12 +37,18 @@ acid:
 | `amplifier` | 0 | The effect's level, counting from 0 (0 to 255) |
 | `damage` | 0 | Damage per second, on top of anything lava already does (0 to 100) |
 | `fireproof` | `false` | Whether a lava-based liquid stops burning you |
+| `tags` | none | A list of labels, for your own plugin to read (`LiquidInfo.tags()`) |
+
+Put the YAML in a `liquids/` folder of your [content folder](/rp-engine/content)
+(here `mypack`) and run `/rp reload`.
 
 ## Making a pool
 
 There are two ways, and they make the same thing.
 
 ### Mark out water that's already there
+
+These commands need you in game, and the `rpengine.liquid` permission.
 
 ```
 /rp liquid corner              stand at one corner

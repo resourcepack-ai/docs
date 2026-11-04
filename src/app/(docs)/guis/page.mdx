@@ -1,84 +1,62 @@
 export const metadata = {
   title: "GUIs",
   description:
-    "Custom chest, furnace and anvil screens, the player's own inventory and the Escape menu: generating or designing one, opening it in game, and what a pack can't change.",
+    "Custom chest, furnace and anvil screens, the player's own inventory, the Escape menu, and Custom GUIs (HTML pages for MC GUI): making one, opening it in game, and what a pack can't change.",
 };
 
 # GUIs
 
-A GUI asset gives one of Minecraft's **screens** a new look: a chest window, a
-furnace, an anvil, a shop menu your server opens. You can have the AI design
-the whole screen, lay it out yourself with buttons, text and icons, or paint
-over the vanilla art by hand.
+A GUI asset gives one of Minecraft's **screens** a new look: a chest window
+turned into a shop menu, a furnace, an anvil, the player's own inventory, the
+Escape menu. You can have the AI design the whole screen, lay it out yourself
+with buttons, text and icons, or paint over the vanilla art by hand.
 
 ![Two GUIs made in Studio: a painted market menu and a blocky shop menu](/images/guis.webp)
 
 <Callout type="warning" title="A GUI changes the look, not the layout">
   A resource pack can't move a slot, add one, resize the window or change what
   a click does. That's server code. Design around the slots the screen already
-  has. (Buttons you draw are pictures; a server plugin decides what clicking
-  that slot does.)
+  has: the buttons you draw are pictures over slots, and a server plugin
+  decides what clicking each slot does.
 </Callout>
 
-Screens with real buttons and text fields, like a welcome screen or a rules
-page, are [dialogs](/dialogs), which have their own page.
+Two other kinds of screen have their own pages or sections:
 
-## Three kinds of screen
+- **Menus with real buttons and text fields** (a welcome screen, a settings
+  menu) are [Dialogs](/dialogs).
+- **Screens you write in HTML and CSS**, with a mouse pointer and any layout
+  you like, are [Custom GUIs](#custom-guis), shown by the MC GUI plugin.
 
-| Kind | Screens | How it reaches the game | Applies to |
-| --- | --- | --- | --- |
-| **Overlay** | Chests, furnaces, the anvil and the others below | Drawn over the screen when a plugin opens it with this GUI's title | Only screens opened that way. Ordinary chests stay ordinary |
-| **Player Inventory** | The <kbd>E</kbd> screen | Replaces the vanilla file | Every player's inventory, always |
-| **Escape Menu** | The pause screen's buttons and background | Replaces the vanilla button sprites and labels | Every menu in the game |
+## Which screens you can change
 
-The overlays you can pick:
+| Kind | Screens | Who sees it |
+| --- | --- | --- |
+| **Overlay** | Chests (1 to 6 rows), Shulker Box, Dispenser / Dropper, Hopper, Crafting Table, Furnace, Blast Furnace, Smoker, Smithing Table, Stonecutter, Grindstone, Loom, Cartography Table, Enchanting Table, Anvil, Brewing Stand | Only screens a plugin opens with this GUI's title. Ordinary chests stay ordinary |
+| **Player Inventory** | The <kbd>E</kbd> screen | Every player with the pack, always |
+| **Escape Menu** | The pause screen's buttons and background | Every player with the pack, always |
 
-| Group | Screens |
-| --- | --- |
-| **Storage** | Chest (1 to 6 rows), Shulker Box, Dispenser / Dropper, Hopper |
-| **Crafting & Smelting** | Crafting Table, Furnace, Blast Furnace, Smoker, Smithing Table, Stonecutter, Grindstone, Loom, Cartography Table |
-| **Utility** | Enchanting Table, Anvil, Brewing Stand |
+An **overlay** is the usual choice for a server menu. Your art is drawn on top
+of the screen whenever a plugin opens it with the GUI's special title, which
+Studio gives you. Because your art can be bigger than the window, you can draw
+outside it: a banner, a frame, hanging chains. The dashed rectangle in the
+editor is where vanilla's window sits. (The beacon isn't offered: it has no
+title to draw on.)
 
-The beacon isn't offered: it draws no title, so there's nowhere to put an
-overlay.
+The **Player Inventory** replaces vanilla's inventory picture, so a pack holds
+one, and anything outside the 176×166 window isn't drawn.
 
-### How an overlay works
-
-Your sheet ships in the pack as a character in a font. A plugin opens the
-screen with a title made of two invisible characters: one that moves the text
-cursor to the window's corner, then your picture. Minecraft draws the title,
-and the title is your whole screen.
-
-Because the sheet is bigger than the window, you can draw outside it: a
-banner, a frame, hanging chains. The dashed rectangle in the editor is where
-vanilla's window sits.
-
-### The Player Inventory
-
-Nobody opens your inventory for you, so there's no title to use. Instead the
-pack replaces vanilla's `inventory.png`. That means:
-
-- It applies to every inventory, for everyone with the pack.
-- A pack holds one.
-- There's no margin: anything outside the 176×166 window isn't drawn.
-
-### The Escape Menu
-
-The pause screen has no window. Studio themes the shared button face (with its
-hover and disabled states), the background, and each button's label, so
-"Back to Game" can carry its own art. It's generated from one description of
-the material. A few things to know:
-
-- The button face is shared, so the title screen, options screens and world
-  list get the same look.
-- Each button's art replaces its words, so the art carries the wording.
-- The pause screen's buttons no longer light up under the cursor.
-- A pack holds one. It opens in the pixel editor, with a guide box round each
-  sprite.
+The **Escape Menu** themes the shared button face (with its hover and disabled
+states), the background, and each button's label, generated from one
+description of the material. A pack holds one. Because the button face is
+shared, the title screen, options screens and world list get the same look.
+Each button's art replaces its words, and the pause screen's buttons no longer
+light up under the cursor. It opens in the pixel editor, with a guide box round
+each sprite.
 
 ## Making one
 
-Open a pack, press **Add asset** and pick **GUI**.
+Open a pack, press **Add asset** and pick **GUI**, with **GUI** chosen at the
+top (the other choice, **Custom GUI**, is [below](#custom-guis)).
 
 **Generate** takes a description and a **Layout**:
 
@@ -96,17 +74,21 @@ them from your panel; vanilla owns the rest of the layout.
 **Blank** starts from the real vanilla art for the screen, centred on the
 sheet. **Upload** takes a 256×256 sheet.
 
+On a chest GUI's page, **Edit with AI** rebuilds the screen with one change
+made ("make the frame gold", "add a sell button"). It costs about the same as
+generating one, and a failed edit leaves the screen as it was.
+
 ## The editor
 
-The GUI editor shows the vanilla window frame, a guide box on every slot (and
-on the player's inventory and hotbar below most screens), so you can line a
-panel up with the grid.
+The GUI editor shows the vanilla window frame and a guide box on every slot
+(and on the player's inventory and hotbar below most screens), so you can line
+a panel up with the grid.
 
-Add pieces from its add menu: **Button**, **Text**, **Formatted text**,
-**Icon**, **Title plate**, **Scroll bar**, **Tabs**, **QR code**, **Upload
-image**, **AI image**, **Background** and **Player head**. A player head shows
-the viewer's own face and needs RP Engine on the server. Everything is a layer
-you can move and edit.
+Add pieces from its add menu: **Blank**, **Button**, **Text**, **Formatted
+text**, **Icon**, **QR code**, **Scroll bar**, **Tabs**, **Upload image**, **AI
+image**, **Title plate**, **AI title plate**, **Background** and **Player
+head**. A player head shows the viewer's own face and needs RP Engine on the
+server. Everything is a layer you can move and edit.
 
 `Ctrl+C` copies the selected piece and `Ctrl+V` pastes it, into this GUI or
 another one in any tab. Pasting pixels copied from a texture, or an image
@@ -119,47 +101,41 @@ text, title plate, button, tab or formatted text), choose **Upload a font
 (.ttf)**. The font is kept with the pack, so every GUI and dialog in it can use
 it, and it appears in the Text tool too.
 
-The words are drawn into the screen as pixels, like the built-in faces, so
-nothing extra ships and no player needs the font. A pixel font is drawn exactly
-at its own size, which the editor works out for you, and at 2x or 3x. Any other
-font is drawn at the size you pick and looks best at 10px or more; its letters
-are lined up with the pixels as they are drawn, so every stroke keeps one width
-and a line of capitals stays one height. A character the font doesn't have is
-drawn as its other case (a font with capitals only writes everything in
-capitals) or, failing that, in Minecraft's own font, and the panel says which
-characters those are. So a font for another script, such as a Thai font with no
-English letters, works too: its own letters are drawn from it, with vowel and
-tone marks over the letter they belong to, and any English letters and digits
-come from Minecraft's font. Scripts written right to left, or whose letters join
-up (Arabic, Hindi), are not drawn correctly. Fonts can be
-TrueType (`.ttf`) or a collection (`.ttc`), up to 2 MB; an `.otf` whose letters
-are PostScript curves cannot be read, so use the font's `.ttf` version.
+The words are drawn into the screen as pixels, so nothing extra ships and no
+player needs the font. Fonts work the same way as in dialogs: see [Your own
+fonts](/dialogs#your-own-fonts) for sizes, file types and other scripts. In
+short, a font with no English letters (Thai, say) uploads and draws, with any
+missing English letters and digits taken from Minecraft's font; right-to-left
+and joined scripts (Arabic, Hindi) don't draw correctly. The panel lists which
+characters came from Minecraft's font.
 
 ## Seeing it in game
 
-An overlay's page has the command that opens it and an **Open in-game** button
-that runs it for you:
+**An overlay** needs something to open it. With [RP Engine](/rp-engine), our
+free server plugin, the GUI's page has an **Open in-game** button, and the
+command it runs:
 
 ```
 /rp screen studio:<id> @p
 ```
 
-That's [RP Engine](/rp-engine)'s command. It needs the `rpengine.screen`
-permission (op by default); the button works without it. The screen is real,
-so you see your art against real slots and items.
+It needs the `rpengine.screen` permission (op by default); the button works
+without it. The screen is real, so you see your art against real slots and
+items. First [Sync](/testing/plugin) the pack, which sends it to you in game.
 
-The Player Inventory and Escape Menu need no command: [Sync](/testing/plugin)
-the pack and press <kbd>E</kbd> or <kbd>Esc</kbd>.
+**The Player Inventory and Escape Menu** need no command: Sync the pack and
+press <kbd>E</kbd> or <kbd>Esc</kbd>.
 
 ### Opening it from your own plugin
 
 Without RP Engine, your plugin opens the inventory with the GUI's title, shown
-on its page, in white:
+on its page, in white. The title looks blank but holds the characters that draw
+your art:
 
 ```java
 // Copy the title from the GUI's page in Studio.
 Inventory inv = Bukkit.createInventory(null, 54,
-    Component.text("").color(NamedTextColor.WHITE));
+    Component.text("").color(NamedTextColor.WHITE));
 player.openInventory(inv);
 ```
 
@@ -167,21 +143,72 @@ The picture is drawn in the title's colour, so a coloured title tints the whole
 screen.
 
 <Callout type="note" title="Moving a GUI to another pack changes its title">
-  The characters are assigned per pack, so a GUI copied into another pack gets
-  new ones. Copy the title from its page again. A Player Inventory or Escape
-  Menu won't copy into a pack that already has one.
+  The title's characters are given out per pack, so a GUI copied into another
+  pack gets new ones. Copy the title from its page again. A Player Inventory or
+  Escape Menu won't copy into a pack that already has one.
 </Callout>
 
-## Exporting
+## Custom GUIs
 
-An overlay leaves as a PNG under `assets/minecraft/textures/font/` plus an
-entry in the pack's font file. Nothing under `textures/gui/` changes, which is
-why ordinary screens stay ordinary.
+A **Custom GUI** is a set of web pages, written in HTML and CSS, that the
+[MC GUI](/mcgui) server plugin shows in game: full screen with a mouse pointer,
+or on a wall of maps players walk up to and click. It isn't tied to a vanilla
+screen, so the layout is yours: a server menu, a shop with tabs, a leaderboard,
+a rules board. It's the same editor as [mcgui.dev](https://mcgui.dev), kept in
+your pack.
 
-The Player Inventory leaves as
-`assets/minecraft/textures/gui/container/inventory.png`, and the Escape Menu as
-vanilla's button sprites plus label overrides. Both work as soon as the pack is
-applied.
+| | Chest GUI | Custom GUI |
+| --- | --- | --- |
+| Layout | Vanilla's window and slots | Anything HTML and CSS can lay out |
+| Holds real items | Yes | No |
+| Needs | Your pack, plus a plugin to open it | The [MC GUI](/mcgui) plugin (it makes its own resource pack) |
+| Gets to the server | Sync or export | **Send to server**, then `/mcgui import` |
+
+### Making one
+
+<Steps>
+  <Step title="Add it">
+    Press **Add asset**, pick **GUI**, and choose **Custom GUI** at the top.
+    **Generate** asks you to describe it ("a server menu with my level, who's
+    online and buttons for Kits, Rewards and Warps"); the editor opens and
+    writes the first page as you watch. **Blank** starts from an empty page or
+    a template (Server menu, Shop, Server selector, Leaderboard, Rules or Style
+    guide).
+  </Step>
+  <Step title="Change it">
+    The editor shows the page as a player will see it, and you can click
+    through it like the game. Type a change into the AI bar under the preview
+    ("add a Back button", "make it a dark theme"), or switch views along the
+    top: **Map** shows every page and how buttons link them, **Page** lets you
+    click any part of a page to make it a link, and **Code** is the HTML and CSS
+    itself. Changes save as you go.
+  </Step>
+  <Step title="Send it to your server">
+    Press **Send to server**. You get a command like `/mcgui import abcd1234`.
+    Run it in game or in the server console on a server with MC GUI installed,
+    then `/mcgui open <page>` shows it. Sending the same Custom GUI again
+    replaces what the last import put there.
+  </Step>
+</Steps>
+
+Each AI request (a new page or a change) costs **15 AI Credits**. Editing by
+hand is free.
+
+Custom GUIs are listed on the pack's **GUIs** tab beside your other screens. They
+aren't part of an exported resource pack or a Sync: MC GUI builds the pack its
+pages need on the server. To put the files on a server by hand, **Export**
+downloads them as a `.zip` for `plugins/MCGUI/pages/`. See [MC GUI](/mcgui) for
+installing the plugin, what a page can use, and its commands.
+
+## What's in the exported pack
+
+An overlay is a PNG under `assets/minecraft/textures/font/` plus an entry in
+the pack's font file. Nothing under `textures/gui/` changes, which is why
+ordinary screens stay ordinary.
+
+The Player Inventory is `assets/minecraft/textures/gui/container/inventory.png`,
+and the Escape Menu is vanilla's button sprites plus label overrides. Both
+work as soon as the pack is applied.
 
 ## On Bedrock
 

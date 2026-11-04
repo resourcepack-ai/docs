@@ -15,34 +15,44 @@ names and lore, titles, scoreboards and menus.
 
 ## Making one
 
-Press **Add asset** and pick the **Text Effect** tab. Either describe the look
-("molten gold", "frozen solid", "glitching") and Studio writes it, which costs
-AI Credits and takes a few minutes, or pick one of the 32 presets, which is
-free and ready at once. Either way, you can ask for changes from its page
-afterwards with **Edit with AI**.
+Press **Add asset** and pick the **Text Effect** tab. Then either:
+
+- **Describe the look** ("molten gold", "frozen solid", "glitching"). It costs
+  about 20 credits and takes a few minutes.
+- **Pick one of the 32 presets.** Free, and ready at once.
+
+Either way, you can ask for changes afterwards with **Edit with AI** on its
+page.
 
 The page plays the effect live on a line of sample text, so what you see is
 what a player sees.
 
 ## Using it
 
-**A Text Effect is a colour.** The page shows it, and any text in exactly that
-colour wears the effect for every player with your pack. No plugin is needed:
-the page has the colour written as a `/tellraw` command, as MiniMessage and as
-a hex code, ready to copy, and **Show in chat** sends you a line on the server
-your pack is synced to.
+**A Text Effect is a colour.** Each effect gets its own exact text colour, and
+any text in that colour wears the effect for every player who has your pack.
+No plugin is needed.
 
-With [RP Engine](/rp-engine/text-effects) on the server, it also knows the
-effect by name once the pack is synced or distributed, so
-`<fx:studio:<id>>Hello</fx>` works in item names, messages and chat. The page
-shows the exact tag.
+Under **Use it**, the page gives you that colour ready to copy three ways:
+
+| Line | Where to use it |
+| --- | --- |
+| **Command** | A `/tellraw` command that prints sample text with the effect |
+| **MiniMessage** | A `<#hex>` tag, for Paper and most chat and item plugins |
+| **RP Engine** | `<fx:studio:<id>>Hello</fx>`, for item names, messages and chat on a server running [RP Engine](/rp-engine/text-effects) |
+
+**Show in chat** sends you a sample line on the server your pack is synced to
+(sent to your server with **Sync** and `/rp sync <code>`; see
+[Testing on your server](/testing/plugin)).
+
+To make Text Effects by hand in a server's config instead, see
+[Text Effects in RP Engine](/rp-engine/text-effects).
 
 ## Limits
 
 - **Only text on the screen.** Signs, name tags and text displays in the world
   keep the plain colour, which is very nearly white.
-- **Text Effects share a pack's 32 shader slots** with 2D and 3D
-  [shader objects](/shaders).
+- **32 per pack, shared** with 2D and 3D [Shaders](/shaders).
 - **A colour code inside the text ends the effect.** Bold and italic are fine.
 - **It needs your pack.** Players without it see near-white text.
 - **One text shader per screen.** If a player's game also has another pack

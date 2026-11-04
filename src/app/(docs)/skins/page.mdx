@@ -6,9 +6,12 @@ export const metadata = {
 
 # Skins
 
-A skin is what a player looks like. Skins live on your account rather than in
-a pack, under **Skins** in the sidebar, because a skin is yours wherever you
-play.
+A skin is what your player looks like in Minecraft. In Studio you can
+generate one from a description, start from an existing skin, or paint one by
+hand, then wear it in game.
+
+Skins live on your account rather than in a pack, under **Skins** in the
+sidebar, because a skin is yours wherever you play.
 
 ![A chef skin made in Studio, from the front, walking and from the back](/images/skins.webp)
 
@@ -20,13 +23,17 @@ Press **New Skin** and choose how to start:
   cloak") and Studio paints it, starting from the default skin so the face and
   shape are right. It costs AI Credits (from 45) and takes a few minutes; the
   skin shows as generating until it lands.
-- **Import**: drop a skin PNG you already have, or type a Minecraft username
-  to copy that player's skin.
-- **Start from**: open the editor on the default skin or an empty body and
-  paint it yourself.
+- **Blank**: open the editor on an **Empty body**, a **Default skin** (one of
+  Minecraft's own characters) or a **Player skin** (type a Minecraft username
+  to start from that player's skin). Free.
+- **Upload**: drop a skin PNG you already have.
 
-Every skin has an **arm width**, **Classic** or **Slim**, which you can change
-later.
+Every skin has an **arm width**, **Classic** (4px arms) or **Slim** (3px), which
+you can change later.
+
+**Edit with AI** on a skin's page describes a change ("give him a green
+hood") and makes an edited copy, so the original stays as it was. It costs
+credits like generating.
 
 ## The editor
 
@@ -38,12 +45,12 @@ pixel editor's: pencil, fill, a colour picker, rectangles and ellipses, and
 
 ## Using it
 
-- **Sync**: puts the skin on you on the server your pack is linked to. It
-  changes how you look to everybody there.
-- **Download PNG**: the 64×64 file Minecraft takes, to set as your skin in the
-  launcher.
+- **Sync**: puts the skin on you straight away on [our test
+  server](/testing/test-server), if you've linked your Minecraft account.
+  Everybody there sees it. Your skin on your Minecraft account is unchanged.
+- **Download PNG**: the 64×64 file Minecraft uses. Studio also opens
+  Minecraft's skin page so you can upload it and wear it everywhere.
 - **Publish to the Gallery**: anybody can then copy it.
 
-Syncing goes through a service that registers the skin with Minecraft, which
-is what makes other players see it. It is rate limited, so on a busy day a
-sync can be refused for a minute; try again shortly.
+If a sync is refused on a busy day, wait a minute and try again: the service
+that makes skins visible to other players has a rate limit.

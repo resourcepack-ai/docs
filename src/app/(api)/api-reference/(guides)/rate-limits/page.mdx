@@ -12,14 +12,16 @@ rolling 60 seconds:
 | Budget | Per key | What spends it |
 | --- | --- | --- |
 | Reads | 120 a minute | Every `GET` except export: listing packs and assets, downloading an asset file, polling a job |
-| Writes | 30 a minute | Every `POST` (creating a pack, generating, uploading, importing) and pack export |
+| Writes | 30 a minute | Every other request (creating a pack, generating, uploading, importing, deleting) and pack export |
 
 Unused requests don't carry over to the next minute.
 
 Export is the one `GET` that counts as a write, because it builds the pack's
 `.zip` on demand.
 
-The [MCP server](/api-reference/mcp) shares these budgets with the REST API.
+The [MCP server](/api-reference/mcp) counts its tool calls against the same
+two budgets (a tool that reads spends a read, one that changes something spends
+a write).
 The [origin check](/api-reference/origin) endpoints are limited separately, per
 address.
 

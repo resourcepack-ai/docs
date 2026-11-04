@@ -6,10 +6,18 @@ export const metadata = {
 
 # Moving from Nexo or Oraxen
 
-RP Engine reads Nexo and Oraxen config files as they are. Copy the folders out
-of `plugins/Nexo/` or `plugins/Oraxen/` into one content pack, and the
-**contents** of that pack's `assets/<your-pack>/` folder into `assets/`, then
-start the server.
+RP Engine reads Nexo and Oraxen config files as they are, so you can move your
+items, furniture, blocks, glyphs, sounds and recipes across without rewriting
+them.
+
+1. Make a folder in `plugins/RPEngine/content/` for the pack, such as
+   `my_pack/`. Its name becomes the **namespace**, the first half of every
+   ID (`my_pack:ruby`).
+2. Copy `items/`, `glyphs/`, `recipes/` and `sounds.yml` out of
+   `plugins/Nexo/` or `plugins/Oraxen/` into it.
+3. Copy the **contents** of its resource pack's `assets/<your-pack>/` folder
+   (`models/`, `textures/`...) into `my_pack/assets/`.
+4. Start the server, or run `/rp reload`, and read the console for warnings.
 
 ```
 plugins/RPEngine/content/
@@ -23,13 +31,11 @@ plugins/RPEngine/content/
       textures/
 ```
 
-There is nothing to turn on and no `pack.yml` is needed. A file is recognised
-by its own shape: an item block with `Pack:` (or Oraxen's lowercase `pack:`),
-`Components:` or `Mechanics:`, a glyph with a `texture`, or a sounds file
-whose `sounds:` is a list. Nothing of ours looks like any of them, so one of
-their files also works **inside** a pack of yours, which is the useful shape
-for moving over a piece at a time. Both plugins' current formats are read
-(Nexo 1.28, Oraxen 1.220), and Oraxen's older capitalised sections too.
+There is nothing to turn on and no `pack.yml` (RP Engine's own pack file) is
+needed: each file is recognised by its shape. So one of their files also works
+**inside** a pack of yours, which is handy for moving over a piece at a time.
+Both plugins' current formats are read (Nexo 1.28, Oraxen 1.220), and Oraxen's
+older capitalised sections too.
 
 ## What comes across
 
@@ -90,14 +96,13 @@ for moving over a piece at a time. Both plugins' current formats are read
 | Nexo brewing recipes | `brewing` recipes, which need Paper |
 | anvil recipes: Oraxen's `base`, `addition` and `experience_cost`, Nexo's `input`, `material`, `cost` and `repair` | `anvil` recipes, a repair where there is no result |
 
-An item model such as `my_pack:item/ruby` becomes RP Engine's `item/ruby`. RP
-Engine builds its own item definitions from that, so nothing depends on the
-plugin's CustomModelData allocation.
+An item model such as `my_pack:item/ruby` becomes RP Engine's `item/ruby`.
+Nothing depends on the old plugin's CustomModelData numbers.
 
 ## Blocks in their own shapes
 
-Both plugins hide a block in a spare state of a vanilla one, and which vanilla
-block is the block's `type`. Each has its own equivalent here:
+Both plugins make a custom block by borrowing an unused state of a vanilla
+block, and the block's `type` says which. Each has an equivalent here:
 
 | Nexo / Oraxen `type` | RP Engine |
 |---|---|
@@ -106,9 +111,6 @@ block is the block's `type`. Each has its own equivalent here:
 | `CHORUSBLOCK` / `CHORUS`, the old `chorusblock` | `shape: grate`, the see-through full block |
 | a mushroom type | `base: mushroom_stem` |
 | Oraxen's `STAIR`, `SLAB`, `DOOR`, `TRAPDOOR`, `GRATE`, `BULB` | that [`shape:`](/rp-engine/blocks#stairs-slabs-doors-and-other-shapes), made from the block's textures (a door's `[bottom, top]`, a bulb's `[off, on]`), on **the same waxed copper Oraxen used**: `custom_variation` 1 to 4 is fresh, exposed, weathered, oxidized |
-
-A chorus block becomes a grate because chorus would need Paper to stop it
-updating, and would repaint the End's own chorus plants.
 
 What a block does comes across where there is an equivalent:
 

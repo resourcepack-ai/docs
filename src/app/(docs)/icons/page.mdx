@@ -29,7 +29,7 @@ player's name, set **Type** to **Rank tag** instead: see
 Small pixel art is unforgiving: below about 6 pixels of real detail, an icon
 stops reading. Get the silhouette right first.
 
-### Size
+### Which size to pick
 
 | Size | How it sits in text |
 | --- | --- |
@@ -40,17 +40,19 @@ stops reading. Get the silhouette right first.
 | **64px** and **128px** | Generate only. For GUIs, HUDs and screens rather than chat |
 | **Custom** | Blank and Upload only: any width and height, up to 256 |
 
-A generated icon is always square: 8, 16, 32, 64 or 128 pixels, the same sizes
-as [Items](/items) plus 8. For a wide or tall icon, or a 12px one, draw it from
-blank or upload one.
+A generated icon is always square: 8, 16, 32, 64 or 128 pixels. An 8px one has
+very little room and most come out rough, so use 16 or 32 for anything with
+detail. For a wide or tall icon, or a 12px one, draw it from blank or upload
+one.
 
 Minecraft's lines of text are about 9 pixels apart and the game doesn't make
 room for taller icons, so 16 and 32 overlap on purpose. Use 8 or 12 when an
 icon has to stay inside its line.
 
-### Character
+### Which character it uses
 
-Leave **Character** blank and Studio gives the icon a new character from
+Every icon is drawn in place of one text character. Leave **Character** blank
+and Studio gives the icon a new character from
 Unicode's Private Use Area (`U+E000` to `U+F8FF`), a range no real text uses.
 Or type an existing character (`A`, `❤`) to replace it everywhere text is
 drawn, for everyone with the pack.
@@ -60,9 +62,10 @@ expected.
 
 ## Seeing it in game
 
-[Sync](/testing/plugin) the pack, then press **Send in-game** on the icon's
-page to get it in your chat, or copy the character from the page and paste it
-anywhere text appears. Nothing has to be placed or given: an icon works in
+On a server running [RP Engine](/testing/plugin), our free plugin, press
+**Sync** to send the pack to yourself in game. Then press **Send in-game** on
+the icon's page to get it in your chat, or copy the character from the page and
+paste it anywhere text appears. Nothing has to be placed or given: an icon works in
 every message the moment a player has the pack.
 
 <Callout type="tip">

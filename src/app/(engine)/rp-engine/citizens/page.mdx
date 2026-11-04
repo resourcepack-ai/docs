@@ -26,18 +26,12 @@ at the NPC, takes the model off for good.
   both. See [Permissions](/rp-engine/permissions#pointing-a-command-at-somebody-else).
 </Callout>
 
-## How it stays on
-
-Citizens removes an NPC's entity and makes a new one whenever its chunk
-unloads, on `/npc reload` and on restart. Binding an NPC also adds an
-`rpmodel` trait to it holding the model's ID. Citizens saves the trait with the
-NPC, and RP Engine puts the model back on each time the NPC spawns.
-
 ## What the NPC keeps
 
 Everything: its skin, name, pathing, commands, traits and identity. RP Engine
-hides the vanilla body and attaches the model; take the model off and the NPC
-is exactly what it was.
+hides the normal body and shows the model instead; take the model off and the
+NPC is exactly what it was. Binding adds an `rpmodel` trait to the NPC, which
+Citizens saves, and that is how the model comes back after every respawn.
 
 ## Animating one
 

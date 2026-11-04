@@ -36,8 +36,7 @@ A player's game downloads a pack over HTTP, from a link the server sends it.
 
 With `upload`, your packs are stored on our servers for as long as your
 server uses them: one nothing has touched for 30 days is deleted, and only the
-Minecraft client can download them. If an upload fails, the pack is served on
-your game port instead and the console says so.
+Minecraft client can download them. A pack can be at most 95 MB.
 
 `same-port` does not work behind a proxy, because a proxy only passes
 Minecraft through. The link it sends each player uses the address that player
@@ -55,16 +54,36 @@ player whose game cannot reach the pack host (a school or work network that
 blocks it, say). Set `host.fallback-on-download-failure: true` along with
 `host.port` and `host.public-address` as for `own-port`, and open that port.
 A player whose download fails is sent your server's link instead, and so is
-everybody while an upload is failing. It is read at startup and needs RP
-Engine 0.2.25 or newer.
+everybody while an upload is failing. It is read at startup.
 
-A config written before `host.mode` existed keeps working as it did: one with
-its own `public-address` set stays on `own-port`, and `host.enabled: false`
-means `none`.
+An older config with `public-address` set and no `host.mode` stays on
+`own-port`, and `host.enabled: false` means `none`.
 
 When a player's game cannot download a pack, the console says which link it
 was sent and what to check, once per restart. `/rp bundles` shows the link
 each bundle is served at.
+
+### If the upload fails
+
+The console says
+`Could not upload main to the pack host (reason), so this server is serving it on its game port instead`.
+The reason in brackets says what went wrong. Usually it is one of:
+
+- **Your host blocks outgoing connections.** The server has to reach
+  `https://packs.resourcepack.ai`. Ask your host to allow it, or serve the pack
+  yourself (below).
+- **The pack is over 95 MB.** Make it smaller, or serve it yourself.
+
+RP Engine tries the upload again on `/rp reload`, on a restart and every six
+hours. Until then, players are sent the pack from your game port, which works
+when they connect to this server directly.
+
+**Behind Velocity or BungeeCord** the game port cannot serve a pack, because a
+proxy only passes Minecraft through, so players get nothing until an upload
+works. To be safe, set `host.fallback-on-download-failure: true` with a
+`host.port` and `host.public-address` players can reach (open the port, or
+allocate it on your hosting panel), or switch to `host.mode: own-port` and
+skip the pack host entirely.
 
 ## The pack and the join prompt
 
@@ -133,6 +152,8 @@ emotes:
   player-commands: true
   bake-on-join: true
   rigs: true
+  rig-days: 30
+  rig-players: 64
   cast-permission: "rpengine.emote.cast"
   nametag-see-through: false
   held-item-pitch: 90.0
@@ -246,15 +267,11 @@ whatever this says. This is for the placeholders the server works out itself,
 like `{health}` and PlaceholderAPI's: lower makes those smoother, at one packet
 per wearer per redraw. Above 50 the action bar starts to fade between redraws.
 
-`trigger-ticks` is how often a HUD's state triggers, such as sneaking or holding
-an item, are checked (0.2.40 and newer). 1 puts a HUD on or takes it off on the
-very tick the player does the thing, for a minigame that needs it exact; 20 is
-once a second. A check only sends a packet when the answer changes.
-
-`trigger-ticks` is how often a HUD's state triggers (crouching or holding an
-item) are checked. At 1 a HUD goes on or off the same tick the player does the
-thing, which a minigame may want. A check that finds nothing
-changed sends nothing, so lowering it costs very little.
+`trigger-ticks` is how often a HUD's state triggers, such as sneaking or
+holding an item, are checked. 1 puts a HUD on or takes it off on the very tick
+the player does the thing, for a minigame that needs it exact; 20 is once a
+second. A check only sends a packet when the answer changes, so lowering it
+costs very little.
 
 ## VFX
 

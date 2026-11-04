@@ -1,58 +1,124 @@
 export const metadata = {
   title: "The content folder",
   description:
-    "How an RP Engine pack is laid out on disk, and what pack.yml says.",
+    "How an RP Engine pack is laid out on disk, what pack.yml says, what the build warnings mean, and moving it to another server.",
 };
 
 # The content folder
 
-Everything you add lives in `plugins/RPEngine/content/`, one folder per pack.
-The folder name is the pack's [namespace](/rp-engine/ids): lowercase letters,
-digits, `_`, `.` and `-`.
+Everything you add to RP Engine lives in `plugins/RPEngine/content/`. Each
+folder in there is one pack. The plugin reads them all, builds one resource
+pack out of them, and sends it to your players.
+
+## What can go in content/
+
+Each entry in `content/` has to be one of these:
+
+| What you put there | How it is recognised |
+|---|---|
+| **A content pack**: your own items, models, sounds and so on, in YAML | A folder with a `pack.yml` in it. The rest of this page is about these |
+| **A resource pack**, such as one exported from Studio | A `.zip`, or a folder with `pack.mcmeta` and `assets/` at the top. See [Adding a resource pack](/rp-engine/resource-packs) |
+| **Another plugin's pack** | An [ItemsAdder](/rp-engine/itemsadder), [Nexo or Oraxen](/rp-engine/nexo-oraxen), [CraftEngine](/rp-engine/craftengine), [ModelEngine](/rp-engine/modelengine) or [BetterModel](/rp-engine/bettermodel) folder, copied in as it is |
+
+A folder that is none of these is skipped with a warning (see
+[below](#if-the-console-warns-you)).
+
+A folder's name is its **namespace**, the first half of every ID in it
+(`mypack:ruby`). Use lowercase letters, digits, `_`, `.` and `-` only. See
+[IDs and namespaces](/rp-engine/ids).
+
+## A content pack's layout
 
 ```
 plugins/RPEngine/content/
   mypack/
     pack.yml               required
-    items/       *.yml
-    sounds/      *.yml
-    fonts/       *.yml
-    screens/     *.yml
-    huds/        *.yml
-    dialogs/     *.yml
-    recipes/     *.yml
-    entities/    *.yml
-    liquids/     *.yml
-    blocks/      *.yml
-    vehicles/    *.yml
-    emotes/      *.json or *.yml
-    armor3d/     *.yml      3D armour sets
-    objects/     *.yml      3D shader objects and their sequences
+    items/        *.yml
+    blocks/       *.yml
+    sounds/       *.yml
+    music/        *.yml
+    fonts/        *.yml    icons
+    screens/      *.yml
+    huds/         *.yml
+    dialogs/      *.yml
+    recipes/      *.yml
+    entities/     *.yml    custom mobs
+    skills/       *.yml    mob skills
+    drop-tables/  *.yml
+    spawners/     *.yml
+    liquids/      *.yml
+    vehicles/     *.yml
+    emotes/       *.json or *.yml
+    armor3d/      *.yml    3D armour sets
+    objects/      *.yml    3D shader objects and their sequences
+    text-effects/ *.yml
+    vfx/          *.yml or *.json
     assets/                → assets/mypack/ in the built pack
       textures/
       models/              Blockbench files
       sounds/
     overrides/             → assets/minecraft/, for replacing vanilla art
+    resourcepack/          optional: a resource pack, copied as it is
     pack.png               optional
 ```
 
+You only need the folders you use. A pack with one item has `pack.yml`,
+`items/` and `assets/`.
+
 ## The rules
 
-**The category folder decides the kind.** Top-level keys in a file are ID
-paths, so you do not nest them under an `items:` key. One file can declare
-many things, the file name does not matter, and subfolders are only for your
-own organisation: `items/weapons/swords.yml` adds nothing to the ID.
+**The folder decides the kind.** A file in `items/` defines items, a file in
+`sounds/` defines sounds. Top-level keys in a file are IDs, so you do not nest
+them under an `items:` key. One file can declare many things, the file name
+does not matter, and subfolders are only for your own organisation:
+`items/weapons/swords.yml` adds nothing to the ID.
 
 **Only the folders above are read.** There is no `models/` folder: a placed
 model is a [`place:` block on an item](/rp-engine/models). Any other folder is
-warned about by name, which catches typos like `item/` and `Sounds/`. Other
-plugins' layouts are the exception and are read where they are: see
-[Model Engine](/rp-engine/modelengine) and [BetterModel](/rp-engine/bettermodel).
+warned about by name, which catches typos like `item/` and `Sounds/`.
 
 **A mistake skips one definition, not the pack.** See [Reloading](/rp-engine/reloading).
 
-`objects/` holds [3D objects](/rp-engine/objects#sequences) and the
-sequences that drive them.
+## pack.yml
+
+As short as a name:
+
+```yaml
+name: My Pack
+```
+
+Or with everything it accepts:
+
+```yaml
+name: My Pack
+description: Swords and statues
+author: You
+version: 1.0.0
+bundles: [main]      # which built packs this content goes into
+enabled: true        # false skips the whole pack without deleting it
+```
+
+Leave `bundles:` out and the pack goes into `main`, which every player gets.
+See [Bundles](/rp-engine/bundles).
+
+## assets/ and overrides/
+
+**`assets/`** becomes `assets/mypack/` in the built pack. It is namespaced, so
+nothing in it can collide with another pack or with vanilla. An item
+`mypack:ruby` looks for its texture at `assets/textures/item/ruby.png`.
+
+**`overrides/`** becomes `assets/minecraft/`. It is how you replace vanilla
+art: a different dirt texture, a new font, a changed sound.
+
+<Callout type="warning" title="overrides/ is the one place two packs can fight">
+  Two packs both replacing `assets/minecraft/textures/block/dirt.png` is a real
+  conflict. The namespace that comes later alphabetically wins, and both are
+  named in a build warning.
+</Callout>
+
+`assets/models/` holds Blockbench `.bbmodel` project files or exported Java
+`.json` models. The `.bbmodel` is the better choice, because its textures are
+inside it. See [Items](/rp-engine/items#3d-items).
 
 ## YAML or TOML
 
@@ -74,45 +140,37 @@ seat = 0.5
   `["weapons/sword"]`. The error message says so when it happens.
 </Callout>
 
-## pack.yml
+## If the console warns you
 
-As short as a name:
+`/rp reload` (and every startup) lists every problem at once, each with the
+file and the ID. The common ones:
 
-```yaml
-name: My Pack
-```
+| Warning | What it means | Fix |
+|---|---|---|
+| `No pack.yml, so this is not a content pack` | The folder is not one of the [shapes above](#what-can-go-in-content). Usually a resource pack unzipped one folder too deep, so `pack.mcmeta` is not at the top | Add a `pack.yml` if it is your content. If it is a resource pack, move its contents up so `pack.mcmeta` and `assets/` sit directly inside the folder, or drop the original `.zip` in instead |
+| `Folder name is not a valid namespace` | The folder has capitals, spaces or other characters | Rename it: `My Pack` to `my_pack` |
+| `Not a content category, so nothing in it was read` | A folder in your pack that RP Engine does not read, often a typo (`item/`, `Sounds/`) | Rename it to one from [the layout](#a-content-packs-layout), or move art into `assets/` |
+| `No texture at assets/mypack/textures/item/ruby.png` | The item has no picture where its ID says. It works, but shows as a purple-and-black square | Put the PNG at `content/mypack/assets/textures/item/ruby.png` (the namespace is the folder, not a folder inside `assets/`), or name another file with `texture:` |
+| `No model at assets/models/chair.bbmodel or assets/models/chair.json` | The item says `model: chair` and no such file exists. It falls back to its flat sprite | Save the Blockbench project as `content/mypack/assets/models/chair.bbmodel`, or fix the name in `model:` |
+| `info.namespace says X but the folder is Y, and the folder wins` | An ItemsAdder pack's config names a different namespace from its folder. Its IDs are `Y:something` | Fine as it is, unless other configs refer to `X:something`. Then rename the folder to `X` |
+| `... already exists, so this zip was not unpacked` | A zip of that name was unpacked before, and that folder is kept in case you edited it | Delete the folder, then reload, to replace it with the zip |
 
-Or with everything it accepts:
+## Moving to another server
 
-```yaml
-name: My Pack
-description: Swords and statues
-version: 1.0.0
-bundles: [main]      # which built packs this content goes into
-```
+Copy the whole `plugins/RPEngine/` folder with the plugin jar. If you want to
+copy only what matters:
 
-`bundles:` is the only one that changes behaviour; see
-[Bundles](/rp-engine/bundles). Leave it out and the pack goes into `main`.
+| Copy | Why |
+|---|---|
+| `content/` | Your packs |
+| `config.yml` | Your settings |
+| `blocks.json` | Which vanilla block each custom block is stored as. **Without it, every custom block in the world turns into a different block** |
+| `model-numbers.json` | Below Minecraft 1.21.4, the numbers on custom items in inventories and the world. Lose it and items change into other items |
+| `liquids.json`, `spawners.yml` | Your pools and the spawners made in game |
 
-## assets/ and overrides/
+Leave out `output/` and `cache/` (rebuilt on start) and `unpacked-zips/`.
+Leave out `server-id` too if the old server keeps running, so the two are
+counted separately.
 
-**`assets/`** becomes `assets/mypack/` in the built pack. It is namespaced, so
-nothing in it can collide with another pack or with vanilla.
-
-**`overrides/`** becomes `assets/minecraft/`. It is how you replace vanilla
-art: a different dirt texture, a new font, a changed sound.
-
-<Callout type="warning" title="overrides/ is the one place two packs can fight">
-  Two packs both replacing `assets/minecraft/textures/block/dirt.png` is a real
-  conflict. The namespace that comes later alphabetically wins, and both are
-  named in a build warning.
-</Callout>
-
-An existing resource pack, shaders and all, can go in as it is: see
-[Adding a resource pack](/rp-engine/resource-packs).
-
-## Blockbench files
-
-`assets/models/` holds Blockbench `.bbmodel` project files or exported Java
-`.json` models. The `.bbmodel` is the better choice, because its textures are
-inside it. See [Items](/rp-engine/items#3d-items).
+Placed models are stored in the world itself, so they move with the world
+files.

@@ -6,20 +6,20 @@ export const metadata = {
 
 # Plugin API
 
-Your own Spigot or Paper plugin can give a custom item, place a model, play an
-emote, dress a player in 3D armour, park a vehicle and switch it off, put an
-icon in a message, open a dialog with your own values on it, and cancel any of
-those when your rules say no. Every snippet is shown in Java and Kotlin; pick
-one and the rest of the docs follows your choice.
+RP Engine has a Java API, so your own Spigot or Paper plugin can use what a
+server's pack holds: give a custom item, place a model, play an emote, park a
+vehicle, spawn a custom mob, show a HUD, open a dialog with your own values on
+it, and cancel any of those when your rules say no.
 
-This page matches **RP Engine 0.2.10**, the current release.
+Every snippet is shown in Java and Kotlin; pick one and the rest of the docs
+follows your choice. This page matches **RP Engine 0.2.59**.
 
 ## Setting up
 
 RP Engine is not published to a Maven repository. Download `RPEngine.jar` from
-[resourcepack.ai/rp-engine](https://resourcepack.ai/rp-engine) and compile
-against the file. Use `compileOnly`: the server already has the plugin, and a
-shaded second copy breaks class loading.
+[resourcepack.ai/rp-engine](https://resourcepack.ai/rp-engine), put it in your
+project's `libs/` folder and compile against it. Use `compileOnly`: the server
+already has the plugin, and a shaded second copy breaks class loading.
 
 <CodeTabs labels={["Groovy", "Kotlin"]}>
 
@@ -42,18 +42,25 @@ dependencies {
 RP Engine runs on Java 17 and Minecraft 1.19.4 or newer, so target Java 17 if
 you want your plugin to load everywhere the engine does.
 
-In your `plugin.yml`, add `softdepend: [RPEngine]` so you load after it, or
-`depend: [RPEngine]` if your plugin can't work without it.
+In your `plugin.yml`, tell the server to load RP Engine first:
 
-## Getting in
+```yaml
+depend: [RPEngine]       # your plugin can't run without it
+# or
+softdepend: [RPEngine]   # optional: check it is there before using it
+```
 
-Everything hangs off the plugin instance.
+## Getting the API
+
+Everything hangs off the plugin instance. Fetch it in `onEnable`:
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
 ```java
-RPEnginePlugin engine =
-    (RPEnginePlugin) Bukkit.getPluginManager().getPlugin("RPEngine");
+if (!(Bukkit.getPluginManager().getPlugin("RPEngine") instanceof RPEnginePlugin engine)) {
+    getLogger().info("RP Engine isn't installed");   // only possible with softdepend
+    return;
+}
 
 engine.items();         // custom items
 engine.models();        // models, and the ones standing in your worlds
@@ -62,6 +69,7 @@ engine.vehicles();      // vehicles, and the ones standing in your worlds
 engine.shaderObjects(); // 3D shader objects: place them and drive them
 engine.armor();         // 3D armour sets, and putting them on people
 engine.sounds();        // custom sounds
+engine.music();         // background music: playlists, one per player
 engine.icons();         // icons, and putting one into text
 engine.textEffects();   // Text Effects, and writing text in one
 engine.vfx();           // VFX: play one where somebody stands
@@ -74,7 +82,8 @@ engine.registration();  // adding content of your own
 ```
 
 ```kotlin
-val engine = Bukkit.getPluginManager().getPlugin("RPEngine") as RPEnginePlugin
+val engine = Bukkit.getPluginManager().getPlugin("RPEngine") as? RPEnginePlugin
+    ?: return logger.info("RP Engine isn't installed")   // only possible with softdepend
 
 engine.items()          // custom items
 engine.models()         // models, and the ones standing in your worlds
@@ -83,6 +92,7 @@ engine.vehicles()       // vehicles, and the ones standing in your worlds
 engine.shaderObjects()  // 3D shader objects: place them and drive them
 engine.armor()          // 3D armour sets, and putting them on people
 engine.sounds()         // custom sounds
+engine.music()          // background music: playlists, one per player
 engine.icons()          // icons, and putting one into text
 engine.textEffects()    // Text Effects, and writing text in one
 engine.vfx()            // VFX: play one where somebody stands
@@ -144,8 +154,12 @@ val isRuby: Boolean = engine.items().`is`(hand, ruby)
 
 Identity lives in the stack's persistent data, not its name or model. An item
 renamed in an anvil is still itself, and a vanilla diamond somebody named
-"Ruby" is not one. `create` is main thread only; `ids()` and `info()` are safe
-from any thread.
+"Ruby" is not one. `create(id, amount)` makes a stack of several.
+
+To make a stack of your own wear a pack's art without becoming that item, call
+`wearModel(stack, modelId)`. Don't set the item model yourself: below 1.21.4
+the model is a number only the engine knows. `create` and `wearModel` are main
+thread only; `ids()` and `info()` are safe from any thread.
 
 ## Models
 
@@ -171,28 +185,56 @@ engine.models().at(entity).ifPresent { it.play("wave", true) } // play on a plac
 
 </CodeTabs>
 
-Placing by item `ContentId` does exactly what a player placing that item does:
-hitbox, seat, light, storage, states, animated rig and the item's `place`
-actions. With a placer set, `ModelPlaceEvent` fires first. It returns empty
-when the item has no `place:` block, the block is occupied, or a listener
-cancelled it.
+There are two ways to place:
 
-A `Placement` is a handle on a model standing in a world: `play` an animation,
-`stop`, `remove(dropItem)`, read `playhead()` (how far into its animation it
-is) and `seek(seconds)` to drive that clock yourself. `play(name, true)` starts
-the animation over even if it is already running.
+- **By model id** (a String): just the model. `PlaceOptions` sets a starting
+  `animation`, a `scale` and a `placer`.
+- **By item `ContentId`**: exactly what a player placing that item gets
+  (hitbox, seat, light, storage, states, animated rig, the item's `place`
+  actions). With a `placer` set, [`ModelPlaceEvent`](#events) fires first, with
+  `stack()` null. It returns empty when the item has no `place:` block, the
+  block is occupied, or a listener cancelled it.
 
-`bind` and `unbind` put a model on an entity that isn't ours, such as an NPC,
-and `animate` plays on a model put on that way. **`animate` answers false for a
-model standing in the world**, because nothing is wearing it. For one of those,
-including the hitbox a right-click hands you, use `at(entity)` and `play` on the
-placement, as above.
+A `Placement` is a handle on a model standing in a world:
+
+| Method | What it does |
+|---|---|
+| `modelId()`, `location()`, `hitbox()` | What it is and where; `hitbox()` is its Interaction entity |
+| `animations()`, `playing()` | Its animation names, and the one running |
+| `play(name)` | Plays an animation. Asking again for a one-shot that is mid-play is ignored |
+| `play(name, true)` | Starts it over even if it is already running |
+| `stop()`, `seek(seconds)`, `playhead()` | Stop, drive its clock yourself, read how far in it is |
+| `data()` | Persistent data saved with the model, for your own keys (`Placement.key(plugin, name)`) |
+| `remove(dropItem)`, `isValid()` | Break it, and check it still exists |
+
+**`play` returns false** when the model has no animation by that name, the
+model has no moving parts (one that places as a single still display can't
+animate), it has been broken, or that one-shot is already playing (use
+`play(name, true)` to restart it). It never throws.
+
+`near(location, radius)` and `in(chunk)` find placements; there is no "every
+model on the server" call. `isModel(entity)` says whether an entity belongs to
+any model.
+
+### Models on entities that aren't ours
+
+`bind(entity, model)` (optionally with a scale) puts a model on an NPC or a
+boss, `unbind` takes it off, `modelOn(entity)` says which one it wears, and
+`animate(entity, name)` / `stopAnimating(entity)` play it.
+
+**`animate` returns false** when the entity wears nothing of ours, or its model
+has no animation by that name. It is only for a bound model: a model standing
+in the world, including the hitbox a right-click hands you, also answers false.
+For one of those, use `at(entity)` and `play` on the placement, as above.
+
+### What the pack says about a model
 
 What a pack's `place:` block said is a read-only `ModelInfo`: facing, scale,
 seat and light, plus `storage()` (a `StorageSpec`: type, rows, title, sounds),
-`jukebox()`, `states()` with `nextState`, `lightIn` and `solidIn`, and
-`grow()`. The engine handles the clicks itself; cancel `ModelInteractEvent` to
-stop one. Growing fires neither `ModelBreakEvent` nor `ModelPlaceEvent`. See
+`jukebox()`, `states()` with `nextState`, `lightIn` and `solidIn`, `grow()`,
+and `variation()` (the random turn and size it is placed with). The engine
+handles the clicks itself; cancel `ModelInteractEvent` to stop one. Growing
+fires neither `ModelBreakEvent` nor `ModelPlaceEvent`. See
 [Working furniture](/rp-engine/furniture).
 
 ## Emotes
@@ -256,6 +298,12 @@ wears. Moving doesn't end it, and calling it again swaps without restarting.
 - `seekProp` drives a carried prop by your own clock, such as a wheel that
   turns with distance travelled. It survives a swap to another emote carrying
   the same prop.
+- `anchor(player, feet)` pins the rig to a point you move every tick (a seat
+  you move yourself), so the two arrive together; `null` hands it back.
+- `lean(player, pitch, roll)` tips the rig in the wearer's own frame, such as a
+  rider leaning into a corner. It holds until you set it again.
+- `wear(player, id, under)` layers the emote over one of the built-in stances,
+  for an emote that animates only some bones.
 
 ### Carrying a rig on a seat of your own
 
@@ -397,20 +445,57 @@ except `ids` and `info`.
 engine.sounds().play(player, id);       // only this player hears it
 engine.sounds().playAt(location, id);   // everybody nearby hears it here
 engine.sounds().playFrom(entity, id);   // everybody nearby hears it follow this entity
+engine.sounds().stop(player, id);       // end it early for this player
 ```
 
 ```kotlin
 engine.sounds().play(player, id)       // only this player hears it
 engine.sounds().playAt(location, id)   // everybody nearby hears it here
 engine.sounds().playFrom(entity, id)   // everybody nearby hears it follow this entity
+engine.sounds().stop(player, id)       // end it early for this player
 ```
 
 </CodeTabs>
 
 All three use the sound's declared category, volume and pitch, and each has an
 overload that takes `volume` and `pitch`. Use `playFrom` for anything that
-moves. Playing is main thread only; `ids()` and `info()` are safe from any
-thread.
+moves. Each returns false for an unknown id. A stereo file plays at full volume
+wherever it was played from (Minecraft only places mono sounds in the world),
+so use mono for anything heard from a spot. Playing and stopping are main
+thread only; `ids()` and `info()` are safe from any thread.
+
+## Music
+
+[Background music](/rp-engine/music) is a playlist of the pack's sounds. Each
+player hears one piece at a time: what your plugin started for them, otherwise
+the music of the place they stand in.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+Music music = engine.music();
+music.play(player, bossTheme);   // from its first track, until stopped
+music.skip(player);              // on to the next track
+music.stop(player);              // end it; the place's music comes back
+music.playing(player);           // the piece playing for them, if any
+music.track(player);             // and the track
+```
+
+```kotlin
+val music = engine.music()
+music.play(player, bossTheme)    // from its first track, until stopped
+music.skip(player)               // on to the next track
+music.stop(player)               // end it; the place's music comes back
+music.playing(player)            // the piece playing for them, if any
+music.track(player)              // and the track
+```
+
+</CodeTabs>
+
+`play` beats the place's music, so a boss fight can start its own and `stop` it
+when the boss dies. `play` returns false for an unknown id, `skip` when nothing
+is playing. Calling `stop` with nothing started silences the place's music
+until they leave that place. Main thread only, except `ids()` and `info()`.
 
 ## HUD overlays
 
@@ -573,10 +658,22 @@ registers it; `DialogInfo.command()` and `permission()` say what it is.
 `DialogInfo.quickAction()` says whether it is on the [Quick Actions
 key](/dialogs#the-quick-actions-key) (G).
 
-A dialog opens straight away even if it was pushed a moment ago, because the
-engine sends the whole dialog. `pending()` only tells you whether its id is in
-the server's registry yet, which matters only to a datapack or command block of
-your own that names it.
+A dialog opens straight away even if it was pushed a moment ago. `pending()`
+only tells you whether its id is in the server's registry yet, which matters
+only to a datapack or command block of your own that names it.
+
+### When a player clicks a button
+
+**RP Engine fires no event for a dialog click.** A button runs a command, so
+the way to react is to make that command yours: register `/buy` (or whatever
+the button runs) in your `plugin.yml` and handle it in your command executor.
+The command runs as the player who clicked, with `{name}` placeholders already
+filled in. A button can run several commands in order, and a **Run as console**
+button runs its command as the console instead. The one dialog event is
+[`DialogSlotMoveEvent`](#events), for item slots.
+
+If you want click events in Java, with typed inputs, use
+[Dialog Engine](/dialog-engine), a separate plugin built for that.
 
 ### Values on it
 
@@ -1010,11 +1107,14 @@ board.wallRiding()                          // is it on a wall right now?
 ### A driver that isn't a player
 
 `drive(keys)` drives a vehicle as though somebody in the driver's seat were
-holding those keys, until you call it again, with nobody in it (RP Engine 0.2.51
-and newer). It's for computer racers, demo laps and ghosts. The handling is a
+holding those keys, from the next tick until you call it again (RP Engine
+0.2.51 and newer). Nobody has to be in it, and a real driver's keys are ignored
+meanwhile. It's for computer racers, demo laps and ghosts. The handling is a
 player's, `setEnabled(false)` still stops it, and `input()` reports your keys,
 so code that reacts to what the driver pressed works for this driver too.
-`drive(null)` hands it back.
+`drive(null)` hands it back. Steer and throttle run from -1 to 1 (steer: left
+to right); the space key is the handbrake, a jump or a climb, depending on the
+vehicle.
 
 ```java
 VehicleInput keys = new VehicleInput(true, 1.0, -0.4,   // throttle 1, steer 0.4 to the left
@@ -1397,11 +1497,11 @@ otherwise.
 | `PackSendEvent` | A pack went out to a player. `pack()` is the built pack; its `uuid()` is the id `PlayerResourcePackStatusEvent` reports on 1.20.3+, so you can match the two. Not cancellable |
 | `RigPackBuildEvent` | The emote rigs were rebaked: on every content load, or alone for a new skin or `reloadRigs()`. `alone()` and `separate()` say which. Not cancellable |
 | `ItemUseEvent` | A custom item was right- or left-clicked. `block()` and `face()` say what was clicked (null in the air). Cancelling cancels the vanilla use too |
-| `ModelPlaceEvent` | A model is about to be put down. `stack()` is the stack in the player's hand it's placed from, so you can read what the item carries; null when a plugin placed it |
+| `ModelPlaceEvent` | A model is about to be put down. `getPlayer()` is who is placing it, `model()` the model's id, `block()` the block it goes in (its location), and `stack()` the stack in their hand, so you can read what the item carries (null when a plugin placed it). Parking a vehicle from its item and hatching a custom mob from its egg fire it too, with the vehicle's or mob's id as `model()` |
 | `ModelPlacedEvent` | A model was put down and is standing. `placement()` is its handle and `stack()` the stack it came from, so you can copy what the item carries onto the placement's `data()`. Not cancellable |
-| `ModelBreakEvent` | A model is about to be broken. `hitbox()` is its Interaction entity (its UUID tells two copies of one model apart) and `placement()` its handle. Has a drop flag separate from cancelling |
+| `ModelBreakEvent` | A model is about to be broken. `model()`, `location()`, `player()` (null if nobody broke it), `hitbox()` (its Interaction entity, whose UUID tells two copies of one model apart) and `placement()`. Has a drop flag separate from cancelling |
 | `ModelInteractEvent` | A placed model was right-clicked, from your content folder or from Studio. Has `hitbox()`, `placement()` and `clickedPosition()`. Cancelling stops everything the engine would do with the click |
-| `ModelAnimationEvent` | A model is about to play an animation |
+| `ModelAnimationEvent` | A model is about to play an animation: `getPlacement()`, `getAnimation()`, `getCause()` and `getPlayer()` (who triggered it, if anyone) |
 | `ModelAnimationEndEvent` | One ended: finished, replaced or stopped. Not cancellable |
 | `ModelSeatEvent` | Somebody is about to sit on a chair, a seat bone or a vehicle seat. `placement()` or `vehicle()` says what it belongs to |
 | `ModelBindEvent` | A model is going on, or coming off, an entity that isn't ours (a boss, an NPC) |
@@ -1418,7 +1518,7 @@ otherwise.
 | `EmoteStartEvent` | An emote is about to start |
 | `EmoteEndEvent` | An emote ended, with the reason: finished, stopped, moved, damaged, quit, shutdown |
 | `EmoteRigSpawnEvent` | A rig's displays were spawned. Carries the new entity ids. Not cancellable |
-| `DialogSlotMoveEvent` | A player is about to move a stack in a dialog's item slots, from one slot (`inv/5`, `ender/3`, `api.bank/0`) to another |
+| `DialogSlotMoveEvent` | A player is about to move a stack in a dialog's item slots. `dialog()`, `from()` and `to()` (slot keys like `inv/5`, `ender/3`, `api.bank/0`), `moving()` and `onto()` (the stack already there). The only dialog event: a button click runs a command instead, see [When a player clicks a button](#when-a-player-clicks-a-button) |
 
 **The engine decides whether something can physically happen, never whether it
 is allowed to.** Region protection, plot ownership and event worlds are rules

@@ -9,7 +9,8 @@ export const metadata = {
 MC GUI is a server plugin that puts HTML pages in the game. Put a page in a
 folder and players see it on a wall they can walk up to and click, or
 fullscreen, where they point with their mouse and click like on a computer.
-Vanilla clients, no mods.
+Use it for menus, shops, server selectors, rules boards and minigames that need
+more than a chest or a dialog can show. Vanilla clients, no mods.
 
 ![Four MC GUI pages in game](/images/mcgui.webp)
 
@@ -24,6 +25,15 @@ page is **static** HTML and CSS. Links, commands, hover states, scrolling,
 sounds and form controls are made to work in game instead. For games, a page
 can also run JavaScript that draws on a `<canvas>` (see [Scripts](#scripts)).
 
+<Callout title="MC GUI, a dialog or a chest GUI?">
+  A [chest GUI](/guis) is a container screen with new art, holding items you
+  can pick up. A dialog ([Dialog Engine](/dialog-engine) or
+  [RP Engine's](/rp-engine/dialogs)) is the game's own menu of buttons and text
+  boxes. MC GUI is a whole web page with a mouse pointer, as rich as you can
+  write in HTML. [Which plugin for menus](/plugins#which-plugin-for-menus)
+  compares them.
+</Callout>
+
 ## Installing
 
 <Steps>
@@ -32,9 +42,9 @@ can also run JavaScript that draws on a `<canvas>` (see [Scripts](#scripts)).
     or [SpigotMC](https://www.spigotmc.org/resources/139931/).
   </Step>
   <Step title="Drop it in">
-    Put the jar in `plugins/` and restart. It runs on **Spigot or Paper
-    1.21.11 or newer**, one jar for both, and needs **Java 21** (Java 25 for
-    26.x). [PlaceholderAPI](https://www.spigotmc.org/resources/6245/) is
+    Put the jar in `plugins/` and restart. It runs on **Spigot, Paper or
+    Folia 1.21.11 or newer**, one jar for all three, and needs **Java 21**
+    (Java 25 for 26.x). [PlaceholderAPI](https://www.spigotmc.org/resources/6245/) is
     optional. Players need nothing installed.
   </Step>
   <Step title="Try an example">
@@ -102,13 +112,34 @@ plugins/MCGUI/
 
 ## Pages from mcgui.dev
 
-[mcgui.dev](https://mcgui.dev) is a free editor for these pages, with no
-account: a live preview that clicks like the game, the code beside it, and
-help writing a page from a description or a screenshot.
+[mcgui.dev](https://mcgui.dev) is a free editor for these pages. Editing,
+previewing and sending a page need no account; only the AI asks you to sign
+in. Your projects are kept in your browser.
 
 ![The mcgui.dev editor](/images/mcgui-editor.webp)
 
-Press **Send to server** there and you get an eight-letter code. On the server:
+There is no palette of buttons and pictures to drag in. You make a page by
+describing it to the AI, starting from a template, or writing the HTML, and
+then wire up its buttons by clicking them. Along the top:
+
+| Control | What it does |
+| --- | --- |
+| **New** | A blank project, or one of your recent ones |
+| **Templates** | Start from Server menu, Shop, Server selector, Leaderboard, Rules or Style guide |
+| **Map** | Every page in the project as a card, with where each button goes |
+| **Page** | One page. Click anything on it to make it a link: to another page, **Go back**, **Close the page** or **Run a command**. **Try it** lets you click through it as a player would |
+| **Code** | The HTML and CSS beside a live preview. The line under the code says what won't work in MC GUI |
+| The AI bar | Describe a new page, or a change to the open one. **Minecraft** or **Modern** is the look it designs in, and you can attach a sketch or screenshot for it to copy (or paste one with Ctrl+V). Each request costs 15 AI Credits from your ResourcePack AI account |
+| **Export** | Download everything as a .zip for `plugins/MCGUI/pages/`, or just the open page |
+| **Send to server** | Gives you a code for `/mcgui import` |
+
+In the pages list, **+** makes a new page: name it, say what's on it and press
+**Make it with AI**, or start from Blank, Cards, List, Text, Two columns or
+Confirm. Each page's menu can copy the `/mcgui open` command that opens it.
+The same editor is in Studio as a **Custom GUI**, kept in a pack on its GUIs
+tab.
+
+Press **Send to server** and you get an eight-letter code. On the server:
 
 ```
 /mcgui import <code>
@@ -208,12 +239,17 @@ A page with an overlay setting is drawn on nothing instead of white:
 ```
 
 Leave `html` and `body` transparent and put the page in a panel. Fullscreen,
-the player sees the world round the panel under that tint (`none` for no
-tint). Add `blur` to blur the world as the game blurs it behind a menu:
+the player sees the world round the panel under that tint. Add `blur` to blur
+the world as the game blurs it behind a menu:
 
 ```html
 <meta name="ui:overlay" content="rgba(8, 10, 22, 0.3) blur">
 ```
+
+**To remove the tint and the blur**, set `content="none"`: the world shows
+clear round the panel. Pages from mcgui.dev may also darken or blur the
+background in their CSS (a dark `background` or `backdrop-filter: blur()` on a
+full-page box); take that out too.
 
 Opening an overlay does not move the player's view at all. The world round
 the panel is the picture of it their game took as it opened, so it stays still
@@ -227,10 +263,7 @@ world shows live round the panel. On a wall, the wall behind shows through.
 
 While a player has a page open (fullscreen or an overlay), MC GUI hides the
 sidebar scoreboard, boss bars and action bar that other plugins draw, and puts
-them back when the page closes. MC GUI's own pack already hides the HUD, but a
-pack that replaces its shaders (Dialog Engine's drawn dialogs merged into
-another plugin's pack, for one) takes that away, so since 0.7.0 the server
-hides them too, whichever pack wins:
+them back when the page closes:
 
 ```yaml
 views:
@@ -240,21 +273,12 @@ views:
     action-bar: true
 ```
 
-It is done with packets, for that player alone. When the page opens their game
-drops the sidebar and each boss bar and gets an empty action bar; what the
-server sends them meanwhile (TAB's lines, a boss bar's progress, a plugin's
-action bar every second) is held back. When the page closes, however it
-closes, they get each sidebar and boss bar as the server last had it, and the
-next action bar shows as usual. It reads packets rather than the scoreboard
-API, so it works with TAB, ProtocolLib, PacketEvents and anything else that
-draws them, and does not fight them.
-
-All three are on by default: with MC GUI's shaders in use nobody sees a
-difference. Turn one off to keep a plugin's sidebar, bar or action bar on
-screen at pages. MC GUI's own action bar messages still show, and the tab
-list, chat, titles and the text under names are never touched. A HUD drawn
-some other way (glyphs in a resource pack, a title) stays. These settings are
-read when the server starts.
+It is done for that player alone, and works with TAB, ProtocolLib,
+PacketEvents and anything else that draws them. When the page closes they get
+each one back as it is now. Turn one off to keep a plugin's sidebar, bar or
+action bar on screen at pages. The tab list, chat, titles and the text under
+names are never touched, and a HUD drawn with resource pack glyphs stays.
+These settings are read when the server starts.
 
 ## In a page
 
@@ -280,6 +304,28 @@ A page's own `data-key` wins over what the key does by default. The wheel also
 moves the hotbar, so a page can use any six of the number keys.
 
 Players cannot type into a text box: there is no keyboard to type with.
+
+### Text on hover (tooltips)
+
+The `title` attribute shows nothing. Make a tooltip with CSS: put the text
+inside the element, hidden, and show it on `:hover`. `:hover` is also how you
+give a button a hover effect.
+
+```html
+<style>
+  .slot { position: relative; }
+  .slot:hover { background: #3a2a14; }   /* the button lights up */
+  .tip  { display: none; position: absolute; left: 100%; top: 0; padding: 6px 9px;
+          background: #100010; border: 2px solid #5000ff; white-space: nowrap; }
+  .slot:hover .tip { display: block; }   /* and its tooltip shows */
+</style>
+<button class="slot" data-command="kit starter">
+  Starter kit
+  <span class="tip">A stone sword and some bread</span>
+</button>
+```
+
+The `market` example page does this for every item on its shelves.
 
 ### Forms
 
@@ -377,7 +423,17 @@ transitions (`@keyframes`, `animation`, `transition`).
 
 **Fonts:** Inter (`sans-serif` and every system font name), Source Serif 4
 (`serif`), JetBrains Mono (`monospace`), `Minecraft` (the game's own letters)
-and `Monocraft` are built in.
+and `Monocraft` are built in, for Latin letters (Inter also has Greek and
+Cyrillic). For Thai,
+Chinese, Japanese, Korean, Arabic or another script, load a font that has it,
+or its letters can come out as boxes:
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
+<style> body { font-family: "Noto Sans Thai", sans-serif; } </style>
+```
+
+A `.ttf` or `.otf` in the pages folder works too, with `@font-face`.
 
 **Not supported:** WOFF fonts, WebP pictures, video, iframes, floats (a
 floated box stays where it is), typing into inputs, and scripts changing the
@@ -486,7 +542,7 @@ under `resource-pack`:
 | --- | --- |
 | `upload` (default) | Uploads the pack to ResourcePack AI's free pack host, `packs.resourcepack.ai`, and players download it from there. Nothing to open or set up |
 | `serve` | Serves `pack.zip` itself on `port`; set `public-url` to an address players can reach, such as `http://play.example.com:25602/pack.zip`, and open that port |
-| `external` | Serves nothing: host `plugins/MCGUI/pack.zip` yourself and set `public-url`, or merge it into another plugin's pack (ItemsAdder, Nexo) and leave `public-url` blank. The pack is also unpacked into `plugins/MCGUI/pack/` for plugins that merge folders: for ItemsAdder, add `MCGUI/pack` under `resource-pack.zip.merge_other_plugins_resourcepacks_folders` in its `config.yml` and run `/iazip`. Merge again after every MC GUI update: the pack changes with the plugin, and an old merged pack can draw pages wrong (since 0.7.2, in the wrong colours) |
+| `external` | Serves nothing: host `plugins/MCGUI/pack.zip` yourself and set `public-url`, or merge it into another plugin's pack (ItemsAdder, Nexo) and leave `public-url` blank. The pack is also unpacked into `plugins/MCGUI/pack/` for plugins that merge folders: for ItemsAdder, add `MCGUI/pack` under `resource-pack.zip.merge_other_plugins_resourcepacks_folders` in its `config.yml` and run `/iazip`. **Merge again after every MC GUI update**: an old merged pack draws pages wrong, often in the wrong colours |
 | `off` | No pack: walls show plain map colours, and pages do not open |
 
 With `upload`, the pack is only uploaded again when it changes, it is kept for
@@ -496,9 +552,8 @@ serves the pack itself on `port` and `public-url` until it works, and the
 console says so.
 
 <Callout type="warning" title="Upgrading from 0.5.2 or older">
-  Your `config.yml` still says `mode: serve`. With `public-url` blank, players
-  are sent `127.0.0.1`, which only works on the server's own machine, so set
-  `mode: upload` and restart.
+  Your `config.yml` may still say `mode: serve` with a blank `public-url`,
+  which sends players `127.0.0.1`. Set `mode: upload` and restart.
 </Callout>
 
 `required: true` makes the pack required, so a player who declines it is
@@ -511,6 +566,18 @@ MC GUI's pack replaces the game's text shader, as some other plugins' packs do
 loses: merge packs with care. When MC GUI's loses, pages still hide the
 sidebar, boss bars and action bar from the server side
 ([The sidebar, boss bars and action bar](#the-sidebar-boss-bars-and-action-bar)).
+
+## If pages are slow or don't show
+
+| What happens | Why, and what to do |
+| --- | --- |
+| Low FPS while a page is open | Every map on screen costs frame time, so a smaller page is faster. Set `views.size` to `14x8` (about 25% more FPS) or `12x7` (50% or more), or `ui:size` on one page. See [Size](#size) |
+| The page flashes, then closes or shows wrong | Another plugin's resource pack replaced MC GUI's shaders. When MC GUI sends its own pack, it sends it again on top before the next page (a short reload), so open the page again. If you merged MC GUI's pack into another plugin's, merge it again after every MC GUI update, and turn off that plugin's own text shader features. Two plugins that replace the same shader can't both work |
+| "Your game could not load the resource pack of this server" | The pack failed to load for that player, often a merged pack. The console says why |
+| "This menu can't be shown while shaders are on" | The player has Iris or OptiFine shaders on. Shader packs replace what MC GUI draws with, so they need to turn shaders off |
+| Bedrock players can't open pages | Pages are Java only. Bedrock players see wall screens in plain map colours |
+| Letters show as boxes | The built-in fonts lack that script. Load one that has it ([Fonts](#what-pages-can-use)) |
+| A page takes long to open | Leave `network-compression-threshold` in `server.properties` at 256. To find where the time goes, run `/mcgui debug <player> trace on`, have them open it a few times, then send us the `Open trace:` lines from `logs/latest.log` |
 
 ## Commands
 
@@ -532,6 +599,7 @@ sidebar, boss bars and action bar from the server side
 | `/mcgui pack` | Sends you the resource pack again |
 | `/mcgui stats` | What the plugin costs the server now (`stats json` for one line of JSON) |
 | `/mcgui clear` | Removes every test wall |
+| `/mcgui debug <player> trace on\|off` | Logs where the time went each time that player opens a page (see [If pages are slow or don't show](#if-pages-are-slow-or-dont-show)). `debug <player> point`, `click`, `scroll` and `close` drive their open page from the console |
 
 ## Permissions
 
@@ -552,6 +620,8 @@ Pointing a command at another player needs that command's `.others` node too.
 | `mcgui.test.others` | `/mcgui test` for somebody else | op |
 | `mcgui.stats` | `/mcgui stats` | op |
 | `mcgui.clear` | `/mcgui clear` | op |
+| `mcgui.debug` | `/mcgui debug` on your own page | op |
+| `mcgui.debug.others` | `/mcgui debug` on somebody else | op |
 | `mcgui.fov` | `/mcgui fov` | everyone |
 | `mcgui.pointer` | `/mcgui pointer` | everyone |
 | `mcgui.pack` | `/mcgui pack` | everyone |
@@ -648,7 +718,7 @@ see-through, and `ViewOptions.DEFAULT.blur(true)` blurs it.
 A view hides the sidebar, boss bars and action bar as the server's
 `views.hide-hud` says, unless its options choose: `ViewOptions.DEFAULT.hud(HudParts.NONE)`
 leaves them all on screen, and `ViewOptions.DEFAULT.hud(HudParts.ALL.actionBar(false))`
-hides all but the action bar (0.7.0 and newer).
+hides all but the action bar.
 
 The [examples](https://github.com/resourcepack-ai/mcgui/tree/main/examples) are
 whole plugins built this way: an arcade of games on cabinets and fullscreen, a

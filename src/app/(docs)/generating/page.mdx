@@ -6,16 +6,43 @@ export const metadata = {
 
 # Generating with AI
 
-Generation gets you past the empty canvas. You describe what you want, the AI
-makes a first version, and you finish it in the editor. It won't always be
-perfect, and it doesn't need to be.
+Generating means describing something in words and having the AI make a first
+version of it: a Block texture, a 3D Model, a Sound. You then finish it in the
+editor. Each generation costs **AI Credits**, the app's currency, and the price
+is shown before you start.
 
-## Where it lives
+## Generating something
 
-Everything starts from **Add asset** on the pack page. The tabs along the top
-choose what you're making. Under them, **Generate**, **Blank** and **Upload**
-choose how you start. The fields below change with the type: which vanilla
-block or item you're replacing, a size for pixel art, a sound event name.
+<Steps>
+  <Step title="Open Add asset">
+    On your pack's page, press **Add asset**.
+  </Step>
+  <Step title="Pick what you're making">
+    Choose a tab along the top (Model, Block, Item and so on), then
+    **Generate**.
+  </Step>
+  <Step title="Fill in the form">
+    Write your prompt. Depending on the type you also pick which vanilla block
+    or item it replaces, a size for pixel art, or a sound event name.
+  </Step>
+  <Step title="Press Generate">
+    The cost is on the button. Most things take a minute or two, a 3D Model a
+    few minutes, and you can leave the page while it works. The new asset
+    appears in the pack when it's ready.
+  </Step>
+</Steps>
+
+If you can't think how to phrase it, press **Write a prompt for me**, say
+what you want in a few words, and it fills in the prompt box. That's free.
+
+Making a lot at once, or a whole pack? Press **Chat** instead and describe
+it: you get a list of everything to make, with prices, and generate it all
+with one button. See [Chat](/chat).
+
+## What each type can start from
+
+**Generate** is the AI. **Blank** opens the editor empty. **Upload** uses a
+file you already have.
 
 | Type | Generate | Blank | Upload |
 | --- | --- | --- | --- |
@@ -27,66 +54,79 @@ block or item you're replacing, a size for pixel art, a sound event name.
 | **Dialog** | ✓ | ✓ | ✕ |
 | **HUD** | ✓ | ✓ | `.png` sheet |
 | **Icon** | ✓ | ✓ | `.png` `.jpg` `.webp` |
-| **Rank tag** | ✓ | ✓ | ✕ |
+| **Rank Tag** (on the Icon tab) | ✓ | ✓ | ✕ |
 | **Sound** | ✓ | ✓ | `.ogg` `.mp3` `.wav` |
 | **Emote** | ✓ | ✓ | ✕ |
 | **Shader** (2D or 3D) | ✓ | ✓ | ✕ |
+| **Text Effect** | ✓ | ✓ | ✕ |
+| **VFX** | ✓ | ✓ | ✕ |
 
-An emote **Group** (a set of emotes a player wears while moving) is made from
-emotes you already have, so it's started blank. Vehicles aren't on this list
-because a vehicle starts as a model: see [Vehicles](/vehicles).
+Pixel art comes in fixed sizes: a generated Block is 16, 32 or 64 pixels
+across (or a custom size up to 128), a 2D Item 16, 32, 64 or 128, and an Icon
+8, 16, 32, 64 or 128 pixels tall.
 
-If you can't think how to phrase it, press **Write a prompt for me**, say
-what you want in a few words, and it fills in the prompt box. That's free.
-
-Making a lot at once, or a whole pack? Press **Chat** instead and describe
-it: you get a plan of everything to make, with prices, and generate it all
-with one button. See [Chat](/chat).
+An emote **Group** (a set of Emotes a player wears while moving) is made from
+Emotes you already have, so it's started blank. Vehicles and Mobs start as a
+3D Model: see [Vehicles](/vehicles) and [Mobs](/mobs). Skins are made from
+their own page: see [Skins](/skins).
 
 ## What it costs
 
-Generation is paid for in AI credits. A new free account starts with 100 (a
-50-credit welcome plus its first 50), then gets 50 more every 30 days; paid
-plans get more. The estimate is always shown next to the **Generate** button before
-you press it, so the table below is a guide rather than a price list.
-
-Boosting [our Discord server](https://resourcepack.ai/discord) earns credits
-too: 50 the moment you boost, then 50 more for every 30 days you keep boosting.
-They go to the account your Discord is connected to (on your
-[account page](https://studio.resourcepack.ai/account)), and if it isn't
-connected yet they arrive the moment you connect it. The first 50 comes once
-per Discord account, and each month only counts unbroken boosting, so stopping
-and boosting again starts the count from zero.
+A free account gets 50 AI Credits every 30 days; paid plans get more. The
+exact estimate is always shown next to the **Generate** button before you
+press it, so this table is a guide rather than a price list.
 
 | Type | Credits, about | Time, about |
 | --- | --- | --- |
-| Model, or a 3D item | 75 | 3–6 min |
+| Model, or a 3D Item | 75 | 3–6 min |
+| Mob, generated and animated | 113 | 7–18 min |
 | Block | 10 (fixed) | 1–3 min |
 | Item (2D) | 5 | under 30 sec |
 | Icon | 5 | under 30 sec |
-| Rank tag | 5 (fixed) | under a minute |
+| Rank Tag | 5 (fixed) | under a minute |
 | Sound | 7 per take | under 10 sec |
 | Armor | 45 | 2–5 min |
-| Armor (3D) | 150 | 12–26 min |
+| Armor (3D) | 150 | 15–25 min |
 | GUI | 40 | 2–12 min |
 | HUD | 2 per part you tick | 1–4 min |
 | Dialog | 30, plus 5 per extra page | 1–3 min |
 | Emote | 25 | 1–5 min |
 | Shader (2D) | 10 | under a minute |
 | Shader (3D) | 30 | 4–6 min |
+| Text Effect | 20 | 2–5 min |
+| VFX | 30 | 1–3 min |
+| Skin | 45 | 2–5 min |
 | Edit with AI, on a model | 10 | 1–5 min |
+| Animate with AI, on a model | 15 | 1–5 min |
 
 Except where it says fixed, you're charged for what the run actually used, so
 it can come in a little under or over the estimate. **A generation that fails
 is refunded automatically.**
 
-## Reference images
+### Free credits from Discord
 
-Most types can take a **reference image** alongside the prompt: drop a picture
-on the Generate form and the AI works from it as well as from your words. A
-model built from a reference picks up its shape and colours, which is often
-the quickest way to get "like this, but Minecraft". Emotes and shaders don't
-take one.
+- **Join**: connect Discord on your
+  [account page](https://studio.resourcepack.ai/account) and join
+  [our Discord server](https://resourcepack.ai/discord) for 50 credits, once
+  per account and once per Discord account.
+- **Boost**: boosting the server earns 50 the moment you boost, then 50 more
+  for every 30 days you keep boosting. The first 50 comes once per Discord
+  account, and only unbroken boosting counts, so stopping and boosting again
+  starts the count from zero. If Discord isn't connected yet, the credits
+  arrive the moment you connect it.
+
+## Giving it a picture to work from
+
+Every type except Sounds, Emotes and Rank Tags can take a **reference image**
+beside the prompt, and the AI works from it as well as from your words. A model
+built from a reference picks up its shape and colours, which is often the
+quickest way to get "like this, but Minecraft". Add one with:
+
+- **Upload**: a picture from your computer (or drop one on the form).
+- **From pack**: something already in the pack.
+- **From Sketchfab**: paste a Sketchfab model's link and it's used as
+  inspiration. Models whose licence doesn't allow commercial use, or whose
+  author opted out of AI, can't be used.
 
 ## Writing a prompt
 
@@ -114,12 +154,13 @@ Things worth naming:
 If your pack has a **Style Guide**, the Generate form offers to use it, which
 keeps colours and style consistent across everything you make.
 
-## Changing what came back
+## If it isn't quite right
 
-Most generated assets have **Edit with AI** on their page: describe the change
-("same block, fewer colours, calmer surface") and it edits what's there rather
-than starting again, so you keep the colours and shape you liked. On a model it
-looks at the model's parts first and changes only what you asked for.
+Most generated assets, Skins included, have **Edit with AI** on their page:
+describe the change ("same block, fewer colours, calmer surface") and it edits
+what's there rather than starting again, so you keep the colours and shape you
+liked. On a model it looks at the model's parts first and changes only what you
+asked for.
 **Regenerate** runs the original prompt again; the old version stays in the
 asset's AI history.
 
@@ -134,7 +175,7 @@ pixels by hand takes fifteen seconds and gets you exactly what you meant;
 three more prompts take minutes and give you something slightly different each
 time.
 
-## Notifications
+## Getting told when it's done
 
 You don't have to watch a model build. Turn on a notification and close the
 tab: anything that runs for more than two minutes sends one when it finishes

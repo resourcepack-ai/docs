@@ -5,7 +5,8 @@ export const metadata = {
 
 # Errors
 
-Every failure has the same shape:
+When a call fails, the HTTP status says roughly what kind of problem it is,
+and the body says exactly which. Every failure has the same shape:
 
 ```json
 {
@@ -53,9 +54,10 @@ Branch on `code`, never on `message`. The wording can change; the code won't.
 | 413 | `file_too_large` | The file is over the limit for its use; `message` says the limit |
 | 429 | `rate_limited` | Over this key's budget; see [Rate limits](/api-reference/rate-limits) |
 | 429 | `too_many_invites` | The pack has as many invitations waiting as it may |
+| 429 | `daily_limit` | Publishing to the gallery: today's free title and description writing is used up. Send `title`, `description` and `tags` yourself, or try tomorrow |
 | 500 | `export_failed` | The export couldn't be built |
-| 502 | `push_failed` | The pack was built but the player's server couldn't be reached |
 | 500 | `request_failed` | Something went wrong with no more specific code |
+| 502 | `push_failed` | The pack was built but the player's server couldn't be reached, or refused it |
 | 503 | `unavailable` | The feature behind this endpoint is switched off |
 
 Each endpoint page lists the codes it can return, under **Error codes**.

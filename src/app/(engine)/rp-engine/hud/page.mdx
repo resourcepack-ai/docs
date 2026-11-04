@@ -8,7 +8,9 @@ export const metadata = {
 
 An overlay is a picture drawn on top of the game view, like a mana bar, a
 compass or a frame round the screen. It sits in one of two places the game
-already draws text, so it needs no client mod.
+already draws text (the action bar or the boss bar), so it needs no client mod.
+Put the YAML in a `huds/` folder of your [content folder](/rp-engine/content)
+and the picture in its `assets/textures/gui/`.
 
 ![A custom HUD](/images/hud.webp)
 
@@ -53,7 +55,7 @@ sent. The first of these that knows the name wins:
 3. PlaceholderAPI, if installed: `{vault_eco_balance}` or `%vault_eco_balance%`.
    A placeholder with arguments works as you would write it anywhere else,
    `%server_time_HH:mm%` or `%stat_{player_name}%`, and is handed to
-   PlaceholderAPI exactly as written (RP Engine 0.2.48 or later).
+   PlaceholderAPI exactly as written.
 
 A name nobody knows becomes empty rather than showing `{name}`.
 
@@ -78,9 +80,13 @@ shapes, and labels, player heads and progress bars that update live. See
 
 On the server they have the id `studio:<id>`. `/rp shaders` lists them and
 `/rp shader studio:<id> [player]` shows one (`/rp shader clear` hides it).
-Rules set in Studio can show one with no command, and a plugin can show, hide
+Rules set in Studio (for example "while holding an item") can show one with no command, and a plugin can show, hide
 and feed it through the [API](/rp-engine/api#hud-overlays). They are only drawn
 for players who have the pack they came from.
+
+An overlay a player is wearing is re-sent every `overlays.trigger-ticks` ticks
+(default 2) from [config.yml](/rp-engine/config). A value set from a plugin is
+drawn on the next tick regardless.
 
 ### Shipping one in a content folder
 

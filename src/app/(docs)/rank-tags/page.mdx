@@ -1,38 +1,36 @@
 export const metadata = {
   title: "Rank Tags",
   description:
-    "The badge in front of a player's name, for a LuckPerms prefix or suffix: making one, the editor, animated tags, and putting one on a rank.",
+    "The badge in front of a player's name, for a LuckPerms prefix or suffix: making one, putting it on a rank, the editor and animated tags.",
 };
 
 # Rank Tags
 
-A rank tag is the badge in front of a player's name: a rounded red **OWNER**,
+A Rank Tag is the badge in front of a player's name: a rounded red **OWNER**,
 a gold **VIP** with a crown, a blue **MOD** with a shine sweeping across it.
-It's made to be a LuckPerms prefix or suffix, or the prefix of any other
-permissions plugin.
+You make it in Studio and use it as a LuckPerms prefix or suffix (or the prefix
+of any other permissions plugin).
 
 ![Animated rank tags made in Studio](/images/rank-tags.gif)
 
-In the pack, a rank tag is an [icon](/icons): one character that draws the
-picture anywhere text is drawn. The difference is that you never paint it.
-It's built from parts (a shape, a face, a frame, the words, an icon, an
-animation), so you change it by changing those, and it stays sharp whatever
-you change.
+In your resource pack a Rank Tag is an [Icon](/icons): a single text
+character that draws as the picture. Unlike an Icon you never paint it. It's
+built from parts (a shape, a surface, a frame, the words, an icon, an
+animation) and you change it by changing those.
 
 ## Making one
 
 Open a pack, press **Add asset**, pick **Icon** and set **Type** to
-**Rank tag**.
+**Rank Tag**. Then either:
 
-- **Generate**: name the rank and a colour. It takes a few seconds and opens in
-  the editor. A single rank comes back as **three takes** to choose between; name
-  several ranks (`VIP, MVP and MVP+`) and you get a **matching set**, one tag per
-  rank, all for the price of one.
-- **Blank**: type what it says, pick a colour and a look, and it opens in the
-  editor.
+- **Generate**: name the rank and a colour. It costs 5 credits and takes a few
+  seconds. One rank comes back as **three takes** to choose from. Name several
+  ranks (`VIP, MVP and MVP+`) and you get a **matching set**, one tag each, for
+  the same price.
+- **Blank**: type the words, pick a colour and a look.
 
-A colour in the prompt is the **background**, unless you say it belongs to the
-letters or the outline:
+Either way it opens in the editor. A colour in the prompt is the
+**background**, unless you say it belongs to the letters or the outline:
 
 | Prompt | What you get |
 | --- | --- |
@@ -43,148 +41,127 @@ letters or the outline:
 | `an OWNER tag with a shine` | A tag with a shine sweeping across it |
 | `VIP, MVP and MVP+ tags` | A set of three that belong together |
 
-With no colour, you get the one servers usually give that rank: red for
-owner, blue for moderator, gold for VIP and so on.
-
-## The editor
-
-The tag sits large in the middle, drawn the way the game draws it (text
-shadow included) and playing if it's animated. Under it, **Where it shows**
-draws it at game size in the four places a server puts a rank: **Chat**, the
-**Tab list**, the **Scoreboard** and **Above head**, each in the game's own font.
-An animated tag plays in the first three; over a head the game shows its still
-frame, so that one does too. Switch them between **Prefix** and **Suffix**, or
-change the player name (your own, if you've linked your Minecraft account).
-
-The panel on the right holds the tag's parts, one section each. A section
-folds away with a click on its heading, and folded it still says what's in it
-(**Frame · Auto outline · 3D edge**), so you can keep open only what you're
-working on.
-
-| Section | What it sets |
-| --- | --- |
-| **Text** | The words, the **Font**, the **Colour** of the letters, the **Effect** on them (Shadow, Drop, Outline, Outline + shadow or None) with its colour, and a colour for the `+` part (VIP+, MVP++) |
-| **Background** | The **Shape** (Square, Rounded, Pill, Chamfer, Ribbon, Slant or Arrow) and the **Surface** (Flat, Gradient, Gloss, Panel, Stripes, Dither, Sparkle, or **Block**: a real block texture, tinted toward the tag's colour so the words stay readable), each surface drawn on your own colours, and the **Fill** colour. A Block surface offers iron, gold, diamond and emerald a click away, and the **+** beside them opens every block in the game |
-| **Frame** | The **Outline** (worked out from the background, a colour of your own, or none), an **Inner rim**, a **3D edge** that stands the tag up off the line, and the **Padding** beside the words |
-| **Icon** | One of over a hundred icons, or one of your pack's own [icons](/icons) under **This pack**, searchable, **In a cell** inside the tag, **Beside** the words or on a **Tile** of its own, and the cell's colour. A pack icon is shrunk to fit the tag when it is bigger, and the tag keeps it as it was when you picked it: if you redraw the icon afterwards, the section offers **Use the new one** |
-| **Motion** | Still, **Glint** (a shine sweeps across), **Rainbow** (the letters cycle colours), **Twinkle** (sparkles come and go) or **Pulse** (the frame breathes). Each plays on your own tag while you point at it, so you can see it before choosing |
-| **In game** | **Size**, on a slider from a quarter size to 4×, with ¼×, ½×, 1×, 2× and 4× a click away, and **Height** on the line if it should sit higher or lower than centred, one pixel per step |
-
-Every colour is one swatch: click it for the picker, with the colours already
-in your tag, a palette of rank colours, a colour wheel and a hex code. A **+**
-beside the letter colour fades the words to a second colour at the bottom, and
-one beside the fill (or the **Gradient** surface) makes a gradient of up to three. Things a tag doesn't have
-yet, like a rim, show as a **+** line; once added they get a cross to take them
-away again. The small **i** beside a field says what it does.
-
-**Looks**, at the bottom of the panel, restyles the whole tag in one click,
-each drawn on your own tag: Classic, Rounded, Pill, Button, Panel, Frame,
-Chamfer, Ribbon, Slant, Stripes, Gold block and Obsidian. The words, colour and
-icon stay.
-
-Colours you don't set work themselves out from the background: the outline is
-a darker shade of it, and so are the shadow and the icon's cell. Set one
-yourself and it stays.
-
-**Fonts.** Block is chunky 5-pixel capitals, the classic rank look, and keeps a
-tag exactly one line of chat tall. Minecraft is the game's own font, in any
-case (Sr.Mod, Builder), and Bold is that font in bold. Your pack's own TrueType
-fonts are there too: pick **Own** and **Upload a font**.
-
-**Edit with AI**, in the top bar, changes the tag from a sentence: "make it
-gold", "add a crown", "glossy with a 3D edge", "make it shine", "half the
-size", "use my pack font". It can set everything the panel can. The change
-lands in the fields as an unsaved edit, so you can keep it with **Save** or
-undo it. It costs 5 AI Credits. When the AI made more than one take, they are there too: click one to use it.
-
-**Save** keeps the tag's character, so a prefix that already uses it shows the
-new look at once. <kbd>Ctrl</kbd> + <kbd>Z</kbd> undoes and
-<kbd>Ctrl</kbd> + <kbd>S</kbd> saves.
-
-<Callout type="tip" title="One line of chat">
-  A Block tag with an outline is 9 pixels tall, exactly one line of chat, so it
-  never overlaps the lines around it. A letter outline, a 3D edge, the
-  Minecraft font and bigger sizes make it taller. Save those for the scoreboard,
-  the tab list and holograms.
-</Callout>
-
-**Sizes.** The whole sizes (1×, 2×, 3×, 4×) are pixel for pixel. A tag
-smaller than 1× is smaller than chat's own letters: a ½× tag keeps every pixel
-at GUI scale 2 and up, a ¼× tag only at GUI scale 4, and its words may not
-read. A small tag can also only move so far up the line, because the game won't
-draw a glyph higher than its own height. Between whole sizes the game scales the picture, as it does
-any icon, so a few pixels come out a little wider than others; the line of chat
-under the editor's preview shows it the way the game will.
-
-To draw something on a tag by hand, use **Paint by hand**, beside Looks. It turns the tag
-into a plain icon with the same picture and the same character, which the
-pixel editor can open. Its parts stop being fields after that, an animated tag
-keeps only its first frame, and a tag between whole sizes becomes the next
-whole size up.
-
-## Animated tags
-
-An animated tag plays in game: in chat, the tab list, the scoreboard, anywhere
-a menu or the HUD draws text. It loops sixteen frames at ten a second, exactly
-as the editor plays it.
-
-The pack's text shader plays it, so it needs your pack (the shader comes
-inside it) and the colour its command gives it. Over a player's head, in a
-nametag, it shows its first frame.
+With no colour you get the one servers usually give that rank: red for owner,
+blue for moderator, gold for VIP and so on.
 
 ## Putting it on a rank
 
-The tag's page writes the LuckPerms command for you. Type the group, pick
-**Prefix** or **Suffix**, copy, and run it in the console or in chat:
+1. On the tag's page, type the LuckPerms group, pick **Prefix** or **Suffix**,
+   and copy the command it writes:
 
-```
-/lp group owner meta setprefix 100 "&f<tag> "
-```
+   ```
+   /lp group owner meta setprefix 100 "&f<tag> "
+   ```
 
-`<tag>` stands for the tag's own character, which the page fills in for you:
-it's a Private Use character, and nobody can type one by hand.
+   `<tag>` stands for the tag's own character, which the page fills in. You
+   can't type it by hand, so always copy the command.
+2. Run it in the console or in chat.
+3. Make sure players have your pack: put it on your server with
+   [Distribution](/distribution), or [export it](/exporting) and serve it
+   yourself. Without the pack the tag shows as a blank box.
 
-- **Keep the `&f`.** The game tints a glyph with the colour of the text it's in,
-  so a tag after `&c` comes out tinted red. White leaves its colours alone.
-- **An animated tag gets a colour of its own** in place of `&f`, written as a
-  hex code like `&#fcfcf4`. That colour is what plays the animation, so keep it,
-  and if your chat plugin writes hex colours another way, use the same six
-  digits in its spelling (`<#fcfcf4>`, `{#fcfcf4}`). Keep the `&r` after the
-  tag as well: without it many chat plugins draw the player's name in that
-  colour, and the name shimmers along with the tag.
-- **Priority** decides which prefix wins when a player is in several groups.
-  Give higher ranks higher numbers.
-- Players need your pack to see the tag. Without it, the character shows as a
-  blank box.
+Any chat, tab-list or nametag plugin that shows LuckPerms prefixes then shows
+the tag, because it's just a character in the prefix.
 
-Any chat, tab-list or nametag plugin that shows LuckPerms prefixes shows the
-tag, because it's just a character in the prefix.
+- **Keep the `&f`.** The game tints a character with the colour of the text
+  it's in, so a tag after `&c` comes out red. White leaves its colours alone.
+- **An animated tag uses a hex colour instead of `&f`**, like `&#fcfcf4`. That
+  exact colour is what makes it play, so keep it. If your chat plugin writes hex
+  another way, use the same six digits in its spelling (`<#fcfcf4>`,
+  `{#fcfcf4}`). Keep the `&r` after the tag too, or many chat plugins draw the
+  player's name in that colour and it shimmers along with the tag.
+- **Priority** (the `100`) decides which prefix wins when a player is in
+  several groups. Give higher ranks higher numbers.
 
-<Callout type="note">
-  Chat draws a soft dark copy of every character one pixel down and to the
-  right, and a tag gets one too. It's the game's ordinary text shadow, not part
-  of your tag.
-</Callout>
+The soft dark copy one pixel down and right of the tag in chat is the game's
+ordinary text shadow, not part of your tag.
+
+## The editor
+
+The tag sits large in the middle, drawn the way the game draws it and playing
+if it's animated. Under it, **Where it shows** draws it at game size in
+**Chat**, the **Tab list**, the **Scoreboard** and **Above head**. Switch these
+between prefix and suffix, or change the player name shown.
+
+The panel on the right holds the tag's parts. Click a section heading to fold
+it away.
+
+| Section | What it sets |
+| --- | --- |
+| **Text** | The words, the **Font**, the letter **Colour**, the **Effect** (Shadow, Drop, Outline, Outline + shadow or None) and its colour, and a separate colour for the `+` in VIP+ |
+| **Background** | The **Shape** (Square, Rounded, Pill, Chamfer, Ribbon, Slant or Arrow), the **Surface** (Flat, Gradient, Gloss, Panel, Stripes, Dither, Sparkle, or **Block**: a real block texture tinted toward the tag's colour) and the **Fill** colour. Block offers iron, gold, diamond and emerald, and the **+** opens every block in the game |
+| **Frame** | The **Outline** (automatic, your own colour, or none), an **Inner rim**, a **3D edge** that stands the tag up off the line, and the **Padding** round the words |
+| **Icon** | Over a hundred built-in icons, or one of your pack's own [Icons](/icons) under **This pack**, placed **In a cell**, **Beside** the words or on a **Tile** of its own. If you redraw a pack icon later, the section offers **Use the new one** |
+| **Motion** | None, **Glint** (a shine sweeps across), **Rainbow** (the letters cycle colours), **Twinkle** (sparkles come and go) or **Pulse** (the frame breathes). Point at one to preview it |
+| **In game** | **Size**, from a quarter to 4x, and **Height**, to sit it higher or lower on the line |
+
+Click any colour swatch for the picker. A **+** beside the letter colour fades
+the words to a second colour; one beside the fill makes a gradient of up to
+three. Colours you don't set follow the background (the outline, the shadow and
+the icon's cell are darker shades of it) until you set them yourself.
+
+**Looks**, at the bottom of the panel, restyles the whole tag in one click and
+keeps the words, colour and icon: Classic, Rounded, Pill, Button, Panel, Frame,
+Chamfer, Ribbon, Slant, Stripes, Gold block and Obsidian.
+
+**Fonts.** **Block** is chunky 5-pixel capitals, the classic rank look, one
+line of chat tall. **MC** is the game's own font in any case (Sr.Mod, Builder),
+and **Bold** is that font in bold. **Own** uses a TrueType (`.ttf`) font you
+upload to the pack.
+
+**Edit with AI**, in the top bar, changes the tag from a sentence ("make it
+gold", "add a crown", "make it shine", "half the size") for 5 credits. The
+change arrives as an unsaved edit: keep it with **Save** or undo it.
+
+**Save** keeps the tag's character, so a prefix already using it shows the new
+look at once. <kbd>Ctrl</kbd> + <kbd>Z</kbd> undoes and <kbd>Ctrl</kbd> +
+<kbd>S</kbd> saves.
+
+### Keeping it to one line of chat
+
+A Block tag with an outline is 9 pixels tall, exactly one line of chat, so it
+never overlaps the lines around it. A letter outline, a 3D edge, the MC font
+and bigger sizes make it taller: save those for the scoreboard, the tab list
+and holograms.
+
+**Sizes.** 1x, 2x, 3x and 4x are pixel for pixel. Smaller than 1x is smaller
+than chat's own letters: a ½x tag keeps every pixel at GUI scale 2 and up, a
+¼x tag only at GUI scale 4. In-between sizes are scaled by the game, so a few
+pixels come out a little wider than others. The chat line under the preview
+shows it as the game will.
+
+### Painting on it by hand
+
+**Paint by hand**, beside Looks, turns the tag into a plain Icon with the same
+picture and the same character, which the pixel editor can open. After that its
+parts are no longer editable, an animated tag keeps only its first frame, and a
+tag at an in-between size becomes the next whole size up.
+
+## Animated tags
+
+An animated tag plays in chat, the tab list, the scoreboard, and anywhere a
+menu or the HUD draws text: sixteen frames looping at ten a second, as the
+editor plays it. The animation is played by a text shader that comes inside
+your pack, so players need the pack and the command's colour (see above). Over
+a player's head it shows its first frame.
 
 ## Sharing it
 
-**Publish to the Gallery** on the tag's page puts it in the
-[Gallery](https://resourcepack.ai/gallery) with a page of its own: the tag
-playing, and how it looks in chat, the tab list, the scoreboard and over a
-head. Anybody can add it to a pack of their own, where it's drawn again from
-its parts and edits like any other tag. A tag set in one of your pack's own
-fonts takes the font with it.
+**Publish to Gallery** on the tag's page puts it in the
+[Gallery](https://resourcepack.ai/gallery). Anybody can add it to a pack of
+their own and edit it like any other tag. A tag in one of your own fonts takes
+the font with it.
 
 ## In a content folder
 
-[RP Engine](/rp-engine) draws rank tags from a few lines of YAML in its
-content folder, with the same parts and the same result, pixel for pixel. See
+[RP Engine](/rp-engine) can draw the same tags from a few lines of YAML in its
+content folder (the folder of files on your server it builds a pack from). See
 [RP Engine rank tags](/rp-engine/rank-tags).
 
 ## Exporting
 
-A rank tag exports exactly as an icon does: its PNG under
+A Rank Tag exports as an Icon does: its PNG under
 `assets/minecraft/textures/font/` and its entry in
 `assets/minecraft/font/default.json`. An animated tag's PNG is its first frame,
-and the pack's text shader, which plays it, goes in the same zip. See
+and the text shader that plays it goes in the same zip. See
 [Icons](/icons#exporting).

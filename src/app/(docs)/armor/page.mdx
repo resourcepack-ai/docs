@@ -1,54 +1,44 @@
 export const metadata = {
-  title: "Armour",
+  title: "Armor",
   description:
-    "Reskinning a vanilla armour set, leather and dye, and 3D armour sets built from cubes.",
+    "Reskinning a vanilla armor set, leather and dye, and 3D Armor sets built from cubes.",
 };
 
-# Armour
+# Armor
 
-Armour is what Minecraft draws on a player's body when they wear a helmet,
-chestplate, leggings or boots. There are two kinds in Studio, picked with the
-**2D / 3D** switch under **Shape**:
+Armor is what Minecraft draws on a player's body when they wear a helmet,
+chestplate, leggings or boots. Use it to redraw a vanilla set (every iron
+helmet looks like yours) or to build a whole new outfit. There are two kinds,
+picked with the **2D / 3D** switch under **Shape** when you add one:
 
-![Three armour sets made in Studio, worn by a player](/images/armor.webp)
+![Three armor sets made in Studio, worn by a player](/images/armor.webp)
 
 - **2D** reskins one of the vanilla sets. Every piece of that set in the world
   changes, and no plugin is needed.
 - **3D** builds a new set out of cubes, so a hood can be a hood and a
-  spacesuit can carry its oxygen tank. See [3D armour](#3d-armour).
+  spacesuit can carry its oxygen tank. See [3D Armor](#3d-armor).
 
-## The sets
+## Which sets you can reskin
 
 Eight vanilla sets can be reskinned: **Leather**, **Chainmail**, **Copper**,
 **Iron**, **Gold**, **Diamond**, **Netherite** and the **Turtle Shell**. A pack
-holds one of each, because a 2D armour asset *is* the vanilla set it replaces.
+holds one of each, because a 2D Armor asset *is* the vanilla set it replaces.
 Sets your pack already has are greyed out in the Add asset sheet.
 
 <Callout type="warning" title="Copper needs 1.21.9, and the turtle shell is a helmet">
-  Copper armour arrived in Minecraft 1.21.9, so a pack exported for an older
+  Copper armor arrived in Minecraft 1.21.9, so a pack exported for an older
   version leaves it out. The turtle shell has no other pieces.
 </Callout>
 
-## How the file is laid out
+## Making a 2D set
 
-Each set is drawn on **64×32** sheets: one shared by the helmet, chestplate and
-boots, and a separate one for the leggings. The editor hides this from you
-with one tab per piece (**Helmet**, **Chestplate**, **Leggings**, **Boots**);
-on a piece's tab the other pieces are dimmed so you can't paint them by
-accident.
+This section is 2D Armor; for 3D, see [3D Armor](#3d-armor). Open **Add
+asset**, choose **Armor**, keep **Shape** on **2D** and pick the set.
 
-The sheet has only one arm and one leg. The game mirrors them for the other
-side, so painting one boot paints both. Pixels the game never reads are dimmed
-in the editor.
-
-## Making one
-
-Open **Add asset**, choose **Armor**, keep **Shape** on **2D** and pick the set.
-
-**Generate**: describe it, for example "weathered bronze scale armour, green
+**Generate**: describe it, for example "weathered bronze scale armor, green
 patina in the seams". You can attach a **reference image**; the AI uses it to
 decide where colours and details go on the body (the faceplate, the emblem on
-the chest). A set takes a few minutes and costs more than a single texture,
+the chest). A set takes a few minutes and costs about 45 AI Credits,
 but it's one charge however many sheets it has. No two runs are alike, so a
 set that comes back wrong is worth another try.
 
@@ -59,10 +49,10 @@ the fastest way in) or **Empty**.
 
 | You upload | You get |
 | --- | --- |
-| A **64×32 armour sheet** (or any image twice as wide as it is tall) | Used exactly as it is |
-| A **64×64 player skin** | That skin's clothing becomes the armour |
-| A **character or a piece of armour** on a plain background | Cropped and wrapped onto the body |
-| **Anything else**, such as a texture or a photo | Tiled over the set, so the armour is made of it |
+| A **64×32 armor sheet** (or any image twice as wide as it is tall) | Used exactly as it is |
+| A **64×64 player skin** | That skin's clothing becomes the armor |
+| A **character or a piece of armor** on a plain background | Cropped and wrapped onto the body |
+| **Anything else**, such as a texture or a photo | Tiled over the set, so the armor is made of it |
 
 Uploads are free.
 
@@ -70,24 +60,51 @@ Uploads are free.
 
 A generated set follows the shape of the set it reskins. Iron covers what iron
 covers: a band round the head, sleeves to the elbow, the face bare. That keeps
-it looking like armour worn over a player rather than a costume. If you want
+it looking like armor worn over a player rather than a costume. If you want
 more coverage, paint it in the editor, which has no such limit.
 
 Plumes, crests, horns and wings are drawn onto the crown of the helmet, since
 nothing can stick out past the body's boxes.
 
-<Callout type="note" title="Why armour looks a size up">
-  Minecraft draws each armour box one pixel bigger than the body on every side,
+<Callout type="note" title="Why armor looks a size up">
+  Minecraft draws each armor box one pixel bigger than the body on every side,
   so the sleeves and the chest overlap a little. A sleeve a shade different
   from the chest, or a clear line at the shoulder, keeps the arm reading as an
   arm.
 </Callout>
 
+## Seeing it in game
+
+On a server running [RP Engine](/testing/plugin), our free plugin, press
+**Sync** to send the pack to yourself in game, then choose **Wear in-game** on
+the set's card (or press **Sync** in the editor): you're dressed in the real
+vanilla pieces, now showing your art. Without a plugin,
+[export](/exporting) the pack, apply it, and put on the vanilla armor.
+
+Minecraft moved armor textures in 1.21.2. You don't have to think about it:
+[export](/exporting) writes whichever path your chosen version reads.
+
 ## The editor
 
-The sheet is on one side and a player wearing it is on the other, and you can
-paint either. The plain Steve underneath is only there for preview; he never
+Click a set to open the editor. The flat sheet is on one side and a player
+wearing it is on the other, and you can paint either. The plain Steve underneath is only there for preview; he never
 ships with your pack.
+
+**Edit with AI**, in the editor, changes the set from a sentence
+("make the trim gold", "add a red plume") and leaves the rest as it is. The
+editor greys out while it runs, and a failed edit leaves the set unchanged.
+
+### How the sheet is laid out
+
+Each set is drawn on **64×32** sheets: one shared by the helmet, chestplate and
+boots, and a separate one for the leggings. The editor hides this from you
+with one tab per piece (**Helmet**, **Chestplate**, **Leggings**, **Boots**);
+on a piece's tab the other pieces are dimmed so you can't paint them by
+accident.
+
+The sheet has only one arm and one leg. The game mirrors them for the other
+side, so painting one boot paints both. Pixels the game never reads are dimmed
+in the editor.
 
 ## Leather and dye
 
@@ -110,16 +127,7 @@ paints the base and leaves the overlay empty.
 The **Dye** picker in the editor is a preview. The colour lives on the
 player's item, not in your pack.
 
-## Seeing 2D armour in game
-
-[Sync](/testing/plugin) the pack, then choose **Wear in-game** on the set's card
-in the pack (or press **Sync** in the editor): you're dressed in the real vanilla pieces, now showing
-your art. Without a plugin, put on the vanilla armour and you'll see it.
-
-Minecraft moved armour textures in 1.21.2. You don't have to think about it:
-[export](/exporting) writes whichever path your chosen version reads.
-
-## 3D armour
+## 3D Armor
 
 Pick **3D** under **Shape** and describe the set:
 
@@ -130,8 +138,8 @@ You get a new set built from cubes: a helmet, chestplate, leggings and boots,
 each shaped round the body and painted. It has its own name, and a pack can
 hold as many as you like. You can attach pictures to build one like them.
 
-A set takes 15 to 25 minutes and is charged for what it actually cost, like a
-model. Its page lets you orbit it, walk it and raise its arms, which is where a
+A set takes 15 to 25 minutes and costs about 150 AI Credits, charged for what
+it actually cost, like a model. Its page lets you orbit it, walk it and raise its arms, which is where a
 chestplate that's too wide shows up.
 
 ### Wearing one in game
@@ -194,10 +202,10 @@ Export writes. Save with textures embedded in the file.
 
 ## On Bedrock
 
-2D armour carries over to the `.mcpack` under Bedrock's names for each set, and
+2D Armor carries over to the `.mcpack` under Bedrock's names for each set, and
 looks the same on both editions.
 
-3D armour works for Bedrock players on a server running
+3D Armor works for Bedrock players on a server running
 [RP Engine](/rp-engine) and Geyser, following their arms and legs as they move.
 Pieces handed out before the server had RP Engine 0.1.66 show as paper; hand
 them out again.

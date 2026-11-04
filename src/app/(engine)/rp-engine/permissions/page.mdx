@@ -6,6 +6,10 @@ export const metadata = {
 
 # Permissions
 
+RP Engine uses ordinary Bukkit permissions, so LuckPerms or any other
+permissions plugin works. Out of the box, ops can do everything and ordinary
+players can play emotes, use dialogs and type icons in chat.
+
 Every subcommand has its own node, always `rpengine.<subcommand>`:
 `rpengine.give`, `rpengine.purge`, `rpengine.sync` and so on. The full list is
 on [Commands](/rp-engine/commands), beside each command.
@@ -51,7 +55,7 @@ one the dialog has that exact click for. Taking them away breaks those clicks.
 | `rpengine.chat.icons` | everyone | Icons in chat, above |
 | `rpengine.chat.effects.all` | op | Typing every [Text Effect](/rp-engine/text-effects#in-chat) in chat, as `<fx:name>text</fx>` |
 | `rpengine.chat.effects.<name>` | op | Typing one Text Effect in chat: `rpengine.chat.effects.fire`. A `/` in the name is a `.` |
-| `rpengine.sync.console` | op | Keeping console commands in a pack you push from Studio: dialog buttons set to run as the console, and mob skills that use `command`. Without it they are left out of your push and everything else arrives. Kept apart from `rpengine.sync` so you can let everybody live-test without letting them run console commands |
+| `rpengine.sync.console` | op | Trusting a pack you push from Studio with the server. Without it, console commands are left out of your push (dialog buttons set to run as the console, and mob skills that use `command`), a dialog's own `/command` and Quick Actions key are not registered, its mobs do not spawn on their own, and mob skills are limited to Studio's own list. Everything else arrives. Kept apart from `rpengine.sync` so you can let everybody live-test safely |
 | `rpengine.update` | op | Being told on join when a newer RP Engine is out |
 | `rpengine.shaders.notify` | op | Being told, on join and when it happens, that another plugin's pack replaces a core shader RP Engine's packs also replace |
 | `rpengine.tag.<namespace>.<id>` | nobody | Wearing that [rank tag](/rp-engine/rank-tags) in `%rpengine_tag%`. One per tag |
@@ -103,8 +107,7 @@ as.
 
 ## Granting them
 
-RP Engine uses ordinary Bukkit permissions, so LuckPerms or any other
-permissions plugin works with nothing extra to install.
+With LuckPerms:
 
 ```
 /lp group builder permission set rpengine.give true

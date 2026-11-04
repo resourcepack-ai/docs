@@ -6,10 +6,6 @@ export const metadata = {
 
 # 3D objects
 
-<Callout>
-  Needs RP Engine 0.2.10 or newer.
-</Callout>
-
 A 3D shader object is something a shader draws in the world rather than a
 block model: a black hole, a portal, a ball of fire, a bomb that goes off. You
 make them in Studio (see [Shaders](/shaders)). RP Engine puts them in the world
@@ -21,14 +17,17 @@ and how big it is. The client animates every change smoothly.
 Requirements:
 
 - A server on Minecraft 1.21.4 or newer.
-- A pack built for 26.2, and players on a version that pack draws objects for.
+- The Studio pack built for Minecraft 26.2 or newer, and players on a version
+  that pack draws objects for.
 
 These are different from the HUD shader objects that `/rp shaders` and
 `/rp shader` show on a player's screen.
 
 ## Getting one on a server
 
-An object pushed from Studio is already known to the server as `studio:<id>`.
+Make the object in Studio and push the pack to your server (see
+[Testing on your server](/testing/plugin)). It is then known to the server as
+`studio:<id>`.
 Put one down and try its states:
 
 ```

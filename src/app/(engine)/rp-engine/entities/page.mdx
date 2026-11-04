@@ -42,19 +42,21 @@ rhino:
   xp: 5
 ```
 
-`model:` is the Blockbench file you saved to `assets/models/rhino.bbmodel` (or
-to `models/`), named as `<pack>:<file>`. You don't have to make an item for it,
-and the mob can have the same id as its model. If you already have an item that
-wears the model, naming the item works too. Several mobs can wear one model.
-If `model:` names neither a model nor an item, the mob spawns as the plain
+To make one:
+
+1. In your [content folder](/rp-engine/content) (here `zoo`), save the
+   Blockbench model as `assets/models/rhino.bbmodel`.
+2. Write the mob in `entities/`, as above. `model: zoo:rhino` names that file
+   (`<content folder>:<file>`). You don't need an item for it.
+3. Run `/rp reload`, then `/rp spawn zoo:rhino` spawns one where you stand.
+   `/rp entities` lists them all.
+
+`model:` can also name an item that wears the model, and several mobs can wear
+one model. If it names neither a model nor an item, the mob spawns as the plain
 vanilla mob and `/rp reload` warns about it.
 
-`/rp spawn zoo:rhino` spawns one where you stand, and `/rp entities` lists them.
-See [Spawning one](#spawning-one) for the rest.
-
-Custom mobs as described here need RP Engine 0.2.51 or newer, and their
-[skills](/rp-engine/skills), MythicMobs-style options, drop tables and spawners
-need 0.2.53.
+Needs RP Engine 0.2.51 or newer; [skills](/rp-engine/skills), the options under
+[More options](#more-options), drop tables and spawners need 0.2.53.
 
 <CardGroup cols={2}>
   <Card title="Skills" href="/rp-engine/skills" icon="sparkles">
@@ -118,9 +120,8 @@ drowned zombie, a struck pig). A name tag and a lead still work on it, unless
 
 ## How the model is worn
 
-An animated model is one display entity per moving part, riding the mob. The
-mob's own body is made invisible rather than removed, so players hit it where
-it appears to be. A still model is one display.
+The mob's own body is made invisible, not removed, so players hit it where the
+model appears to be.
 
 The model stands on the ground the mob stands on: its bottom (pixel 0 in
 Blockbench) is at the mob's feet, whatever the type and size. `scale:` sizes
@@ -135,9 +136,8 @@ goes within a tick or two.
 
 ### Facing
 
-At `turn: 0` the side Blockbench calls **North (-Z)** is the front. That is
-ModelEngine's rule, so a rig made for ModelEngine walks forwards here
-unchanged.
+At `turn: 0` the side Blockbench calls **North (-Z)** is the front, as in
+ModelEngine, so a model made for ModelEngine walks forwards unchanged.
 
 | The model was built facing | `turn` |
 |---|---|
@@ -164,9 +164,8 @@ bones are seats, and `tag_name` is where the name floats. See
 ### Hurt flash
 
 When it takes damage the model goes red for about a third of a second, as a
-vanilla mob does. On 1.21.4 and newer an animated model's parts are tinted red;
-a still model, and any model on an older server, shows a red glowing outline
-instead. `hurt-flash: false` turns it off.
+vanilla mob does (a red outline instead for a still model, or on servers older
+than 1.21.4). `hurt-flash: false` turns it off.
 
 ## Animations
 
@@ -281,14 +280,10 @@ archer:
 `ranged: snowball` is shorthand for the projectile alone, with the rest at their
 defaults (arrow, the projectile's own damage, 16 blocks, 2 seconds).
 
-On a skeleton, stray or bogged with AI, on 1.21.4 and newer, the mob's own brain
-shoots: it holds a bow nobody can see, keeps its distance, strafes and aims like
-a skeleton, and RP Engine swaps each arrow for your projectile as it is loosed.
-Its pace is the skeleton's own, so `cooldown` is not used.
-
-Any other `type`, and those three on older servers, is shot for by RP Engine
-every `cooldown` seconds while its target is in range and in sight, and closes
-in as its type would.
+A skeleton, stray or bogged (on 1.21.4 and newer) shoots with its own AI: it
+keeps its distance, strafes and aims like a skeleton, at the skeleton's own
+pace, so `cooldown` is not used. Any other `type` shoots every `cooldown`
+seconds while its target is in range and in sight.
 
 Either way its `attack` animation and sound play as each shot leaves, not when
 it lands. A fireball or a wither skull explodes without breaking blocks, and
@@ -324,10 +319,10 @@ desert_ghoul:
 | `min-group`, `max-group` | 1, `min-group` | How many appear together, up to 16 |
 | `max-per-chunk` | 2 | No more extra group members once a chunk holds this many, up to 64 |
 
-It **takes the place of** natural spawns rather than adding to them: the vanilla
-mob is removed a tick after it appears and yours stands where it stood, with up
-to `max-group - 1` more beside it. That keeps the server's mob caps, the
-difficulty (peaceful spawns nothing) and every spawn rule the game already has.
+It **takes the place of** natural spawns rather than adding to them: when a
+matching vanilla mob spawns, yours replaces it (with up to `max-group - 1` more
+beside it). So the server's mob caps, difficulty and spawn rules still apply,
+and peaceful spawns nothing.
 
 Without `replaces:` it can stand in for any natural spawn of its own kind: a
 hostile type for monsters, an animal for animals, a water creature for water
@@ -470,8 +465,8 @@ the `level{l=3to5}` condition tests it.
 | `/rp entities` | Every custom mob |
 
 An egg used on a vanilla spawner hatches the mob there and leaves the spawner
-alone. Mobs made in [Studio](/mobs) arrive with a sync or a published pack and
-are spawned as `studio:<id>`, exactly like the ones in your content folder.
+alone. Mobs made in [Studio](/mobs) arrive when you push or publish the pack,
+and are spawned as `studio:<id>`, exactly like the ones in your content folder.
 
 From your own plugin, `engine.mobs().spawn(...)`; see the
 [Plugin API](/rp-engine/api#custom-mobs).

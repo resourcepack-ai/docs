@@ -5,27 +5,28 @@ export const metadata = {
 
 # Quickstart
 
-This page takes you round the whole loop once: make a pack, generate a block
-into it, and see it in Minecraft.
+This page takes you round the whole loop once: make a pack, generate a new
+stone texture into it, and walk up to it in Minecraft. It takes about five
+minutes.
 
 <Callout type="note" title="You'll need">
   A free ResourcePack AI account, and Minecraft: **Java or Bedrock**. You don't
-  need to install anything. A free account gets 50 AI credits every month,
-  and a block texture costs 10.
+  need to install anything. Generating uses **AI Credits**, the app's
+  currency: a free account gets 50 every month, and a Block costs 10.
 </Callout>
 
 ## Make something
 
 <Steps>
   <Step title="Create a pack">
-    Open [studio.resourcepack.ai](https://studio.resourcepack.ai) and create a
-    pack. Give it a name, and optionally a description and an icon. A pack
-    holds everything you make, and it's what you test and export.
+    Open [studio.resourcepack.ai](https://studio.resourcepack.ai) and press
+    **New pack**. Give it a name; the description and icon are optional. A
+    pack holds everything you make, and it's what you test and export.
   </Step>
   <Step title="Press Add asset">
-    The sheet that opens has a row of tabs across the top for **what** you're
-    making: Model, Block, Item, Armor, GUI, Dialog, HUD, Icon, Sound, Emote
-    and Shader. Under them you choose **how** to start:
+    Each thing in a pack is an **asset**. The sheet that opens has a row of tabs across the top for **what** you're
+    making: Model, Block, Item, Armor, GUI, Dialog, HUD, Icon, Sound, Emote,
+    Shader, Text Effect and VFX. Under them you choose **how** to start:
 
     | Option | What it does |
     | --- | --- |
@@ -36,21 +37,21 @@ into it, and see it in Minecraft.
     Pick the **Block** tab and **Generate**.
   </Step>
   <Step title="Describe what you want">
-    Choose the vanilla block to replace (stone, oak planks, anything), then
-    describe the new look in a sentence. Talk about the material and its
+    Choose the vanilla block to replace (say, **Stone**), then describe the
+    new look in a sentence. Every stone block in the game will wear it. Talk about the material and its
     wear, not about pixels:
 
     > weathered copper roof tiles, blue-green patina, strong diagonal grain
 
     The cost is shown next to the **Generate** button before you press it. A
-    block takes a minute or two. Bigger things take longer: a 3D model takes
-    a few minutes, and you can leave the tab while it works. See
+    Block takes a minute or two. A 3D Model takes a few minutes, and you can
+    leave the tab while it works. See
     [Generating with AI](/generating) for every type and what it costs.
   </Step>
   <Step title="Edit it">
     What comes back is a starting point, not the finished thing. Click it to
-    open its editor and fix what isn't right. Blocks, items and icons open in
-    the [pixel editor](/blocks), and models in the [model editor](/models).
+    open its editor and fix what isn't right. Blocks, Items and Icons open in
+    the [pixel editor](/blocks), and 3D Models in the [model editor](/models).
   </Step>
 </Steps>
 
@@ -60,8 +61,9 @@ The quickest way is our test server. It already runs everything a pack needs.
 
 <Steps>
   <Step title="Join the test server">
-    Connect to <ServerAddress /> from Java or Bedrock. Go through the portal
-    for a private world of your own, which is kept between visits.
+    In Minecraft, add the server <ServerAddress /> and join, from Java or
+    Bedrock. Go through the portal in the lobby for a private world of your
+    own, which is kept between visits.
   </Step>
   <Step title="Link your account (once)">
     In Studio, open your account page. Under **Minecraft account**, press
@@ -71,11 +73,13 @@ The quickest way is our test server. It already runs everything a pack needs.
     /permlink 48213097
     ```
 
-    You only do this once. After that, Studio knows which player is you.
+    You only do this once. It tells Studio which Minecraft player is you, so
+    it knows where to send your pack.
   </Step>
   <Step title="Press Sync">
-    Press **Sync** on the pack and it goes straight to your game. On Java the
-    new textures appear where you're standing. On Bedrock you're disconnected
+    Back in Studio, press **Sync** at the top of the pack page. Sync sends the
+    pack to your game, to you alone: other players don't see it. On Java the
+    new stone appears where you're standing in a few seconds. On Bedrock you're disconnected
     and reconnected for a few seconds, because Bedrock only accepts a pack
     while joining.
   </Step>
@@ -86,11 +90,11 @@ The quickest way is our test server. It already runs everything a pack needs.
 </Steps>
 
 <Callout type="tip" title="Your own server">
-  To test on your own Paper or Spigot server instead, install
-  [RP Engine](/testing/plugin). It takes pushes from Studio the same way.
+  To test on your own Paper or Spigot server instead, install our plugin,
+  [RP Engine](/testing/plugin). Sync works there the same way.
 </Callout>
 
-## Export it (optional)
+## When it's finished: export it
 
 You never need a file to test. When the pack is done, export it as a Java
 `.zip` or a Bedrock `.mcpack` from the pack page. To use the `.zip` in your
@@ -109,6 +113,6 @@ own game, put it in your `resourcepacks` folder:
 
 Then turn it on under **Options → Resource Packs**. The exported pack doesn't
 depend on us and keeps working if you never open Studio again. The exceptions
-are the things vanilla Minecraft can't do on its own, such as animated models,
-vehicles and emotes, which need RP Engine on the server. See
+are things vanilla Minecraft can't do on its own, such as animated models,
+Vehicles and Emotes, which need RP Engine on the server. See
 [Exporting a pack](/exporting).

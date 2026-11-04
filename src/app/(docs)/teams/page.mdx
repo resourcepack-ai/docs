@@ -6,13 +6,13 @@ export const metadata = {
 
 # Teams
 
-A **team** is a shared workspace. Every pack it owns belongs to everybody on it,
-everybody spends from one pool of AI Credits, and it's all on one invoice.
+A **team** is a shared workspace for a group that makes packs together, such
+as a server's build team or a small studio. Every pack the team owns belongs to
+everybody on it, everybody spends from one pool of AI Credits (the app's
+currency for generating), and it's all on one invoice.
 
-It's different from [Collaborators](/collaborators). A collaborator is somebody
-you let into **one pack**, with a chosen slice of it. A team is for people who
-work on everything together, where inviting each of them to every pack one at a
-time would be a chore.
+If you only want to let someone into **one pack**, you don't need a team:
+invite them as a [collaborator](/collaborators) instead.
 
 <Callout type="note">
   The two work together. Everyone **on** the team gets every team pack
@@ -38,6 +38,22 @@ The credits are one shared pool, spent by whoever needs them. Top-ups are
   hold both. Your own packs run on your plan, the team's packs on the team's.
 </Callout>
 
+## Starting a team
+
+<Steps>
+  <Step title="Open Create a Team">
+    Click your name and credit balance at the bottom left of the sidebar,
+    then **Create a Team**.
+  </Step>
+  <Step title="Name it and pick seats">
+    One seat per person, including you. The total due today is shown.
+  </Step>
+  <Step title="Pay">
+    Checkout opens. Once paid, the team is selected and you can make packs in
+    it and invite people (below).
+  </Step>
+</Steps>
+
 ## Switching between your packs and the team's
 
 Click your name and credit balance at the bottom left of the sidebar. The list
@@ -59,9 +75,9 @@ and it's yours. Packs can't be moved between the two.
 | **Member** | Edit, generate, sync and export in every team pack, spending from the pool |
 | **Viewer** | Open every team pack and change nothing: no editing, generating, syncing or exporting. For clients and contractors |
 
-Membership is the access: there's nothing to set up per person. Admins keep
-the two actions that are hard to undo, **publishing** a pack to players with
-[Distribution](/distribution) and **deleting** a pack.
+Being on the team is the access: there's nothing to set up per person. Admins
+keep the two actions that are hard to undo: **publishing** a pack to a live
+server's players with [Distribution](/distribution), and **deleting** a pack.
 
 ## Seats
 
@@ -80,14 +96,14 @@ you can give it to someone else at no extra cost.
 - **Removing a seat** offers **Now** or **At renewal**. Neither refunds
   anything, so pick **At renewal** unless you want the lower number today.
 
+**Manage billing** on the Billing page (owner only) opens the payment portal,
+to update the card, download invoices, change billing details or cancel.
+
 ## Inviting somebody
 
 On the team's **Members** page, invite them by email. Invitations last **seven
 days** and can be withdrawn at any time. An outstanding invitation holds a seat,
 so you can't send more invitations than you have free seats.
-
-Inviting by email always says "invitation sent", whether or not the address has
-an account, so nobody can use the box to find out who's signed up.
 
 ## Limiting someone to certain packs
 
@@ -107,7 +123,8 @@ can't be limited.
 
 ## API keys and your own OpenAI key
 
-Both follow the context you're in.
+Skip this unless you use the API or bring your own key. Both follow whichever
+context (Personal or the team) is selected.
 
 - **API and MCP keys** made on the Developers page while the team is selected
   belong to the team: they spend the pool and reach the team's packs. Only
@@ -141,7 +158,7 @@ the audit log, and a team whose plan has lapsed is never charged.
 
 ## Webhooks
 
-Admins can send everything the audit log records to a URL, as JSON, to get it
+This is for developers. Admins can send everything the audit log records to a URL, as JSON, to get it
 into Discord, Slack or your own tools. Add up to five on the team's
 **Settings** page. Each has its own signing secret, shown once when you add it,
 and every event goes to all of them.

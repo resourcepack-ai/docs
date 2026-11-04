@@ -22,9 +22,10 @@ frost:
 /rp cast frost
 ```
 
-That is all it takes. RP Engine paints the sprites the effect needs into the
-server's pack, and `/rp cast` plays it. It needs **Minecraft 1.21.4 or newer**
-and RP Engine 0.2.20 or newer.
+Put that in a `vfx/` folder of your [content folder](/rp-engine/content) (here
+`mypack`), run `/rp reload`, and `/rp cast frost` plays it on you. RP Engine
+draws the sprites the effect needs into the server's pack for you. It needs
+**Minecraft 1.21.4 or newer**.
 
 ## Three ways to write one
 
@@ -59,22 +60,21 @@ The ten presets are Studio's own: `void_slash`, `frost_nova`, `thunderstorm`,
 `pillar_of_light`, `black_hole`, `starfall`, `sanctuary_bloom`, `rift_eye`,
 `tornado` and `aegis_dome`.
 
-**A recipe is cleaned the way Studio cleans one.** Numbers out of range are
-clamped, fields nobody reads are dropped and a layer that cannot be drawn is
-left out, and the reload says what changed. So an effect plays in game exactly
-as it plays in Studio's preview, and a recipe with nothing left in it is
-refused rather than played as nothing.
+Out-of-range numbers are clamped and layers that can't be drawn are left out,
+the same way Studio does it, so an effect plays in game as it does in Studio's
+preview. `/rp reload` says what it changed.
 
 ## From Studio
 
-A [VFX made in Studio](/vfx) needs nothing on the server. Sync the pack and its VFX
-arrive with it, as `studio:<id>`: `/rp cast studio:ice_spikes`, or the **Play in
+A [VFX made in Studio](/vfx) needs nothing on the server. Push the pack from
+Studio (see [Testing on your server](/testing/plugin)) and its VFX arrive with
+it, as `studio:<id>`: `/rp cast studio:ice_spikes`, or the **Play in
 game** button on the VFX's own page.
 
 A Studio effect is shown only to the players whose pack has it. Somebody who
 has not synced sees nothing, rather than a cloud of missing-texture cubes.
 
-## Commands
+## Playing one
 
 | Command | What it does | Permission |
 |---|---|---|
@@ -94,8 +94,9 @@ Stopping a loop by player or tag lets it play its fade first (see `end:` below);
 ## Casting at a place
 
 `at` plays an effect at coordinates instead of on a player, which is what an
-ability, an arena or a command block wants: the effect is not tied to anybody,
-and plays on where it was put when whoever ran it walks off.
+ability, an arena or a command block wants. The effect stays where it was put.
+To play one when a player joins, have a join-command plugin run it; RP Engine
+has no join trigger of its own.
 
 ```
 /rp cast meteor at 120 64 -40
@@ -199,15 +200,11 @@ with one player watching. A tick has 50 ms before the server falls behind:
 | 15,000 | 21 ms | 54 ms |
 | 30,000 | 37 ms | 117 ms |
 
-So the server copes comfortably up to about 8,000, starts to stutter around
-15,000 (single ticks over 50 ms), and lags throughout past 30,000. Everything
-else your server does comes out of the same 50 ms, and every player watching
-is sent every sprite's movement, so a busy server or a crowd reaches these
-sooner.
+So the server copes up to about 8,000 and stutters around 15,000. A busy server
+or a crowd watching reaches these sooner.
 
-**The players' games are usually the limit before the server is.** Each
-sprite is drawn by every client that can see it, and a few thousand on screen
-at once costs frames on a modest PC.
+Players' games usually struggle before the server does: a few thousand sprites
+on screen costs frames on a modest PC.
 
 **What we recommend:**
 
@@ -218,11 +215,8 @@ at once costs frames on a modest PC.
 - **8,000** for a showcase or minigame where effects are the point and the
   server is otherwise quiet. Going above that is rarely worth it.
 
-Nothing is saved: the displays are gone when the effect ends, and a restart
-mid-effect leaves nothing behind.
-
-Every sound an effect starts is stopped when it ends, so a long one (an
-elytra's wind under a tornado) does not carry on into the next.
+Nothing is saved: a restart mid-effect leaves nothing behind, and an effect's
+sounds stop when it ends.
 
 ## From a plugin
 

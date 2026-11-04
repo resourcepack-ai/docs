@@ -6,9 +6,10 @@ export const metadata = {
 
 # Models
 
-A model is a 3D object made of cubes, each face painted with a texture. It's
-the one asset type that changes an object's shape rather than only its
-surface: a lamp, a market stall, a statue, a car.
+A 3D Model is an object made of cubes, each face painted with a texture: a
+lamp, a market stall, a statue, a car. It's the one asset type that adds a new
+shape rather than repainting an existing one. Players place it in the world,
+hold it, or wear it, and it can [animate](/animations).
 
 ![Models made in Studio: a market stall, a fire engine, a Ferris wheel, a food truck and a vending machine](/images/models.webp)
 
@@ -33,14 +34,88 @@ Once you have a model, **Edit with AI** on its page changes it from a sentence
 writes animations for it. Editing with AI repaints the model in the same
 generated style, even if you uploaded it.
 
+**Versions of one model** (a Christmas chair beside the plain one, or several
+textures): right-click the model on the pack page, **Duplicate**, and change the
+copy with **Edit with AI** or in the editor. Each copy is its own model with its
+own give command. To use another model's texture, see [Copying a
+texture](#copying-a-texture-to-another-model).
+
 <Callout type="tip" title="Generation is a starting position">
   The loop that gives good results: generate, look at it in game, fix the two
   things that are wrong, look again.
 </Callout>
 
-## The editor
+## Seeing it in game
 
-A Blockbench-style editor with five modes, chosen along the top:
+A resource pack can't add new items or blocks to Minecraft, only change how
+existing ones look. So every model rides on a piece of vanilla **paper**: the
+pack tells the game to draw that paper as your model. The item a model rides
+on is its **carrier**, and the Add asset sheet calls this one the **Display
+Entity** carrier.
+
+Placing the model in the world needs [RP Engine](/testing/plugin), our free
+server plugin. [Our test server](/testing/test-server) has it.
+
+1. Press **Sync** in Studio. It sends the pack straight to you in game.
+2. On the model's page, under **Get in-game**, press **Give in-game** (or copy
+   the give command).
+3. **Right-click a block** to place it. It appears on the block you clicked,
+   facing the way you were looking.
+4. **Punch it** to pick it back up. A model with an "On left click" animation
+   can't be punched up; see [Animations](/animations).
+
+A placed model is a display entity, not a block. It doesn't fill a block
+space or stop water, and it stays put across server restarts. Block
+protection plugins don't necessarily cover it, so check that on a public
+server.
+
+### Choosing what it gives
+
+The **Get in-game** card has a few options that ride on the item, so you can
+give different copies of one model different settings:
+
+- **Size**: from ⅛ to 8 times. The model grows from its base, so a big one
+  stands on the block rather than sinking into it. The dropped item remembers
+  its size.
+- **Plays**: shown when the model has two or more triggered animations, to
+  pick which one this copy uses. See [Animations](/animations#triggers).
+
+### Vehicles driving into it
+
+Under the card, **Placed behaviour** has one checkbox: **Make this model
+collidable with vehicles**. It's on by default. When on, vehicles stop at a
+placed copy of the model, tested against its actual cubes: a car can drive
+between the legs of a table or under an archway, and a long fence stops it
+along its whole length. A rotated slab works as a ramp, stairs are climbed a
+step at a time, and anything low enough to be a kerb is driven over.
+
+Turn it off for flat pieces a vehicle should ignore, like a rug, a manhole
+cover or a road marking. It doesn't affect players, who walk through placed
+models unless the server sets otherwise. The change reaches the server on the
+next Sync. It isn't shown for a model that's been converted into a
+[vehicle](/vehicles).
+
+### Random turn and size
+
+Also under **Placed behaviour**, **Random variation when placed** gives every
+copy a player puts down a turn and a size of its own, so a field of rocks or a
+shelf of pots doesn't look like one model stamped out.
+
+- **Turn**: up to this many degrees either side of the way it would have
+  faced. 180 is any direction. **In 90° steps** keeps it square to the blocks,
+  which suits anything boxy; **any angle** suits rocks and plants.
+- **Size**: a range, as a multiple of its own size, such as 0.8 to 1.2. It
+  multiplies the size chosen on the **Get in-game** card, and the dropped item
+  keeps that chosen size rather than the random one.
+
+Each copy rolls once, when it's placed, and keeps what it rolled through
+restarts. Copies placed by a plugin aren't varied. It saves as you type and
+reaches the server on the next Sync, and needs RP Engine 0.2.57 or newer.
+
+## The editor's five modes
+
+Click a model to open the model editor. It works like Blockbench, with five
+modes chosen along the top:
 
 | Mode | For |
 | --- | --- |
@@ -98,9 +173,10 @@ in it around one point, which is how a door swings or a wing flaps.
 
 Select a cube in a bone and the right panel shows the **Bone** card, with the
 bone's own pivot point and **Select members**, which selects every cube in the
-bone. The Move tool then moves the whole bone, its pivot going along. In Edit
-mode the Rotate tool turns each selected cube around its own pivot. To turn a
-bone as one piece, use Animate.
+bone. The Move tool then moves the whole bone, its pivot going along, and the
+Rotate tool turns a selected bone (or several selected cubes) as one piece,
+around the bone's pivot (or the first cube's). Each cube keeps its own pivot,
+so it can still be turned on its own later.
 
 A generated model arrives already grouped, with named parts and pivots at the
 joints (a front wheel pivots on its axle), so it's ready to animate.
@@ -169,10 +245,12 @@ Two formats upload:
 - **`.bbmodel`** (Blockbench) keeps its cube names, its groups (as bones), its
   animations, its textures and its rotations, so a rigged Blockbench model
   arrives ready to animate.
-- **`.json`** (a vanilla block model) comes in as geometry. A vanilla *item*
-  model that only names a texture, like the wheat seeds, has no cubes in it and
-  is refused with "Model has no valid geometry": make that one an
-  [Item](/items) instead.
+- **`.json`** (a vanilla block model) comes in as geometry.
+
+**"Model has no valid geometry"** means the file has no cubes in it. A vanilla
+flat item model such as `wheat_seeds.json` (`"parent": "item/generated"`) only
+names a texture: it is a picture, not a 3D shape. Reskin that item as an
+[Item](/items) with its PNG instead.
 
 A model too big for Minecraft's model box is scaled down to fit.
 
@@ -181,73 +259,7 @@ A model too big for Minecraft's model box is scaled down to fit.
   Blockbench file doesn't come across.
 </Callout>
 
-## Seeing it in game
-
-A resource pack can't add new items or blocks to Minecraft. It can only change
-how existing ones look. So every model rides on a piece of vanilla **paper**:
-the pack tells the game to draw that paper as your model. The Add asset sheet
-calls this the **Display Entity** carrier.
-
-Placing the model in the world needs [RP Engine](/testing/plugin) on the
-server. The test server has it.
-
-1. **Sync** the pack to yourself.
-2. On the model's page, under **Get in-game**, press **Give in-game** (or copy
-   the give command).
-3. **Right-click a block** to place it. It appears on the block you clicked,
-   facing the way you were looking.
-4. **Punch it** to pick it back up. A model with an "On left click" animation
-   can't be punched up; see [Animations](/animations).
-
-A placed model is a display entity, not a block. It doesn't fill a block
-space or stop water, and it stays put across server restarts. Block
-protection plugins don't necessarily cover it, so check that on a public
-server.
-
-### Choosing what it gives
-
-The **Get in-game** card has a few options that ride on the item, so you can
-give different copies of one model different settings:
-
-- **Size**: from ⅛ to 8 times. The model grows from its base, so a big one
-  stands on the block rather than sinking into it. The dropped item remembers
-  its size.
-- **Plays**: shown when the model has two or more triggered animations, to
-  pick which one this copy uses. See [Animations](/animations#triggers).
-
-### Vehicles driving into it
-
-Under the card, **Placed behaviour** has one checkbox: **Make this model
-collidable with vehicles**. It's on by default. When on, vehicles stop at a
-placed copy of the model, tested against its actual cubes: a car can drive
-between the legs of a table or under an archway, and a long fence stops it
-along its whole length. A rotated slab works as a ramp, stairs are climbed a
-step at a time, and anything low enough to be a kerb is driven over.
-
-Turn it off for flat pieces a vehicle should ignore, like a rug, a manhole
-cover or a road marking. It doesn't affect players, who walk through placed
-models unless the server sets otherwise. The change reaches the server on the
-next Sync. It isn't shown for a model that's been converted into a
-[vehicle](/vehicles).
-
-### Random turn and size
-
-Also under **Placed behaviour**, **Random variation when placed** gives every
-copy a player puts down a turn and a size of its own, so a field of rocks or a
-shelf of pots doesn't look like one model stamped out.
-
-- **Turn**: up to this many degrees either side of the way it would have
-  faced. 180 is any direction. **In 90° steps** keeps it square to the blocks,
-  which suits anything boxy; **any angle** suits rocks and plants.
-- **Size**: a range, as a multiple of its own size, such as 0.8 to 1.2. It
-  multiplies the size chosen on the **Get in-game** card, and the dropped item
-  keeps that chosen size rather than the random one.
-
-Each copy rolls once, when it's placed, and keeps what it rolled through
-restarts. Copies placed by a plugin aren't varied. It saves as you type and
-reaches the server on the next Sync, and needs RP Engine 0.2.57 or newer.
-
-## Exporting
+## What's in the exported pack
 
 A model is exported as a JSON file in Minecraft's block-model format, with
 its textures beside it. An item definition for paper points at it, so paper

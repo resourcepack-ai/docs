@@ -10,8 +10,9 @@ RP Engine has one main command, `/rpengine`, which you can also type as `/rpe`
 or `/rp`. Players also get `/emote`, and `/emotereply` for answering emote
 invitations.
 
-Every argument tab-completes, and you are only offered subcommands you have
-permission to run. When the plugin tells you to run a command in chat, you can
+`/rp` on its own (or `/rp help`) lists the commands you are allowed to run.
+Arguments tab-complete, and you are only offered subcommands you have
+permission for. When the plugin tells you to run a command in chat, you can
 click it.
 
 `[player]` means the command can target somebody else, which needs a second
@@ -22,7 +23,7 @@ permission. See [Pointing a command at somebody else](/rp-engine/permissions#poi
 | Command | What it does | Permission |
 |---|---|---|
 | `/rp reload` | Reread the content folder and config, and rebuild every pack | `rpengine.reload` |
-| `/rp info` | What this server is holding | `rpengine.info` |
+| `/rp info` | How much content is loaded, and the commands you can run | `rpengine.info` |
 | `/rp bundles` | The built packs, with their sizes and hashes | `rpengine.bundles` |
 | `/rp push` | Send this server's pack to yourself again | `rpengine.push` |
 | `/rp items` | Every custom item | `rpengine.items` |
@@ -98,8 +99,9 @@ Dialogs need Minecraft 1.21.6 or newer.
 | `/rp quick <id>` | Open a dialog on the [Quick Actions key](/dialogs#the-quick-actions-key): what its launcher's button runs | `rpengine.quick` (everyone) |
 | `/<command> [player]` | A dialog's own command, such as `/shop` | everyone, or the permission the dialog names |
 
-`var`, `page`, `slot` and `quick` are what clicks inside a dialog run, so every player
-has them. Each only does what a click in the dialog you were shown could do.
+`var`, `page`, `slot`, `click`, `run` and `quick` are what clicks inside a
+dialog run, so every player has them, and they are not tab-completed. Each
+only does what a click in the dialog you were shown could do.
 
 A dialog gets its own command from `command:` in its file, or **Players open
 it with** in Studio. If another plugin already has that command name, the
@@ -171,6 +173,11 @@ See [Armour](/rp-engine/armour#3d-armour-from-studio).
 
 ## Studio
 
+**Sync** sends a pack open in Studio to you (and anybody you add) for testing,
+on top of the server's own pack. Nobody else sees it and nothing on the server
+changes. **Distribute** serves a published pack to every player. See
+[Testing with the plugin](/testing/plugin) and [Distribution](/distribution).
+
 | Command | What it does | Permission |
 |---|---|---|
 | `/rp sync <code>` | Pair with a pack open in Studio, using the code from Studio | `rpengine.sync` |
@@ -180,7 +187,7 @@ See [Armour](/rp-engine/armour#3d-armour-from-studio).
 | `/rp sync remove <player>` | Take somebody off, and the pack off them | `rpengine.sync` |
 | `/rp sync leave` | Leave somebody else's sync | `rpengine.sync` |
 | `/rp sync stop` | End yours, for everybody on it | `rpengine.sync` |
-| `/rp distribute <code>` | Serve a pack published in Studio to everybody who joins. It is kept in `content/studio-<pack>/` | `rpengine.distribute` |
+| `/rp distribute <code>` | Serve a pack published in Studio to everybody who joins, using the code from the pack's Distribution page. It is kept in `content/studio-<pack>/` and updated on every release | `rpengine.distribute` |
 | `/rp distribute off` | Stop serving it, and remove its folder | `rpengine.distribute` |
 | `/rp distribute off --keep` | Stop serving it, and keep its folder as your own content | `rpengine.distribute` |
 
@@ -198,6 +205,7 @@ No account needed. See [Editing in a browser](/rp-engine/editing).
 
 Each subcommand has its own node, `rpengine.<subcommand>`, and
 `rpengine.admin` grants all of them. Everything defaults to op except
-`rpengine.emote`, `rpengine.emotes`, `rpengine.var`, `rpengine.page`,
-`rpengine.slot` and `rpengine.chat.icons`, which every player has.
+`rpengine.emote`, `rpengine.emotes`, `rpengine.chat.icons` and the six dialog
+click nodes (`var`, `page`, `slot`, `click`, `run`, `quick`), which every
+player has.
 [Permissions](/rp-engine/permissions) has the full list.

@@ -19,12 +19,14 @@ shop:
   container: chest_9x6   # the real container it opens as
 ```
 
-Draw the sheet **256×256** with the vanilla window art centred on it, and say
+Put the YAML in a `screens/` folder of your [content folder](/rp-engine/content)
+and the picture in its `assets/textures/gui/`. Draw the sheet **256×256** with the vanilla window art centred on it, and say
 which container it was drawn for. RP Engine works out the position from that.
 You can draw outside the window freely (a title plate above it, a frame round
 it) without moving anything.
 
-`/rp screen mypack:shop [player]` opens one. `/rp screens` lists them.
+After `/rp reload`, `/rp screen mypack:shop [player]` opens one (`mypack` is
+the content folder's name). `/rp screens` lists them.
 
 ## The container decides the position
 

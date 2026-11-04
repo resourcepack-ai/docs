@@ -1,0 +1,277 @@
+export const metadata = {
+  title: "Go Karts",
+  description:
+    "An addon for RP Engine: go-kart racing with drifting, boost pads, jumps, item boxes and computer drivers, on circuits it builds for you in one command.",
+};
+
+# Go Karts
+
+An **addon** for [RP Engine](/rp-engine): a plugin that installs into the
+engine and adds one thing, rather than a pack you author yourself. Drop it in
+beside the engine and it brings its own content with it.
+
+This one is go-kart racing. Up to eight karts line up on a grid, three red
+lights go green, and you race three laps: drift through corners for a boost,
+fly off ramps, take shortcuts, and drive through item boxes for bananas, nitro
+and rockets. One command builds a whole circuit, and computer drivers can fill
+the grid when you are short of players.
+
+## Installing
+
+It needs **Spigot or Paper, Java 21**, and **RP Engine 0.2.45 or newer**. On an
+older engine Go Karts says so in the console and turns itself off. A few things
+need newer versions:
+
+| Needs | For |
+|---|---|
+| **Paper 1.21.4+** | Steering with A and D. On Spigot you steer by looking |
+| **RP Engine 0.2.47+** | Karts, helmets and items drawn as icons in inventories (older engines show the shrunk 3D model) |
+| **RP Engine 0.2.51+** | Bots, and front wheels and steering wheel that turn as you steer |
+| **Minecraft 1.21.9+** | A visible driver in each bot's kart |
+
+<Steps>
+  <Step title="Drop it in">
+    Put `RPE-gokarts.jar` in `plugins/` beside `RPEngine.jar` and start the
+    server. Go Karts copies its karts, sounds, effects, HUD and results screen
+    into `plugins/RPEngine/content/gokarts/` (RP Engine's content folder, which
+    the engine builds its resource pack from) and reloads the engine once.
+  </Step>
+  <Step title="Build a track">
+    As an op, run `/kart track generate main`. It makes a new world for the
+    track, builds the Sunny Meadows circuit there in a few seconds and takes
+    you to it. Nothing in your existing worlds is touched.
+  </Step>
+  <Step title="Race">
+    `/kart join`, then `/kart start`. Alone is fine. Add `--withBots` to race
+    computer drivers.
+  </Step>
+</Steps>
+
+If you run Multiverse-Core, Go Karts loads after it, and it loads its own
+track worlds again every time the server starts.
+
+## Driving
+
+| Key | What it does |
+|---|---|
+| **W / S** | Throttle; brake, then reverse |
+| **A / D** | Steer |
+| **Space** | Handbrake. Held through a corner at speed it is a **drift**: blue sparks, then orange, then purple. Let go for a boost, bigger the longer you held it. In the air, a **trick**, and landing it is a boost |
+| **F** or click | Use your item |
+| **Q** | Throw away your item. With empty hands, go back to the last checkpoint if you are stuck or off the road |
+
+**The start.** Three red lights a second apart, then green. Hold W too early
+(when the second light comes on) and you stall. Press it as the lights go
+green and you get a rocket start.
+
+**The track.** Magenta pads on the straights are boost pads, and the lime pad
+at the lip of a ramp is a jump. Grass and dirt slow you to walking pace, so
+cutting a corner costs you. Laps count checkpoint by checkpoint, so skipping
+part of the lap gets you nowhere. Every track has a shortcut (a tunnel, a
+canyon floor, a frozen lake where the kart slides, a back alley), and either
+way round counts.
+
+Falling off, landing in water, or missing checkpoints for about twelve seconds
+puts you back on the track. When the winner finishes, everybody else has
+thirty seconds, then the results screen shows every driver's place, time and
+best lap, and the track's lap record.
+
+### Items
+
+Drive through an item box to spin for an item. What you get depends on your
+place: the leaders get things to defend with, the back of the field things to
+catch up.
+
+| Item | What it does |
+|---|---|
+| Nitro / Triple nitro | One boost, or three |
+| Overdrive | Every press is a boost for six seconds |
+| Banana / Banana bunch | Dropped behind you; whoever drives over it spins out. The bunch is three |
+| Decoy box | Dropped behind you. Looks like an item box (but does not spin) and spins out whoever hits it |
+| Bumper orb | Rolls ahead of you, bouncing off walls, and spins out whoever it meets, you included |
+| Rocket | Flies at the kart one place ahead and throws it in the air |
+| Storm drone | Flies to the leader and strikes everybody within four blocks of them |
+| Hyper shield | Six seconds where nothing hits you, grass does not slow you, and anybody you touch spins out |
+| Smoke bomb | Blinds everybody ahead of you for three seconds |
+| Shockwave horn | Pushes back every kart within seven blocks and clears nearby bananas, decoys, orbs, rockets and a storm drone coming for you |
+| Static surge | Everybody else loses their item and slows down for three seconds |
+
+### What you see
+
+The whole screen is one HUD: your item top left with a live minimap, lap,
+clock and best lap top right, the standings down the right, and your speed and
+place bottom right. The start lights and banners (final lap, wrong way,
+finish) appear in the middle.
+
+## Joining a race
+
+| Command | What it does |
+|---|---|
+| `/kart join [track]` | Into the track's lobby, a glass box over the infield, until the race starts |
+| `/kart colour <colour>` | The kart you would like: red, blue, green, yellow, orange, purple, pink or cyan. Everybody in a race gets a different one |
+| `/kart leave` | Out of the race, with your inventory and position back. Always works, with no permission needed |
+| `/kart results` | The last race's results |
+
+`/kart` also answers to `/gokart`, `/karts` and `/gk`. During a race, players
+can only run `/kart`, `/msg`, `/tell`, `/w`, `/r`, `/reply`, `/me` and `/list`
+(change this with `allowed-commands`, or grant `gokarts.bypass.commands`).
+
+## Running races
+
+Races start when somebody with `gokarts.start` runs `/kart start [track]`. It
+joins you first if you are not in. To have a lobby start by itself, set
+`race.auto-start: true`: once `min-players` are waiting it counts down
+`lobby-countdown` seconds and starts.
+
+`/kart stop [track]` ends a race, or empties a lobby.
+
+### Bots
+
+`/kart start --withBots` fills the empty grid slots with computer drivers, and
+`--withBots=3` adds three. They drive the same karts with the same controls:
+they follow the road, drift for boosts, jump, use items and recover from
+crashes. They appear on the minimap, in the standings and in the results, but
+never in a track's records. Bots need RP Engine 0.2.51 or newer and the
+`gokarts.start.bots` permission. Their names come from `bots.names` in the
+config.
+
+### Outside a race
+
+`/kart give [colour] [player]` hands over a kart of your own. Right-click the
+ground to park it, then right-click it to get in. Drifting, boost pads and a
+speed readout above the hotbar work anywhere.
+
+`/kart item <item> [player]` hands a racer an item as if from a box, for
+testing or events. `/kart as <player> <subcommand>` runs a subcommand as
+somebody else, checked against **their** permissions: an NPC that runs
+`/kart as <player> join` for whoever clicks it is a join button.
+
+## Building a track
+
+### Generate one
+
+```
+/kart track generate <id> [prefab] [name]
+```
+
+Builds a complete circuit, with walls, kerbs, pads, item boxes, a start
+gantry, a grandstand and the lobby, **in a new world of its own**
+(`gokarts_<id>`). It replaces nothing. Generating the same id again makes a
+fresh world and leaves the old one alone.
+
+| Prefab | Track | Lap | Features |
+|---|---|---|---|
+| `meadow` (default) | Sunny Meadows | 458 blocks | A jump over a river, a tunnel through a hill |
+| `desert` | Dune Canyon | 528 blocks | A jump over a canyon, a lower road along its floor |
+| `frost` | Frostbite Peak | 544 blocks | A figure of eight over a bridge, a frozen-lake shortcut |
+| `neon` | Neon Nights | 742 blocks, two laps | Midnight city, an elevated road, a tunnel, a back alley |
+
+For example, `/kart track generate night neon` builds Neon Nights as the
+track `night`.
+
+To build in an existing world instead:
+
+```
+/kart track generate <id> here confirm [prefab] [name]
+```
+
+The start line goes under your feet, with the straight running the way you
+face.
+
+<Callout type="warning" title="It replaces every block in a large box">
+  Built `here`, a track replaces everything in a box up to about 200 by 230
+  blocks, from fifteen below your feet to fourteen above. Without `confirm` it
+  only tells you how big the box is.
+</Callout>
+
+From the console: `/kart track generate <id> at <world> <x> <y> <z> <yaw> [prefab] [name]`.
+
+**`/kart track undo <id> confirm`** takes back the last generate of that
+track. A track in its own world deletes the world; one built in place puts back
+the blocks it replaced (but not the contents of chests or signs). It works
+after a restart too.
+
+### Set one up by hand
+
+On a circuit you built yourself, stand in each place and run:
+
+<Steps>
+  <Step title="Create it">`/kart track create <id>`</Step>
+  <Step title="The lobby">`/kart track setlobby <id>` where racers wait.</Step>
+  <Step title="The grid">
+    `/kart track addgrid <id>` once per grid slot, facing the way the karts
+    should face. `cleargrid` starts over.
+  </Step>
+  <Step title="Checkpoints">
+    `/kart track addcheckpoint <id> [radius]`: the start/finish line first,
+    then round the lap in order, about every fifteen blocks. The radius
+    defaults to 6 blocks. `clearcheckpoints` starts over.
+  </Step>
+  <Step title="Item boxes">`/kart track addbox <id>` at each box. `clearboxes` removes them.</Step>
+  <Step title="Open it">
+    `/kart track enable <id>`. If anything is missing it says what.
+    `/kart track laps <id> <n>` sets this track's laps (0 uses the config's).
+  </Step>
+</Steps>
+
+Use magenta glazed terracotta for boost pads and lime glazed terracotta for
+jump pads (both can be changed in the config). `/kart track list` shows every
+track and what it still needs. `disable`, `tp`, `name` and
+`delete <id> confirm` do what they say (deleting leaves the blocks).
+
+## Permissions
+
+One node per command. `gokarts.play` and `gokarts.admin` are shorthand that
+grant the nodes under them.
+
+| Node | What it allows | Default |
+|---|---|---|
+| `gokarts.play` | All four racer nodes below | Everyone |
+| `gokarts.join` | `/kart join` | Everyone |
+| `gokarts.colour` | `/kart colour` | Everyone |
+| `gokarts.results` | `/kart results` | Everyone |
+| `gokarts.ride` | Getting into a kart at all, a parked one included | Everyone |
+| `gokarts.admin` | Every staff node below | Operators |
+| `gokarts.start` | `/kart start` | Operators |
+| `gokarts.start.bots` | `/kart start --withBots` | Operators |
+| `gokarts.stop` | `/kart stop` | Operators |
+| `gokarts.reload` | `/kart reload` | Operators |
+| `gokarts.give` | `/kart give [colour]` | Operators |
+| `gokarts.give.others` | `/kart give <colour> <player>` | Operators |
+| `gokarts.item` | `/kart item` | Operators |
+| `gokarts.as` | `/kart as` | Operators |
+| `gokarts.track` | Track setup: `list`, `create`, `setlobby`, `addgrid`, `addcheckpoint`, `addbox`, `laps`, `enable`, `disable`, `tp`, `name` and the `clear` commands | Operators |
+| `gokarts.track.generate` | `/kart track generate` | Operators |
+| `gokarts.track.undo` | `/kart track undo` | Operators |
+| `gokarts.track.delete` | `/kart track delete` | Operators |
+| `gokarts.bypass.commands` | Any command during a race | Operators |
+
+## Configuration
+
+`plugins/RPEGoKarts/config.yml`. `/kart reload` rereads it, and `tracks.yml`
+too unless a race is using it. An update adds new options with their defaults
+and leaves yours alone. The main settings:
+
+| Setting | Default | What it does |
+|---|---|---|
+| `race.laps` | `3` | Laps per race |
+| `race.auto-start` | `false` | Start a lobby on its own once `min-players` (2) are waiting, after `lobby-countdown` (20) seconds |
+| `race.finish-timeout` | `30` | Seconds the others have once the winner is home |
+| `race.max-seconds` | `600` | The longest a race can run |
+| `race.stuck-seconds` | `12` | Seconds without a checkpoint before you are put back |
+| `karts.cruise-speed` | `13` | Top speed without a boost. Raise it to make karts faster |
+| `karts.offroad-speed` | `6` | Speed on the `offroad-blocks` (grass, dirt, sand...) |
+| `karts.boost-pad-block` / `jump-pad-block` | magenta / lime glazed terracotta | Which blocks are pads |
+| `karts.ice-blocks` | ice, packed ice, blue ice | Blocks the kart slides on |
+| `boost.*`, `drift.*` | | How strong and long each boost and drift level is |
+| `items.enabled` | `true` | Item boxes on or off |
+| `items.odds` | | How likely each item is, one row per place band from the front to the back |
+| `bots.names` | | Names given to bots |
+| `allowed-commands` | `msg, tell, w, r, reply, me, list` | Commands racers may use besides `/kart` |
+| `ui.hud`, `ui.results` | `gokarts:hud`, `gokarts:results` | Point at your own RP Engine HUD or Dialog to replace them. It has to show the same values |
+
+A kart's top speed with a boost is the vehicle's `speed:` in
+`plugins/RPEngine/content/gokarts/vehicles/karts.yml`.
+
+**Every word a player reads** is under `messages:` in the same file, in
+[MiniMessage](https://docs.advntr.dev/minimessage/format.html).

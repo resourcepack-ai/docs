@@ -141,9 +141,9 @@ export const nav: NavGroup[] = [
         keywords: ["sprite", "icon", "hotbar", "inventory", "itemstack", "item"],
       },
       {
-        title: "Armour",
+        title: "Armor",
         href: "/armor",
-        description: "Reskinning a vanilla armour set, worn on the player.",
+        description: "Reskinning a vanilla armor set, worn on the player.",
         keywords: [
           "armor",
           "armour",
@@ -160,8 +160,8 @@ export const nav: NavGroup[] = [
       {
         title: "GUIs",
         href: "/guis",
-        description: "Reskinning a screen, and what a pack can't change about one.",
-        keywords: ["gui", "screen", "inventory", "menu", "chest", "draw-only"],
+        description: "Reskinning a screen, Custom GUIs for MC GUI, and what a pack can't change.",
+        keywords: ["gui", "screen", "inventory", "menu", "chest", "draw-only", "custom gui", "mcgui", "html"],
       },
       {
         title: "HUD",

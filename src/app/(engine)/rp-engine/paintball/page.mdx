@@ -15,29 +15,23 @@ beside the engine and it brings its own content with it.
 This one is paintball. Hold right-click to fire a paint marker, left-click to
 aim down its sights, throw a paint grenade round a corner and leave a mine in a
 doorway. One hit splats you and you are back a few seconds later. Play it as
-team deathmatch, as a free for all, or as capture the flag (see [Game
-modes](#game-modes)). Everything on screen during a match is drawn by a
-full-screen HUD, and one command builds a whole field to play on.
+team deathmatch, free for all or capture the flag. One command builds a whole
+field to play on.
 
 ## Installing
 
-It needs:
-
-- **Spigot or Paper, 1.21.11 or newer.** The marker is held with item
-  components that 1.21.11 added (hold to fire, no swing when you click, no
-  reach to punch with).
-- **RP Engine 0.2.3 or newer.** Paintball checks the engine's version as it
-  starts, and on anything older says so in the console and disables itself.
+It needs **Spigot or Paper 1.21.11 or newer** (the marker uses item components
+1.21.11 added) and **RP Engine 0.2.3 or newer**. On an older engine Paintball
+says so in the console and turns itself off.
 
 <Steps>
   <Step title="Drop it in">
     Put `RPE-paintball.jar` in `plugins/` beside `RPEngine.jar` and start the
-    server. Its content (the marker, mask, grenade and paint models, the
-    sounds, the HUD and the scoreboard) installs itself into
-    `plugins/RPEngine/content/paintball/` on first boot, and the engine reloads
-    once so the resource pack it serves carries all of it. That folder is
-    yours: edit anything in it, and a new version of the plugin updates only
-    the files you have not changed.
+    server. Paintball copies its models, sounds, HUD and scoreboard into
+    `plugins/RPEngine/content/paintball/` (RP Engine's content folder, which
+    the engine builds its resource pack from) and reloads the engine once.
+    That folder is yours to edit: an update replaces only the files you have
+    not changed.
   </Step>
   <Step title="Build a field">
     As an op, stand somewhere flat and run `/pb arena generate main confirm`.
@@ -69,21 +63,16 @@ holds:
 | **Scoreboard** | The scoreboard of the last match |
 | **Leave** | Back to where you were, with your things |
 
-`/pb team red|blue|auto` does the same as the two team items. Sides are kept
-within one player of each other: if too many people pick one, whoever picked
-it last plays for the other and is told so. Anybody who did not pick fills in
-where they are needed. Somebody who joins once a match is under way goes
-straight onto the smaller team.
+`/pb team red|blue|auto` does the same as the team items. Sides are kept
+within one player of each other, so if too many pick one side, the last to
+pick is moved and told. Late joiners go onto the smaller team.
 
-`/pb colour <colour|auto>` does the same as the marker. In a free for all the
-colour you choose is your paint (marker, mask, suit and splats); anybody who
-did not choose gets the colour fewest players have. In a team match your paint
-stays your team's, so the sides read at a glance, and you carry the marker of
-the colour you chose. The colours are the server's `ffa.colours`, and
-`colour-pick: false` turns choosing off.
+`/pb colour <colour|auto>` does the same as the marker. In a free for all your
+colour is your paint (marker, mask, suit and splats). In a team match your
+paint stays your team's and only the marker changes. `colour-pick: false` in
+the config turns choosing off.
 
-The field has five spawns a side. That is not a cap: more players simply
-share them.
+More players than spawns is fine: they share them.
 
 ### In a match
 
@@ -101,42 +90,33 @@ in your team's colour.
 | **F** | The scoreboard |
 | **Tab** | The player list: the score and the clock on top, each player's kills and deaths |
 
-**Every ball lands on the crosshair.** It drops and slows as it flies, and it
-is fired so that, drop and all, it arrives where you are looking. From the hip
-it strays a little, by the spread the crosshair's ticks show: a little standing
-still, more on the move, in the air or sprinting, and half of either crouched.
-Down the sights there is none. Changing slot, sprinting or reloading brings
-the sights down.
+**Every ball lands on the crosshair.** Balls drop and slow as they fly, but
+are aimed so they arrive where you are looking. From the hip they stray a
+little (the crosshair's ticks show how much): more on the move, in the air or
+sprinting, half as much crouched. Down the sights there is no spread.
+Changing slot, sprinting or reloading takes you off the sights.
 
 **The grenade** goes off a second and a half after it lands and splats every
-enemy within three and a half blocks that it can see: a wall between you and
-it is cover. It stays in your hotbar, greyed out for fifteen seconds after a
-throw, and being splatted does not bring it back any sooner, unless the server
-sets `grenade.reset-on-respawn: true`.
+enemy within three and a half blocks that it can see, so a wall is cover. It
+recharges for fifteen seconds after a throw (`grenade.reset-on-respawn: true`
+makes a respawn bring it straight back).
 
-**The mine** is one a match. Set it on the ground and, a second and a half
-later, it is armed: the first enemy to step on it sets it off, splatting every
-enemy within three blocks that it can see. Your own team can walk over it.
+**The mine** is one per match. It arms a second and a half after you set it,
+and the first enemy to step on it splats every enemy within three blocks that
+it can see. Your own team can walk over it.
 
-**One hit splats you.** For three seconds you watch whoever got you, the camera
-slowly circling them, then you come back at one of your team's spawns, protected for a second and a half: a ball
-that hits you in that time does nothing. A server can also give each spawn a
-safe zone (`spawn-protection-radius`, a circle or a square): you stay protected
-until you step out of it or fire, and the other side cannot set a mine in it. There is no friendly fire. Enemy name
-tags are hidden, so you find people by looking for them. Your teammates' show
-through walls, as the game's own always do, unless the server turns on
-`nametags.hide-behind-blocks`, which puts a name over each head that walls hide
-and keeps the game's own off for the match, even on a server whose tab or name
-tag plugin draws them.
+**One hit splats you.** For three seconds the camera circles whoever got you,
+then you come back at one of your team's spawns, safe from hits for a second
+and a half. A server can also give each spawn a safe zone
+(`spawn-protection-radius`): you stay safe until you leave it or fire, and the
+other side cannot set a mine in it. There is no friendly fire, and enemy name
+tags are hidden.
 
-A pling sounds with a minute and with thirty seconds left, and the time left
-shows in the middle of the screen; for the last ten seconds it is the number
-itself, at ten and then from five down. The match ends when the clock runs out
-(three minutes) or, if the server sets one, when a team reaches the kill limit. The result has the screen to itself
-for three seconds, then everybody gets the scoreboard, and a few seconds later
-it is back to the lobby for another. The paint comes off the walls between
-matches. It was never blocks: every splat is a display, so the arena itself is
-never changed.
+A pling sounds at one minute and thirty seconds left, and the last seconds
+count down in the middle of the screen. The match ends when the clock runs out
+(three minutes) or when a team reaches the kill limit, if one is set. Then the
+result, the scoreboard, and back to the lobby. Splats are displays, not
+blocks, so the arena is never changed and is clean for the next match.
 
 ### What you see
 
@@ -167,8 +147,7 @@ or drop what you carry. Commands are limited to `/pb`, `/msg`, `/tell`, `/w`,
 `paintball.bypass.commands`. Walking out of the arena's bounds during a match
 puts you back where you last stood.
 
-`/pb leave` always works and needs no permission, so nobody can be stuck in a
-match. Disconnecting, or being teleported to another world by something else,
+`/pb leave` always works. Disconnecting or being teleported to another world
 counts as leaving. If the server goes down mid-match, everybody gets their
 things back the next time they join.
 
@@ -189,17 +168,13 @@ is next.
 ### Free for all
 
 Every player gets one of eight paint colours (red, blue, green, orange, yellow,
-purple, pink and cyan), handed out in `ffa.colours` order. More players than
-colours share them. Your marker, mask, suit, balls, splats, grenade and mine are
-all in your colour, and so is your edge of the kill feed. Every other player is
-an enemy and nobody's name tag shows. You come back at whichever spawn is
-furthest from everybody still in. The arena's red and blue spawns all count.
+purple, pink and cyan), unless they chose one. More players than colours share
+them. Everybody else is an enemy, and nobody's name tag shows. You respawn at
+whichever spawn is furthest from everybody still in.
 
-The HUD shows your kills on the left and the leader's on the right of the
-clock, with your place under them. At the end the winner sees VICTORY and
-everybody else their place. A tie on kills goes to whoever was splatted less,
-and a tie on both is a draw. The scoreboard is one table of everybody, best
-first.
+The HUD shows your kills and the leader's either side of the clock, with your
+place under them. A tie on kills goes to whoever was splatted less; a tie on
+both is a draw. The scoreboard is one table of everybody.
 
 ### Capture the flag
 
@@ -221,43 +196,37 @@ stand where each one goes and run `/pb arena setflag <arena> red` and `blue`.
 ## Running matches
 
 Matches do not start on their own: somebody with `paintball.start` runs
-`/pb start`. Players who can start a match are told so when they join the
-lobby; everybody else is told the lobby is waiting for an op.
+`/pb start`.
 
-- **`/pb start`** starts a match now, on the arena you are in. If you are not
-  in yet it joins you first, which is why it works alone. `/pb start <arena>`
-  names one, and `/pb start <arena> <teams|ffa|ctf>` plays that mode this once.
-- **`/pb stop`** during a match ends it the ordinary way: the result, the
-  scoreboard, then back to the lobby. In the lobby it sends everybody home.
+- **`/pb start`** starts a match now on the arena you are in, joining you
+  first if you are not in (so it works alone). `/pb start <arena>` names one,
+  and `/pb start <arena> <teams|ffa|ctf>` plays that mode this once.
+- **`/pb stop`** ends a match the ordinary way (result, scoreboard, lobby). In
+  the lobby it sends everybody home.
 
 **`/pb as <player> <subcommand>`** runs a subcommand as somebody else, for
-NPCs, command blocks and anything else that can only run console commands:
-an NPC that runs `/pb as <player> join` for whoever clicks it is a join button. What the player runs
-is checked against **their** permissions, not the sender's.
+NPCs and command blocks: an NPC that runs `/pb as <player> join` for whoever
+clicks it is a join button. It is checked against **the player's**
+permissions, not the sender's.
 
 ### Bots
 
-Computer players can fill a match up, so two people can play a four against
-four, and nobody plays one against two. They are off until you turn them on in
-config.yml, or for one arena with `/pb arena set`:
+Computer players can fill a match up. They are off until you turn them on in
+`config.yml`, or for one arena with `/pb arena set`:
 
-- **`bots.fill`**: each side is filled with bots up to this many in a team
-  match, and everybody up to this many in a free for all.
-- **`bots.even-teams`**: in a team match, a bot for every person the other side
-  has more, so three against one becomes three against three.
+- **`bots.fill`**: fill each side up to this many in a team match, or everybody
+  up to this many in a free for all.
+- **`bots.even-teams`**: in a team match, add a bot for every extra person the
+  other side has, so three against one becomes three against three.
 
-A bot plays like anybody else: it has a side or a colour, it is in the kill
-feed, on the scoreboard and in the score, and its paint is the same paint. It
-looks for the nearest enemy it can see, takes a moment to react
-(`bots.reaction-ticks`), fires in bursts with some spread (`bots.spread-degrees`)
-and sidesteps while it shoots. In capture the flag half of each side's bots go
-for the other flag and carry it home, and the rest guard their own. Bots do not
-throw grenades or set mines.
+Bots are in the kill feed, the scoreboard and the score like anybody else.
+They shoot the nearest enemy they can see after a short reaction time
+(`bots.reaction-ticks`), with some spread (`bots.spread-degrees`). In capture
+the flag half of them attack and half guard. They do not throw grenades or set
+mines, and never count towards stats.
 
-People always come first: somebody who joins a match takes a bot's place, and
-when the last person leaves, the match ends, bots and all. Bots never count
-towards anybody's stats. They are mannequins, so they need Minecraft 1.21.9 or
-newer.
+A person who joins takes a bot's place, and when the last person leaves the
+match ends. Bots are mannequins, so they need Minecraft 1.21.9 or newer.
 
 ## Building an arena
 
@@ -272,11 +241,10 @@ box a player cannot walk out of during a match. Arenas are kept in
 /pb arena generate <id> confirm [name]
 ```
 
-Builds a speedball field centred on you and sets the arena up on it, open
-straight away: a floor paint shows up on, a netted fence, a base at each end,
-inflatable-style bunkers placed with point symmetry so both teams play the same
-field, and a glass box over the middle to wait in. Without `confirm` it only
-says what it is about to do.
+Builds a speedball field centred on you and sets the arena up on it, ready to
+play: a floor, a netted fence, a base and flag at each end, mirrored bunkers,
+and a glass box over the middle to wait in. Without `confirm` it only says
+what it is about to do.
 
 <Callout type="warning" title="It replaces every block in a large box">
   The field is 31 blocks across and 57 long. Inside that it clears everything
@@ -305,12 +273,11 @@ To play on a map you built yourself, stand in the right places and run:
     `/pb arena setwaiting <id>` where you stand, facing the way you face.
   </Step>
   <Step title="Spawns">
-    `/pb arena addspawn <id> red`, and again for `blue`. Up to five a team;
-    past five the oldest goes. `/pb arena clearspawns <id> <red|blue>` starts
-    a team's over. With no colour, `/pb arena addspawn <id>` is a spawn for
-    anybody (up to ten): a free for all uses them along with the teams', and
-    a team with no spawns of its own uses them, so a free-for-all arena needs
-    no colours at all. `/pb arena clearspawns <id>` clears those.
+    `/pb arena addspawn <id> red`, and again for `blue`, up to five a team
+    (past five the oldest goes). With no colour, `/pb arena addspawn <id>` adds
+    a spawn for anybody (up to ten), used by free for all and by any team with
+    no spawns of its own, so a free-for-all arena needs no team spawns.
+    `/pb arena clearspawns <id> [red|blue]` clears them.
   </Step>
   <Step title="Bounds">
     `/pb arena wand` hands you the bounds wand. Left-click a block for one
@@ -327,23 +294,12 @@ or what it still needs.
 
 ### Managing arenas
 
-| Command | What it does |
-|---|---|
-| `/pb arena enable <id>` | Opens it. `/pb join` with no arena named goes to the first open one |
-| `/pb arena disable <id>` | Closes it until `enable` opens it again. See below |
-| `/pb arena tp <id>` | Takes you to its waiting spot |
-| `/pb arena name <id> <name>` | Renames it. The id stays the same |
-| `/pb arena delete <id>` | Removes it, ending any match on it and sending its players home. The blocks are left where they are |
-
-A closed arena cannot be joined or started by anybody, however they ask:
-`/pb join <id>`, `/pb start <id>` and `/pb as` all say it is closed. Closing
-one sends its lobby home, and a match being played on it ends the way
-`/pb stop` ends one (the result, the scoreboard), after which everybody goes
-home rather than back to the lobby. Deleting an arena does the same. Staff can
-still `tp` to a closed arena and change it.
-
-Spawns and bounds cannot be changed while a match is being played on an arena:
-`/pb stop <id>` first.
+`/pb join` with no arena named goes to the first open one.
+`/pb arena disable <id>` closes an arena for maintenance: nobody can join or
+start it, its lobby is sent home, and a match on it ends as `/pb stop` would.
+Staff can still `tp` there and change it. `/pb arena delete <id>` does the
+same and forgets the arena, leaving the blocks where they are. Spawns and
+bounds cannot be changed during a match: `/pb stop <id>` first.
 
 ### Settings per arena
 
@@ -362,14 +318,11 @@ is the server's default. An arena can set any of them for itself:
 /pb arena set main hud.time-warnings 60,30,10
 ```
 
-An option is named by its path in `config.yml`, and tab-completion lists them:
-everything except `ui`, `messages` and `update-check`, which are the server's.
-`/pb arena set <id> <option> default` puts one back to `config.yml`'s value, and
-`/pb arena set <id>` lists what the arena sets. They are kept under `settings:`
-beside the arena in `arenas.yml`, which you can also edit by hand and
-`/pb reload`. A change applies at once, so the clock and the limits of a match
-already under way are best changed between matches. This works from the console
-too.
+An option is its path in `config.yml` (tab-completion lists them; `ui`,
+`messages` and `update-check` are server-wide only). `default` puts one back to
+`config.yml`'s value, and `/pb arena set <id>` lists what the arena overrides.
+They are saved under `settings:` in `arenas.yml`. Changes apply at once, so
+change the clock and limits between matches.
 
 ## Commands
 
@@ -405,11 +358,9 @@ what you may run.
 
 ## Permissions
 
-One node per command, so you can hand out exactly what somebody needs: a
-referee who can start and stop matches but not touch arenas, say.
-`paintball.play` and `paintball.admin` are shorthand: each grants every node
-listed under it, and nothing checks them directly. `/pb leave` needs no
-permission at all.
+One node per command, so a referee can start and stop matches without
+touching arenas. `paintball.play` and `paintball.admin` are shorthand that
+grant the nodes under them. `/pb leave` needs no permission.
 
 | Node | What it allows | Default |
 |---|---|---|
@@ -585,30 +536,21 @@ modes:
 update-check: true
 ```
 
-A mode's own values (`modes.<mode>`) are laid over the rest for that mode's
-matches only, so free for all can play to 15 with two-second respawns while
-team deathmatch keeps its three minutes. An arena's own settings come after
-both, and an arena can change one mode's value too, with
-`/pb arena set <arena> modes.ctf.respawn-seconds 6`.
+`modes.<mode>` values apply to that mode's matches only, and an arena's own
+settings apply on top of both (`/pb arena set <arena> modes.ctf.respawn-seconds 6`).
 
 **Every word a player reads** is under `messages:` in the same file, in
-[MiniMessage](https://docs.advntr.dev/minimessage/format.html): chat, the
-lobby's hotbar, the player list, the scoreboard's heading and the HUD's text.
-The big words in the middle of the HUD (YOU'RE TEAM, GO!, SPLATTED BY,
-VICTORY...) are drawn in the HUD's own lettering, which has the letters A to Z,
-the digits, `!`, `-`, `'` and spaces: anything else in them is left out. The
-scoreboard's title and column headings (`scoreboard-red`, `scoreboard-kills`
-and so on) are messages too.
+[MiniMessage](https://docs.advntr.dev/minimessage/format.html). The big words
+in the middle of the HUD (GO!, SPLATTED BY, VICTORY...) can use only A to Z,
+digits, `!`, `-`, `'` and spaces.
 
-**The HUDs and the scoreboards are RP Engine content** like any other, so
-`ui.hud`, `ui.hud-ffa`, `ui.scoreboard`, `ui.scoreboard-ffa` and
-`ui.scoreboard-ctf` can point at a HUD or dialog of your own to replace any of
-them. A replacement has to show the same values. Capture the flag draws the
-team HUD.
+**To replace the HUD or a scoreboard** with your own RP Engine HUD or Dialog,
+point `ui.hud`, `ui.hud-ffa`, `ui.scoreboard`, `ui.scoreboard-ffa` or
+`ui.scoreboard-ctf` at its id. It has to show the same values.
 
 `/pb reload` rereads the file, and `arenas.yml` too unless somebody is playing.
-Options a newer version adds are written into your existing file when the
-server starts, with their defaults, and nothing already there is touched.
+An update adds new options to your file with their defaults and leaves yours
+alone.
 
 ## Placeholders
 
@@ -643,8 +585,6 @@ The status words are under `messages:` (`status-maintenance` ... `status-ending`
 
 ## Update check
 
-With `update-check: true`, Paintball asks SpigotMC for its current version a
-few seconds after the server starts. If you are behind, it says so in the
-console, and to every player with `paintball.update` (operators, by default)
-who is online then or joins later,
-with a link to the SpigotMC page. Set it to `false` to turn that off.
+With `update-check: true`, Paintball checks SpigotMC once at startup and, if
+you are behind, tells the console and every player with `paintball.update`
+(operators) with a link. Set it to `false` to turn that off.

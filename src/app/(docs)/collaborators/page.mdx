@@ -6,9 +6,9 @@ export const metadata = {
 
 # Collaborators
 
-A pack starts as yours alone. **Collaborators** are other accounts you let into
-it: a builder doing your models, a friend drawing block textures, a client
-watching without touching anything.
+A pack starts as yours alone. **Collaborators** are other people you let into
+it: a builder doing your models, a friend drawing Block textures, a client
+watching without touching anything. You choose how much each one can do.
 
 Collaborators belong to **one pack**. Adding somebody to your castle pack gives
 them nothing in your other packs. If you want several people sharing every
@@ -17,29 +17,31 @@ pack and one pool of credits, use [Teams](/teams) instead.
 A pack can have **five collaborators** besides you. A pending invitation holds
 one of those places until it's accepted, declined, withdrawn or expires.
 
-## Adding somebody
+## Inviting somebody
 
 <Steps>
   <Step title="Open the pack's Collaborators page">
-    The people icon in the pack header, beside **Edit** and **Export**. Only
-    the pack's owner sees it. Then press **Add collaborator**.
+    Press the people icon at the top of the pack page, beside **Edit** and
+    **Export**. Only the pack's owner sees it. Then press **Add
+    collaborator**.
   </Step>
   <Step title="Find them by Minecraft username or email">
-    **Minecraft username** finds an account that has linked that name with
-    `/permlink` on <ServerAddress /> (see
-    [Our test server](/testing/test-server#linking-your-account)).
+    **Minecraft username** works if they have linked their Minecraft account
+    to Studio (see
+    [Linking your account](/testing/test-server#linking-your-account)).
 
     **Email** works for anyone, including people without a resourcepack.ai
     account, who can create one from the invitation.
   </Step>
   <Step title="Choose what they can reach">
-    **Editor** is the full run of the pack: edit, generate, sync and export.
+    **Editor** can do nearly everything: edit, generate, test in game and
+    export.
     **Viewer** can open everything and change nothing. **Custom** lets you
     pick the sections and capabilities below.
   </Step>
   <Step title="Send it">
-    They get an email, plus a Discord DM and a line of in-game chat if they've
-    turned those on. Invitations last **14 days** and can be withdrawn from
+    They get an email, plus a Discord message and a line of in-game chat if
+    they've turned those on. Invitations last **14 days** and can be withdrawn from
     the same page.
   </Step>
 </Steps>
@@ -51,10 +53,11 @@ Minecraft name and head.
 
 ## What a collaborator can do
 
-Two independent choices, so "can generate but can't delete my work" is
-possible, and so is the reverse.
+With **Custom** you make two separate choices: which parts of the pack they
+see, and what they can do there. So "can generate but can't touch my
+Models" is possible.
 
-**Which sections**, matching the tabs on the pack page: Models, Vehicles,
+**Which sections**, matching the tabs on the pack page: Models, Vehicles, Mobs,
 Blocks, Items, Armor, GUIs, HUD, Dialogs, Icons, Sounds, Emotes, Shaders, and
 Distribution. A section they aren't given simply isn't there for them.
 
@@ -63,10 +66,10 @@ Distribution. A section they aren't given simply isn't there for them.
 | Capability | Lets them |
 | --- | --- |
 | **Edit** | Create, edit, rename and delete assets by hand |
-| **Generate with AI** | Run AI generation and edits, which spend credits (see below) |
-| **Sync & test in game** | Push the pack to Minecraft and run give commands |
+| **Generate with AI** | Run AI generation and edits, which spend AI Credits (see below) |
+| **Sync & test in game** | Send the pack to their own game with **Sync**, and use the in-game buttons |
 | **Export** | Download the pack as a `.zip` or export single models |
-| **Publish to servers** | Publish a release to the servers bound to this pack with [Distribution](/distribution) |
+| **Publish to servers** | Update the pack your live server hands its players ([Distribution](/distribution)), pause it or rename a server |
 
 **Publish to servers** is never part of Editor. Give it by name with Custom
 when you want someone to be able to update a live server.
@@ -77,7 +80,8 @@ whose credits it spends, and managing collaborators.
 
 ## Whose credits get spent
 
-Set in **Edit pack**, under **AI Credits for this pack**:
+Generating costs AI Credits. By default a collaborator spends yours. Change
+it in **Edit pack**, under **AI Credits for this pack**:
 
 | Option | What happens |
 | --- | --- |
@@ -89,17 +93,17 @@ this setting doesn't apply to team members, who always spend the team's pool.
 
 ## Testing as a collaborator
 
-Sync works the same for a collaborator and sends the pack to **whoever pressed
-it**. Link your own Minecraft account with `/permlink` and Sync lands on you,
-not on the pack's owner. To test on your own server instead, each collaborator
-pairs with their own code (see [The plugin](/testing/plugin)).
+**Sync** sends the pack into Minecraft for **whoever pressed it**. So a
+collaborator links their own Minecraft account (see
+[Linking your account](/testing/test-server#linking-your-account)) and Sync
+lands on them, not on the pack's owner. To test on their own server instead,
+each collaborator pairs with their own code (see [The plugin](/testing/plugin)).
 
 ## Hearing about what they do
 
 **Notifications** on the Collaborators page chooses what you're told about and
-where, using the same three channels as
-[generation notifications](/generating#notifications): email, Discord DM and
-in-game chat. Set it for the whole pack, or override it per person from the
+where, by email, Discord message or in-game chat (the same channels as
+[generation notifications](/generating#getting-told-when-its-done)). Set it for the whole pack, or override it per person from the
 gear beside their name.
 
 | Event | On by default |

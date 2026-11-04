@@ -1,17 +1,17 @@
 export const metadata = {
   title: "HUD",
   description:
-    "Reskinning the hearts, hunger, armour, air, hotbar, crosshair, experience bar and boss bar as one asset from one prompt, plus the full-screen overlays.",
+    "Reskinning the hearts, hunger, armor, air, hotbar, crosshair, experience bar and boss bar as one asset from one prompt, plus the full-screen overlays.",
 };
 
 # HUD
 
 The HUD is everything Minecraft draws over the world when no screen is open:
-hearts, the hunger row, armour, air bubbles, the hotbar, the experience bar,
+hearts, the hunger row, armor, air bubbles, the hotbar, the experience bar,
 the boss bar and the crosshair. A HUD asset gives all of it one theme from one
 description, and you can finish it by hand afterwards.
 
-![A HUD made in Studio: hotbar, hearts, hunger, armour, experience bar and crosshair](/images/hud.webp)
+![A HUD made in Studio: hotbar, hearts, hunger, armor, experience bar and crosshair](/images/hud.webp)
 
 <Callout type="note" title="Reskin, not add">
   A HUD asset changes what vanilla's pieces look like. It can't add new ones,
@@ -38,37 +38,53 @@ hotbar and boss bar.
 | --- | --- |
 | **Hearts** | Every heart: full, half and empty, in the poisoned, withered, frozen, absorbing and hardcore moods, with and without the damage flash |
 | **Hunger** | The food row, including the version drawn while you have Hunger |
-| **Armor** | The armour row |
+| **Armor** | The armor row |
 | **Air** | The breath bubbles |
 | **Hotbar** | The tray, its selection box, the offhand slot and the attack indicator |
 | **Experience bar** | The groove and the fill |
 | **Boss bar** | All seven colours, groove and fill, plus the notched dividers |
 | **Crosshair** | Picked from a list, not generated (free) |
 
-Icons keep vanilla's shapes: your theme, palette and material, on the
-silhouette players already recognise. So spend your words on the look ("rusted
-iron"), not the object ("a drumstick made of iron").
+The AI picks a style for the hotbar, the selection box and the bars, a
+palette, and draws the four icons (heart, food, armor, air). Every state of an
+icon (half, empty, poisoned, frozen, hardcore and so on) is worked out from that
+one drawing. Name a thing and it draws that thing: "banana hunger" puts a banana
+where the drumstick goes. Attach a reference image to steer the look.
 
-A few details:
-
-- **The hotbar stays see-through**, like vanilla's, with a solid outline.
-- **The hardcore heart** is your heart with a harder outline, not vanilla's
-  spiked drawing.
-- **The boss bar** comes in seven colours that a plugin picks between, so one
-  HUD gives a server several themed bars that don't look alike.
+Once it's made, **Edit with AI** on the HUD's page changes it from a sentence
+("make the hearts blue", "a thinner hotbar") and keeps everything you didn't
+ask about.
 
 ### Crosshair styles
 
 A pack can't use vanilla's colour-inverting crosshair, so a replacement is
-drawn as a light shape with a dark outline to stay visible everywhere. Pick
-one: **Cross**, **Dot**, **Brackets**, **Circle** or **Chevron**. It's drawn in
-your HUD's palette.
+drawn as a light shape with a dark outline to stay visible everywhere: **Cross**,
+**Plus**, **Dot**, **Brackets**, **Circle**, **Diamond** or **Chevron**, in your
+HUD's palette.
 
 ### Starting from vanilla
 
 The **Blank** door makes a HUD from vanilla's own art for free, no prompt
-needed. It opens straight in the HUD editor, which is the quick way to "vanilla,
-but golden hearts".
+needed, and opens it in the HUD editor: the quick way to "vanilla, but golden
+hearts".
+
+## Seeing it in game
+
+On a server running [RP Engine](/testing/plugin), our free plugin, press
+**Sync** to send the pack to yourself in game, and look at your screen.
+Without a plugin, [export](/exporting) the pack and apply it like any resource
+pack. Take a hit to see the
+damage flash, or go underwater for the air row. No command is needed.
+
+## The HUD editor
+
+Click the HUD to open its editor, with three modes along the top:
+
+| Mode | What it does |
+| --- | --- |
+| **Design** (the default) | Tiles for each style: **Hotbar** (Classic, Slots, Rounded, Glass, Minimal, Ornate), **Selection** (Frame, Bold, Corners, Glow, Fill, Underline), **Bars** (Classic, Rounded, Slim, Segmented, Framed) and **Crosshair**, with colour wells and the tray's opacity. Each icon has a click-to-paint grid, and every state of it follows. |
+| **Paint** | Every sprite on one sheet at its real size, a guide box round each, for pixel work in the [pixel editor](/blocks#the-pixel-editor). The **Parts** rail jumps to a group. Paint in the gaps between sprites does nothing in game. |
+| **Preview** | Your HUD over a day, cave or Nether backdrop, updated as you work. |
 
 ## Screen overlays
 
@@ -78,22 +94,7 @@ second HUD set. Studio's Add asset sheet doesn't offer it yet; it can be made
 through the [public API](/api-reference) by asking for the `overlays` set. A
 pack can have one HUD and one set of overlays.
 
-## The HUD editor
-
-Every sprite is laid out on one sheet at its real size, with a guide box round
-each. The **Parts** rail jumps to a group, and the sprite under your cursor is
-named on screen. The gaps between sprites aren't part of any file, so paint
-that strays into them does nothing in game.
-
-The **Preview** tab arranges your sheet into a live HUD over a day, cave or
-Nether backdrop, and updates as you paint.
-
-## Seeing it in game
-
-[Sync](/testing/plugin) the pack and look at your screen. Take a hit to see the
-damage flash, or go underwater for the air row. No command is needed.
-
-## Exporting
+## What's in the exported pack
 
 A HUD leaves as the vanilla files it replaces, under
 `assets/minecraft/textures/gui/sprites/hud/` and

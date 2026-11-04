@@ -6,9 +6,10 @@ export const metadata = {
 
 # Making items do things
 
-`actions:` makes an item do something when it is used: play a sound, send a
-message, give an effect, run a command. You pick a trigger (such as a
-right-click) and list the steps to run, in order.
+`actions:` makes an [item](/rp-engine/items) do something when it is used:
+play a sound, send a message, give an effect, run a command. You pick a trigger
+(such as a right-click) and list the steps to run, in order. Placed models and
+custom blocks take the same `actions:`.
 
 ```yaml
 wand:
@@ -50,7 +51,9 @@ Each step is one key with its own `-`.
 `break` runs after the item is already gone, so it cannot be cancelled. It is
 still useful for a sound or a message.
 
-There is no trigger for putting armour on or taking it off.
+There is no trigger for putting armour on or taking it off, and none for a
+player joining the server. For something on join, have a join-command plugin
+run the `/rp` command you want.
 
 ## The thing in the world
 

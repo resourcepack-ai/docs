@@ -6,12 +6,10 @@ export const metadata = {
 
 # The plugin
 
-Vanilla Minecraft can't do most of what a pack made here is for. It has no
-concept of an animated block model, no way to play an emote on a player, and
-no way for a server to hand one person a pack without handing it to everybody.
-
-**RP Engine** is the server plugin that makes those work. It's what
-[our test server](/testing/test-server) runs (the models moving around on
+**RP Engine** is our free server plugin. A resource pack on its own can only
+change how things look. RP Engine is what makes the rest of a Studio pack
+work on a server: models you can place that animate, Emotes, custom screens,
+and sending a pack to one player while you test it. [Our test server](/testing/test-server) runs it (the moving models on
 <ServerAddress /> are this plugin), and you can put the same jar on your own
 server.
 
@@ -27,12 +25,12 @@ server.
 | --- | --- | --- |
 | **Models** | The model renders, standing still | Place it, sit on it, pick it up, and it animates |
 | **Animations** | Nothing: vanilla ignores the keyframes | Plays on loop, on click, or from your own plugin |
-| **Emotes** | Nothing | `/emote` plays one on a player in their own skin, or puts on a movement set they keep while they play |
+| **Emotes** | Nothing | `/emote` plays one on a player in their own skin, or puts on a movement set they wear while they play |
 | **Custom GUIs** | The art ships, but nothing opens a screen with it | `/rp screen` opens the screen with your art drawn over it |
 | **HUD overlays** | Same | `/rp hud` draws a meter or a frame over the world |
 | **Pack sounds** | `/playsound` works, if you're an operator | `/rp sound` works for anybody, so the person testing can hear their own sound |
-| **Live testing** | Re-export, re-upload, rejoin | Studio pushes a pack to one player in seconds |
-| **Distribution** | One pack for everybody, one version | Every player gets the build for the version they're on |
+| **Live testing** | Re-export, re-upload, rejoin | **Sync** sends a pack to one player in seconds |
+| **Distribution** | Host the file and edit `server.properties` by hand | Press **Publish** in Studio and every player gets the new pack |
 
 It also works without Studio at all: items, recipes, entities, liquids and
 more, written as YAML in a folder on your server. That half is documented in
@@ -41,8 +39,8 @@ more, written as YAML in a folder on your server. That half is documented in
 ## Installing it
 
 <Callout type="note" title="Requirements">
-  A Paper or Spigot server on **1.19.4 or newer**, running **Java 17+**, and
-  permission to install plugins on it. 1.19.4 is the version that added display
+  A Paper, Spigot or Folia server on **1.19.4 or newer**, running **Java 17+**,
+  and permission to install plugins on it. 1.19.4 is the version that added display
   entities, which placed models are made of.
 
   Below 1.21.4 a few things are reduced rather than missing, and the plugin
@@ -69,24 +67,28 @@ more, written as YAML in a folder on your server. That half is documented in
 
 ## Using it
 
-It does two separate things for a pack made here, and a server can use either
-without the other.
+It does two separate things for a pack made in Studio, and a server can use
+either without the other:
 
-### Pushing a pack to one player
+- **Sync**, for while you build: Studio sends the pack to you (and anyone you
+  add), in seconds, with nobody else affected.
+- **Distribution**, for when it's finished: every player who joins gets the
+  pack.
 
-For building. Press **Sync** on a pack in Studio and choose **Testing on your
-own server instead?** to get an eight-digit code. Run it in game:
+### Testing a pack on your own server (Sync)
+
+Press **Sync** on a pack in Studio and choose **Testing on your own server
+instead?** to get an eight-digit code. Run it in game:
 
 ```
 /rp sync 12345678
 ```
 
-From then on, **Sync** pushes the pack straight to you in seconds, without
-touching `server.properties`.
+This pairs you with the pack. From then on, every press of **Sync** sends
+the pack straight to you, without touching `server.properties`.
 
-A push lasts until you leave. Rejoin, or restart the server, and you're back to
-the server's own pack until you press **Sync** again. To give a pack to every
-player, for good, publish it instead (below).
+What Sync sends lasts until you leave. Rejoin, or restart the server, and
+you're back to the server's own pack until you press **Sync** again.
 
 | Command | What it does |
 | --- | --- |
@@ -97,21 +99,20 @@ player, for good, publish it instead (below).
 | `/rp sync leave` | Leave someone else's sync |
 | `/rp sync stop` | End your sync |
 
-`rpengine.sync` defaults to operators only; grant it to your builders. Syncing
-is per player on purpose: it's for seeing a pack while it's made, not for
-serving one to the public.
+The `rpengine.sync` permission is for operators by default; grant it to your
+builders.
 
-Console commands in a pushed pack (a dialog button set to run as the console, a
+Console commands in a synced pack (a dialog button set to run as the console, a
 mob skill using `command`) are only kept when the player who started the sync
 has `rpengine.sync.console`, which defaults to operators. Anyone else's push
 arrives without them, so granting `rpengine.sync` widely never hands out
 console access.
 
-### Serving your published pack to everyone
+### Giving the finished pack to every player (Distribution)
 
-For launch. `/rp distribute <code>` binds the server to a pack from
-**Distribution** in Studio, and from then on every joining player gets the
-build for their Minecraft version. See [Distribution](/distribution).
+`/rp distribute <code>` connects the server to a pack from **Distribution**
+in Studio. From then on, every player who joins gets the pack, and each time
+you publish a new version they get that. See [Distribution](/distribution).
 
 ## Commands and permissions
 

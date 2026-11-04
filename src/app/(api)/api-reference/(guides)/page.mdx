@@ -5,13 +5,24 @@ export const metadata = {
 
 # API overview
 
-The ResourcePack AI API lets your own code do what Studio does to a pack:
-create a pack, generate block textures, models, items, armour, GUIs, the HUD,
-dialogs, icons, sounds, shaders, VFX and emotes into it, change what's there
-with AI, upload files you already have or import a whole resource pack, set
-up vehicles and movement groups, rename and delete assets, set the pack's style
-guide, push it straight into Minecraft, publish it to servers, and download the
-finished `.zip`. It also generates player skins and puts them on your player.
+The ResourcePack AI API is an HTTP API for doing from your own code what you
+do in Studio: create a pack, generate assets into it, and get the finished pack
+out. Use it for scripts, bots and tools of your own. To let an AI agent such as
+Claude do the work instead, use the [MCP server](/api-reference/mcp).
+
+What it covers:
+
+- **Packs**: create, rename, duplicate, delete, set the icon and style guide,
+  invite collaborators, organise assets into folders.
+- **Generating**: Blocks, 3D Models, Items, GUIs, HUDs, Dialogs, Icons, Rank
+  Tags, armour, Sounds, Shaders, VFX, Emotes, player Skins and Custom GUI
+  pages. Then change any of them with a sentence (Edit with AI), regenerate
+  them, or restore an earlier version.
+- **Your own files**: upload textures, models, sounds and more, or import a
+  whole resource pack `.zip`.
+- **Getting it out**: export the Java `.zip`, a Bedrock `.mcpack` or plugin
+  content, push the pack straight into a player's game, publish it to the
+  servers bound to it, or put an asset on the public gallery.
 
 <Callout type="note" title="On every plan">
   API keys are available on every plan, the free one included. Calls spend the
@@ -24,6 +35,8 @@ finished `.zip`. It also generates player skins and puts them on your player.
 
 That host serves only the API. Every path in this reference is relative to it.
 The full spec is at [/openapi.json](/openapi.json).
+
+Every call needs a key, so start there.
 
 ## Get a key
 
@@ -72,16 +85,18 @@ history, so they're refused.
 
 ## Rate limits
 
-Each key gets **120 reads** and **30 writes** per rolling minute. A write is
-any `POST` (creating a pack, generating, uploading, importing) plus export.
+Each key gets **120 reads** and **30 writes** per rolling minute. A read is a
+`GET`; a write is any other request (creating a pack, generating, uploading,
+deleting), plus export.
 Over budget answers `429` with a `Retry-After` header. Credits still apply: a
 generation you can't afford is refused with `402`. See
 [Rate limits](/api-reference/rate-limits).
 
 ## What's not here
 
-The API doesn't edit pixels or geometry by hand, change a pack's own settings
-or its collaborators. Those are in Studio. If you need one of them from code, tell us in
+The API doesn't do hand edits: painting pixels, moving a 3D Model's cubes, or
+laying out a Dialog piece by piece. Those happen in Studio's editors. It also
+doesn't make Mobs yet. If you need one of these from code, tell us in
 [Discord](https://resourcepack.ai/discord).
 
 <CardGroup cols={2}>

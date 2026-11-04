@@ -6,11 +6,11 @@ export const metadata = {
 
 # Drops and spawners
 
-What a [custom mob](/rp-engine/entities) drops when it dies, and how to keep a
-number of them alive in one place. Both read MythicMobs' shapes as well as
-their own, so a MythicMobs `Drops:` list, a `DropTables/` file or a
-`Spawners/` file copies across. Drop lines, drop tables and spawners need RP
-Engine 0.2.53 or newer.
+This page covers what a [custom mob](/rp-engine/entities) drops when it dies,
+and spawners, which keep a number of mobs alive in one place. Both also read
+MythicMobs' format, so a MythicMobs `Drops:` list, a `DropTables/` file or a
+`Spawners/` file can be copied across as it is. Needs RP Engine 0.2.53 or
+newer.
 
 ## Drops
 
@@ -141,21 +141,21 @@ pit:
 | `location` | required | Where: `world,x,y,z`, or a map |
 | `max-mobs` | 1 | How many may be alive at once, 1 to 64 |
 | `mobs-per-spawn` | 1 | How many each time |
-| `cooldown` | 10 | Seconds between spawns |
+| `cooldown` | 10 | Seconds between spawns (up to 86,400) |
 | `warmup` | 0 | Seconds a player must be near before the first |
-| `radius` | 0 | How far round the point they are spread |
-| `activation-range` | 32 | It spawns only while a player is this near. 0 is anywhere in the world |
-| `leash-range` | 16 | One that strays further is pulled back. 0 never pulls |
-| `heal-on-leash` | `true` | And healed when it is |
+| `radius` | 0 | How far round the point they are spread, up to 64 blocks |
+| `activation-range` | 32 | It spawns only while a player is this near (up to 256). 0 is anywhere in the world |
+| `leash-range` | 0 | One that strays further than this is pulled back. 0 never pulls |
+| `heal-on-leash` | `false` | Heal it when it is pulled back |
 | `level` | 0 | The [level](/rp-engine/entities#levels) they spawn at. 0 rolls the mob's own `level:` |
 
 MythicMobs' spellings (`MobName`, `MaxMobs`, `ActivationRange`, `LeashRange`,
 `HealOnLeash` and the rest) read the same.
 
-A spawner only spawns while its chunk is loaded and a player is in range. It
-counts its mobs again after a restart by the mark they carry, so it never
-doubles up, and its mobs never despawn. A content pack's spawners have ids like
-everything else (`arena:pit`) and change with `/rp reload`.
+A spawner only spawns while its chunk is loaded and a player is in range. Its
+mobs never despawn, and after a restart it recognises the ones it already made,
+so it never doubles up. A content folder's spawners have ids like everything
+else (`arena:pit`) and change with `/rp reload`.
 
 ### Making one in game
 
@@ -170,6 +170,6 @@ Spawners made with a command are kept in `plugins/RPEngine/spawners.yml`:
 | `/rp spawner info <name>` | One spawner's settings |
 
 Each verb has its own permission (`rpengine.spawner.create` and so on), all
-granted by `rpengine.spawner`. A content pack's spawner is listed and described
-by these commands, but changed only in its file. See
+granted by `rpengine.spawner`. A content folder's spawner shows in `list` and
+`info`, but is changed only in its file. See
 [Permissions](/rp-engine/permissions).

@@ -6,52 +6,68 @@ export const metadata = {
 
 # Dialogs
 
-A dialog is a screen a server opens on a player, added to Minecraft in 1.21.6.
-Its buttons run commands, it can scroll, and it looks like part of the game.
-Studio lets you design one the way you would design an app screen: sidebars,
-cards, switches, sliders, item slots, pictures and pages, all in Minecraft's own
-style.
+A dialog is a menu screen a server opens on a player: a shop, a settings menu,
+a warp list, a server guide, a punishment panel. Its buttons run commands, it
+can scroll, and it looks like part of Minecraft. Studio lets you design one
+the way you would design an app screen, with sidebars, cards, switches, item
+slots, pictures and pages.
 
 ![A settings dialog made in Studio, open in game](/images/dialogs.webp)
 
-Use a dialog for a settings menu, a shop, a server guide, a warp list, a
-profile card, a punishment panel, or anything else that is a screen with
-choices on it. Unlike a chest [GUI](/guis), nothing can be dragged in or out
-of it, though it can still show items with their tooltips, and even let a
-player rearrange their own inventory.
+Dialog screens were added to Minecraft in 1.21.6. Unlike a chest [GUI](/guis),
+nothing can be dragged in or out of a dialog, though it can show items with
+their tooltips and even let a player rearrange their own inventory.
 
 ## What you need
 
 | | |
 | --- | --- |
 | Minecraft | **1.21.6 or newer** on the server and the client. Older versions have no dialog screen; use a [GUI](/guis) there. |
-| A plugin | [RP Engine](/rp-engine) or [Dialog Engine](/dialog-engine) to open it, and to fill in everything that changes per player. A plain datapack also works, with less (see [Without RP Engine](#without-rp-engine)). |
+| A plugin | [RP Engine](/rp-engine) or [Dialog Engine](/dialog-engine), our free server plugins. They open the dialog and fill in what is different for each player (their name, balance, inventory). A plain datapack also works, with less: see [Without RP Engine](#without-rp-engine). |
 | The resource pack | Everything drawn on the screen is pictures in your pack, so players need the pack too. |
 
-Keep the plugin up to date. Each advanced feature on this page needs a recent
-version, listed in [Plugin versions](#plugin-versions).
+Several features need a recent plugin version: see [Plugin versions](#plugin-versions).
 
-## Making one
+## Making your first dialog
 
-Dialogs have their own **Dialogs** tab on the pack page. Make one under **Add
-asset**:
+<Steps>
+  <Step title="Add a dialog to your pack">
+    Open a pack, press **Add asset** and pick **Dialog**. Then choose:
 
-- **Generate**: describe the screen and the AI designs it. See [Generating
-  one](#generating-one).
-- **Blank**: start from nothing (a title, a line of words and a **Close**
-  button) or from a **template**: an event shop, a quest board, a server hub, a
-  rank store, daily rewards, a crate, a profile, warps, rules or a welcome
-  screen. Each comes with a banner, a kit and its pieces, all yours to change.
+    - **Generate**: describe the screen and the AI designs it. See
+      [Generating one](#generating-one).
+    - **Blank**: start from nothing (a title, a line of words and a **Close**
+      button) or from a **template**: an event shop, a quest board, a server
+      hub, a rank store, daily rewards, a crate, a profile, warps, rules or a
+      welcome screen.
 
-Then pair the pack with your server and push it, the same way you [test
-anything else](/testing/plugin), and open it in game:
+    Your dialogs are listed on the pack's **Dialogs** tab.
+  </Step>
+  <Step title="Change it in the editor">
+    Click the dialog to open the editor. Double-click words to retype them,
+    drag pieces to move them, and give each button something to do under
+    **When clicked** (the AI leaves that to you). See [Finding your way round
+    the editor](#finding-your-way-round-the-editor).
+  </Step>
+  <Step title="Send it to your server">
+    On a server running RP Engine, press **Sync** in Studio. Sync sends your
+    pack (pictures and dialogs together) to you in game, in seconds, without
+    a restart. The first time, it asks you to link the pack to your server:
+    see [The plugin](/testing/plugin). Our [test server](/testing/test-server)
+    already runs RP Engine if you don't have a server yet.
+  </Step>
+  <Step title="Open it">
+    In game, run:
 
-```
-/rp dialogs                     # list the dialogs on the server
-/rp dialog studio:quest-board   # open one
-```
+    ```
+    /rp dialogs                     # list the dialogs on the server
+    /rp dialog studio:quest-board   # open one
+    ```
 
-The dialog's settings panel in the editor shows its exact id.
+    The dialog's id is shown in its settings panel in the editor. To let
+    players open it themselves, see [Letting players open it](#letting-players-open-it).
+  </Step>
+</Steps>
 
 ### Generating one
 
@@ -82,10 +98,99 @@ screens that are too tall, and makes one thing the focal point, before saving.
   turn [pages](#pages), which are wired for you.
 </Callout>
 
-## The editor
+## Putting it on your server
 
-The screen sits in the middle, with the **Components** panel on the left and
-the selected piece's settings on the right. It behaves like the game: the mouse
+There are two ways, and you can use both.
+
+**Sync, with RP Engine.** Press **Sync** and the dialog opens straight away
+with `/rp dialog <id>`, no restart needed. RP Engine also writes your dialogs
+into a datapack, so after the next restart each one also has a real
+`namespace:id` you can open from a command block or your own datapack.
+
+**As files.** The editor's **Export** menu downloads the dialog for a server
+you don't Sync to, and for [Dialog Engine](/dialog-engine), which doesn't
+take a Sync (the two plugins don't share dialogs):
+
+| Export | Where it goes |
+| --- | --- |
+| **Dialog Engine (.zip)** | Unzip into `plugins/`, run `/de reload`, open with `/de open <pack>:<dialog>`. `/de edit` brings it back into Studio's editor. |
+| **RP Engine (.zip)** | A content folder. Unzip into `plugins/` and run `/rp reload`. |
+| **Datapack (.zip)** | Every dialog in the pack as `minecraft:dialog` files. See [Without RP Engine](#without-rp-engine). |
+| **Resource pack (.zip)** | Only the pictures and fonts this dialog uses. |
+| **Picture (.png)** | The screen at three times its size. |
+
+Both plugin downloads carry everything the plugin fills in: live values,
+inventories, bars, lists, pages and conditions.
+
+### Letting players open it
+
+`/rp dialog` is for staff. To let players open a dialog themselves, click the
+empty space around the screen in the editor and give it a command under
+**Players open it with**, such as `shop`. Everybody can use it,
+or only players with a permission you name. `/shop Steve` opens it about
+Steve, as `{target}`. If another plugin already owns the command, that plugin
+keeps it.
+
+### Opening it about another player
+
+A punish menu is about the player being punished. Write `{target}` (or any
+name) in the title, words, tooltips or commands, and give its value when you
+open it:
+
+```
+/rp dialog studio:punish target=Steve         # open it for yourself
+/rp dialog studio:punish target=Steve Admin   # open it for Admin, about Steve
+```
+
+The player to open it for goes last, and opening it for someone else needs
+`rpengine.dialog.others`. Plugins pass values through [RP Engine's
+API](/rp-engine/api#dialogs).
+
+### The Quick Actions key
+
+Minecraft 1.21.6 added a Quick Actions key, **G** unless a player rebinds it.
+Tick **Open it with the Quick Actions key** in the dialog's panel and G opens
+it. Put several dialogs on the key and G shows a list of them to pick from.
+
+Pressing G opens a copy of the dialog the player was sent when they joined; the
+server is never told. So there are two ways to put a dialog on it:
+
+- **Opens the dialog** (the default). G opens it straight away, drawn for each
+  player as they join: their name, head and other values show what was true
+  then, until they next join. Buttons work as usual. This needs Paper. On
+  Spigot, and for a dialog behind a permission, G opens the launcher instead.
+- **Opens a launcher**. G opens a small screen with an **Open** button, which
+  has the server open the dialog fresh. Use this when a dialog shows something
+  that changes, like a balance or a rank.
+
+A dialog with the player's own items in it always uses the launcher. Either way,
+the key only picks up a change when the server **restarts**.
+
+### Without RP Engine
+
+A dialog is a vanilla `minecraft:dialog`, so a datapack alone can run one. Put
+the **Datapack** export in your world's `datapacks/` folder, restart, and open
+it with `/dialog show @s studio:<id>`. Players still need the resource pack,
+either the whole pack or the dialog's own **Resource pack** export. To add that
+to a pack of your own, load it as a separate pack, or copy its files in and
+merge any `assets/minecraft/font/default.json` into yours rather than
+overwriting it. Its `README.txt` lists which character is which picture.
+
+The **Datapack** export puts a dialog that is on the Quick Actions key on the
+key as well, and G opens it as written.
+
+Without a plugin, everything per player is missing: live values show as
+written, bound controls stay on their default, inventories, live heads, bars and
+lists are empty, conditions are ignored, and `/rp` commands do nothing. Page
+turns and **Close the dialog** still work. The **minecraft:dialog** tab lists
+which of these a dialog uses.
+
+## Finding your way round the editor
+
+Everything on a dialog is a **piece** (Studio also calls them components): a
+button, some words, a card, a row that holds other pieces. The screen sits in
+the middle, the list of pieces (**Components**) on the left, and the selected
+piece's settings on the right. The screen behaves like the game: the mouse
 wheel scrolls, hovering shows tooltips, and **Clickable areas** (`A`) shades
 where a click will land.
 
@@ -95,13 +200,13 @@ Scale*) and the editor works out the screen the way Minecraft does, so you see
 whether the dialog fits or scrolls. **Game size**, at the bottom of the tools,
 shows it at real pixel size.
 
-**Adding.** **+** (or `N`) opens **Add component**, with five shelves and a
+**Adding.** **+** (or `N`) opens **Add component**: shelves of pieces, and a
 search box across all of them:
 
 | Shelf | What is on it |
 | --- | --- |
 | **Blocks** | Ready-made groups: settings card, setting row, sidebar (plain, of cards or of buttons), tab bar, button stack, card list, profile card, stat cards, product grid, yes or no, header bar, and a [List](#lists-the-server-fills). |
-| **Decor** | Banner, hero item, rarity card, ribbon, ornament and glow dividers, window, fade card, big lettering, sparkles and confetti. See [The look](#the-look). |
+| **Decor** | Banner, hero item, rarity card, ribbon, ornament and glow dividers, window, fade card, big lettering, sparkles and confetti. See [Changing how it looks](#changing-how-it-looks). |
 | **Items** | Item slot, grid of slots, your inventory. See [Items and inventories](#items-and-inventories). |
 | **Controls** | Switch, segmented, slider, dropdown, checkbox, stepper, search box, text box, sidebar button, icon button, theme button, list option, badge. |
 | **Basics** | Text, heading, big title, button, link, icon, player head, pack glyph, chip, check line, label and value, progress bar, page of text, QR code, divider, space, an image of your own, and a drawing. |
@@ -141,7 +246,7 @@ click](#after-a-click)).
 
 **JSON** shows the layout, and its **minecraft:dialog** tab shows the file the
 game reads. **Export** downloads the dialog for a plugin, a datapack or as a
-picture (see [Getting it onto a server](#getting-it-onto-a-server)), and, for a
+picture (see [Putting it on your server](#putting-it-on-your-server)), and, for a
 dialog with [motion](#motion), as an **Animated GIF** for a store page or a post.
 
 **Edit with AI**, on the page strip, changes what is on a page. Its **Restyle**
@@ -155,20 +260,21 @@ dialog plugins that build screens from pictures: the art without words, a lit
 version for buttons, a `.slice` file giving the columns that must not stretch,
 and previews with the words drawn on.
 
-## The pieces
+## What you can put on it
 
-A dialog is up to 388 pixels wide and about 1,000 tall, built from rows,
-columns and grids. When it is taller than the screen, the game scrolls it.
+A dialog is up to 388 pixels wide and about 1,000 tall. Pieces sit in rows,
+columns and grids, and when the dialog is taller than the player's screen, the
+game scrolls it. These are the pieces you can add:
 
 | Piece | What it is |
 | --- | --- |
-| **Button** | The game's grey button. **Selected** makes it gold, **Greyed out** disables it, **Words from the left** starts its label at the left edge rather than the middle (for a sidebar of buttons), and it can take its own colour. Its panel can also make it the theme's button or the GUI's light one. Its icon can be [a picture of your own](#pictures-in-buttons-and-bars). |
+| **Button** | The game's grey button, the theme's button or the GUI's light panel one, in its own colour if you like. Its icon can be [a picture of your own](#pictures-in-buttons-and-bars). See [Button looks](#button-looks). |
 | **Link** | Clickable words, for a contents list. |
 | **Text**, **Heading**, **Big title** | Words in the game's font, or [one of your own](#your-own-fonts). Colour codes work: `&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` grey, `&l` bold, `&r` reset, `&#55ff55` any colour. |
 | **Page of text** | `# Title`, `## Heading`, `### Heading` (gold), `- bullets`, `> notes`, `**gold words**`, `---` for a rule. |
 | **Icon** | Any vanilla item, a player head, your pack's own sprites and textures, one of more than a hundred drawn icons (the **Small** shelf of the picker has nine-pixel ones for labels), or one of your own pictures (the **Pictures** shelf). Bare or in a slot. |
 | **Image** | A PNG, JPG, GIF (first frame) or WebP up to 512 pixels a side. Add it from **Add component** or drop the file on the screen. It is kept with the pack for its other dialogs. To put a picture *behind* other pieces, give their box a [Picture](#a-boxs-own-look). |
-| **Drawing** | A picture you draw in the editor, with the same tools and colours as the texture editor. **Add component** › **Drawing** starts a blank one as wide as the dialog; set its size on the right, one pixel per pixel of the dialog, and press **Done** to place it. Every text, rectangle, ellipse, line and paste lands on a layer of its own, and the **Move** tool (V) picks any of them by clicking it and drags it; the arrows nudge it and Delete removes it. Text stays editable: its words, font (Minecraft, Classic, Small Caps, Tiny, Block or your pack's own), size, colour or fade or rainbow, bold, italic, underline, strikethrough, shadow and outline, alignment and spacing. **Turn into pixels** lets you paint on it. **Draw on it**, in any image's panel, opens a drawing again with its layers as you left them. |
+| **Drawing** | A picture you draw in the editor. See [Drawing a picture](#drawing-a-picture). |
 | **Chip**, **Badge**, **Check line**, **Label and value** | A balance or tag; a small solid tag such as NEW; a ✔ or ✘ line; a label left and a value right. |
 | **Progress bar** | A label, a count and a bar, in its own **Bar colour** and **Track colour** if you like. **Icon before the label** puts a small icon at the start of its line. It can [follow the player](#bars-that-follow-the-player). |
 | **Controls** | Switch, segmented (two to four choices), slider, dropdown, checkbox, stepper, search box and text box, drawn in the theme. They are pictures unless bound to a [player setting](#player-settings); players can [type in a text box](#typing-in-a-drawn-box). |
@@ -176,17 +282,35 @@ columns and grids. When it is taller than the screen, the game scrolls it.
 | **Item slots** | See [Items and inventories](#items-and-inventories). |
 | **QR code**, **Divider**, **Space** | A QR code opens its link when clicked. |
 
-Any box can sit on a surface, chosen under **Behind it**: the theme's **Card**
-(with or without a **Heading band**), a sunk **Tray**, a highlight **Band**
-behind one row, the GUI's light **Panel** or **Dark panel**, an item **Slot**,
-or the see-through **Shade**, **Deep shade** and **Gold**. Tick **Clicking** on a
-row or column to make the whole box one button.
+### Button looks
 
-**Themes.** Cards, controls and highlights are drawn in the dialog's colours.
-Pick one of fourteen under **Colours** (Stone, Slate, Deepslate, Nether, Ocean,
-Jungle, End, Royal, Oak, Parchment, Ice, Cherry, Redstone, Sand), or choose any
-**Card** and **Accent** colour and the rest is worked out from those. What
-they are drawn *with* is the [kit](#kits).
+Under **Look** in a button's panel:
+
+| Look | What it does |
+| --- | --- |
+| **Selected** | Draws it lit (gold on the game's button, the accent on the theme's): "you are here", or a card's main action. |
+| **Greyed out** | Draws it grey with faded words and icon, like a disabled button in the game. It only changes the picture: a click still runs its action, so set **When clicked** to **Nothing** if it shouldn't do anything. |
+| **Words from the left** | Starts its label at the left edge rather than centred, for a sidebar of buttons. |
+
+These are drawn into the dialog's picture, so a plugin can't switch them as the
+dialog opens. To show a button lit or greyed for some players only, draw it both
+ways and let [Show when](#show-when) choose, on a permission, a [player
+setting](#player-settings) or a [live value](#live-values) your plugin sets.
+
+### Drawing a picture
+
+**Add component** › **Drawing** starts a blank picture as wide as the dialog,
+drawn with the same tools and colours as the texture editor. Set its size on
+the right (one pixel per pixel of the dialog) and press **Done** to place it.
+
+- Every text, rectangle, ellipse, line and paste lands on a layer of its own.
+  The **Move** tool (`V`) picks one by clicking it; the arrows nudge it and
+  Delete removes it.
+- Text stays editable: its words, font (Minecraft, Classic, Small Caps, Tiny,
+  Block or your pack's own), size, colour, fade or rainbow, bold, italic,
+  underline, strikethrough, shadow, outline, alignment and spacing.
+- **Turn into pixels** lets you paint over text. **Draw on it**, in any image's
+  panel, opens a drawing again with its layers as you left them.
 
 ### Pictures in buttons and bars
 
@@ -211,21 +335,24 @@ A text piece can be set in a font of your own: under **Font** in its panel,
 choose **Upload a font (.ttf)**, or pick one the pack already has. Fonts are
 kept with the pack and shared with its GUIs.
 
-The words are drawn into the dialog's picture, so the font never ships and
-works on every server and engine. A pixel font is drawn exactly at its own size
-(which the editor detects) and at 2x or 3x; any other font is drawn at the size
-you choose, best at 10px or more, lined up with the pixels so its strokes stay
-even. A character the font doesn't have is drawn as its other case, or else in
-Minecraft's own font, so a font for another script (a Thai font with no English
-letters, say) works too, its marks drawn over the letter they belong to. Scripts
-written right to left, or whose letters join up (Arabic, Hindi), are not drawn
-correctly. Colour codes still work. **Bold** is only what you tick:
-a heading keeps the font's own weight.
+The words are drawn into the dialog's picture, so players never need the
+font and it works on every server.
 
-Words holding a [live value](#live-values) are drawn by the game, so they stay
-in its font. Fonts can be TrueType (`.ttf`) or a collection (`.ttc`), up to 2
-MB; an `.otf` whose letters are PostScript curves cannot be read, so use the
-font's `.ttf` version.
+- **Files**: TrueType (`.ttf`) or a collection (`.ttc`), up to 2 MB, and up to
+  16 per pack. An `.otf` with PostScript curves can't be read; use the font's
+  `.ttf` version.
+- **Sizes**: a pixel font is drawn exactly at its own size (the editor detects
+  it) or at 2x or 3x. Any other font is drawn at the size you choose, best at
+  10px or more.
+- **Missing letters** are drawn in the other case, or else in Minecraft's own
+  font. So a font with no English letters (Thai, Cyrillic, Greek) still works,
+  with accents and tone marks stacked correctly. Thai wraps between letters.
+- **Not supported**: scripts written right to left, or whose letters join up
+  (Arabic, Hindi).
+- Colour codes still work. **Bold** is only what you tick: a heading keeps the
+  font's own weight.
+- Words holding a [live value](#live-values) are drawn by the game, so they
+  stay in Minecraft's font.
 
 ### Tooltips
 
@@ -247,14 +374,19 @@ whole dialog, or takes them **From the theme**. A footer button's tooltip always
 keeps the game's box, and a slot of the player's own inventory shows the
 item's real tooltip.
 
-### What a click can do
+## Making buttons do things
 
-Set under **When clicked** on any clickable piece or footer button:
+Anything can be clickable: a button, an icon, a card, an item slot. Select it
+and choose what it does under **When clicked**. The buttons along the bottom of
+the screen, below your picture, are the **footer**; they are the game's own
+buttons and are set the same way.
+
+### What a click can do
 
 | Action | What happens |
 | --- | --- |
 | **Run command** | The player runs it, with their own permissions. One command per line: [several](#several-commands-on-one-button) run in order. |
-| **Run as console** | The server runs it as the console, so the player needs no permission for it. `{player}` is who clicked. One command per line, run in order. Needs RP Engine 0.2.41 or newer, or Dialog Engine 0.6.6 or newer. |
+| **Run as console** | The server runs it as the console, so the player needs no permission for it. `{player}` is who clicked. See below. |
 | **Suggest command** | A small box opens with the command typed in; they finish it and press **Run**. (Minecraft does not let a dialog fill the chat box.) |
 | **Open link** | The game asks before opening it. Must start with `http://` or `https://`. |
 | **Copy text** | Copies it to their clipboard. |
@@ -263,14 +395,11 @@ Set under **When clicked** on any clickable piece or footer button:
 | **Open another dialog** | Opens one of the pack's dialogs straight away. **Another id…** takes any dialog id the server already knows. On Dialog Engine 0.6.1 and newer that includes Dialog Engine's own dialogs, by their id (`shop:main`) or by the name of one in the same folder (`main`). |
 | **Nothing** | Only shows the tooltip. On a footer button, it closes the dialog. |
 
-**Run command** runs as the player, so they need permission for it, and they
-could just as well type it in chat. **Run as console** is for a command only
-the dialog should give them: `warp spawn {player}` from a menu, without
-everybody having `/warp`. The command never reaches the player's game (the
-button only names it), and the server runs it only for somebody whose dialog
-has that button on it, so typing it in chat does nothing. It cannot use what
-the player typed into a text box, which would let them write the console's
-command for it.
+**Run as console** is for a command only the dialog should give them: `warp
+spawn {player}` from a menu, without everybody having `/warp`. It is safe: the
+command never reaches the player's game, and the server runs it only for
+somebody whose dialog has that button, so typing it in chat does nothing. It
+can't use what the player typed into a text box.
 
 ### Several commands on one button
 
@@ -283,15 +412,14 @@ give {player} torch 16
 tellraw {player} "Here you go"
 ```
 
-Minecraft lets a click run only one command, so a button with more than one is
-run by the plugin: it needs RP Engine 0.2.51 or Dialog Engine 0.6.7, or newer.
-A button with one command is exactly what it was before.
+Minecraft lets a click run only one command, so the plugin runs a button with
+more than one.
 
 - **They stop at the first that fails.** A command the server does not know,
   or one that errors, ends the list there.
 - **Several "Run command" lines cannot use what the player typed** (`$(name)`):
   a typed value only ever reaches a single command, so only the first line runs.
-  One "Run command" line can still use it, as before.
+  A single "Run command" line can.
 - **In the vanilla datapack download** only the first command runs, because
   there is no plugin there to run the rest.
 
@@ -302,6 +430,32 @@ marks it until you fix it.
 The game finds a click by the 9-pixel line of text it lands on, so a clickable
 piece is clickable on every line it covers at least half of. **Clickable
 areas** shows the real shape.
+
+### After a click
+
+Under **Behaviour**, choose what the dialog does once something is clicked:
+
+| Choice | What happens |
+| --- | --- |
+| **Seamless** (default) | Stays on screen until the server answers. A dialog the click opens replaces it without a flash, and otherwise it closes. In a datapack it acts as **Close**. |
+| **Close** | Closes at once, so the next dialog arrives after a glimpse of the world. |
+| **Stay open** | Stays open. After a **Run as console** button, or a **Run command** button with several lines, it's drawn again so live values and **Show when** catch up with what the commands changed. |
+| **Wait** | Shows the game's "Waiting for Server" screen. A dialog with a link or copy button closes instead. |
+
+A seamless dialog stays open after a click the server never hears, such as a
+link or a `/server` command on a proxy. Escape closes it. Dialogs with pages
+always stay open.
+
+### Click sounds
+
+The game makes no sound for a click on the drawn screen, so the plugin plays
+one. **Click sound** in the dialog's settings is **The game's click** (with
+pitch and volume), **Another sound** (one of your pack's or the game's), or
+**Silent**. Any clickable piece can override it with **Its own**. Clicks that
+never reach the server (links, copy, pages that turn instantly) make no sound,
+and footer buttons always make the game's click. The server-wide default is
+`dialogs.click-sound` in RP Engine's [configuration](/rp-engine/config#dialogs)
+and `click-sound` in Dialog Engine's.
 
 ### Inputs
 
@@ -328,12 +482,10 @@ as**, like any input:
 block $(player)
 ```
 
-Minecraft only takes typing in its own text box, so Studio sets the game's box
-exactly on your drawn one and the pack hides the game's black look of it. What
-players type is written by the game, in light grey from the box's left edge,
-so the box draws no words of its own. A dark theme reads best.
-
-Where the game puts its box is the game's choice, and the editor follows it:
+Studio sets the game's own text box exactly on your drawn one and hides the
+game's look of it. The game writes what players type, in light grey from the
+box's left edge, so a dark theme reads best. Where the game puts its box is the
+game's choice, and the editor follows it:
 
 - **The box is always centred.** A text box as wide as its card lines up by
   itself. One off to the side is marked in amber with where the game will put
@@ -352,7 +504,12 @@ It lines up exactly on Minecraft 1.21.11 and newer. On 1.21.6 to 1.21.10 the
 game puts its box 4 pixels higher, so what is typed sits at the top of the
 drawn box.
 
-## The look
+## Changing how it looks
+
+The look is set at three levels: the **kit** is the style the whole dialog is
+drawn in, the **colours** tint it, and any box can be given a **look** of its
+own. Everything here is drawn into the picture, so it needs nothing on the
+server.
 
 ### Kits
 
@@ -373,6 +530,7 @@ settings:
 | **Arcade** | Black with neon outlines. |
 | **Meadow** | Leafy green and sunshine gold. |
 | **Castle** | Grey stone bricks and gold. |
+| **Toy** | Flat grey plastic, round corners and a chunky shadow, for friendly hubs and tutorials. |
 | **Night** | A starry sky. |
 
 A kit comes in its own colours, and you can change them under **Colours**
@@ -385,6 +543,20 @@ own. **Kit and colours for** in the dialog's settings says where a change goes:
 all. While every page shares one look, a change goes to every page; once a page
 has its own, it goes to that page only, and **Use this page's look on every
 page** puts them all back in one.
+
+### Surfaces and colours
+
+Any box can sit on a surface, chosen under **Behind it**: the theme's **Card**
+(with or without a **Heading band**), a sunk **Tray**, a highlight **Band**
+behind one row, the GUI's light **Panel** or **Dark panel**, an item **Slot**,
+or the see-through **Shade**, **Deep shade** and **Gold**. Tick **Clicking** on a
+row or column to make the whole box one button.
+
+Cards, controls and highlights are drawn in the dialog's colours.
+Pick one of fourteen under **Colours** (Stone, Slate, Deepslate, Nether, Ocean,
+Jungle, End, Royal, Oak, Parchment, Ice, Cherry, Redstone, Sand), or choose any
+**Card** and **Accent** colour and the rest is worked out from those. What
+they are drawn *with* is the [kit](#kits).
 
 ### A box's own look
 
@@ -417,9 +589,8 @@ its right. Its art prompt is already in its panel, ready to draw.
 - A **Decoration** scatters sparkles, stars, confetti or hearts over its box.
   Place it anywhere, over a banner or round a reward.
 
-These are drawn into the dialog's picture, so they need nothing on the server.
-Words that hold a [live value](#live-values) are drawn by the game, so they keep
-its font and take no lettering.
+Words that hold a [live value](#live-values) are drawn by the game, so they
+keep its font and take no lettering.
 
 ### Motion
 
@@ -447,99 +618,46 @@ dialog's kit instead**, under **Footer**, hides it and puts a button that
 closes the dialog just under the content, which you can move and restyle.
 Generated dialogs in a kit, and most templates, start that way.
 
-## Getting it onto a server
+## Pages
 
-**Paired with RP Engine**: push the pack and open the dialog with `/rp dialog
-<id>`. It opens straight away, no restart needed. RP Engine also writes the
-dialogs into a datapack, so after the next restart each is a real
-`namespace:id` you can open from a command block or your own datapack.
+A dialog can have up to 99 pages, for a settings screen with a sidebar, a
+store's categories or a guide's chapters.
 
-**As files**: the editor's **Export** menu downloads the dialog for a server
-that isn't paired:
+A dialog generated with **Multi page** already has them. To add pages
+yourself, the quickest way is to select a sidebar button: its panel offers **A
+page for every button**. **Create pages** gives each button its own page. The box beside
+the sidebar becomes the part that changes from page to page (outlined in
+green), and everything outside it stays the same on every page.
 
-| Export | Where it goes |
-| --- | --- |
-| **Dialog Engine (.zip)** | Unzip into `plugins/`, run `/de reload`, open with `/de open <pack>:<dialog>`. `/de edit` brings it back into Studio's editor. |
-| **RP Engine (.zip)** | A content folder. Unzip into `plugins/` and run `/rp reload`. |
-| **Datapack (.zip)** | Every dialog in the pack as `minecraft:dialog` files. See [Without RP Engine](#without-rp-engine). |
-| **Resource pack (.zip)** | Only the pictures and fonts this dialog uses. |
-| **Picture (.png)** | The screen at three times its size. |
+- The **Pages** strip above the screen has a tab per page. Double-click to
+  rename; the first tab is where the dialog opens. **+** adds a copy of the
+  current page.
+- Edits outside the green outlines change every page; edits inside one change
+  only this page. Tick **Changes from page to page** on more boxes, such as the
+  info under a sidebar as well as the content beside it, and each changes from
+  page to page on its own.
+- A button that goes to a page lights up on that page by itself.
+- **Show on pages**, in any piece's panel, leaves it off the pages you untick,
+  even outside the green outline: a balance in the sidebar that the home page
+  already shows elsewhere. Its space stays empty there, so nothing else moves
+  when the page turns.
+- **Edit with AI** redraws the page you are on, either only its own part (when
+  it has one) or the whole screen.
 
-Both plugin downloads carry everything the plugin fills in: live values,
-inventories, bars, lists, pages and conditions.
+In game each page is its own dialog: `studio:settings`, then
+`studio:settings.audio` and so on. A dialog with pages stays open when clicked,
+so pages turn without flashing the world, and keep the values the first page
+was opened with. After a server restart, pages with nothing per player on them
+turn instantly; `/rp dialogs` says which.
 
-### A command of its own
+## Showing each player their own screen
 
-`/rp dialog` is for staff. To let players open a dialog themselves, give it a
-command under **Players open it with**, such as `shop`. Everybody can use it,
-or only players with a permission you name. `/shop Steve` opens it about
-Steve, as `{target}`. If another plugin already owns the command, that plugin
-keeps it.
-
-### A dialog about somebody
-
-A punish menu is about the player being punished. Write `{target}` (or any
-name) in the title, words, tooltips or commands, and give its value when you
-open it:
-
-```
-/rp dialog studio:punish target=Steve         # open it for yourself
-/rp dialog studio:punish target=Steve Admin   # open it for Admin, about Steve
-```
-
-The player to open it for goes last, and opening it for someone else needs
-`rpengine.dialog.others`. Plugins pass values through [RP Engine's
-API](/rp-engine/api#dialogs).
-
-### The Quick Actions key
-
-Minecraft 1.21.6 added a Quick Actions key, **G** unless a player rebinds it.
-Tick **Open it with the Quick Actions key** in the dialog's panel and G opens
-it. Put several dialogs on the key and G shows a list of them to pick from.
-
-The key is the player's game, not the server: pressing it opens a copy of the
-dialog the player was sent when they joined, and the server is never told. That
-gives you two ways to put a dialog on it:
-
-- **Opens the dialog** (the default). G opens the dialog straight away. RP
-  Engine (or Dialog Engine) draws each player's copy for them as they join, so their name, head and
-  any other value shows what was true at that moment, and stays that way until
-  they join again. Buttons in it work as usual. This needs Paper. On Spigot, and
-  for a dialog behind a permission (which is not known yet while a player is
-  joining), G opens the launcher instead.
-- **Opens a launcher**. G opens a small screen with an **Open** button, and the
-  button has the server open the dialog, drawn fresh like any other. One extra
-  click, and everything in it is up to date. Use this when a dialog shows
-  something that changes, like a balance or a rank.
-
-A dialog with the player's own items in it always uses the launcher. Either way,
-the key only picks up a change when the server **restarts**: what G opens is
-part of the data the server reads as it starts, not of the resource pack, so
-nothing extra is downloaded.
-
-### Without RP Engine
-
-A dialog is a vanilla `minecraft:dialog`, so a datapack alone can run one. Put
-the **Datapack** export in your world's `datapacks/` folder, restart, and open
-it with `/dialog show @s studio:<id>`. Players still need the resource pack,
-either the whole pack or the dialog's own **Resource pack** export. To add that
-to a pack of your own, load it as a separate pack, or copy its files in and
-merge any `assets/minecraft/font/default.json` into yours rather than
-overwriting it. Its `README.txt` lists which character is which picture.
-
-The **Datapack** export puts a dialog that is on the Quick Actions key on the
-key as well, and G opens it as written.
-
-Without a plugin, everything per player is missing: live values show as
-written, bound controls stay on their default, inventories, live heads, bars and
-lists are empty, conditions are ignored, and `/rp` commands do nothing. Page
-turns and **Close the dialog** still work. The **minecraft:dialog** tab lists
-which of these a dialog uses.
-
-## Advanced features
-
-Everything below is filled in by the plugin as the dialog opens, so it needs RP
-Engine or Dialog Engine on the server.
+A dialog can be different for every player who opens it: their name and
+balance in the words, their own settings on the switches, their inventory in the
+slots, a VIP button only VIPs see. The plugin fills all of this in as the dialog
+opens, so everything in this section needs RP Engine or Dialog Engine on the
+server. In the editor you see a sample: default settings and every permission
+held.
 
 ### Live values
 
@@ -575,8 +693,7 @@ Any other name works too. The first of these that has a value wins:
 5. PlaceholderAPI, if installed: `{vault_eco_balance}` or `%vault_eco_balance%`.
    A placeholder with arguments works as you would write it anywhere else,
    `%server_time_HH:mm%` or `%stat_{player_name}%`, and is handed to
-   PlaceholderAPI exactly as written (RP Engine 0.2.48 or Dialog Engine 0.6.6
-   or later). It can't have a space in it.
+   PlaceholderAPI exactly as written. It can't have a space in it.
 
 A name nothing answers is shown as written. A placeholder can choose between
 words: `{show_sidebar?on:Shown|off:Hidden}`, where the last choice is used when
@@ -595,10 +712,12 @@ the time you saved.
 ### Player settings
 
 A switch, segmented control, slider, stepper, checkbox or dropdown is normally
-just a picture. Type a name under **Player setting** in its panel (lower case,
-like `show_sidebar`) and it shows each player's own setting instead. Clicking it
-changes their setting and redraws the dialog. Settings are kept per player
-across restarts, with no setup.
+just a picture. Give it a name under **Player setting** in its panel (lower
+case, like `show_sidebar`) and it becomes a real control: it shows each
+player's own setting, and clicking it changes their setting and redraws the
+dialog. Settings are kept per player across restarts, with no setup. Your own
+plugins and commands can then read them, so a settings screen actually
+changes something.
 
 A dropdown opens into a list of its options when clicked (upward, if it is near
 the bottom of the dialog), and picking one sets it and closes the list.
@@ -672,39 +791,6 @@ many but not what each is called. **How many** can be a number, or a live value
 such as `{home_slots}`. Then the list's own name is the row's number: a button
 `Home {home}` running `home {home}` reads *Home 1*, *Home 2* and so on.
 
-### Pages
-
-A dialog can have up to 99 pages, for a settings screen with a sidebar, a
-store's categories or a guide's chapters.
-
-The quickest way: select a sidebar button, and its panel offers **A page for
-every button**. **Create pages** gives each button its own page. The box beside
-the sidebar becomes the part that changes from page to page (outlined in
-green), and everything outside it stays the same on every page.
-
-- The **Pages** strip above the screen has a tab per page. Double-click to
-  rename; the first tab is where the dialog opens. **+** adds a copy of the
-  current page.
-- Edits outside the green outlines change every page; edits inside one change
-  only this page. Tick **Changes from page to page** on more boxes, such as the
-  info under a sidebar as well as the content beside it, and each changes from
-  page to page on its own.
-- A button that goes to a page lights up on that page by itself.
-- **Show on pages**, in any piece's panel, leaves it off the pages you untick,
-  even outside the green outline: a balance in the sidebar that the home page
-  already shows elsewhere. Its space stays empty there, so nothing else moves
-  when the page turns.
-- **Edit with AI**, at the right of the strip, redraws the page you are on from
-  a description, either only its own part (when it has one) or the whole
-  screen. Each edit costs
-  15 AI Credits, and `Ctrl+Z` takes it back.
-
-In game each page is its own dialog: `studio:settings`, then
-`studio:settings.audio` and so on. A dialog with pages stays open when clicked,
-so pages turn without flashing the world, and keep the values the first page
-was opened with. After a server restart, pages with nothing per player on them
-turn instantly; `/rp dialogs` says which.
-
 ### Items and inventories
 
 The **Items** shelf has an **Item slot**, a **Grid of slots** (up to 13 by 8)
@@ -720,13 +806,11 @@ leaves out on an older server so the dialog still opens.
 
 **Items from your server's own pack.** A custom item from ItemsAdder, Nexo,
 Oraxen or a resource pack of your own works too. Pick the item it is made from
-(often Paper), then under **Your server's own item** give it its **Item model**
-(like `nexo:ruby`) and its **Custom model data**: numbers, strings, flags or
-colours, with commas between several. A plugin's custom model data number, like
-`1001`, goes in **Numbers**. The tooltip then shows that exact item. Studio can't
-see your server's pack, so choose a **Picture in the slot**: your item's texture
-or any picture of it, fitted to the slot. Without one, the slot shows a question
-mark, the same as a player's inventory shows that item.
+(often Paper), then under **Your server's own item** give its **Item model**
+(like `nexo:ruby`) and **Custom model data** (numbers, strings, flags or
+colours, comma separated; a plugin's number like `1001` goes in **Numbers**).
+Studio can't see your server's pack, so choose a **Picture in the slot** to
+draw it; without one the slot shows a question mark.
 
 **The player's inventory.** A grid can show the inventory, the hotbar, or the
 ender chest of whoever opens it, with their real items and tooltips. Your pack's
@@ -744,9 +828,10 @@ Plugins can refuse a move with `DialogSlotMoveEvent`.
 
 **Other storage.** A grid can also show:
 
-- **The item it opened from**, like a backpack. Give an item in your server's
-  content folder the `dialog:` action, and its contents are stored on the item
-  itself:
+- **The item it opened from**, like a backpack. Give an item in RP Engine's
+  content folder (the YAML files in `plugins/RPEngine/content/`, see
+  [RP Engine](/rp-engine)) the `dialog:` action, and its contents are stored
+  on the item itself:
 
   ```yaml
   supply_crate:
@@ -763,7 +848,9 @@ Plugins can refuse a move with `DialogSlotMoveEvent`.
 
 ### Show when
 
-Under **Show when** in any piece's panel, add conditions: a [player
+Show when hides a piece from some players: a VIP button only VIPs see, an
+admin row only staff see. Under **Show when** in any piece's panel, add
+conditions: a [player
 setting](#player-settings) or live value compared with something (*is*, *is
 not*, *is more than* and so on), or a permission the player has or lacks (such
 as `group.vip` for a LuckPerms group). Choose whether **all** or **any one** must
@@ -778,13 +865,8 @@ such as a greyed **VIP only** button. The two share a **Show one of** box
 players: a talent-tree button that turns green from level 4. The first matching
 look wins.
 
-These are also how a plugin changes a button for one player. **Selected** and
-**Greyed out** are part of the picture, so a plugin can't flip them while the
-dialog is open: draw the button both ways and let **Show something else
-instead…** choose, on a [live value](#live-values) the plugin sets.
-
-The editor shows the dialog as a player with the default settings sees it, with
-every permission held. In **Components**, a crossed-out eye marks a piece with
+This is also how a plugin lights up or greys out a button for one player (see
+[Button looks](#button-looks)). In **Components**, a crossed-out eye marks a piece with
 conditions, and a palette marks one with looks.
 
 ### Sorting a box's pieces
@@ -836,34 +918,7 @@ Things to know:
   Keep page turners and sort switches outside the box.
 - A sorted box can't hold another sorted box, a list, or a **Show one of** box
   directly.
-- It needs RP Engine 0.2.46 or newer. On an older RP Engine, and in Dialog
-  Engine, its places are empty.
-
-### Click sounds
-
-Clicks on the drawn screen make no sound in the game itself, so the plugin
-plays one. **Click sound** in the dialog's settings is **The game's click** (with
-pitch and volume), **Another sound** (one of your pack's or the game's), or
-**Silent**. Any clickable piece can override it with **Its own**. Clicks that
-never reach the server (links, copy, pages that turn instantly) make no sound,
-and footer buttons always make the game's click. The server-wide default is
-`dialogs.click-sound` in RP Engine's [configuration](/rp-engine/config#dialogs)
-and `click-sound` in Dialog Engine's.
-
-### After a click
-
-Under **Behaviour**, choose what the dialog does once something is clicked:
-
-| Choice | What happens |
-| --- | --- |
-| **Seamless** (default) | Stays on screen until the server answers. A dialog the click opens replaces it without a flash, and otherwise it closes. In a datapack it acts as **Close**. |
-| **Close** | Closes at once, so the next dialog arrives after a glimpse of the world. |
-| **Stay open** | Stays open. After a **Run as console** button, or a **Run command** button with several lines, it's drawn again so live values and **Show when** catch up with what the commands changed (RP Engine 0.2.57 or newer). |
-| **Wait** | Shows the game's "Waiting for Server" screen. A dialog with a link or copy button closes instead. |
-
-A seamless dialog stays open after a click the server never hears, such as a
-link or a `/server` command on a proxy. Escape closes it. Dialogs with pages
-always stay open.
+- It needs RP Engine. In Dialog Engine its places are empty.
 
 ### Icons from your server's pack
 
@@ -872,54 +927,69 @@ your own, add a **Pack glyph** (Basics) and paste the icon in as a text
 component (`{"text":"","font":"minecraft:default"}`), MiniMessage
 (`<font:nexo:default></font>`) or the character itself. Give its **Height**
 and **Ascent** from the font's JSON, and its **Width** (the picture's width ×
-height ÷ the picture's height). A wrong width shifts whatever follows on the
-line. Studio can't see your pack, so the glyph is a marked box in the editor;
-choose a **Picture in the editor** to see it while you lay it out. Only players
-with your pack see the icon, and it moves up and down in 9-pixel steps.
+height ÷ the picture's height); a wrong width shifts whatever follows on the
+line. Choose a **Picture in the editor** to see it while you lay it out. It
+moves up and down in 9-pixel steps.
 
 A [live value](#live-values) works in a pasted glyph too, so a placeholder can
 choose the glyph for each player: `{"text":"%card_face%","font":"cards:pixels"}`
-shows whatever `%card_face%` returns, in that font. With RP Engine 0.2.34 or
-Dialog Engine 0.6.4, the colour codes in the value are kept (`§a`,
+shows whatever `%card_face%` returns, in that font. The colour codes in the
+value are kept (`§a`,
 `§x§f§f§8§8§0§0`, `&a` and `&#ff8800`), so a placeholder that colours its glyphs
 for each player, such as a face built from one-pixel glyphs, looks the way it
-does in chat. Older versions show the glyphs white. The glyph's place is as
+does in chat. The glyph's place is as
 wide as you set, so set **Width** to what the value draws.
 
-With RP Engine 0.2.10 or newer you can also paste an **RP Engine icon** the
+With RP Engine you can also paste an **RP Engine icon** the
 way chat writes it: `:mypack:thirst:`, `:thirst:` or `<mypack:thirst>`. RP
 Engine puts the icon in as the dialog opens and measures it, so its width
 can't be off. A [live value](#live-values) can pick the icon for each player:
 `:status:{thirst_state}:` shows whichever icon that value names. Anywhere
-else, including Dialog Engine and an older RP Engine, its place is left blank.
+else, including Dialog Engine, its place is left blank.
 
 ## Plugin versions
 
-Dialogs open with any RP Engine that supports them, but these features need at
-least:
+Dialogs open with any version of either plugin that supports them, but these
+features need at least:
 
-| Feature | RP Engine |
-| --- | --- |
-| Player settings | 0.1.62 |
-| Pages | 0.1.66 (instant page turns: 0.1.70) |
-| Live words that stay inside their line, live heads | 0.1.69 |
-| Inventories and storage, lists, a command of its own | 0.1.74 |
-| Bars that follow the player | 0.1.75 |
-| Show when, Show one of, Colour when, repeated rows | 0.2.2 |
-| Click sounds | 0.2.5 |
-| Seamless after a click | 0.2.6 |
-| RP Engine icons in a Pack glyph | 0.2.10 |
-| Colour codes from a placeholder in a Pack glyph | 0.2.34 |
-| The Quick Actions key | 0.2.17 |
-| Sorting a box's pieces | 0.2.46 |
-| Stay open redrawn after a button's commands | 0.2.57 |
+| Feature | RP Engine | Dialog Engine |
+| --- | --- | --- |
+| Player settings | 0.1.62 | |
+| Pages | 0.1.66 (instant page turns: 0.1.70) | |
+| Live words that stay inside their line, live heads | 0.1.69 | |
+| Inventories and storage, lists, a command of its own | 0.1.74 | |
+| Bars that follow the player | 0.1.75 | |
+| Show when, Show one of, Colour when, repeated rows | 0.2.2 | |
+| Click sounds | 0.2.5 | newer than 0.3.5 |
+| Seamless after a click | 0.2.6 | 0.4.0 |
+| RP Engine icons in a Pack glyph | 0.2.10 | not supported |
+| The Quick Actions key | 0.2.17 | 0.6.0 (straight to a drawn dialog: 0.6.5) |
+| Colour codes from a placeholder in a Pack glyph | 0.2.34 | 0.6.4 |
+| Run as console | 0.2.41 | 0.6.6 |
+| Sorting a box's pieces | 0.2.46 | not supported |
+| PlaceholderAPI placeholders with arguments | 0.2.48 | 0.6.6 |
+| Several commands on one button | 0.2.51 | 0.6.7 |
+| Stay open redrawn after a button's commands | 0.2.57 | |
 
-On an older RP Engine the feature fails quietly: a bound control shows every
+On an older version the feature fails quietly: a bound control shows every
 state at once, a live bar is empty, a conditioned piece is drawn for everybody,
-and so on. In Dialog Engine, click sounds need a version newer than 0.3.5,
-Seamless needs 0.4.0, the Quick Actions key 0.6.0 (and opening a drawn
-dialog straight from it, rather than through the launcher, 0.6.5), and colour codes from a placeholder in a Pack glyph
-0.6.4.
+placeholder glyphs come out white, and so on.
+
+## Questions
+
+- **`/rp dialog` can't find my dialog.** Press **Sync** again, and
+  check the id with `/rp dialogs`. The server and the player's game both need
+  Minecraft 1.21.6 or newer.
+- **The screen opens but shows boxes or nothing.** The player doesn't have
+  your resource pack (or has an older copy). Sync again, or check the pack your
+  server sends.- **Can I remove the blur behind a dialog?** No. The game blurs the world
+  behind every menu, and how much is each player's own **Menu Background
+  Blurriness** setting in their video options. Nothing in Studio or the plugins
+  changes it.
+- **Can a dialog show a 3D Model or a `.bbmodel`?** Not as a model: a dialog is
+  flat pictures and items. Add an **Image** of a render or screenshot of it.
+- **Can a plugin grey out or select a button when it opens the dialog?** Not
+  directly; see [Button looks](#button-looks).
 
 ## Older UI-style dialogs
 
