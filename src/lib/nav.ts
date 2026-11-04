@@ -164,6 +164,12 @@ export const nav: NavGroup[] = [
         keywords: ["gui", "screen", "inventory", "menu", "chest", "draw-only", "custom gui", "mcgui", "html"],
       },
       {
+        title: "Tooltips",
+        href: "/tooltips",
+        description: "Design the box an item shows on hover: icon, name, stats, abilities, bars, animated.",
+        keywords: ["tooltip", "lore", "item", "hover", "rpg", "stats", "rarity", "tooltip_style", "give"],
+      },
+      {
         title: "HUD",
         href: "/hud",
         description: "The overlay drawn over the world — hearts, hunger, the hotbar, the crosshair.",
