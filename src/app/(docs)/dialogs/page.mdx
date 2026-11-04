@@ -595,9 +595,13 @@ its right. Its art prompt is already in its panel, ready to draw.
   colour, and a **Shadow** colour or none. **Huge** and **Giant** sizes
   draw words three and four times their size.
 - An icon's **Glow** puts a soft halo behind it, and **Burst of rays** a ring of
-  rays: for the thing to look at.
+  rays: for the thing to look at. **Sticker** draws an icon or a picture cut
+  out, with a white outline round its shape and a soft shadow.
+- A badge's **Pin to a corner** puts it on a corner of the piece before it,
+  overhanging it and taking no room: a count on a price button, a "+1", a
+  "NEW!" on a card.
 - A badge can be a **Ribbon** with notched ends, a **Pill**, a **Circle** (a
-  "+1") or a starburst **Sticker** ("NEW!"). A divider can be an
+  "+1") or a **Starburst** ("NEW!"). A divider can be an
   **Ornament**, **Glow**, **Fade** or **Dots** line.
 - A **Decoration** scatters sparkles, stars, confetti or hearts over its box.
   Place it anywhere, over a banner or round a reward.
@@ -607,13 +611,15 @@ keep its font and take no lettering.
 
 ### HD
 
-**HD picture**, under **Detail** in the dialog's settings, draws the dialog at
-twice the detail: corners are really round, fades and glows are smooth,
-sunbursts have clean edges, and pictures keep more of their pixels. The size and
-layout don't change, it needs nothing new on the server, and every player sees
-it. New dialogs start with it on. The cost is a bigger pack, because an HD
-picture is cut into more, smaller pieces. A page taller than about 500 pixels is
-drawn at normal detail.
+**Detail**, in the dialog's settings, is how finely the dialog is drawn:
+**Normal**, **HD** (twice the detail) or **Ultra** (four times, a texel per
+screen pixel at the game's usual GUI scale). Above Normal, corners are really
+round, fades and glows are smooth, sunbursts have clean edges, and pictures keep
+more of their pixels. The size and layout don't change, it needs nothing new on
+the server, and every player sees it. New dialogs start on Ultra. The cost is a
+bigger pack, because a finer picture is cut into more, smaller pieces. A page
+that is too big for its detail is drawn at the next one down: Ultra up to about
+260 pixels tall, HD up to about 500.
 
 ### Motion
 
