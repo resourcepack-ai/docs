@@ -1,0 +1,99 @@
+export const metadata = {
+  title: "Tooltips",
+  description:
+    "Design the box an item shows when a player hovers it: an icon, the name and rarity, big numbers, stats, ability cards, bars and gems, with an animated icon. Minecraft 1.21.5 and newer.",
+};
+
+# Tooltips
+
+A Tooltip is the box Minecraft shows when a player hovers an item in their
+inventory, designed rather than typed: the item's icon in a frame beside its
+name and rarity, big numbers for damage and speed, a band of requirements, a
+grid of stats, a card for an ability, a row of gems and a durability bar. The
+icon and the name can be animated.
+
+It needs **Minecraft 1.21.5 or newer**, and nothing on the server: no plugin,
+just the pack and an item that wears the tooltip.
+
+## Making one
+
+Press **Add asset**, pick the **GUI** tab, then **Tooltip**. Either:
+
+- **Generate**: describe it ("a cursed bone dagger for my RPG server, level 30,
+  poison on hit, a lifesteal set bonus"). Studio writes the words, numbers and
+  colours and picks the blocks. It costs 5 AI Credits and takes a few seconds.
+- **Blank**: start from a ready-made look, free: Mythic Weapon, Legendary,
+  Simple, Spell Scroll, Frost Relic, Potion, Shop Item or Void Artifact. The
+  name you give becomes the item's name on it.
+
+Either way it opens in the editor.
+
+## The editor
+
+The tooltip is shown as the game will draw it, hanging off an inventory slot,
+moving where it moves. Switch between GUI scale 2, 3 and 4 to see it at the
+sizes players do. Click any part of it to select its block.
+
+A tooltip is a stack of **blocks**, top to bottom. Add, reorder, copy and
+remove them in the **Blocks** list:
+
+| Block | What it is |
+| --- | --- |
+| Header | The icon (any item, one of your pack's textures, a picture of your own or a small symbol), the name, a line under it and a row of stars |
+| Big numbers | Up to four large numbers over labels, side by side: damage, speed, a price |
+| Stats | A label on the left and its value on the right, in one or two columns |
+| Band | A coloured strip with words at each end, for requirements |
+| Words | Lines of words, wrapped to the box |
+| Divider | A line, dots, or a line that fades at the ends |
+| Card | An icon, a title, a line under it and wrapped words: an ability or set bonus |
+| Bar | A filled bar with its numbers: durability, mana, charge |
+| Gems | A row of diamonds, circles, squares or stars, some filled |
+| Space | Empty room |
+
+Words take colour codes: `&c` colours what follows (`&0` to `&f`, or
+`&#ff8800` for any colour), `&l` makes it bold and `&r` goes back.
+
+**Box** sets the width (100 to 256 pixels), the padding, the room between
+blocks, the frame (a band across the top, Minecraft's own rim, a plain rim or
+none) and the colours. **Looks** swaps the colours and frame for another
+ready-made style and keeps your blocks and words.
+
+**Edit with AI** changes the tooltip from an instruction ("make it a frost
+dagger", "add a set bonus card"). It costs 5 AI Credits; the change lands in
+the editor unsaved, so you can keep it with **Save** or undo it.
+
+### Animation
+
+The header's icon and name can each **shimmer**, **pulse**, **twinkle**, cycle
+through the **rainbow** or **flicker**, at three speeds. The pack's text
+shader plays it, so it moves in game with nothing sent by the server.
+
+### Keep it on screen
+
+Minecraft picks GUI scale 4 for a 1080p screen, which leaves room for a
+tooltip about 250 pixels tall. The editor warns you when yours is taller.
+
+## In game
+
+Every Tooltip in a pack ships with it. To hand out an item wearing one:
+
+- Press **Sync** in the editor with your server linked: the pack goes to you
+  and you are given the item; or
+- copy the **give command** from the editor and run it from the console or a
+  command block. It is longer than chat accepts, so typing it in chat will not
+  work.
+
+The tooltip goes on any item: the give command hands out the one set under
+**Item**, and **Item components, for a plugin** has the same thing as JSON for
+ItemsAdder, Nexo or any plugin that takes an item's components.
+
+### How it works
+
+The picture is drawn into font glyphs that ride the item's lore. The item's
+own name is left empty and the game's tooltip box is swapped for an empty
+one, so what a player sees is your picture alone, pixel for pixel. The
+attribute and enchantment lines the game would add are hidden.
+
+Because the name is empty, the item shows no name above the hotbar when it is
+picked, and places that print an item's name (an anvil, a death message) show
+nothing.
