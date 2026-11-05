@@ -168,8 +168,8 @@ the audit log can be filtered by kind of action.
 ## Webhooks
 
 This is for developers. Admins can send everything the audit log records to a URL, as JSON, to get it
-into Discord, Slack or your own tools. Add up to five on the team's
-**Settings** page. Each has its own signing secret, shown once when you add it,
+into Discord, Slack or your own tools. Add up to five on the
+**Developers** page, with the team selected. Each has its own signing secret, shown once when you add it,
 and every event goes to all of them.
 
 ### The request
@@ -225,7 +225,7 @@ function verify(rawBody, header, secret) {
 HTTPS only, never to loopback or private-network addresses, and redirects
 aren't followed. Each attempt times out after five seconds and **is not
 retried**: if your endpoint is down, that event is lost. The CSV export is the
-complete record. The **Settings** card shows the last delivery's status.
+complete record. The **Developers** page shows the last delivery's status.
 
 ## Leaving
 
