@@ -98,6 +98,9 @@ arguments are documented in full.
 | [`list_asset_versions`](/api-reference/list-asset-versions) | Every version an asset's AI edits and regenerates made. |
 | [`get_asset_version_file`](/api-reference/get-asset-version-file) | One earlier version, to compare. An image comes back as an image. |
 | [`restore_asset_version`](/api-reference/restore-asset-version) | Undo: put an asset back as it was. Later versions are discarded. |
+| [`list_asset_candidates`](/api-reference/list-asset-candidates) | The four versions a block, item or icon was drawn as, and which one the judge picked. |
+| [`get_asset_candidate_file`](/api-reference/get-asset-candidate-file) | One of those four, as an image. Paid plans. |
+| [`use_asset_candidate`](/api-reference/use-asset-candidate) | Switch the asset to another of the four. Free, paid plans. |
 | [`list_folders`](/api-reference/list-folders) | The pack page's folders, and what is filed in each. |
 | [`create_folder`](/api-reference/create-folder) | Make a folder for one tab's assets. |
 | [`update_folder`](/api-reference/update-folder) | Rename or recolour a folder. |
@@ -207,7 +210,7 @@ There are three ways to change an asset, and only one is free:
 | Change | Tools | AI Credits |
 | --- | --- | --- |
 | By hand, from a file | `upload_asset` (a file you made), `update_custom_gui` (a Custom GUI's HTML and CSS), the settings tools (`update_sound`, `set_vehicle`, `update_model`, `set_item_state`...) | Free |
-| Housekeeping | `rename_asset`, `duplicate_asset`, `delete_asset`, `file_assets`, `restore_asset_version` (undo an AI change) | Free |
+| Housekeeping | `rename_asset`, `duplicate_asset`, `delete_asset`, `file_assets`, `restore_asset_version` (undo an AI change), `use_asset_candidate` (another of the four versions, paid plans) | Free |
 | With AI | `edit_asset`, `regenerate_asset`, `rig_vehicle`, `generate_custom_gui_page`, every `generate_*` | Spends credits, at Studio's prices |
 
 **Dialogs have no hand-edit tool.** A Dialog can't be uploaded or written as

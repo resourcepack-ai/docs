@@ -93,6 +93,10 @@
       "status": 403,
       "description": "The key is valid, but its account's plan does not include the API."
     },
+    "paid_plan_required": {
+      "status": 403,
+      "description": "This is part of the paid plans, and the pack's plan is Starter."
+    },
     "account_suspended": {
       "status": 403,
       "description": "The account is suspended, so its keys open nothing. `message` says until when, if the suspension has an end date."
@@ -4137,7 +4141,7 @@
       "post": {
         "operationId": "generateTexture",
         "summary": "Generate a block texture",
-        "description": "Produces a `block`.\n\n`vanillaTarget` is required when `mode` is `vanilla`; `description` is required when `mode` is `custom`. Setting `faceSlot` generates a single face of a block reskin and needs a `vanillaTarget` that supports per-face textures.",
+        "description": "Produces a `block`, drawn at 16x16 (a bigger `size` is that scaled up). Four versions are drawn and the best is used; on a paid plan the others are at `GET .../assets/texture/{name}/candidates`.\n\n`vanillaTarget` is required when `mode` is `vanilla`; `description` is required when `mode` is `custom`. Setting `faceSlot` generates a single face of a block reskin and needs a `vanillaTarget` that supports per-face textures.",
         "tags": [
           "Generating"
         ],
@@ -10713,6 +10717,409 @@
               "type": "string",
               "description": "A version's `id` from the list.",
               "example": "v_1"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/assets/{kind}/{name}/candidates": {
+      "get": {
+        "operationId": "listAssetCandidates",
+        "summary": "List the versions a generation drew",
+        "description": "A block, an item sprite or an icon generated from words is drawn four times and the best is used. This lists the four: which one the judge picked, which one the asset is now, and the judge's reason. Anybody who can see the asset gets the list; looking at them (`GET .../candidates/{index}`) and switching to one (`POST .../candidates/{index}/use`) are part of the paid plans (`canChoose`). Empty for an asset with none (uploaded, drawn by hand, or generated before 2026-11-05).",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The versions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "canChoose": {
+                      "type": "boolean",
+                      "description": "Whether this pack's plan may look at and switch between them."
+                    },
+                    "judgePick": {
+                      "type": "integer",
+                      "description": "The index the judge picked, or null when there are none."
+                    },
+                    "why": {
+                      "type": "string",
+                      "description": "The judge's reason, one sentence, or null."
+                    },
+                    "candidates": {
+                      "type": "array",
+                      "description": "In the order drawn.",
+                      "items": {
+                        "type": "object",
+                        "description": "One version.",
+                        "properties": {
+                          "index": {
+                            "type": "integer",
+                            "description": "Its number, for the two calls below."
+                          },
+                          "current": {
+                            "type": "boolean",
+                            "description": "Whether the asset is this one now."
+                          },
+                          "judgePick": {
+                            "type": "boolean",
+                            "description": "Whether the judge picked it."
+                          }
+                        },
+                        "required": [
+                          "index",
+                          "current",
+                          "judgePick"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "canChoose",
+                    "judgePick",
+                    "candidates"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "canChoose": true,
+                  "judgePick": 1,
+                  "why": "Reads as mossy stone on the cube and tiles cleanly.",
+                  "candidates": [
+                    {
+                      "index": 0,
+                      "current": false,
+                      "judgePick": false
+                    },
+                    {
+                      "index": 1,
+                      "current": true,
+                      "judgePick": true
+                    },
+                    {
+                      "index": 2,
+                      "current": false,
+                      "judgePick": false
+                    },
+                    {
+                      "index": 3,
+                      "current": false,
+                      "judgePick": false
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `kind` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `kind` from the listing.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `name` from the listing.",
+              "example": "mossy_bricks"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/assets/{kind}/{name}/candidates/{index}": {
+      "get": {
+        "operationId": "getAssetCandidateFile",
+        "summary": "Download one version a generation drew",
+        "description": "That version as a PNG (an image over MCP, so an agent can compare them before switching). Part of the paid plans.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The PNG."
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `paid_plan_required`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `kind` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `kind` from the listing.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `name` from the listing.",
+              "example": "mossy_bricks"
+            }
+          },
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "description": "A version's `index` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "A version's `index` from the list.",
+              "example": "2"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/assets/{kind}/{name}/candidates/{index}/use": {
+      "post": {
+        "operationId": "useAssetCandidate",
+        "summary": "Switch an asset to another version its generation drew",
+        "description": "The asset becomes that version, as clicking it on Studio's Versions card does. Free. Recorded in the asset's versions history as a `pick`, so `restore_asset_version` undoes it. Part of the paid plans; not while an AI edit of it is running (`already_running`).",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Switched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `switched`."
+                    },
+                    "index": {
+                      "type": "integer",
+                      "description": "The version it is now."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status",
+                    "index"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "switched",
+                  "index": 2
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `forbidden`, `paid_plan_required`, `already_running`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `kind` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `kind` from the listing.",
+              "enum": [
+                "texture",
+                "model",
+                "font",
+                "sound"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The asset's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The asset's `name` from the listing.",
+              "example": "mossy_bricks"
+            }
+          },
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "description": "A version's `index` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "A version's `index` from the list.",
+              "example": "2"
             }
           }
         ]
