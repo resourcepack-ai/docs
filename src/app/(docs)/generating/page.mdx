@@ -61,9 +61,10 @@ file you already have.
 | **Text Effect** | ✓ | ✓ | ✕ |
 | **VFX** | ✓ | ✓ | ✕ |
 
-Pixel art comes in fixed sizes: a generated Block is 16, 32 or 64 pixels
-across (or a custom size up to 128), a 2D Item 16, 32, 64 or 128, and an Icon
-8, 16, 32, 64 or 128 pixels tall.
+Pixel art comes in fixed sizes: a generated Block is 16 pixels across, a 2D
+Item 16, 32, 64 or 128, and an Icon 8, 16, 32, 64 or 128 pixels tall. Blocks,
+2D Items and Icons are each drawn 4 times, and you get the best one (see
+below).
 
 An emote **Group** (a set of Emotes a player wears while moving) is made from
 Emotes you already have, so it's started blank. Vehicles and Mobs start as a
@@ -80,7 +81,7 @@ press it, so this table is a guide rather than a price list.
 | --- | --- | --- |
 | Model, or a 3D Item | 75 | 3–6 min |
 | Mob, generated and animated | 113 | 7–18 min |
-| Block | 10 (fixed) | 1–3 min |
+| Block | 10 (fixed) | under 2 min |
 | Item (2D) | 5 | under 30 sec |
 | Icon | 5 | under 30 sec |
 | Rank Tag | 5 (fixed) | under a minute |
@@ -163,6 +164,11 @@ liked. On a model it looks at the model's parts first and changes only what you
 asked for.
 **Regenerate** runs the original prompt again; the old version stays in the
 asset's AI history.
+
+A Block, 2D Item or Icon you generate from a description is drawn 4 times, and
+Studio picks the best one. On a paid plan the **Versions** card on its page
+shows all 4, and clicking another uses it instead, for free. That is often
+quicker than another prompt.
 
 <Callout type="warning">
   Edit with AI costs credits like any generation, and on a texture it can

@@ -35,20 +35,27 @@ model are made from inside the model editor instead, and replace nothing.
 
 ### Size
 
-| Size | When to use it |
-| --- | --- |
-| **16×16** | Vanilla's own resolution, and the default. Sits naturally next to vanilla blocks |
-| **32×32**, **64×64** | "HD" packs. More room for detail, and four or sixteen times the pixels to finish |
-| **Custom** | Any square size: 16 to 128 when generating, up to 256 when drawing from blank |
+A generated Block is **16×16**, vanilla's own resolution, so it sits naturally
+next to vanilla blocks. Every generated Block tiles: placed in a wall of
+itself, it shows no seams.
 
-<Callout type="note" title="Generated blocks are drawn at 16×16">
-  The AI always paints a block at 16×16. At a bigger size that drawing is
-  scaled up without blurring, and the extra pixels are yours to add detail by
-  hand.
-</Callout>
+For an "HD" texture with more room for detail, start from **Blank** (16×16,
+32×32, 64×64 or any square size up to 256) or **Upload** one.
 
 Once you have a draft, the block's page has **Regenerate** (same prompt, new
 attempt) and **Edit with AI** (describe one change, keep the rest).
+
+### Choosing from 4 versions
+
+Every Block you generate from a description is drawn 4 times, and Studio
+picks the best one to start you off. On a paid plan, the **Versions** card on
+its page shows all 4: hover over one to preview it, and click it to use it
+instead. Switching is free, and the one it replaces stays in the Block's AI
+history, so you can always switch back. On the free plan, the card shows that 4
+were drawn.
+
+Blocks made from a reference picture are drawn once, so they have no
+Versions card.
 
 ## Seeing it in game
 
