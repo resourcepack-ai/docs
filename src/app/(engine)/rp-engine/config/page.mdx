@@ -102,8 +102,25 @@ prompt:
 | `pack.description` | `RP Engine` | Shown in the client's resource pack list, with the bundle name added |
 | `pack.format` | not set | Leave it unset; the plugin picks the right number for your version. Set it only when the startup log says your Minecraft is newer than this RP Engine, then update the plugin and remove it. See [Minecraft versions](/rp-engine/versions#the-pack-format) |
 | `default-bundle` | `main` | The [bundle](/rp-engine/bundles) every joining player is sent. Empty sends nothing, for a server that sends packs itself |
-| `prompt.message` | empty | Text shown when the client asks the player to accept the pack. Empty uses the game's own wording |
+| `prompt.message` | empty | Text shown when the client asks the player to accept the pack. Empty uses the game's own wording. MiniMessage (`<red>`, `<#fa4943>`, `<bold>`, `<gradient:#9055FF:#13E2DA>`, `<rainbow>`) and `&` codes (`&c`, `&l`, `&#fa4943`) both work |
 | `prompt.force` | `false` | `true` disconnects a player who declines the pack |
+
+## Sending the pack
+
+```yaml
+send:
+  before-join: false
+  on-join: true
+  on-reload: true
+  delay: 0
+```
+
+| Key | Default | What it does |
+|---|---|---|
+| `send.before-join` | `false` | Sends the packs while the player is still connecting, so they arrive in the world with them already loaded. Needs Paper 1.21.7 or newer; anywhere else the packs are sent on join instead. A big pack keeps the player on the loading screen until it has loaded. Read at startup |
+| `send.on-join` | `true` | Sends the packs when a player joins. With `before-join` on, only what did not arrive before it. `false` sends nothing at join, for a server that sends the packs itself |
+| `send.on-reload` | `true` | Sends everybody online the new packs after `/rp reload`. `false` keeps what they have until they next join |
+| `send.delay` | `0` | How long after joining the packs are sent, in ticks (20 a second). Does not apply to `before-join` |
 
 ## How it talks
 
