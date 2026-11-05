@@ -106,6 +106,25 @@ prompt:
 | `prompt.message` | empty | Text shown when the client asks the player to accept the pack. Empty uses the game's own wording. MiniMessage (`<red>`, `<#fa4943>`, `<bold>`, `<gradient:#9055FF:#13E2DA>`, `<rainbow>`) and `&` codes (`&c`, `&l`, `&#fa4943`) both work |
 | `prompt.force` | `false` | `true` disconnects a player who declines the pack |
 
+## Merging other packs
+
+Other plugins (ModelEngine, BetterHud and the like) build resource packs of their own. List them under `pack.merge` and RP Engine builds them into its pack, so players download one pack instead of one per plugin:
+
+```yaml
+pack:
+  merge:
+    - "ModelEngine/resource pack"
+    - "BetterHud/build.zip"
+```
+
+Each entry is a folder or a `.zip`, relative to the `plugins` folder. They are read again on every `/rp reload`, so after the other plugin rebuilds its pack, reload RP Engine. The other plugin's files are never moved or changed.
+
+<Callout type="warning">
+Turn off the other plugin's own pack sending, or players are sent its pack twice: once inside RP Engine's and once on its own.
+</Callout>
+
+Where a merged pack and your `content/` folder ship the same file, yours wins. A resource pack zip you drop straight into `content/` is merged the same way; `pack.merge` is for packs that live, and keep changing, somewhere else.
+
 ## Squashing the pack
 
 [PackSquash](https://packsquash.aylas.org/) shrinks a resource pack, so players download it faster. RP Engine runs it on every pack it builds, if you turn it on:
