@@ -10363,7 +10363,8 @@
                               "original",
                               "iterate",
                               "animate",
-                              "regenerate"
+                              "regenerate",
+                              "pick"
                             ]
                           },
                           "instruction": {
