@@ -101,9 +101,35 @@ prompt:
 |---|---|---|
 | `pack.description` | `RP Engine` | Shown in the client's resource pack list, with the bundle name added |
 | `pack.format` | not set | Leave it unset; the plugin picks the right number for your version. Set it only when the startup log says your Minecraft is newer than this RP Engine, then update the plugin and remove it. See [Minecraft versions](/rp-engine/versions#the-pack-format) |
+| `pack.packsquash.enabled` | `false` | Runs each pack through [PackSquash](https://packsquash.aylas.org/) before players are sent it, for a smaller download. See [Squashing the pack](#squashing-the-pack) |
 | `default-bundle` | `main` | The [bundle](/rp-engine/bundles) every joining player is sent. Empty sends nothing, for a server that sends packs itself |
 | `prompt.message` | empty | Text shown when the client asks the player to accept the pack. Empty uses the game's own wording. MiniMessage (`<red>`, `<#fa4943>`, `<bold>`, `<gradient:#9055FF:#13E2DA>`, `<rainbow>`) and `&` codes (`&c`, `&l`, `&#fa4943`) both work |
 | `prompt.force` | `false` | `true` disconnects a player who declines the pack |
+
+## Squashing the pack
+
+[PackSquash](https://packsquash.aylas.org/) shrinks a resource pack, so players download it faster. RP Engine runs it on every pack it builds, if you turn it on:
+
+<Steps>
+<Step title="Download PackSquash">
+Get the build for your server's system from its releases page and put it in `plugins/RPEngine/packsquash/` (`packsquash`, or `packsquash.exe` on Windows).
+</Step>
+<Step title="Turn it on">
+Set `pack.packsquash.enabled: true` and run `/rp reload`.
+</Step>
+</Steps>
+
+```yaml
+pack:
+  packsquash:
+    enabled: false
+    executable: "packsquash/packsquash"
+    options: "packsquash/packsquash.toml"
+```
+
+PackSquash's options are in `packsquash.toml`, written the first time it runs. The defaults keep font and 3D armour textures exactly as they are, because RP Engine's HUDs, dialogs, text effects and 3D armour read exact colours from them. Sounds are re-encoded, which is where most of the saving is; the file says how to stop that.
+
+A pack is only squashed again when it changes, so a restart is as quick as before. A pack that comes out no smaller, or that PackSquash would have left files out of, is sent unsquashed and the console says why. On `/rp reload`, a squash that takes longer than 20 seconds finishes in the background and is used from the next reload.
 
 ## Sending the pack
 
