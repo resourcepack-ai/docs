@@ -1,0 +1,80 @@
+export const metadata = {
+  title: "Velocity (RPE Proxy)",
+  description:
+    "Send RP Engine's pack from your Velocity proxy: once per network join, no reload when players switch servers, and served from the proxy's own port.",
+};
+
+# Velocity (RPE Proxy)
+
+On a network, every server behind the proxy normally sends its own pack. A
+player switching from the lobby to survival can get a second loading screen,
+and hosting the pack yourself means opening a port on every server.
+
+**RPE Proxy** is a small plugin for your Velocity proxy that takes over
+sending the pack:
+
+- A player is sent the pack **once**, when they join the network. Switching
+  servers sends nothing, unless the new server uses a different pack.
+- The proxy **serves the pack itself**, from one port on the proxy. Your
+  servers hand it the pack over the player's connection, so nothing else has
+  to be opened and the pack never leaves your machines.
+
+It needs Velocity 3.4 or newer.
+
+## Installing
+
+<Steps>
+<Step title="Install RPE Proxy on the proxy">
+Put `RPE-Proxy.jar` in your Velocity `plugins` folder and restart the proxy. It
+writes `plugins/rpe-proxy/config.yml`.
+</Step>
+<Step title="Open its port">
+Players download the pack from the proxy on port `8183`. Open it (on a hosting
+panel, allocate it to the proxy) and set `serve.public-address` to your
+server's public address with that port, for example
+`http://play.example.com:8183`.
+</Step>
+<Step title="Turn it on in RP Engine">
+On every server behind the proxy that runs RP Engine, set `proxy.enabled: true`
+in `plugins/RPEngine/config.yml` and restart it.
+</Step>
+</Steps>
+
+```yaml
+# plugins/rpe-proxy/config.yml (on the proxy)
+mode: serve
+serve:
+  port: 8183
+  bind: "0.0.0.0"
+  public-address: "http://play.example.com:8183"
+```
+
+```yaml
+# plugins/RPEngine/config.yml (on each server)
+proxy:
+  enabled: true
+```
+
+## Serve or relay
+
+| `mode` | What happens |
+|---|---|
+| `serve` | The default. The proxy keeps a copy of each pack, which the servers hand over the first time, and serves it on its own port. |
+| `relay` | The proxy sends players the link their server would have sent. With RP Engine's default `host.mode: upload` that is ResourcePack AI's pack host, and nothing has to be opened. You still get one download per network join. |
+
+## Good to know
+
+- **Servers with the same content share one pack.** Two servers that build the
+  same pack are the same pack to the proxy, even with
+  [PackSquash](/rp-engine/config#squashing-the-pack) on, so moving between them
+  is free. A server with different content (another bundle, say) sends its own,
+  and the pack it no longer needs is taken off.
+- **Copy RP Engine's data files between servers.** Custom blocks are given
+  block states in the order a server first saw them, kept in
+  `plugins/RPEngine/blocks.json` and `model-numbers.json`. Give every server the
+  same copies, or their packs differ and switching sends a new one.
+- **Without RPE Proxy, nothing breaks.** A player whose connection does not run
+  through RPE Proxy is sent the pack by the server, as before, and the console
+  says so once.
+- **`send.before-join` is ignored** with `proxy.enabled`: the proxy does the
+  sending.
