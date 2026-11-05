@@ -331,6 +331,12 @@ export const engineNav: EngineGroup[] = [
     title: "Plugin support",
     items: [
       {
+        title: "Velocity (RPE Proxy)",
+        href: "/rp-engine/proxy",
+        description: "Send the pack from your proxy, once per network join.",
+        keywords: ["velocity", "proxy", "bungeecord", "network", "rpe proxy", "server switch", "self host"],
+      },
+      {
         title: "PlaceholderAPI",
         href: "/rp-engine/placeholderapi",
         description: "Every placeholder, for scoreboards, menus and chat formats.",
