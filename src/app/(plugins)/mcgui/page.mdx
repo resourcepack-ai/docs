@@ -414,12 +414,18 @@ flexbox, grid (`repeat(auto-fill, minmax())`, `fr`, areas), tables, absolute,
 fixed and relative positioning, `z-index`, `overflow` and scrolling,
 `border-radius`, borders, `box-shadow`, `text-shadow`, linear, radial and
 conic gradients, `background-clip: text`, background images, `opacity`,
-`transform`, `filter`, `backdrop-filter: blur()`, `object-fit`,
+`transform`, `filter`, `backdrop-filter: blur()`, `clip-path` (`polygon()`,
+`circle()`, `ellipse()` and `inset()`), `object-fit`,
 `text-overflow: ellipsis`, `-webkit-line-clamp`, and animations and
 transitions (`@keyframes`, `animation`, `transition`).
 
-**Pictures:** PNG, JPEG, GIF, SVG files and inline SVG. Inside an SVG, set
-`fill` and `stroke` as attributes on its tags: page CSS does not reach in.
+**Pictures:** PNG, JPEG, GIF, SVG files and inline SVG. Page CSS styles what is
+inside an inline SVG too: `fill`, `stroke` and the rest, `:hover` rules included.
+
+**On an overlay page** the world shows through, and each pixel is either drawn
+or not: colour less than half opaque with only the world behind it isn't drawn
+in game (a browser draws it faint), and colour at half or more is drawn solid.
+Use 0.5 opacity or more for anything that must show, like a thin border.
 
 **Fonts:** Inter (`sans-serif` and every system font name), Source Serif 4
 (`serif`), JetBrains Mono (`monospace`), `Minecraft` (the game's own letters)
@@ -561,10 +567,19 @@ disconnected, and `prompt` is the line their game shows when it asks.
 `/mcgui pack` sends it again. A restart is needed after adding sounds or
 cursors, or changing anything under `resource-pack`.
 
-MC GUI's pack replaces the game's text shader, as some other plugins' packs do
-(HUD and font plugins, mostly). If two of them reach a player, one silently
-loses: merge packs with care. When MC GUI's loses, pages still hide the
-sidebar, boss bars and action bar from the server side
+MC GUI's pack replaces the game's text shader, as HUD and text-effect plugins'
+packs do (BetterHud, HUDEngine, ItemsAdder's text effects, Oraxen's animated
+glyphs), and a game keeps only one copy. **MC GUI merges the two**: at startup it
+reads the other plugin's pack (or the server's own, `resource-pack` in
+`server.properties`) and merges that text shader into its own, so both work.
+The console says `Shaders  Merged with ..., so both draw`. A plugin that writes
+its pack only after MC GUI starts is merged on the next restart, and the console
+says when one turns up. With two such plugins at once nothing is merged, and the
+console names them. `resource-pack.merge-shaders: false` turns merging off.
+
+Even unmerged, another plugin's shader beside MC GUI's never stops the pack
+loading. If MC GUI's pack loses anyway, pages still hide the sidebar, boss bars
+and action bar from the server side
 ([The sidebar, boss bars and action bar](#the-sidebar-boss-bars-and-action-bar)).
 
 ## If pages are slow or don't show
@@ -572,7 +587,8 @@ sidebar, boss bars and action bar from the server side
 | What happens | Why, and what to do |
 | --- | --- |
 | Low FPS while a page is open | Every map on screen costs frame time, so a smaller page is faster. Set `views.size` to `14x8` (about 25% more FPS) or `12x7` (50% or more), or `ui:size` on one page. See [Size](#size) |
-| The page flashes, then closes or shows wrong | Another plugin's resource pack replaced MC GUI's shaders. When MC GUI sends its own pack, it sends it again on top before the next page (a short reload), so open the page again. If you merged MC GUI's pack into another plugin's, merge it again after every MC GUI update, and turn off that plugin's own text shader features. Two plugins that replace the same shader can't both work |
+| The page flashes, then closes or shows wrong | Another plugin's resource pack replaced MC GUI's shaders. When MC GUI sends its own pack, it sends it again on top before the next page (a short reload), so open the page again. If you merged MC GUI's pack into another plugin's, merge it again after every MC GUI update, and check what MC GUI says about shaders in the console at startup |
+| Part of a page is missing on an overlay page (a faint border, a see-through panel) | Colour under half opaque with only the world behind it isn't drawn in game. Use 0.5 opacity or more ([What pages can use](#what-pages-can-use)) |
 | "Your game could not load the resource pack of this server" | The pack failed to load for that player, often a merged pack. The console says why |
 | "This menu can't be shown while shaders are on" | The player has Iris or OptiFine shaders on. Shader packs replace what MC GUI draws with, so they need to turn shaders off |
 | Bedrock players can't open pages | Pages are Java only. Bedrock players see wall screens in plain map colours |
