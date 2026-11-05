@@ -1,15 +1,16 @@
 export const metadata = {
   title: "Teams",
   description:
-    "A team shares every pack it owns and one pool of AI Credits, on one invoice, with roles and an audit log.",
+    "A free shared workspace: every pack it owns and one balance of AI Credits that anyone on it can top up, with roles and an audit log.",
 };
 
 # Teams
 
-A **team** is a shared workspace for a group that makes packs together, such
-as a server's build team or a small studio. Every pack the team owns belongs to
-everybody on it, everybody spends from one pool of AI Credits (the app's
-currency for generating), and it's all on one invoice.
+A **team** is a free shared workspace for a group that makes packs together,
+such as a server's build team or a small studio. Every pack the team owns
+belongs to everybody on it, and generating in those packs uses the team's AI
+Credits (the app's currency for generating), which anyone on the team can top
+up.
 
 If you only want to let someone into **one pack**, you don't need a team:
 invite them as a [collaborator](/collaborators) instead.
@@ -17,25 +18,26 @@ invite them as a [collaborator](/collaborators) instead.
 <Callout type="note">
   The two work together. Everyone **on** the team gets every team pack
   automatically. Someone **outside** it can still be invited to a single team
-  pack as a collaborator, and doesn't take a seat.
+  pack as a collaborator.
 </Callout>
 
 ## What it costs
 
-**$30 per seat, per month**, with a minimum of two seats and a maximum of 50.
+**Nothing.** Creating a team is free, and there are no seats or monthly price.
+A team can hold up to 50 people, counting pending invitations.
 
-| | Per seat |
+| | Per team |
 | --- | --- |
-| AI Credits added to the pool each month | 1,000 |
-| Packs | 20 (so a two-seat team has 40) |
+| Packs | 50 |
 | Distribution players | Unlimited |
 
-The credits are one shared pool, spent by whoever needs them. Top-ups are
-**40% off** on a team, the best rate there is; only the owner can buy them.
+A team starts with no AI Credits. See [Team credits](#team-credits) for how it
+gets them.
 
 <Callout type="note">
-  **A seat doesn't replace your own plan.** They bill separately and you can
-  hold both. Your own packs run on your plan, the team's packs on the team's.
+  **A team doesn't replace your own plan.** You can be on a team and have your
+  own plan. Your own packs use your credits, and the team's packs use the
+  team's.
 </Callout>
 
 ## Starting a team
@@ -45,12 +47,11 @@ The credits are one shared pool, spent by whoever needs them. Top-ups are
     Click your name and credit balance at the bottom left of the sidebar,
     then **Create a Team**.
   </Step>
-  <Step title="Name it and pick seats">
-    One seat per person, including you. The total due today is shown.
+  <Step title="Name it">
+    Press **Create Team**. The team is selected and its Members page opens.
   </Step>
-  <Step title="Pay">
-    Checkout opens. Once paid, the team is selected and you can make packs in
-    it and invite people (below).
+  <Step title="Invite people">
+    Press **Invite** on the Members page (see [below](#inviting-somebody)).
   </Step>
 </Steps>
 
@@ -70,40 +71,53 @@ and it's yours. Packs can't be moved between the two.
 
 | Role | Can |
 | --- | --- |
-| **Owner** | Everything an admin can, plus billing: seats, top-ups, automatic top-ups, cancelling. One per team |
-| **Admin** | Invite and remove people, change roles, set limits, publish and delete packs, manage keys and webhooks, see Activity and Billing |
-| **Member** | Edit, generate, sync and export in every team pack, spending from the pool |
+| **Owner** | Everything an admin can, plus handing the team over and deleting it. One per team |
+| **Admin** | Invite and remove people, change roles, set limits, publish and delete packs, manage keys and webhooks, see Activity |
+| **Member** | Edit, generate, sync and export in every team pack, and top up the team's credits |
 | **Viewer** | Open every team pack and change nothing: no editing, generating, syncing or exporting. For clients and contractors |
 
 Being on the team is the access: there's nothing to set up per person. Admins
 keep the two actions that are hard to undo: **publishing** a pack to a live
 server's players with [Distribution](/distribution), and **deleting** a pack.
 
-## Seats
+## Team credits
 
-You buy seats, then fill them. Removing a person frees their seat at once, and
-you can give it to someone else at no extra cost.
+Every generation in a team pack uses the **team's credits**, whoever presses
+Generate. The balance is on the team's **Credits** page, which everyone except
+viewers can open.
+
+**Anyone on the team can top it up** from that page. You pay with your own
+card, at your own plan's rate: if your plan gives you 30% off top-ups, you get
+30% off topping up the team too. The audit log records who added what.
 
 <Callout type="note">
-  **An empty seat is still a paid seat.** Removing a person doesn't lower your
-  bill. Reducing the seat count is a separate step on the team's Billing page.
+  Credits you add to a team stay with the team. If you leave, they don't come
+  with you.
 </Callout>
 
-- **Adding a seat** takes effect straight away. Your card is charged the
-  prorated rest of the month (the confirmation shows the exact amount), and
-  the pool gets the same share of that seat's 1,000 credits. The full 1,000
-  arrives at renewal.
-- **Removing a seat** offers **Now** or **At renewal**. Neither refunds
-  anything, so pick **At renewal** unless you want the lower number today.
+## Using your own credits
 
-**Manage billing** on the Billing page (owner only) opens the payment portal,
-to update the card, download invoices, change billing details or cancel.
+You can choose to pay for your own generations in a team's packs instead of
+using the team's credits. Open the team's **Credits** page and press **Use my
+own credits**.
+
+- It applies to every generation you make in that team's packs until you
+  switch back on the same page.
+- What you make still belongs to the team.
+- It only changes who pays for **your** generations. Everyone else keeps using
+  the team's credits.
+- Spend limits don't apply to you while it's on, because you're not spending
+  the team's credits.
+- The team's admins see when you switch, in the audit log.
+
+If the team runs out while you're generating, the out-of-credits window offers
+both: top up the team, or switch to your own credits there and then.
 
 ## Inviting somebody
 
 On the team's **Members** page, invite them by email. Invitations last **seven
-days** and can be withdrawn at any time. An outstanding invitation holds a seat,
-so you can't send more invitations than you have free seats.
+days** and can be withdrawn at any time. A team can hold 50 people, and an
+outstanding invitation counts towards that.
 
 ## Limiting someone to certain packs
 
@@ -116,10 +130,11 @@ can't be restricted.
 
 ## Spend limits
 
-An admin can cap how many credits one person takes from the pool in a billing
-period, from the members list. Blank means no limit, which is the default.
+An admin can cap how many of the team's credits one person uses in a calendar
+month, from the members list. Blank means no limit, which is the default.
 Everyone can see their own limit and how much of it they've used. The owner
-can't be limited.
+can't be limited, and the limit doesn't apply to anyone
+[using their own credits](#using-your-own-credits).
 
 ## API keys and your own OpenAI key
 
@@ -127,12 +142,13 @@ Skip this unless you use the API or bring your own key. Both follow whichever
 context (Personal or the team) is selected.
 
 - **API and MCP keys** made on the Developers page while the team is selected
-  belong to the team: they spend the pool and reach the team's packs. Only
+  belong to the team: they spend the team's credits and reach the team's packs. Only
   admins can create and revoke them. If someone leaves, every team key they
   held stops working. A key made in Personal never reaches a team's packs.
   See the [API reference](/api-reference).
 - **Your own OpenAI key**: an admin can store one for the team, and 3D model
-  generation and edits in team packs then run on it instead of the pool. A
+  generation and edits in team packs then run on it instead of the team's
+  credits. A
   team pack always uses the team's key, never a member's personal one.
 
 ## Activity
@@ -140,21 +156,14 @@ context (Personal or the team) is selected.
 The team's **Activity** page, for admins and the owner, has two tabs:
 
 - **Audit log**: invitations, joins and removals, role changes, ownership
-  transfers, limits and pack restrictions, seat changes and top-ups, keys,
-  packs created, published or deleted, and team renames.
-- **Spend**: credits each person has used this billing period, and how many
-  actions that was.
+  transfers, limits and pack restrictions, top-ups, switches to and from
+  people's own credits, keys, packs created, published or deleted, and team
+  renames.
+- **Spend**: the team's credits each person has used this month, how many
+  actions that was, and what they spent of their own credits in team packs.
 
 **Export CSV** downloads either, for all time or a date range you choose, and
 the audit log can be filtered by kind of action.
-
-## Automatic top-ups
-
-When the pool runs out, everybody stops at once. The owner can set a floor and
-an amount (500 to 20,000 credits): when the balance drops below the floor,
-that many credits are bought on the team's card. At most three automatic
-purchases happen per billing period, each one emails the owner and appears in
-the audit log, and a team whose plan has lapsed is never charged.
 
 ## Webhooks
 
@@ -187,7 +196,7 @@ X-RPAI-Signature: sha256=<hex>
 
 | Field | Meaning |
 | --- | --- |
-| `type` | The action, using the audit log's names (`member.joined`, `member.role_changed`, `seat.changed`, `pack.published` and so on) |
+| `type` | The action, using the audit log's names (`member.joined`, `member.role_changed`, `credits.topped_up`, `pack.published` and so on) |
 | `actor` | The account id that did it, or `null` |
 | `target` | What it happened to, such as a pack or a person |
 | `detail` | Extra fields for that type, or `null` |
@@ -222,10 +231,7 @@ complete record. The **Settings** card shows the last delivery's status.
 
 Anyone except the owner can leave from the team's page, and an admin can remove
 anyone except the owner. To leave as the owner, first press **Make owner** on
-someone in the members list: billing moves to them and you become an admin.
+someone in the members list: they become the owner and you become an admin.
 
-**Packs stay with the team.** Nobody takes a pack with them when they leave.
-
-If the team's plan lapses, nothing is deleted. Packs and access stay, and so do
-the credits in the pool; only new paid work stops, as it would for a personal
-account.
+**Packs and credits stay with the team.** Nobody takes a pack or the team's
+credits with them when they leave.
