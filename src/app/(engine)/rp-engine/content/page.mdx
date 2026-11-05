@@ -107,6 +107,11 @@ See [Bundles](/rp-engine/bundles).
 nothing in it can collide with another pack or with vanilla. An item
 `mypack:ruby` looks for its texture at `assets/textures/item/ruby.png`.
 
+Name the files in it in lowercase. Minecraft refuses a capital letter anywhere
+in a resource pack path, so a texture called `Ruby.png` would never load. RP
+Engine lowercases such a file in the built pack, and everything that names it,
+and warns you, but renaming the file is what quiets the warning.
+
 **`overrides/`** becomes `assets/minecraft/`. It is how you replace vanilla
 art: a different dirt texture, a new font, a changed sound.
 
@@ -148,6 +153,7 @@ file and the ID. The common ones:
 | Warning | What it means | Fix |
 |---|---|---|
 | `No pack.yml, so this is not a content pack` | The folder is not one of the [shapes above](#what-can-go-in-content). Usually a resource pack unzipped one folder too deep, so `pack.mcmeta` is not at the top | Add a `pack.yml` if it is your content. If it is a resource pack, move its contents up so `pack.mcmeta` and `assets/` sit directly inside the folder, or drop the original `.zip` in instead |
+| `files have capital letters in their names` | A file in `assets/` is named with capitals, like `Aal.png`. Minecraft would skip it, so RP Engine lowercased it in the built pack | Nothing is broken. Rename the files to lowercase (and the `texture:` that names them) to quiet the warning |
 | `Folder name is not a valid namespace` | The folder has capitals, spaces or other characters | Rename it: `My Pack` to `my_pack` |
 | `Not a content category, so nothing in it was read` | A folder in your pack that RP Engine does not read, often a typo (`item/`, `Sounds/`) | Rename it to one from [the layout](#a-content-packs-layout), or move art into `assets/` |
 | `No texture at assets/mypack/textures/item/ruby.png` | The item has no picture where its ID says. It works, but shows as a purple-and-black square | Put the PNG at `content/mypack/assets/textures/item/ruby.png` (the namespace is the folder, not a folder inside `assets/`), or name another file with `texture:` |
