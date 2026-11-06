@@ -83,7 +83,40 @@ proxy only passes Minecraft through, so players get nothing until an upload
 works. To be safe, set `host.fallback-on-download-failure: true` with a
 `host.port` and `host.public-address` players can reach (open the port, or
 allocate it on your hosting panel), or switch to `host.mode: own-port` and
-skip the pack host entirely.
+skip the pack host entirely. On a Velocity network, [RPE Proxy](/rp-engine/proxy)
+can send the pack from the proxy instead.
+
+### If players don't get the pack
+
+Work down this list:
+
+1. **Read the console after a player joins.** When a player's game can't
+   download a pack, RP Engine names the link it sent and what to change, once
+   per restart. The startup log also warns about a `host.public-address` that
+   can't work.
+2. **Try the link yourself.** `/rp bundles` shows the link each pack is served
+   at. Open it in a browser on another network (a phone on mobile data will
+   do). If it doesn't download there, players can't download it either.
+   `/rp push` sends you the pack again.
+3. **With `own-port`, check the address.** `host.public-address` has to be a
+   whole `http://` address with your server's public IP or domain and the
+   port: `http://203.0.113.5:8181`, not `203.0.113.5:8181` and never
+   `127.0.0.1`. The port has to match `host.port`, be different from your
+   Minecraft port, and be open to the internet (on a hosting panel, allocated
+   to this server). If you can't open a port, go back to `upload`.
+4. **Restart after changing `host:`.** These settings are read when the server
+   starts, so `/rp reload` doesn't pick them up.
+5. **Behind Velocity or BungeeCord,** `same-port` can't work. Use `upload`,
+   `own-port`, or [RPE Proxy](/rp-engine/proxy).
+6. **Check the player's own setting.** In the multiplayer server list, select
+   the server, press **Edit**, and set **Server Resource Packs** to **Enabled**
+   or **Prompt**. On **Disabled** the game turns down every pack the server
+   sends without asking, and a player who once pressed **No** at the prompt
+   can be left on Disabled.
+
+Being sent the pack on every join is normal, not a fault: the server sends it
+each time, and the game reuses the copy it already downloaded unless the pack
+has changed.
 
 ## The pack and the join prompt
 
