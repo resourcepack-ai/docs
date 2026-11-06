@@ -73,6 +73,7 @@ engine.music();         // background music: playlists, one per player
 engine.icons();         // icons, and putting one into text
 engine.textEffects();   // Text Effects, and writing text in one
 engine.vfx();           // VFX: play one where somebody stands
+engine.stingers();      // Stinger Transitions: cover a screen, do something, uncover it
 engine.mobs();          // custom mobs: spawn one, animate one, give an egg
 engine.skills();        // mob skills: add a mechanic, condition or targeter; cast one
 engine.overlays();      // HUD overlays: show one, hide one, feed it values
@@ -96,6 +97,7 @@ engine.music()          // background music: playlists, one per player
 engine.icons()          // icons, and putting one into text
 engine.textEffects()    // Text Effects, and writing text in one
 engine.vfx()            // VFX: play one where somebody stands
+engine.stingers()       // Stinger Transitions: cover a screen, do something, uncover it
 engine.mobs()           // custom mobs: spawn one, animate one, give an egg
 engine.skills()         // mob skills: add a mechanic, condition or targeter; cast one
 engine.overlays()       // HUD overlays: show one, hide one, feed it values
@@ -1332,6 +1334,62 @@ vfx.play(id, player, VfxOptions.builder()
 `stop()` (now), `finish()` (a loop plays out its fade), `options()`, `age()`
 and `passes()`. A Studio VFX is shown only to the players whose pack has it. Main
 thread only.
+
+
+## Stinger Transitions
+
+A [Stinger Transition](/stinger-transitions) covers a player's whole screen,
+holds, and uncovers it. Studio's pack draws it and the engine only times it, so
+there is nothing to place and nothing to clean up. Run your code while the
+screen is covered: a teleport, a world load, a match starting.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+Stingers stingers = engine.stingers();
+ContentId arena = ContentId.parse("studio:arena").orElseThrow();
+
+// In, then teleport while covered, then its own hold, then out.
+stingers.play(player, arena, () -> player.teleport(lobby));
+
+// Held until you say so: a world loading, a match filling.
+stingers.cover(player, arena, () -> startLoading(player))
+        .ifPresent(play -> whenLoaded(play::release));
+```
+
+```kotlin
+val stingers = engine.stingers()
+val arena = ContentId.parse("studio:arena").orElseThrow()
+
+// In, then teleport while covered, then its own hold, then out.
+stingers.play(player, arena) { player.teleport(lobby) }
+
+// Held until you say so: a world loading, a match filling.
+stingers.cover(player, arena) { startLoading(player) }
+    .ifPresent { play -> whenLoaded { play.release() } }
+```
+
+</CodeTabs>
+
+| Method | What it does |
+|---|---|
+| `ids()` | Every stinger this server knows, as `studio:<id>` |
+| `info(id)` / `find(name)` | A `StingerInfo` (`name()`, `inTicks()`, `holdTicks()`, `outTicks()`, `soundIn()`, `soundOut()`), by ID or by what somebody typed |
+| `canPlay(player, id)` | Whether this player's pack holds the stinger |
+| `play(player, id, whenCovered)` | In, the stinger's own hold, out. `whenCovered` runs once the screen is fully covered |
+| `play(player, id, holdTicks, whenCovered)` | The same, holding for as long as you say |
+| `cover(player, id, whenCovered)` | In, then holds until you call `release()` |
+| `playing(player)` / `stop(player)` | The stinger playing on a player, or end it now |
+
+Each play returns a `StingerPlay`: `release()` starts the out now,
+`isCovered()` and `isFinished()` say where it is, and `cancel()` clears the
+screen at once.
+
+A play answers empty, and `whenCovered` never runs, for an unknown ID or for a
+player whose pack does not hold the stinger: it is drawn by the pack it came
+in. A new play on a player replaces the one already playing on them, and a
+player leaving ends theirs quietly. Call these from any thread; `whenCovered`
+runs on the player's own thread (their region's, on Folia).
 
 ## Custom mobs
 
