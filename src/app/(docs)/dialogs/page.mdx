@@ -73,22 +73,16 @@ Several features need a recent plugin version: see [Plugin versions](#plugin-ver
 
 Say what the screen is for: "a settings menu with video, audio and chat", "a
 pet menu where you can rename and summon your pet", "a crate menu for a prison
-server". The AI first decides how it should look: a [kit](#kits), colours (or
-the ones you name, or your pack's [Style Guide](/generating#writing-a-prompt)
-palette), what leads the screen (a banner, a big featured card, a header row, or
-nothing but the content), whether every card gets a colour of its own, how loud
-it is, and what should move. Each generation starts from a different mix of
-these, so two prompts for a shop don't come back as the same screen. Ask for a
-banner by name and you get one. Then it builds the screen from the editor's own
-pieces, has the image model draw any banner and up to four illustrations (a
-crate, a key, a gift: things that aren't vanilla items), and looks at the result
-as a player would. It fixes cut-off labels and screens that are too tall, and
-makes one thing the focal point, before saving. Generated dialogs are
-[HD](#hd).
+server". The AI first decides how it should look, choosing a [kit](#kits),
+colours (or the ones you name, or your pack's [Style
+Guide](/generating#writing-a-prompt) palette), a banner and what should move.
+Then it builds the screen from the editor's own pieces, draws the banner's
+picture, and looks at the result as a player would. It fixes cut-off labels and
+screens that are too tall, and makes one thing the focal point, before saving.
 
 - A dialog costs **30 AI Credits**.
 - **Variations** makes up to three dialogs from one prompt, each with a
-  different look and a different arrangement, at 30 credits each.
+  different look, at 30 credits each.
 - Tick **Multi page** for a sidebar or tabs with a page behind each button,
   every page written for its name. Name the pages you want in the prompt, up to
   ten. It costs 30 credits for the first page and 5 for each one after.
@@ -295,7 +289,6 @@ Under **Look** in a button's panel:
 | Look | What it does |
 | --- | --- |
 | **Selected** | Draws it lit (gold on the game's button, the accent on the theme's): "you are here", or a card's main action. |
-| **Candy** | A chunky glossy button in its own colour, with a dark edge and a deep lip: green to buy, gold for the best deal. Same size as the game's button. Pick it under **Button**. |
 | **Greyed out** | Draws it grey with faded words and icon, like a disabled button in the game. It only changes the picture: a click still runs its action, so set **When clicked** to **Nothing** if it shouldn't do anything. |
 | **Words from the left** | Starts its label at the left edge rather than centred, for a sidebar of buttons. |
 
@@ -528,7 +521,6 @@ settings:
 | Kit | Looks like |
 | --- | --- |
 | **Classic** | The plain raised cards, in any colours. |
-| **Pop** | Bright and glossy, chunky dark outlines, fat lettering with depth: a big server's shop, crates, events. |
 | **Scroll** | Parchment in a gilded frame, wax-red accents. |
 | **Luxe** | Near-black velvet with gold trim and glowing highlights. |
 | **Glass** | Dark glass with bright corner brackets and scanlines. |
@@ -574,14 +566,11 @@ Any row, column or card has a **Look** section in its panel:
   **Darken for words** so a title reads over it. Choose one of your images, one
   of the **Starter banners** (free), or **Draw it with AI**: describe a scene
   and the image model paints it at exactly the box's size (10 AI Credits).
-- **Fill** in a colour of its own, fading down, across or out from the middle
-  to a second one. Words on it take colours that read on it.
-- **Sunburst**: rays behind the box's content, in a colour, from its middle or
-  from its left or right (behind an item there). **Gloss over the top** adds a
-  shine across its upper half.
+- **Fill** in a colour of its own, fading down or across to a second one. Words
+  on it take colours that read on it.
 - **Made of**: planks, parchment, stone, bricks, velvet, glass, frost, magma,
   leaves, metal, stars or grid.
-- **Corners** (up to 8), **Border** (thin, thick or chunky), **Bevel**, **Drop shadow**, **Glow**,
+- **Corners**, **Border** (thin or thick), **Bevel**, **Drop shadow**, **Glow**,
   **Corner ornaments** (gold, brackets or rivets) and **Opacity**.
 
 A **Banner** from the **Decor** shelf is a box like this, ready-made: a picture
@@ -590,38 +579,18 @@ its right. Its art prompt is already in its panel, ready to draw.
 
 ### Lettering, glows and decorations
 
-- **Lettering** on a text piece: an **Outline** (thin or thick), a **Depth
-  under the letters** for a cartoon title, letters that **Fade** to a second
-  colour, and a **Shadow** colour. **Auto** leaves each to the kit, which
-  letters titles and headings its own way; **None** turns it off, so the words
-  are just their colour. **Huge** and **Giant** sizes draw words three and four
-  times their size.
+- **Lettering** on a text piece: an **Outline**, letters that **Fade** to a
+  second colour, and a **Shadow** colour or none. **Huge** and **Giant** sizes
+  draw words three and four times their size.
 - An icon's **Glow** puts a soft halo behind it, and **Burst of rays** a ring of
-  rays: for the thing to look at. **Sticker** draws an icon or a picture cut
-  out, with a white outline round its shape and a soft shadow.
-- A badge's **Pin to a corner** puts it on a corner of the piece before it,
-  overhanging it and taking no room: a count on a price button, a "+1", a
-  "NEW!" on a card.
-- A badge can be a **Ribbon** with notched ends, a **Pill**, a **Circle** (a
-  "+1") or a **Starburst** ("NEW!"). A divider can be an
+  rays: for the thing to look at.
+- A badge can be a **Ribbon** with notched ends. A divider can be an
   **Ornament**, **Glow**, **Fade** or **Dots** line.
 - A **Decoration** scatters sparkles, stars, confetti or hearts over its box.
   Place it anywhere, over a banner or round a reward.
 
 Words that hold a [live value](#live-values) are drawn by the game, so they
 keep its font and take no lettering.
-
-### HD
-
-**Detail**, in the dialog's settings, is how finely the dialog is drawn:
-**Normal**, **HD** (twice the detail) or **Ultra** (four times, a texel per
-screen pixel at the game's usual GUI scale). Above Normal, corners are really
-round, fades and glows are smooth, sunbursts have clean edges, and pictures keep
-more of their pixels. The size and layout don't change, it needs nothing new on
-the server, and every player sees it. New dialogs start on Ultra. The cost is a
-bigger pack, because a finer picture is cut into more, smaller pieces. A page
-that is too big for its detail is drawn at the next one down: Ultra up to about
-300 pixels tall, HD up to about 500.
 
 ### Motion
 
