@@ -72,8 +72,31 @@ holding every tag would wear whichever ranks highest. Every other node here is.
 holds it rewrite files in your content folder from a browser; see
 [Editing in a browser](/rp-engine/editing).
 
-Content can carry its own node too: `permission:` on an item or a model, which
-is checked when it is used or placed.
+## Letting players use your items
+
+Players need no node to use your custom items, tools and models. An item with
+no `permission:` works for everybody who holds it. The nodes on this page are
+for commands (`rpengine.give` lets somebody run `/rp give`, not use what it
+gives), so granting them is never what makes an item work.
+
+To keep an item for some players only, give it a node of your own name:
+
+```yaml
+wand:
+  material: STICK
+  permission: mypack.wand
+```
+
+Then grant that exact node:
+
+```
+/lp group member permission set mypack.wand true
+```
+
+It is checked when the item is used (clicked, or placed if it is a model or
+furniture), not when it is given or held. A player without it is told "You
+cannot use that." If an item does nothing when clicked and says nothing either,
+it is not a permission problem: look at its [actions](/rp-engine/actions).
 
 ## Pointing a command at somebody else
 

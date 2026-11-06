@@ -195,6 +195,20 @@ wand:
 
 Checked when the item is **used** (clicked, or placed if it is furniture), not
 when it is given or held. A player without it is told "You cannot use that."
+See [Permissions](/rp-engine/permissions#letting-players-use-your-items).
+
+## The creative inventory
+
+Custom items don't appear in the creative inventory's tabs or its search. The
+game builds those from its own list of vanilla items, and a server can't add
+to them. To pick custom items from a menu, run `/rp item menu`: a chest of
+every custom item, click for one and shift-click for a stack. It needs
+`rpengine.item`, which only ops have unless you grant it.
+
+A player in creative mode can copy any item they can see in their own
+inventory, a custom one included, and RP Engine doesn't prevent it. Keep
+creative mode from players who mustn't have your items, rather than relying on
+them not finding one.
 
 ## Where to go next
 
