@@ -1,14 +1,14 @@
 export const metadata = {
-  title: "Stinger Transitions",
+  title: "Transitions",
   description:
     "Full-screen transitions that cover a player's screen while your server teleports them or starts a match, then uncover it: wipes, irises, ink splats, pixels, with your words on top. Drawn by your pack at full frame rate.",
 };
 
-# Stinger Transitions
+# Transitions
 
-A Stinger Transition covers a player's whole screen, holds while your server
+A Transition covers a player's whole screen, holds while your server
 changes something underneath (a teleport, a match starting, a world loading),
-then uncovers it again. It's the animation streamers put between two scenes,
+then uncovers it again. It's what streamers call a stinger transition, put between two scenes,
 in Minecraft: a slanted dash of colour, a cartoon iris, paint splats that
 join up, blocks that pop in.
 
@@ -17,7 +17,7 @@ window size. The server only says when.
 
 ## Making one
 
-Press **Add asset**, then the **Stinger** tab. Either:
+Press **Add asset**, then the **Transition** tab. Either:
 
 - **Describe it** ("an ink splat for a paintball server called SPLATMC").
   Studio designs three different takes, looks at each one drawn, tidies them
@@ -29,7 +29,7 @@ Press **Add asset**, then the **Stinger** tab. Either:
 
 ## The editor
 
-The stinger plays over a Minecraft screen, from one scene to another, exactly
+The transition plays over a Minecraft screen, from one scene to another, exactly
 as the game draws it. Drag along the timeline under it to look at any moment,
 or press Space to pause.
 
@@ -45,7 +45,7 @@ or press Space to pause.
   on** (a wipe leaves out of the far side) or **goes back** (an iris opens
   again).
 - **Layers**: up to four colours that chase each other in, the classic
-  stinger look. The front one covers the screen while it holds, and any layer
+  transition look. The front one covers the screen while it holds, and any layer
   can have a moving pattern: stripes, checker, dots, a grid, a gradient or
   noise.
 - **Edge line**: a band of colour along the front layer's moving edge.
@@ -64,10 +64,10 @@ or press Space to pause.
 
 Sync the pack (or publish it with [Distribution](/distribution)), then:
 
-**With [RP Engine](/rp-engine)** (0.2.63 or newer):
+**With [RP Engine](/rp-engine)** (0.2.64 or newer):
 
 ```
-/rp stinger studio:<id> [player] [hold ticks]
+/rp transition studio:<id> [player] [hold ticks]
 ```
 
 The editor's **Play in game** button plays it on you. A plugin can cover the
@@ -75,21 +75,21 @@ screen, do something, and uncover it:
 
 ```java
 RPEnginePlugin engine = (RPEnginePlugin) Bukkit.getPluginManager().getPlugin("RPEngine");
-engine.stingers().play(player, ContentId.parse("studio:arena").orElseThrow(), () -> player.teleport(arena));
+engine.transitions().play(player, ContentId.parse("studio:arena").orElseThrow(), () -> player.teleport(arena));
 ```
 
 `cover(...)` holds until you call `release()` on what it returns, for when you
-don't know how long the wait is. Anyone running `/rp stinger` needs
-`rpengine.stinger`, and `rpengine.stinger.others` to play one on somebody else.
+don't know how long the wait is. Anyone running `/rp transition` needs
+`rpengine.transition`, and `rpengine.transition.others` to play one on somebody else.
 
 **With plain commands**, from a command block, a datapack or any plugin: the
-editor shows the commands for each stinger, ready to copy. One set plays the
+editor shows the commands for each transition, ready to copy. One set plays the
 whole thing (in, hold, back out); another covers the screen and a third
 uncovers it, so you can do something in between.
 
 ## How it works
 
-A stinger is a title. Its one character, drawn in one of the stinger's own
+A transition is a title. Its one character, drawn in one of the transition's own
 colours, is stretched over the whole screen by your pack's text shader, which
 draws the transition there. The game fades a title in and out smoothly between
 ticks, and the shader reads how far through the fade it is, which is why it
