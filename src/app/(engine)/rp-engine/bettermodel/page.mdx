@@ -6,15 +6,27 @@ export const metadata = {
 
 # Moving from BetterModel
 
-RP Engine reads BetterModel's plugin folder as it is. Copy
-`plugins/BetterModel/` into `plugins/RPEngine/content/` as `bettermodel/` and
-start the server. The folder name is the [namespace](/rp-engine/ids), so it has
-to be lowercase: a folder called `BetterModel` is refused rather than folded,
-and the load says so.
+If you used BetterModel, RP Engine can use your BetterModel files as they are,
+with no converting. Its **models** become items you can give, place and put on
+mobs, and its **player animations** become emotes.
+
+<Steps>
+  <Step title="Copy the folder">
+    Copy `plugins/BetterModel/` into `plugins/RPEngine/content/` and name the
+    copy `bettermodel`, in lower case.
+  </Step>
+  <Step title="Restart or reload">
+    Restart the server, or run `/rp reload`. The console lists what loaded and
+    anything it couldn't use.
+  </Step>
+  <Step title="Try a model">
+    `/rp give bettermodel:knight` gives you the item for `models/knight.bbmodel`.
+  </Step>
+</Steps>
 
 ```
 plugins/RPEngine/content/
-  bettermodel/                ← straight out of plugins/BetterModel/
+  bettermodel/                ← a copy of plugins/BetterModel/
     models/knight.bbmodel     →  bettermodel:knight, an item wearing it
     players/steve.bbmodel     →  every animation in it, an emote: /emote roll
     players/dance.bbmodel     →  dance_<animation>
@@ -22,10 +34,11 @@ plugins/RPEngine/content/
     build/                    ← ignored
 ```
 
-There is nothing to turn on and no `pack.yml` is needed: a folder of
-Blockbench files is plainly BetterModel's, and loads as a pack named after the
-folder. `build/` is the resource pack BetterModel generated, which is its
-output rather than anything to read, so it is skipped.
+The folder's name becomes the start of every ID in it (its
+[namespace](/rp-engine/ids)), which is why it must be lower case: a folder
+called `BetterModel` is refused, and the console says so. You don't need a
+`pack.yml` or any setting. `build/` is the resource pack BetterModel made
+from these files; RP Engine builds its own, so it skips that folder.
 
 ## Models become items
 

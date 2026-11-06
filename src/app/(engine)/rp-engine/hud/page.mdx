@@ -6,58 +6,125 @@ export const metadata = {
 
 # HUD overlays
 
-An overlay is a picture drawn on top of the game view, like a mana bar, a
-compass or a frame round the screen. It sits in one of two places the game
-already draws text (the action bar or the boss bar), so it needs no client mod.
-Put the YAML in a `huds/` folder of your [content folder](/rp-engine/content)
-and the picture in its `assets/textures/gui/`.
+An overlay is a picture drawn on top of the game view while a player plays:
+a mana bar, a compass, a frame round the edge of the screen. Players need no
+mod to see one. RP Engine puts the picture in its resource pack and draws it
+where the game already draws a line of text:
+
+- the **action bar**, just above the hotbar, where the name of the item you're
+  holding appears, or
+- the **boss bar**, at the top of the screen, where a boss's name and health
+  bar appear.
 
 ![A custom HUD](/images/hud.webp)
 
-```yaml
-# huds/overlays.yml
-mana:
-  file: mana             # assets/textures/gui/mana.png. Defaults to the id
-  slot: action_bar       # action_bar | boss_bar
-  height: 64
-  ascent: 32
-  offset: 0
-```
+There are two kinds:
 
-`/rp hud mypack:mana [player]` shows one and `/rp hud clear [player]` takes it
-away. `/rp screens` lists overlays along with screens.
+| Kind | What it is | Made with |
+|---|---|---|
+| **A picture overlay** | One fixed PNG. To show a change (a mana bar emptying), you swap between several overlays | A few lines of YAML and a PNG, below |
+| **A Studio shader overlay** | Shapes, labels, player heads and progress bars, with text that updates live | Studio's [Shaders](/shaders) editor. See [Shader overlays from Studio](#shader-overlays-from-studio) |
+
+## Making a picture overlay
+
+<Steps>
+  <Step title="Add the picture">
+    Put the PNG in your [content folder](/rp-engine/content)'s
+    `assets/textures/gui/`, for example
+    `plugins/RPEngine/content/mypack/assets/textures/gui/mana.png`.
+  </Step>
+  <Step title="Describe it">
+    Make a `.yml` file in the content folder's `huds/` folder. Each top-level
+    key is one overlay:
+
+    ```yaml
+    # plugins/RPEngine/content/mypack/huds/overlays.yml
+    mana:
+      file: mana             # assets/textures/gui/mana.png. Defaults to the key
+      slot: action_bar       # action_bar or boss_bar
+      height: 64
+      ascent: 32
+      offset: 0
+    ```
+
+    The overlay's ID is the content folder's name and the key:
+    `mypack:mana`.
+  </Step>
+  <Step title="Reload and show it">
+    Run `/rp reload`, then:
+
+    ```
+    /rp hud mypack:mana            # show it to yourself
+    /rp hud mypack:mana Steve      # show it to Steve
+    /rp hud clear Steve            # take Steve's overlays away
+    /rp screens                    # list every overlay and screen
+    ```
+  </Step>
+</Steps>
+
+An overlay stays on screen until it is cleared. RP Engine keeps re-sending it,
+because the game fades the action bar out after a couple of seconds.
 
 | Field | Default | What it does |
 |---|---|---|
-| `slot` | `action_bar` | `action_bar` sits above the hotbar (where item names appear). `boss_bar` sits at the top of the screen |
-| `height` | 64 | How tall the picture is drawn, 1 to 256 |
-| `ascent` | 32 | How far up from the slot's line it is moved. Bigger is higher. Can't be more than `height` (it is capped, with a warning) |
-| `offset` | 0 | Horizontal shift, 0 to 512 |
+| `file` | the key | The PNG's name in `assets/textures/gui/`, without `.png` |
+| `slot` | `action_bar` | `action_bar` (above the hotbar) or `boss_bar` (top of the screen) |
+| `height` | 64 | How tall the picture is drawn, in pixels, 1 to 256. The width follows from the PNG's shape |
+| `ascent` | 32 | How far the picture is raised above the slot's line of text. Bigger is higher. It can't be more than `height`: a bigger value is lowered to `height`, with a warning |
+| `offset` | 0 | Moves the picture left, 0 to 512. The slot's line is centred, so the picture moves by half this many pixels: `offset: 40` moves it 20 to the left. At 0 it is centred |
 
-When several overlays are shown at once, the one shown most recently is the
-one you see.
+**Several overlays at once:** a player can be shown several, but each slot
+shows one picture. The one shown most recently is the one they see.
 
 ## Making it change
 
-The picture itself is fixed. A mana bar that empties is several overlays, with
-something choosing which to show: usually a scoreboard or menu plugin using
-[a placeholder](/rp-engine/placeholderapi), or your own plugin calling the
-[API](/rp-engine/api#hud-overlays).
+A picture overlay never changes on its own. A mana bar that empties is
+several overlays (`mana_100`, `mana_75`, `mana_50` and so on), and something
+on the server shows the right one at the right time:
 
-## Live values in text
+- a scoreboard or menu plugin that runs `/rp hud` from a
+  [placeholder](/rp-engine/placeholderapi) or a condition, or
+- your own plugin, through the [API](/rp-engine/api#hud-overlays).
 
-Any `{name}` in an overlay's text is filled in for each player just before it's
-sent. The first of these that knows the name wins:
+For a bar or a number that follows a value smoothly, use a Studio shader
+overlay instead.
 
-1. A value a plugin set with `overlays().set(player, name, value)`. A
-   [dialog](/dialogs#live-values) shows the same values.
+## Shader overlays from Studio
+
+Studio's Shaders editor makes far richer overlays: freehand paint, smooth
+shapes, and labels, player heads and progress bars that update live. See
+[Shaders](/shaders) for making one. You get it onto the server by pressing
+**Sync** or by [publishing the pack](/distribution).
+
+On the server their IDs start with `studio:`.
+
+```
+/rp shaders                          # list them
+/rp shader studio:mana_bar           # show one to yourself
+/rp shader studio:mana_bar Steve     # show one to Steve
+/rp shader clear                     # hide it
+```
+
+Rules set in Studio (for example "while holding an item") show one with no
+command at all, and a plugin can show, hide and feed one through the
+[API](/rp-engine/api#hud-overlays). A player only sees one if they have the
+pack it came from.
+
+### Live values in text
+
+A shader overlay's labels can hold `{name}` placeholders, filled in for each
+player just before it's sent. For each name, the first of these that knows
+it wins:
+
+1. A value your plugin set with `overlays().set(player, name, value)`. A
+   [dialog](/dialogs#live-values) can show the same values.
 2. The built-ins below.
-3. PlaceholderAPI, if installed: `{vault_eco_balance}` or `%vault_eco_balance%`.
-   A placeholder with arguments works as you would write it anywhere else,
-   `%server_time_HH:mm%` or `%stat_{player_name}%`, and is handed to
-   PlaceholderAPI exactly as written.
+3. PlaceholderAPI, if installed: `{vault_eco_balance}` or
+   `%vault_eco_balance%`. A placeholder with arguments is written as it would
+   be anywhere else, such as `%server_time_HH:mm%` or `%stat_{player_name}%`,
+   and is passed to PlaceholderAPI exactly as written.
 
-A name nobody knows becomes empty rather than showing `{name}`.
+A name nothing knows shows as nothing, rather than as `{name}`.
 
 | Placeholder | What it shows |
 |---|---|
@@ -72,25 +139,14 @@ A name nobody knows becomes empty rather than showing `{name}`.
 | `{gamemode}` | Survival, Creative, and so on |
 | `{online}`, `{max_online}` | Players online, and the limit |
 
-## Shader overlays from Studio
+An overlay is re-sent every `overlays.trigger-ticks` ticks (default 2, set in
+[config.yml](/rp-engine/config)), so a built-in or PlaceholderAPI value is at
+most that far behind. A value set from a plugin is drawn on the next tick.
 
-Studio's Shaders editor makes far richer overlays: freehand paint, smooth
-shapes, and labels, player heads and progress bars that update live. See
-[Shaders](/shaders) for making one.
+### Keeping one in a content folder
 
-On the server they have the id `studio:<id>`. `/rp shaders` lists them and
-`/rp shader studio:<id> [player]` shows one (`/rp shader clear` hides it).
-Rules set in Studio (for example "while holding an item") can show one with no command, and a plugin can show, hide
-and feed it through the [API](/rp-engine/api#hud-overlays). They are only drawn
-for players who have the pack they came from.
-
-An overlay a player is wearing is re-sent every `overlays.trigger-ticks` ticks
-(default 2) from [config.yml](/rp-engine/config). A value set from a plugin is
-drawn on the next tick regardless.
-
-### Shipping one in a content folder
-
-A Studio HUD exported as JSON can live in a content folder too:
+Instead of syncing, you can keep a Studio HUD in a content folder, using the
+JSON and the resource pack files Studio's export writes:
 
 ```yaml
 # huds/huds.yml
@@ -98,6 +154,6 @@ hud:
   json: mypack/huds/hud.json   # path under the content folder
 ```
 
-Its glyphs and shader go in the pack's `resourcepack/` folder, and Studio's
-exporter writes both. A boss-bar HUD whose picture uses its own font needs
-**Paper**; on Spigot use the action bar.
+Put the exported files in the content folder's `resourcepack/` folder. A
+boss-bar HUD whose picture uses its own font needs **Paper**; on Spigot, use
+the action bar.
