@@ -429,8 +429,9 @@ never filled, so nobody can type a placeholder into a text box to read
 somebody else's.
 
 **Choices.** `{mode?on:Enabled|off:Disabled|Unknown}` prints the words for the
-value `mode` has, or the last entry when none matches. `$value` prints the value
-itself:
+value `mode` has, or the last entry when none matches. A `*` entry matches any
+value that is not empty (`{nick?*:Has a nickname|None}`). `$value` prints the
+value itself:
 
 ```yaml
 - "<gray>Chat: {chat?true:<green>on|false:<red>off|$value}"
@@ -455,6 +456,8 @@ an action.
 - `perm:node` is whether the player has that permission.
 - A placeholder nothing could fill counts as false.
 - Quote a value with spaces in it.
+- A condition that cannot be read (a bracket never closed, two values with
+  nothing between them) counts as false, and the console says why once.
 
 A button's `if:` and `permission:` are checked again when it is pressed, so a
 button that stopped applying after the dialog was drawn does nothing.
