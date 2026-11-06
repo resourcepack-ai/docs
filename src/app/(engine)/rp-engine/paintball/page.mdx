@@ -103,7 +103,7 @@ in your team's colour.
 | **Right-click** the grenade | Throw it |
 | **Right-click** the ground with the mine | Set it |
 | **F** | The scoreboard |
-| **Tab** | The player list: the score and the clock on top, each player's kills and deaths |
+| **Tab** | The scoreboard in the player list: the score and the clock on top, and a tile for every player with their kills and deaths |
 
 **Every ball lands on the crosshair.** Balls drop and slow as they fly, but
 are aimed so they arrive where you are looking. From the hip they stray a
@@ -152,6 +152,16 @@ HUD**:
 **The scoreboard** (F, `/pb scoreboard`, or the lobby's item) is a dialog with
 both teams' tables, the top five of each, best first: each player's face,
 kills, deaths and accuracy.
+
+**The player list** (Tab) is a scoreboard too. Under the name, the mode, the
+map, the score and the clock, every player has a tile in their colour with
+their name and their kills and deaths: a column a team, red on the left, or in
+a free for all everybody best first with their place. Your own tile is lit,
+and the name of somebody who is out is greyed. In the lobby it shows who is
+waiting, in the colour of the side they picked. On Paper the players in the
+match are taken off the list under the tiles, which already show them; Spigot
+has no way to, so there they stay. `tab.scoreboard: false` keeps the game's own
+list instead.
 
 ### While you are playing
 
@@ -485,6 +495,13 @@ hud:
   hit-marker-ticks: 6
   # Seconds left at which a pling sounds and the time left is shown.
   time-warnings: [60, 30, 10, 5, 4, 3, 2, 1]
+
+tab:
+  # The player list (Tab) as the match's scoreboard: a tile for every player
+  # with their name, kills and deaths. false leaves the game's own list.
+  scoreboard: true
+  # On Paper, the match's players are taken off the list under the tiles.
+  hide-players: true
 
 nametags:
   # The names over players' heads. The game's own show through walls; with this
