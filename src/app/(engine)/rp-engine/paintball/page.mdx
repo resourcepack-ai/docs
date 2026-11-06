@@ -540,9 +540,12 @@ update-check: true
 settings apply on top of both (`/pb arena set <arena> modes.ctf.respawn-seconds 6`).
 
 **Every word a player reads** is under `messages:` in the same file, in
-[MiniMessage](https://docs.advntr.dev/minimessage/format.html). The big words
-in the middle of the HUD (GO!, SPLATTED BY, VICTORY...) can use only A to Z,
-digits, `!`, `-`, `'` and spaces.
+[MiniMessage](https://docs.advntr.dev/minimessage/format.html): the HUD's, the
+scoreboard's (its headings and its Close button), the player list's, and the
+names of the teams, the paint colours and the markers (`team-red`,
+`colour-purple`, `marker-ember`...). The big words in the middle of the HUD
+(GO!, SPLATTED BY, VICTORY...) can use only A to Z, digits, `!`, `-`, `'` and
+spaces.
 
 **To replace the HUD or a scoreboard** with your own RP Engine HUD or Dialog,
 point `ui.hud`, `ui.hud-ffa`, `ui.scoreboard`, `ui.scoreboard-ffa` or
