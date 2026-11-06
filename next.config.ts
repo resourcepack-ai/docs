@@ -125,6 +125,8 @@ const nextConfig: NextConfig = {
       // Playback and layers were pages of their own; they are sections of Animation now.
       { source: "/rp-engine/playback", destination: "/rp-engine/animation#controlling-playback", permanent: true },
       { source: "/rp-engine/layers", destination: "/rp-engine/animation#layers-and-masks", permanent: true },
+      // Transitions were Stinger Transitions on their first day (2026-11-06).
+      { source: "/stinger-transitions", destination: "/transitions", permanent: true },
     ];
   },
 };
