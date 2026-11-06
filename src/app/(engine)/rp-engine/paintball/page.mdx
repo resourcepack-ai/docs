@@ -165,6 +165,11 @@ Choose an arena's mode with `/pb arena set <arena> mode ffa`, or play another
 one for a single match with `/pb start <arena> ctf`. The lobby says which mode
 is next.
 
+`max-players` caps how many people an arena takes, its lobby and its match
+together, so one arena can be a four-player free for all and another a 5v5
+(`/pb arena set <arena> max-players 4`). Anybody past it is told the arena is
+full. Bots are not counted, and 0 is no limit.
+
 ### Free for all
 
 Every player gets one of eight paint colours (red, blue, green, orange, yellow,
@@ -476,6 +481,10 @@ nametags:
 # What an arena plays unless it sets its own: teams, ffa or ctf.
 mode: teams
 
+# The most people one arena takes, its lobby and its match together; anybody
+# after that is told it is full. Bots are not counted. 0 for no limit.
+max-players: 0
+
 ffa:
   # The paint colours handed out, in this order, one to a player.
   colours: [red, blue, green, orange, yellow, purple, pink, cyan]
@@ -569,6 +578,7 @@ match; a draw is neither a win nor a loss.
 |---|---|
 | `%paintball_arena_status_<arena>%` | Maintenance (closed), Not Configured, Ready, Starting, In Game or Ending |
 | `%paintball_arena_players_<arena>%` | How many are in its lobby or match |
+| `%paintball_arena_max_<arena>%` | How many it takes (`max-players`), 0 for no limit |
 | `%paintball_arena_plays_<arena>%` | How many matches it has had |
 | `%paintball_arena_name_<arena>%` | Its display name |
 | `%paintball_arena_red_<arena>%`, `%paintball_arena_blue_<arena>%` | Each team's score in its current or last match: kills, or in capture the flag captures |
