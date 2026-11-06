@@ -59,6 +59,7 @@ holds:
 | Item | What it does |
 |---|---|
 | **Colour** (the marker) | Right-click for the next colour, and round again to Any. Your paint in a free for all; in a team match, your marker |
+| **Practise** (the target) | Down onto the field to practise until the match starts. See [Practising](#practising) |
 | **Play for Red** / **Play for Blue** | Pick a side for the next match. Click the same one again to leave it to chance |
 | **Scoreboard** | The scoreboard of the last match |
 | **Leave** | Back to where you were, with your things |
@@ -73,6 +74,20 @@ paint stays your team's and only the marker changes. `colour-pick: false` in
 the config turns choosing off.
 
 More players than spawns is fine: they share them.
+
+### Practising
+
+While the lobby waits for a match, the target in the hotbar (or
+`/pb practice`) takes you down onto the field to try the marker and learn the
+map. You get the marker and the grenade, in the colour you chose or your
+side's, and everybody down there plays against everybody. A hit sends whoever
+it hit straight back to a spawn, the HUD keeps a practice score, and nothing
+counts towards anything. The feather in your last slot, or `/pb practice`
+again, takes you back up to the lobby.
+
+When the match starts, everybody practising is put at their spawn like
+everybody else and the paint comes off the walls. `practice: false` in the
+config, or for one arena with `/pb arena set`, turns practising off.
 
 ### In a match
 
@@ -339,6 +354,7 @@ what you may run.
 | `/pb join [arena]` | Into the lobby. `/pb` on its own does the same |
 | `/pb team <red\|blue\|auto>` | The side you would like, from the next match |
 | `/pb colour <colour\|auto>` | Your colour from the next match: your paint in a free for all, your marker in a team match |
+| `/pb practice` | Down onto the field to practise while the lobby waits, or back up |
 | `/pb leave` | Out, with your inventory and position back |
 | `/pb scoreboard` | The match scoreboard (F in a match or its lobby) |
 | `/pb start [arena] [teams\|ffa\|ctf]` | Start a match now, in the arena's mode or another, joining you first if you are not in |
@@ -369,11 +385,12 @@ grant the nodes under them. `/pb leave` needs no permission.
 
 | Node | What it allows | Default |
 |---|---|---|
-| `paintball.play` | Everything a player does: join, pick a team and a colour, the scoreboard. Grants the four below | Everyone |
+| `paintball.play` | Everything a player does: join, pick a team and a colour, the scoreboard, practising. Grants the five below | Everyone |
 | `paintball.join` | `/pb join`: into an arena's lobby | Everyone |
 | `paintball.team` | `/pb team`, and the red and blue items in the lobby's hotbar | Everyone |
 | `paintball.colour` | `/pb colour`, and the marker in the lobby's hotbar, which picks your colour | Everyone |
 | `paintball.scoreboard` | `/pb scoreboard`, F in a match or its lobby, and the lobby's scoreboard item | Everyone |
+| `paintball.practice` | `/pb practice`, and the target in the lobby's hotbar, which takes you down onto the field to practise | Everyone |
 | `paintball.admin` | Every staff node: start, stop, reload, `/pb as`, arenas, the command bypass. Grants the eight below | Operators |
 | `paintball.start` | `/pb start`: start a match now, in any mode (it joins you first if you are not in) | Operators |
 | `paintball.stop` | `/pb stop`: end a match, or empty a lobby | Operators |
@@ -410,6 +427,11 @@ spawn-protection-radius: 0
 spawn-protection-shape: circle
 # How long the final scoreboard stays up before everybody is back in the lobby.
 end-seconds: 12
+# While they wait for a match, players can go down onto the field to practise
+# (the target in the lobby's hotbar, or /pb practice): the marker and the
+# grenade, everybody down there against everybody, a hit sends you back to a
+# spawn, and nothing counts. The match starting puts everybody at their spawn.
+practice: true
 
 marker:
   # Ticks between shots while the trigger is held (3 = about seven a second).
