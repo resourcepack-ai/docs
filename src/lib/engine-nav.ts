@@ -259,6 +259,13 @@ export const engineNav: EngineGroup[] = [
           "item display", "sprite"],
       },
       {
+        title: "Transitions",
+        href: "/rp-engine/transitions",
+        description: "Cover a player's screen while the server teleports them, then uncover it.",
+        keywords: ["transition", "stinger", "wipe", "iris", "fade", "teleport", "loading", "title", "cover",
+          "cutscene", "screen"],
+      },
+      {
         title: "Rank Tags",
         href: "/rp-engine/rank-tags",
         description: "The badge in front of a player's name, drawn from YAML.",
