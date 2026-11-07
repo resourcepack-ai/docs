@@ -38,8 +38,10 @@ Several features need a recent plugin version: see [Plugin versions](#plugin-ver
       [Generating one](#generating-one).
     - **Blank**: start from nothing (a title, a line of words and a **Close**
       button) or from a **template**: an event shop, a quest board, a server
-      hub, a rank store, daily rewards, a crate, a profile, warps, rules or a
-      welcome screen.
+      hub, a rank store, daily rewards, a crate, a profile, warps, rules, a
+      welcome screen, an NPC conversation, a battle pass, a podium, a hero
+      offer, a character sheet, a game picker, a level-up screen or a staff
+      console.
 
     Your dialogs are listed on the pack's **Dialogs** tab.
   </Step>
@@ -73,16 +75,22 @@ Several features need a recent plugin version: see [Plugin versions](#plugin-ver
 
 Say what the screen is for: "a settings menu with video, audio and chat", "a
 pet menu where you can rename and summon your pet", "a crate menu for a prison
-server". The AI first decides how it should look, choosing a [kit](#kits),
-colours (or the ones you name, or your pack's [Style
-Guide](/generating#writing-a-prompt) palette), a banner and what should move.
-Then it builds the screen from the editor's own pieces, draws the banner's
-picture, and looks at the result as a player would. It fixes cut-off labels and
-screens that are too tall, and makes one thing the focal point, before saving.
+server". The AI first reads your prompt into a checklist: every section, item,
+count and name you gave. Then it decides what kind of screen it is (a
+conversation with an NPC, a battle pass track, a podium, one big featured
+offer, a character sheet, a game picker, a celebration, a staff console, a
+list, cards, and more) and how it should look: a [kit](#kits), colours (or the
+ones you name, or your pack's [Style Guide](/generating#writing-a-prompt)
+palette), a [button style](#button-looks), whether it opens with a banner, a
+big title or nothing, and what should move. Then it builds the screen from the
+editor's own pieces, keeping the names you gave exactly as you wrote them, and
+looks at the result as a player would. It fixes cut-off labels and anything
+from your prompt that went missing, before saving. Put a label in quotes
+("Daily Quests") to be sure it appears word for word.
 
 - A dialog costs **30 AI Credits**.
-- **Variations** makes up to three dialogs from one prompt, each with a
-  different look, at 30 credits each.
+- **Variations** makes up to three dialogs from one prompt, each a different
+  kind of screen in a different look, at 30 credits each.
 - Tick **Multi page** for a sidebar or tabs with a page behind each button,
   every page written for its name. Name the pages you want in the prompt, up to
   ten. It costs 30 credits for the first page and 5 for each one after.
@@ -291,6 +299,14 @@ Under **Look** in a button's panel:
 | **Selected** | Draws it lit (gold on the game's button, the accent on the theme's): "you are here", or a card's main action. |
 | **Greyed out** | Draws it grey with faded words and icon, like a disabled button in the game. It only changes the picture: a click still runs its action, so set **When clicked** to **Nothing** if it shouldn't do anything. |
 | **Words from the left** | Starts its label at the left edge rather than centred, for a sidebar of buttons. |
+
+A **Theme button** also has a **Style**: **Pill** (round ends), **Chunky** (a
+thick lip under it, a little taller: the big action), **Glossy**, **Stripes**,
+**Checks**, **Dots**, **Fade**, **Outline** (hollow, for a Cancel beside a
+chunky Buy), **Notched** (corners cut, for sci-fi screens) or **Price tag**.
+Each draws in the button's colour, or the accent when it is selected. Some
+[kits](#kits) dress their theme buttons in a style of their own; a style you
+pick wins.
 
 These are drawn into the dialog's picture, so a plugin can't switch them as the
 dialog opens. To show a button lit or greyed for some players only, draw it both
@@ -533,6 +549,11 @@ settings:
 | **Castle** | Grey stone bricks and gold. |
 | **Toy** | Flat grey plastic, round corners and a chunky shadow, for friendly hubs and tutorials. |
 | **Night** | A starry sky. |
+| **Comic** | Bold black ink outlines, printed dots and sunny colours, with chunky buttons. |
+| **Terminal** | A green-on-black screen with scanlines and hollow buttons. |
+| **Tide** | Rolling water with coral gold and pill buttons. |
+| **Blossom** | Soft pink with drifting petals and pill buttons. |
+| **Regal** | Royal purple cloth in a gold frame, with glossy buttons. |
 
 A kit comes in its own colours, and you can change them under **Colours**
 without losing the kit. Changing kit never moves anything: every piece keeps
@@ -585,6 +606,10 @@ its right. Its art prompt is already in its panel, ready to draw.
   draw words three and four times their size.
 - An icon's **Glow** puts a soft halo behind it, and **Burst of rays** a ring of
   rays: for the thing to look at.
+- An icon can **Sit in** an item slot, or a **Round**, **Diamond** or **Gem**
+  socket rimmed in its glow colour (or the accent), for rewards, products and
+  portraits. **Outline and shadow** gives an item a dark outline and a soft
+  shadow, so it reads like a polished sticker on any card.
 - A badge can be a **Ribbon** with notched ends. A divider can be an
   **Ornament**, **Glow**, **Fade** or **Dots** line.
 - A **Decoration** scatters sparkles, stars, confetti or hearts over its box.
