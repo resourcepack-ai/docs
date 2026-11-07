@@ -76,26 +76,32 @@ Several features need a recent plugin version: see [Plugin versions](#plugin-ver
 
 Say what the screen is for: "a settings menu with video, audio and chat", "a
 pet menu where you can rename and summon your pet", "a crate menu for a prison
-server". The AI first reads your prompt into a checklist: every section, item,
-count and name you gave. Then it decides what kind of screen it is (a
-conversation with an NPC, a battle pass track, a podium, one big featured
-offer, a character sheet, a game picker, a celebration, a staff console, a
-list, cards, and more) and how it should look: a [kit](#kits), colours (or the
-ones you name, or your pack's [Style Guide](/generating#writing-a-prompt)
-palette), a [button style](#button-looks), the look of its
-[tooltips](#tooltips), a [click sound](#click-sounds) to match, whether it opens
-with a banner, a big title or nothing, and what should move. Then it builds the
-screen from the editor's own pieces, keeping the names you gave exactly as you
-wrote them. Anything that isn't a Minecraft item (an animal, a pet, a mob, a
-character class, a crate or a key) is drawn for it as a small picture rather
-than shown as a spawn egg or a stand-in item. Then it looks at the result as a
-player would. It fixes cut-off labels and anything
-from your prompt that went missing, before saving. Put a label in quotes
-("Daily Quests") to be sure it appears word for word.
+server". The AI first decides how it should look, choosing a [kit](#kits),
+colours (or the ones you name, or your pack's [Style
+Guide](/generating#writing-a-prompt) palette), a banner and what should move.
+Then it builds the screen from the editor's own pieces, draws the banner's
+picture, and looks at the result as a player would. It fixes cut-off labels and
+screens that are too tall, and makes one thing the focal point, before saving.
+
+Tick **New styles** for the newer generator. It reads your prompt into a
+checklist first: every section, item, count and name you gave. Then it decides
+what kind of screen it is (a conversation with an NPC, a battle pass track, a
+podium, one big featured offer, a character sheet, a game picker, a
+celebration, a staff console, a list, cards, and more) and how it should look:
+a [kit](#kits) (the newer ones included), colours, a
+[button style](#button-looks), the look of its [tooltips](#tooltips), a
+[click sound](#click-sounds) to match, whether it opens with a banner, a big
+title or nothing, and what should move. It keeps the names you gave exactly as
+you wrote them, and anything that isn't a Minecraft item (an animal, a pet, a
+mob, a character class, a crate or a key) is drawn for it as a small picture
+rather than shown as a spawn egg or a stand-in item. When it looks at the
+result it also puts back anything from your prompt that went missing. Put a
+label in quotes ("Daily Quests") to be sure it appears word for word.
 
 - A dialog costs **30 AI Credits**.
-- **Variations** makes up to three dialogs from one prompt, each a different
-  kind of screen in a different look, at 30 credits each.
+- **Variations** makes up to three dialogs from one prompt, each with a
+  different look (with **New styles**, each a different kind of screen too), at
+  30 credits each.
 - Tick **Multi page** for a sidebar or tabs with a page behind each button,
   every page written for its name. Name the pages you want in the prompt, up to
   ten. It costs 30 credits for the first page and 5 for each one after.
