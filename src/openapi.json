@@ -10726,7 +10726,7 @@
       "get": {
         "operationId": "listAssetCandidates",
         "summary": "List the versions a generation drew",
-        "description": "A block, an item sprite or an icon generated from words is drawn four times and the best is used. This lists the four: which one the judge picked, which one the asset is now, and the judge's reason. Anybody who can see the asset gets the list; looking at them (`GET .../candidates/{index}`) and switching to one (`POST .../candidates/{index}/use`) are part of the paid plans (`canChoose`). Empty for an asset with none (uploaded, drawn by hand, or generated before 2026-11-05).",
+        "description": "A block, an item sprite or an icon is drawn four times and the best is used (with a reference picture of the thing itself, two are redrawn from it and two drawn from a description of it, in a shuffled order). This lists the four: which one the judge picked, which one the asset is now, and the judge's reason. Anybody who can see the asset gets the list; looking at them (`GET .../candidates/{index}`) and switching to one (`POST .../candidates/{index}/use`) are part of the paid plans (`canChoose`). Empty for an asset with none (uploaded, drawn by hand, or generated before 2026-11-05).",
         "tags": [
           "Packs"
         ],
