@@ -25,7 +25,36 @@ Press **Add asset**, then the **Transition** tab. Either:
   AI Credits and takes about a minute; or
 - **Pick a preset**, which is free: Diagonal Dash, Ink Splat, Cartoon Iris,
   Creeper Pixels, Golden Blinds, Diamond Wave, Nether Portal, Iron Doors,
-  Arcade Checker, Paper Tear, Lava Flood, Bubble Pop, Sunburst or Night Fade.
+  Arcade Checker, Paper Tear, Lava Flood, Bubble Pop, Sunburst or Night Fade; or
+- **From a video**, to cut a clip of your own into one. See below.
+
+## From a video
+
+Pick **From a video** on the Transition tab (or **Make it from a video** in
+the editor of one you already have) and open a clip. An MP4 works; a **WebM
+keeps transparency**, so the world shows through around your animation as it
+comes in.
+
+The clip plays over a Minecraft screen with four marks on its timeline. Drag
+them to cut it into three parts:
+
+- **In**, from **Start** to **Covered**: plays as the screen covers, up to 3
+  seconds. At Covered the screen should be fully covered.
+- **Hold**, from **Covered** to **Uncovers**: loops for as long as the server
+  holds the screen covered, up to 4 seconds. Leave it empty and the last frame
+  of the in part stays.
+- **Out**, from **Uncovers** to **End**: plays as the screen clears, up to 3
+  seconds. Leave it empty and the in part plays backwards.
+
+**Sharpness** is how many pictures each frame is cut into: Standard is 256
+pixels across, Sharp twice that, Sharpest three times. Sharper looks better on
+a big screen and costs about four or nine times the size. The panel shows what
+it adds to the pack as you change it, measured from your clip; keep it to a few
+megabytes, because every player downloads it. **Use the clip's sound** turns
+the sound of the in and out parts into the transition's two sounds.
+
+Press **Use this video** and it is saved. A video transition plays in game
+exactly like any other, with the same commands.
 
 ## The editor
 
@@ -49,8 +78,9 @@ or press Space to pause.
   can have a moving pattern: stripes, checker, dots, a grid, a gradient or
   noise.
 - **Edge line**: a band of colour along the front layer's moving edge.
-- **Logo**: words in chunky pixel capitals with an outline, or a picture you
-  upload (pixel art works best, up to 256 by 128 pixels), shown while the
+- **Logo**: words in chunky pixel capitals with an outline (up to three
+  lines), or a picture you
+  upload (pixel art works best, up to 256 by 256 pixels), shown while the
   screen is covered. It can pop, fade, zoom, drop or spin in, and bob, pulse
   or wobble while it holds.
 - **Style**: draw the whole thing in big Minecraft pixels.
