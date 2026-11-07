@@ -1,0 +1,92 @@
+export const metadata = {
+  title: "Transitions",
+  description:
+    "Full-screen transitions that cover a player's screen while your server teleports them or starts a match, then uncover it. Made in Studio, played with /rp transition or the API.",
+};
+
+# Transitions
+
+A Transition covers a player's whole screen, holds while your server does
+something underneath (a teleport, a match starting, a world loading), then
+uncovers it again: a wipe of colour, a cartoon iris, ink splats that join up,
+with your server's name or logo in the middle.
+
+```
+/rp transition studio:arena
+```
+
+That plays the Transition called `arena` on you: in, hold, out. It needs
+**RP Engine 0.2.64 or newer**, and runs on a normal, unmodded client.
+
+## Where they come from
+
+Transitions are made in Studio (see [Transitions](/transitions)): describe one
+and the AI designs it, or start from a preset and change it in the editor. There
+is no `transitions/` folder in a content folder, because a Transition is drawn by
+shader code that only Studio writes.
+
+They reach your server with the Studio pack they are in, any of three ways:
+
+- **Sync** the pack from Studio (see [Testing on your server](/testing/plugin)).
+- **Drop the pack's exported `.zip`** into your [content folder](/rp-engine/content)
+  and run `/rp reload`.
+- **Publish** it with [Distribution](/distribution), on a server bound to the pack.
+
+Each one is named `studio:<id>`, where the id is the one Studio shows under
+**Use it** on the Transition's page.
+
+A Transition plays only for a player whose resource pack holds it: it is drawn by
+that pack. Somebody without it sees nothing, and the command says so.
+
+## Commands
+
+| Command | What it does | Permission |
+|---|---|---|
+| `/rp transitions` | Every Transition this server can play, with its timing | `rpengine.transitions` |
+| `/rp transition <name>` | Play one on yourself | `rpengine.transition` |
+| `/rp transition <name> <player\|@a>` | Play one on somebody else, or everybody | `rpengine.transition.others` |
+| `/rp transition <name> [player] <hold ticks>` | The same, holding the screen covered for that many ticks (20 a second, a minute at most) | as above |
+
+Without a hold it holds for as long as the Transition was made to, which is the
+**Held** time in its editor. A name can be the full `studio:arena` or just
+`arena`. A new Transition on a player replaces the one already playing on them.
+
+The command plays the whole thing in one go, which is what a command block or
+another plugin's command wants. To do something **while** the screen is covered,
+time your own commands against its **Coming in** time, or use the API below.
+
+## From a plugin
+
+```java
+RPEnginePlugin engine = (RPEnginePlugin) Bukkit.getPluginManager().getPlugin("RPEngine");
+ContentId arena = ContentId.parse("studio:arena").orElseThrow();
+
+// In, then teleport the moment the screen is covered, then its hold, then out.
+engine.transitions().play(player, arena, () -> player.teleport(lobby));
+
+// Held until you say so, for a wait of unknown length.
+engine.transitions().cover(player, arena, () -> startLoading(player))
+        .ifPresent(play -> whenLoaded(play::release));
+```
+
+`whenCovered` runs once the screen is fully covered, on the player's own thread
+(their region's on Folia). The whole API is under
+[Transitions in the API reference](/rp-engine/api#transitions).
+
+## Without RP Engine
+
+A Transition is a vanilla `/title` underneath, so it also plays from a command
+block, a datapack or any other plugin, with the pack applied. The Transition's
+page in Studio shows those commands, ready to copy.
+
+## How it shows
+
+It draws over the world and the hotbar, and under chat. Hiding the HUD (F1)
+hides it, as it hides every title. It plays at the player's full frame rate even
+though the server works in ticks: the game fades a title smoothly between ticks,
+and the pack's text shader draws the Transition from how far through that fade
+it is.
+
+It is drawn by the pack's text shader, the same one [Text Effects](/rp-engine/text-effects)
+use, so what that page says about sharing the text shader with other plugins'
+packs holds for Transitions too.
