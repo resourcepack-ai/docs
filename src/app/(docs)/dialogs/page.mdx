@@ -269,7 +269,9 @@ click](#after-a-click)).
 **JSON** shows the layout, and its **minecraft:dialog** tab shows the file the
 game reads. **Export** downloads the dialog for a plugin, a datapack or as a
 picture (see [Putting it on your server](#putting-it-on-your-server)), and, for a
-dialog with [motion](#motion), as an **Animated GIF** for a store page or a post.
+dialog with [motion](#motion), a [floating piece](#floating) or an
+[animated picture](#animated-pictures), as an **Animated GIF** for a store page
+or a post.
 
 **Edit with AI**, on the page strip, changes what is on a page. Its **Restyle**
 tab changes only how it looks: say "dark luxury with gold" or "a cosy winter
@@ -295,7 +297,7 @@ game scrolls it. These are the pieces you can add:
 | **Text**, **Heading**, **Big title** | Words in the game's font, or [one of your own](#your-own-fonts). Colour codes work: `&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` grey, `&l` bold, `&r` reset, `&#55ff55` any colour. |
 | **Page of text** | `# Title`, `## Heading`, `### Heading` (gold), `- bullets`, `> notes`, `**gold words**`, `---` for a rule. |
 | **Icon** | Any vanilla item, a player head, your pack's own sprites and textures, one of more than a hundred drawn icons (the **Small** shelf of the picker has nine-pixel ones for labels), or one of your own pictures (the **Pictures** shelf). Bare or in a slot. |
-| **Image** | A PNG, JPG, GIF (first frame) or WebP up to 512 pixels a side. Add it from **Add component** or drop the file on the screen. It is kept with the pack for its other dialogs. To put a picture *behind* other pieces, give their box a [Picture](#a-boxs-own-look). |
+| **Image** | A PNG, JPG, GIF or WebP up to 512 pixels a side. Add it from **Add component** or drop the file on the screen. An animated GIF, or several pictures chosen at once, [plays in game](#animated-pictures). It is kept with the pack for its other dialogs. To put a picture *behind* other pieces, give their box a [Picture](#a-boxs-own-look). |
 | **Drawing** | A picture you draw in the editor. See [Drawing a picture](#drawing-a-picture). |
 | **Chip**, **Badge**, **Check line**, **Label and value** | A balance or tag; a small solid tag such as NEW; a ✔ or ✘ line; a label left and a value right. |
 | **Progress bar** | A label, a count and a bar, in its own **Bar colour** and **Track colour** if you like. **Icon before the label** puts a small icon at the start of its line. It can [follow the player](#bars-that-follow-the-player). |
@@ -660,6 +662,37 @@ In game it is played by your resource pack, so it needs nothing from the
 plugin: a player with the pack sees it move, from the moment the dialog opens.
 The parts the game draws itself (live words, player heads, inventory items)
 stay still.
+
+### Floating
+
+Any piece can **float**: it bobs gently up and down over whatever is behind it,
+by one to three pixels, slowly, normally or fast. Set it under **Floating** in
+the piece's panel. Everything inside the piece floats with it, and motion on it
+still plays. Pieces side by side bob out of step, so a row of floating items
+doesn't move as one block.
+
+### Animated pictures
+
+An **Image** can play. Import an animated GIF, or choose (or drop) several
+pictures at once and they become the frames of one animation, in name order
+(`frame_1.png`, `frame_2.png`…), at 10 frames a second. A GIF keeps its own
+timing. One faster than 30 frames a second, or with more frames than fit, plays
+fewer frames over the same length, and one bigger than 254 pixels a side is
+scaled down. The picker marks an animated picture with its number of frames.
+
+Floating pieces and animated pictures are played by your resource pack, like
+motion: nothing is sent while they move, and the editor and the pause button
+show them as they will look. Two things stay still, and the piece's panel says
+so when it happens:
+
+- a piece drawn differently for each player, or inside one: anything with a
+  [Show when](#show-when) or other colours under a condition, a control bound to
+  a [player setting](#player-settings), a row of a list, a sorted box;
+- a piece with something the game draws itself inside it: live words, a live
+  player head, an inventory slot, a bar that follows the player.
+
+Each frame is a picture in your pack, so a long, large animation makes the pack
+bigger.
 
 ### Text effects on words
 
