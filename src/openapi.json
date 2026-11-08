@@ -145,6 +145,10 @@
       "status": 409,
       "description": "The model is not a vehicle yet. Make it one with `POST /packs/{pack}/vehicles/{model}`."
     },
+    "not_a_mob": {
+      "status": 409,
+      "description": "The model is not a mob. Make it one with `POST /packs/{pack}/models/{model}` and `type: mob`."
+    },
     "generation_failed": {
       "status": 409,
       "description": "That asset's generation failed. Its job carries the reason."
@@ -4532,6 +4536,191 @@
         }
       }
     },
+    "/packs/{pack}/mobs": {
+      "post": {
+        "operationId": "generateMob",
+        "summary": "Generate a mob",
+        "description": "Produces a `mob`: a creature RP Engine spawns in the world, which walks, fights and makes its own sounds. The Studio's **Mob** answer on the Add asset dialog, in one run: the creature is built as a 3D model, then set up (behaviour, health, hitbox) and animated for each state, and given its own ambient, hurt, death and attack sounds.\n\n**This is the slowest one**: a model build and a rig, typically ten to twenty minutes. One charge for all of it, refunded in full if the build fails; a rig that fails after the build is not charged, and leaves the mob without animations (animate it again with `POST /packs/{pack}/mobs/{model}/rig`).\n\nChange its behaviour, drops and abilities in the Studio's mob editor.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. The work runs asynchronously — poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The asset's id within the pack."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "What is generating. For an item, `item` or `item3d`.",
+                      "enum": [
+                        "model",
+                        "vehicle",
+                        "mob",
+                        "block",
+                        "block_face",
+                        "model_texture",
+                        "item",
+                        "item_model",
+                        "item3d",
+                        "armor",
+                        "armor3d",
+                        "gui",
+                        "hud",
+                        "dialog",
+                        "icon",
+                        "rank_tag",
+                        "sound"
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "The file format it is stored as.",
+                      "enum": [
+                        "texture",
+                        "model",
+                        "font",
+                        "sound"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating` — nothing is finished when this returns."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack it was written into."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}` until it leaves `generating`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
+                "example": {
+                  "id": "snow_troll",
+                  "type": "mob",
+                  "kind": "model",
+                  "job": "medieval-keep:model:snow_troll",
+                  "status": "generating",
+                  "pack": "medieval-keep"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What the creature is.",
+                    "example": "a grumpy snow troll with icicle tusks and a mossy back"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label. Falls back to the prompt."
+                  },
+                  "states": {
+                    "type": "array",
+                    "description": "Which states to animate. Absent animates `death`, `attack`, `hurt`, `walk` and `idle`.",
+                    "items": {
+                      "type": "string",
+                      "description": "A mob state.",
+                      "enum": [
+                        "death",
+                        "spawn",
+                        "attack",
+                        "hurt",
+                        "run",
+                        "walk",
+                        "idle"
+                      ]
+                    }
+                  },
+                  "referenceId": {
+                    "type": "string",
+                    "description": "A reference image: the `referenceId` from `POST /packs/{pack}/references`, or one uploaded in the Studio."
+                  },
+                  "useStyleGuide": {
+                    "type": "boolean",
+                    "description": "Follow the pack's style guide — its palette, its notes and its reference pictures. Defaults to true, so a pack with a style guide produces assets that match it without this field. Send false for one asset that should deliberately not match. A pack with no style guide, or one switched off, ignores this either way.",
+                    "default": true
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/packs/{pack}/items": {
       "post": {
         "operationId": "generateItem",
@@ -7312,7 +7501,7 @@
       "post": {
         "operationId": "updateModel",
         "summary": "Change a model's settings",
-        "description": "The model page's **Placed behaviour** (`stopsVehicles`: whether a placed copy blocks a vehicle driving into it, on by default) and **Convert to vehicle** (`type`). Converting back to a `model` keeps the vehicle's settings, so converting again brings them back; a vehicle's own settings are `set_vehicle`. A 3D item's geometry can't be converted. Free.",
+        "description": "The model page's **Placed behaviour** (`stopsVehicles`: whether a placed copy blocks a vehicle driving into it, on by default) and **Convert to vehicle** or **Convert to mob** (`type`). Converting back to a `model` keeps the vehicle's or mob's settings, so converting again brings them back; a vehicle's own settings are `set_vehicle`, and a new mob is animated with `rig_mob`. A 3D item's geometry can't be converted. Free.",
         "tags": [
           "Packs"
         ],
@@ -7464,10 +7653,11 @@
                   },
                   "type": {
                     "type": "string",
-                    "description": "Make it a vehicle, or a plain model again.",
+                    "description": "Make it a vehicle, a mob, or a plain model again.",
                     "enum": [
                       "model",
-                      "vehicle"
+                      "vehicle",
+                      "mob"
                     ]
                   }
                 }
@@ -9277,6 +9467,167 @@
                         "moving",
                         "idle",
                         "submerged"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/mobs/{model}/rig": {
+      "post": {
+        "operationId": "rigMob",
+        "summary": "Animate a mob",
+        "description": "The mob editor's **Animate with AI**: one run that writes an animation for each of the mob's states (walking, attacking, being hurt, dying...) and wires them into its settings. A mob made with `POST /packs/{pack}/mobs` is already animated; this is for one whose animations you want redone, or a model you made a mob with `POST /packs/{pack}/models/{model}` (`type: mob`).\n\nTakes a minute or two. Charged as an animation, refunded if it fails. One AI edit at a time per model: a second answers `already_running`.\n\n`plan: true` also sets the mob up first from its geometry (its behaviour, health, which way it faces), which is the quickest way from a plain model to something that walks.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted. Poll `job` until it leaves `generating`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The mob's name."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Always `mob`."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Always `model`."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `generating`."
+                    },
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "job": {
+                      "type": "string",
+                      "description": "Poll this at `GET /jobs/{job}`."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "kind",
+                    "status",
+                    "pack",
+                    "job"
+                  ]
+                },
+                "example": {
+                  "id": "snow_troll",
+                  "type": "mob",
+                  "kind": "model",
+                  "status": "generating",
+                  "pack": "medieval-keep",
+                  "job": "medieval-keep:edit:model:snow_troll"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`, `already_running`, `not_a_mob`, `still_generating`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "description": "The mob's `name` from the listing.",
+            "schema": {
+              "type": "string",
+              "description": "The mob's `name` from the listing.",
+              "example": "snow_troll"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "instruction": {
+                    "type": "string",
+                    "description": "How it should move. Absent lets it decide from the model.",
+                    "maxLength": 600,
+                    "example": "lumbers slowly, swings both fists down to attack"
+                  },
+                  "plan": {
+                    "type": "boolean",
+                    "description": "Set the mob up from its geometry first.",
+                    "default": false
+                  },
+                  "states": {
+                    "type": "array",
+                    "description": "Only these states. Absent animates `death`, `attack`, `hurt`, `walk` and `idle`.",
+                    "items": {
+                      "type": "string",
+                      "description": "A mob state.",
+                      "enum": [
+                        "death",
+                        "spawn",
+                        "attack",
+                        "hurt",
+                        "run",
+                        "walk",
+                        "idle"
                       ]
                     }
                   }

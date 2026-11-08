@@ -143,6 +143,7 @@ arguments are documented in full.
 | [`import_pack`](/api-reference/import-pack) | A whole resource pack `.zip` as a new pack, like the Studio's Import button. Free. |
 | [`generate_texture`](/api-reference/generate-texture) | A block texture. |
 | [`generate_model`](/api-reference/generate-model) | A 3D model. The slow one: minutes, not seconds. |
+| [`generate_mob`](/api-reference/generate-mob) | A mob: a creature built, animated and given its own sounds in one run. The slowest: ten to twenty minutes. |
 | [`generate_item`](/api-reference/generate-item) | An item, as a flat sprite or real geometry. |
 | [`generate_gui`](/api-reference/generate-gui) | A container screen: chests, furnaces and the rest. |
 | [`generate_hud`](/api-reference/generate-hud) | The overlay drawn over the world: hearts, hunger, hotbar, crosshair. |
@@ -157,7 +158,7 @@ arguments are documented in full.
 | [`create_emote_group`](/api-reference/create-emote-group) | A movement group: a walk, run, crouch and jump of your own, worn as one. Free. |
 | [`update_emote_group`](/api-reference/update-emote-group) | Rename a movement group, or change which emote plays in each state. |
 | [`get_model`](/api-reference/get-model) | A model's settings: its type, whether it stops vehicles, its animations. |
-| [`update_model`](/api-reference/update-model) | Whether a placed copy stops vehicles; convert it to a vehicle and back. |
+| [`update_model`](/api-reference/update-model) | Whether a placed copy stops vehicles; convert it to a vehicle or a mob and back. |
 | [`export_model`](/api-reference/export-model) | One model as a resource pack of its own, for one Minecraft version. |
 | [`get_armor3d_file`](/api-reference/get-armor3d-file) | A 3D armour set as a Blockbench project, or its texture. |
 | [`get_item_states`](/api-reference/get-item-states) | The states an item is drawn in, like a bow drawn back, and their looks. |
@@ -172,6 +173,7 @@ arguments are documented in full.
 | [`get_vehicle`](/api-reference/get-vehicle) | A vehicle's settings: seats, handling, hitbox, animations, sounds. |
 | [`set_vehicle`](/api-reference/set-vehicle) | Make a model a vehicle, or change its settings. Free. |
 | [`rig_vehicle`](/api-reference/rig-vehicle) | Animate a vehicle and its riders together. Minutes, not seconds. |
+| [`rig_mob`](/api-reference/rig-mob) | Animate a mob: one animation per state (walk, attack, hurt, death...). |
 | [`edit_asset`](/api-reference/edit-asset) | Change something that already exists from a sentence, like the Studio's Edit with AI. Also animates a model and restyles a dialog. |
 | [`list_skins`](/api-reference/list-skins) | Your player skins. |
 | [`generate_skin`](/api-reference/generate-skin) | A 64x64 player skin from a description. |
@@ -211,7 +213,7 @@ There are three ways to change an asset, and only one is free:
 | --- | --- | --- |
 | By hand, from a file | `upload_asset` (a file you made), `update_custom_gui` (a Custom GUI's HTML and CSS), the settings tools (`update_sound`, `set_vehicle`, `update_model`, `set_item_state`...) | Free |
 | Housekeeping | `rename_asset`, `duplicate_asset`, `delete_asset`, `file_assets`, `restore_asset_version` (undo an AI change), `use_asset_candidate` (another of the four versions, paid plans) | Free |
-| With AI | `edit_asset`, `regenerate_asset`, `rig_vehicle`, `generate_custom_gui_page`, every `generate_*` | Spends credits, at Studio's prices |
+| With AI | `edit_asset`, `regenerate_asset`, `rig_vehicle`, `rig_mob`, `generate_custom_gui_page`, every `generate_*` | Spends credits, at Studio's prices |
 
 **Dialogs have no hand-edit tool.** A Dialog can't be uploaded or written as
 JSON, so an agent changes one only through `edit_asset`, addressed as
