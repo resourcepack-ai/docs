@@ -302,7 +302,7 @@ game scrolls it. These are the pieces you can add:
 | **Controls** | Switch, segmented (two to four choices), slider, dropdown, checkbox, stepper, search box and text box, drawn in the theme. They are pictures unless bound to a [player setting](#player-settings); players can [type in a text box](#typing-in-a-drawn-box). |
 | **Sidebar button**, **List option**, **Icon button**, **Theme button** | The parts of a settings screen. A sidebar button can be taller than its 18 pixels, carry a badge, and show [a picture of your own](#pictures-in-buttons-and-bars). |
 | **Item slots** | See [Items and inventories](#items-and-inventories). |
-| **QR code**, **Divider**, **Space** | A QR code opens its link when clicked. |
+| **QR code**, **Divider**, **Space** | A QR code opens its link when clicked. A divider runs the length of its box, or takes a **Length** in pixels (drag its handle, or set it in its panel); placed anywhere, it keeps its length. |
 
 ### Button looks
 
@@ -500,6 +500,11 @@ ban {target} $(length) $(reason)
 
 A checkbox gives `true` or `false`, and a choice written `7d=7 days` shows
 "7 days" and gives `7d`. Only footer buttons fill in keys.
+
+A text box can be shorter: switch off **Show its label** to drop the line of
+words over it, and switch on **Compact** for a box 17 pixels tall rather than
+20. A compact box is one line that does not scroll, so it holds as much as its
+width does.
 
 ### Typing in a drawn box
 
