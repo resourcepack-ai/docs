@@ -573,8 +573,11 @@ glyphs), and a game keeps only one copy. **MC GUI merges the two**: at startup i
 reads the other plugin's pack (or the server's own, `resource-pack` in
 `server.properties`) and merges that text shader into its own, so both work.
 The console says `Shaders  Merged with ..., so both draw`. A plugin that writes
-its pack only after MC GUI starts is merged on the next restart, and the console
-says when one turns up. With two such plugins at once nothing is merged, and the
+its pack only after MC GUI starts (Nexo, ItemsAdder and other pack plugins do) is
+merged within a minute of writing it, and players online are sent MC GUI's pack
+again, so a shader change needs one restart (or the plugin's own reload command).
+With `mode: external` MC GUI cannot resend its pack, so there it is merged on the
+next restart, and the console says when one turns up. With two such plugins at once nothing is merged, and the
 console names them. `resource-pack.merge-shaders: false` turns merging off.
 
 Even unmerged, another plugin's shader beside MC GUI's never stops the pack
