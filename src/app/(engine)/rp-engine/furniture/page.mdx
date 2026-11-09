@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Working furniture",
   description:
-    "Placed models that do something: cabinets and crates you can fill, jukeboxes, furnaces, lamps, doors and screens a click switches, sofas that join up, and pieces that grow over time.",
+    "Placed models that do something: cabinets and crates you can fill, jukeboxes, furnaces, crafting tables and anvils, lamps, doors and screens a click switches, sofas that join up, and pieces that grow over time.",
 };
 
 # Working furniture
@@ -144,6 +144,28 @@ Breaking it drops what is inside and its experience. A smoker or blast furnace
 shows the furnace screen, and hoppers can't reach any of them, because a placed
 model isn't a block.
 
+## A work block
+
+A crafting table, an anvil or a loom that looks like your model:
+
+```yaml
+workbench:
+  material: PAPER
+  model: workbench
+  place:
+    solid: true
+    station: crafting_table
+```
+
+`station:` can be `crafting_table`, `enchanting_table`, `anvil`, `stonecutter`,
+`smithing_table`, `grindstone`, `loom` or `cartography_table`. Right-click opens
+the game's own screen for that block, and everything in it works as usual. An
+enchanting table counts the bookshelves around the piece, and an anvil never
+wears out.
+
+All but the crafting table and enchanting table need Paper, or Spigot 1.21 or
+newer.
+
 ## States: lamps, doors and screens
 
 A click can change a piece. Each entry under `states:` is one more look that a
@@ -261,10 +283,11 @@ that wants it:
 2. **Sneaking** on a piece that has a seat sits, and nothing below runs.
 3. A **container** opens.
 4. A **furnace** opens.
-5. A **jukebox** takes a click that puts a disc in or takes one out.
-6. **States** move to the next one, and a right-click animation plays with them.
-7. A right-click animation plays.
-8. Otherwise, a seat is sat on.
+5. A **work block** opens.
+6. A **jukebox** takes a click that puts a disc in or takes one out.
+7. **States** move to the next one, and a right-click animation plays with them.
+8. A right-click animation plays.
+9. Otherwise, a seat is sat on.
 
 ## Growing
 
