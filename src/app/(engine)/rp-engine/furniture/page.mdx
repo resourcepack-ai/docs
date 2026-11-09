@@ -158,13 +158,16 @@ workbench:
 ```
 
 `station:` can be `crafting_table`, `enchanting_table`, `anvil`, `stonecutter`,
-`smithing_table`, `grindstone`, `loom` or `cartography_table`. Right-click opens
-the game's own screen for that block, and everything in it works as usual. An
+`smithing_table`, `grindstone`, `loom`, `cartography_table` or `brewing_stand`.
+Right-click opens the game's own screen for that block, and everything in it works as usual. An
 enchanting table counts the bookshelves around the piece, and an anvil never
 wears out.
 
-All but the crafting table and enchanting table need Paper, or Spigot 1.21 or
-newer.
+A `brewing_stand` keeps its bottles and fuel on the piece: it brews while its
+chunk is loaded, carries on after a restart, drops what is inside when broken,
+and hoppers can't reach it. It needs Paper 1.20.5 or newer, or Minecraft 26.1 or
+newer. All the others except the crafting table and enchanting table need Paper,
+or Spigot 1.21 or newer.
 
 ## States: lamps, doors and screens
 
