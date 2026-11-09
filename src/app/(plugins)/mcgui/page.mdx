@@ -422,6 +422,18 @@ transitions (`@keyframes`, `animation`, `transition`).
 **Pictures:** PNG, JPEG, GIF, SVG files and inline SVG. Page CSS styles what is
 inside an inline SVG too: `fill`, `stroke` and the rest, `:hover` rules included.
 
+**Animated GIFs** play, as an `<img>`, as a CSS `background-image` and through a
+script's `drawImage`, with their own timing and looping. One that doesn't loop
+stops on its last frame. A few things to know:
+
+- A page is redrawn `animation-fps` times a second (10 by default, set in
+  `config.yml`), so a GIF faster than that skips frames.
+- Like a CSS animation, a GIF costs CPU for as long as it's on screen. Keep them
+  small on pages lots of players have open.
+- Each GIF is held in memory to at most 64 MB decoded, and 1024 frames. A bigger
+  one drops frames evenly and keeps its timing. A GIF where even two frames
+  wouldn't fit shows only its first frame.
+
 **On an overlay page** the world shows through, and each pixel is either drawn
 or not: colour less than half opaque with only the world behind it isn't drawn
 in game (a browser draws it faint), and colour at half or more is drawn solid.
@@ -482,7 +494,7 @@ and hover effects all work without a script.
 | Time | `requestAnimationFrame` (20 frames a second, up to 30 with `<meta name="ui:fps" content="30">`), `setTimeout`, `setInterval`, `performance.now()` and promises. |
 | Keys | `keydown` and `keyup`, with `e.key` one of `"w"` `"a"` `"s"` `"d"`, `" "` (jump), `"Control"` (sprint), `"q"` and `"1"` to `"9"`. Those are the keys a seated player has. F still goes back and sneaking still closes the page. |
 | Mouse | `mousemove`, `mousedown`, `mouseup` and `click` on the canvas, with `offsetX` and `offsetY` in CSS pixels. |
-| Pictures | `new Image()` with a picture from the pages folder, or an `<img>` on the page, for `drawImage`. |
+| Pictures | `new Image()` with a picture from the pages folder, or an `<img>` on the page, for `drawImage`. An animated GIF draws whichever frame it has reached, so drawing it every frame plays it. |
 | Minecraft | `mcgui.sound("entity.experience_orb.pickup 1 1.5")` plays a sound to the player, `mcgui.command("spawn")` runs a command as them (only from their own click or key press), and `mcgui.player` is their name. |
 
 A script can't change the page's HTML or CSS, so draw anything that changes
