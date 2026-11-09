@@ -647,6 +647,12 @@ editor's **Export** menu for Dialog Engine, unzip it into `plugins/` and run
   `commandPermission:` at the top. You can edit it by hand and `/de reload`: a
   changed file is sent to the editor to be redrawn, which needs the internet.
 
+A command on a drawn dialog reads `{name}` from the same places its words do,
+PlaceholderAPI included: `{vault_eco_balance}` is `%vault_eco_balance%`. On a
+list, a row's command gets what that row showed when the dialog opened, so
+`party invite {player_list}` invites the player whose name is on the row, even
+if the list has changed since.
+
 A drawn dialog does not fire `DialogClickEvent`: its pieces are not YAML
 buttons with an `id:`. To answer one in Java, register an action and name it
 in the piece's command. In the editor that is **When clicked** set to **Run
