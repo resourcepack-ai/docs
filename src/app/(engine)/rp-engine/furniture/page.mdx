@@ -127,7 +127,20 @@ oven:
       type: furnace             # furnace, smoker or blast_furnace
       title: "Oven"             # leave out for the item's name
       lit-model: mypack:oven_on # what it looks like while it burns
+      speed: 2                  # 2 cooks twice as fast as the recipe says
+      recipes: [mypack:pizza]   # only these recipes. Leave out for all of its kind's
+      screen: mypack:oven_ui    # art for its screen, drawn as a furnace screen
+      effects:                  # what it does while it burns. false turns it all off
+        particles: { type: flame, count: 2, every: 4, offset: [0, 0.4, 0.45] }
+        sound: false            # or a sound id. Leave out for the normal crackle
+        glow: true              # the model is drawn fully lit
+        light: 13               # real light, 0-15. Not on a solid piece
+        animation: burning      # an animated piece's animation while it burns
 ```
+
+Left alone, a burning furnace gives off a little smoke and crackles. A solid
+piece can't give off light, because its block is already a barrier: use `glow`
+for those.
 
 `furnace: true` is a plain furnace, and `furnace: smoker` is a smoker with
 everything else left alone. Right-click opens the game's own furnace screen, and
@@ -141,8 +154,10 @@ it uses fuel, cooks your server's recipes and gives experience as a furnace does
 
 It keeps cooking while its chunk is loaded and carries on after a restart.
 Breaking it drops what is inside and its experience. A smoker or blast furnace
-shows the furnace screen, and hoppers can't reach any of them, because a placed
-model isn't a block.
+shows the furnace screen.
+
+Hoppers work as on the real block: from above fills the input, from the side
+fills the fuel, and a hopper directly underneath takes the result.
 
 ## A work block
 
@@ -165,9 +180,27 @@ wears out.
 
 A `brewing_stand` keeps its bottles and fuel on the piece: it brews while its
 chunk is loaded, carries on after a restart, drops what is inside when broken,
-and hoppers can't reach it. It needs Paper 1.20.5 or newer, or Minecraft 26.1 or
+and hoppers work on it. It needs Paper 1.20.5 or newer, or Minecraft 26.1 or
 newer. All the others except the crafting table and enchanting table need Paper,
 or Spigot 1.21 or newer.
+
+## On a custom block
+
+A [custom block](/rp-engine/blocks) can be a furnace, a brewing stand or a work
+block too, with the same keys. `lit-into` names another block to become while it
+burns, which is where its burning look and light go:
+
+```yaml
+stone_oven:
+  model: stone_oven
+  furnace: { speed: 2, lit-into: mypack:stone_oven_lit }
+stone_oven_lit:
+  model: stone_oven_lit
+  light: 13
+```
+
+In Studio, a model's **Edit details** has a **Works as** setting that does this
+for a placed model without any YAML.
 
 ## States: lamps, doors and screens
 
