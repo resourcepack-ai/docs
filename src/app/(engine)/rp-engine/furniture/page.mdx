@@ -1,14 +1,14 @@
 export const metadata = {
   title: "Working furniture",
   description:
-    "Placed models that do something: cabinets and crates you can fill, jukeboxes, lamps, doors and screens a click switches, sofas that join up, and pieces that grow over time.",
+    "Placed models that do something: cabinets and crates you can fill, jukeboxes, furnaces, lamps, doors and screens a click switches, sofas that join up, and pieces that grow over time.",
 };
 
 # Working furniture
 
 A [placed model](/rp-engine/models) (furniture or decoration put down from an
 item) can do more than stand there. It can be a cabinet you fill, a gramophone
-that plays discs, a lamp a click switches on, a sofa that joins the pieces
+that plays discs, an oven that cooks, a lamp a click switches on, a sofa that joins the pieces
 beside it, or a sapling that grows. Each is one key in the item's `place:`
 block, and a piece can have several:
 
@@ -112,6 +112,37 @@ model the piece wears while a disc is in it. It does nothing on an
   Somebody who walks up halfway through hears nothing until the next disc, and
   a restart does not resume it. The disc stays in the piece either way.
 </Callout>
+
+## A furnace
+
+An oven, a stove, a forge. It works like the real thing and looks like your model:
+
+```yaml
+oven:
+  material: PAPER
+  model: oven
+  place:
+    solid: true
+    furnace:
+      type: furnace             # furnace, smoker or blast_furnace
+      title: "Oven"             # leave out for the item's name
+      lit-model: mypack:oven_on # what it looks like while it burns
+```
+
+`furnace: true` is a plain furnace, and `furnace: smoker` is a smoker with
+everything else left alone. Right-click opens the game's own furnace screen, and
+it uses fuel, cooks your server's recipes and gives experience as a furnace does.
+
+| Type | Cooks | Speed |
+|---|---|---|
+| `furnace` | Everything a furnace smelts | Normal |
+| `smoker` | Food | Twice as fast, and fuel lasts half as long |
+| `blast_furnace` | Ores, armor and tools | Twice as fast, and fuel lasts half as long |
+
+It keeps cooking while its chunk is loaded and carries on after a restart.
+Breaking it drops what is inside and its experience. A smoker or blast furnace
+shows the furnace screen, and hoppers can't reach any of them, because a placed
+model isn't a block.
 
 ## States: lamps, doors and screens
 
@@ -229,10 +260,11 @@ that wants it:
    actions run first, and a `cancel` in them stops the rest.
 2. **Sneaking** on a piece that has a seat sits, and nothing below runs.
 3. A **container** opens.
-4. A **jukebox** takes a click that puts a disc in or takes one out.
-5. **States** move to the next one, and a right-click animation plays with them.
-6. A right-click animation plays.
-7. Otherwise, a seat is sat on.
+4. A **furnace** opens.
+5. A **jukebox** takes a click that puts a disc in or takes one out.
+6. **States** move to the next one, and a right-click animation plays with them.
+7. A right-click animation plays.
+8. Otherwise, a seat is sat on.
 
 ## Growing
 
