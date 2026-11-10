@@ -15,8 +15,13 @@ them.
    ID (`my_pack:ruby`).
 2. Copy `items/`, `glyphs/`, `recipes/` and `sounds.yml` out of
    `plugins/Nexo/` or `plugins/Oraxen/` into it.
-3. Copy the **contents** of its resource pack's `assets/<your-pack>/` folder
-   (`models/`, `textures/`...) into `my_pack/assets/`.
+3. Copy the art:
+   - **Nexo:** copy `plugins/Nexo/pack/assets/` to `my_pack/resourcepack/assets/`,
+     every namespace in it. Models and textures you bought usually sit in
+     `plugins/Nexo/pack/external_packs/` instead, as zips or folders: unzip each
+     one and merge its `assets/` into the same place.
+   - **Oraxen:** copy `pack/models/` and `pack/textures/` to `my_pack/models/`
+     and `my_pack/textures/`.
 4. Start the server, or run `/rp reload`, and read the console for warnings.
 
 ```
@@ -26,10 +31,15 @@ plugins/RPEngine/content/
     glyphs/         ← from glyphs/
     recipes/        ← from recipes/: Nexo's type folders or Oraxen's shaped.yml and friends
     sounds/         ← sounds.yml
-    assets/         ← contents of assets/<your-pack>/
-      models/
-      textures/
+    resourcepack/
+      assets/       ← Nexo/pack/assets/, plus each pack from external_packs/
+        minecraft/
+        <other namespaces>/
 ```
+
+A path with no namespace in a Nexo item (`model: furniture/chair`) means
+`assets/minecraft/`, as it does in Nexo, and a namespaced one (`shop:furniture/chair`)
+means that namespace's folder.
 
 There is nothing to turn on and no `pack.yml` (RP Engine's own pack file) is
 needed: each file is recognised by its shape. So one of their files also works
