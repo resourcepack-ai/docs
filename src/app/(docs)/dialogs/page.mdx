@@ -390,6 +390,14 @@ whole dialog, or takes them **From the theme**. A footer button's tooltip always
 keeps the game's box, and a slot of the player's own inventory shows the
 item's real tooltip.
 
+A tooltip can hold [live values](#live-values), filled in for each player:
+`You have {coins} coins`, or a PlaceholderAPI placeholder written either way,
+`{vault_eco_balance}` or `%vault_eco_balance%`. **Insert a live value** under
+the tooltip picks one. An item slot's name and lore take them too.
+
+A tooltip holds up to 2,000 characters. A live value counts as one, however
+long its name is.
+
 ## Making buttons do things
 
 Anything can be clickable: a button, an icon, a card, an item slot. Select it
