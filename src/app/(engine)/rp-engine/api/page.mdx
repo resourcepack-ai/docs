@@ -163,6 +163,25 @@ To make a stack of your own wear a pack's art without becoming that item, call
 the model is a number only the engine knows. `create` and `wearModel` are main
 thread only; `ids()` and `info()` are safe from any thread.
 
+### Items made of parts
+
+For an item with [`parts:`](/rp-engine/items#tools-made-of-parts), set and read
+which part fills each slot:
+
+```java
+ItemStack pick = engine.items().create(pickaxe).orElseThrow();
+pick = engine.items().withParts(pick, Map.of(
+        "head", goldHead,
+        "handle", birchHandle)).orElseThrow();
+Map<String, ContentId> parts = engine.items().partsOf(pick);
+```
+
+`withParts` returns a changed copy. Slots you leave out keep what they had.
+It returns empty if the stack isn't an item made of parts, or a slot or part
+isn't one the item's definition lists. `partsOf` answers every slot, with the
+first option for a slot that was never set. Only the look and the record of
+parts change: the name, lore and stats are yours to set. Main thread only.
+
 ## Models
 
 <CodeTabs labels={["Java", "Kotlin"]}>
