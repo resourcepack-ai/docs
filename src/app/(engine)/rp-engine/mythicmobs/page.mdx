@@ -66,7 +66,7 @@ AI, drops and skills are all still MythicMobs'. See
 
 RP Engine's [custom mobs](/rp-engine/entities) read MythicMobs' skill lines,
 drop lines, drop tables and spawners, so a mob can be moved across and
-MythicMobs (and ModelEngine) taken off the server. Needs RP Engine 0.2.53 or
+MythicMobs (and Model Engine) taken off the server. Needs RP Engine 0.2.53 or
 newer.
 
 1. Write the mob in `entities/` in RP Engine's shape (below), with `model:`
@@ -150,11 +150,11 @@ The mob file around the skills is RP Engine's, not MythicMobs'
 | `Variables:` | `variables:` |
 | `Skills:` | `skills:` (`Skills:` reads the same) |
 
-- **Models are `model:`**, so drop ModelEngine's `model{mid=...}` line.
+- **Models are `model:`**, so drop Model Engine's `model{mid=...}` line.
   `state{mid=...;s=attack}` runs as `animate`, and RP Engine plays `idle`,
   `walk`, `attack` and the rest by itself from
   [`animations:`](/rp-engine/entities#animations), so most `state` lines can go.
-- **Draw the model facing North** in Blockbench, as for ModelEngine, or set
+- **Draw the model facing North** in Blockbench, as for Model Engine, or set
   [`turn:`](/rp-engine/entities#facing).
 - **`drops:` replaces the vanilla loot**, so `PreventOtherDrops` is never
   needed.
