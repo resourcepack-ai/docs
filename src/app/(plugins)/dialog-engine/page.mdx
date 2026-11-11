@@ -664,6 +664,13 @@ in the piece's command. In the editor that is **When clicked** set to **Run
 command**, with `[myplugin:claim] daily` (or several, `[a] ...; [b] ...`).
 A command with no brackets is run by the player, as on any dialog.
 
+The same goes for Dialog Engine's own [actions](#actions). **Open another
+dialog** takes only an id, so to open one with values, set **Run command** to
+`[open] studio:shop item=diamond count={amount}`. That is the `[open]` action:
+the next dialog takes this one's place without closing it first, carries its
+values over, and `[back]` returns. Running `/de open` from a button instead
+closes the dialog and opens a new one, so the world flashes in between.
+
 ### The resource pack
 
 All drawn dialogs share one small pack, which is sent alongside any pack your
