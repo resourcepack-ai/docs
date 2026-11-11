@@ -347,28 +347,59 @@ an **Image** into the bar's row. For one *behind* a whole bar, give the bar a
 
 ### Your own fonts
 
-A text piece can be set in a font of your own: under **Font** in its panel,
-choose **Upload a font (.ttf)**, or pick one the pack already has. Fonts are
-kept with the pack and shared with its GUIs.
+Anything with words on it can be set in a font of your own: a text, a button, a
+tab, a sidebar button, a chip, a badge, a checkbox, a dropdown and the rest.
+Open **Font** in its panel and choose **Upload a font (.ttf)**, or pick one the
+pack already has. Fonts are kept with the pack and shared with its GUIs, HUDs
+and rank tags.
+
+- **One piece**: **Font** in that piece's panel.
+- **Everything in a box**: **Font** in the box's panel. Every piece inside it
+  uses that font unless it has one of its own.
+- **The whole dialog**: **Font** in the dialog's own panel, under Theme. It
+  applies on every page.
 
 The words are drawn into the dialog's picture, so players never need the
-font and it works on every server.
+font and it works on every server. A piece grows to hold a font taller than
+Minecraft's.
 
-- **Files**: TrueType (`.ttf`) or a collection (`.ttc`), up to 2 MB, and up to
-  16 per pack. An `.otf` with PostScript curves can't be read; use the font's
-  `.ttf` version.
+#### Other alphabets
+
+Minecraft's own font, as Studio draws it, has Latin letters and symbols only.
+For words in Thai, Chinese, Japanese, Korean, Russian, Greek and so on, upload
+a font that has those letters. You don't have to pick it on every piece:
+
+- Words with no font chosen are set in the first font of the pack that has
+  their letters. Type Thai into a button and it is drawn in your Thai font.
+- A letter the chosen font doesn't have is taken from another font of the pack
+  that has it.
+- The oldest font in the pack is tried first, so adding a font never changes
+  what is already drawn.
+
+With no font in the pack that has a letter, it is drawn as `?`.
+
+#### The details
+
+- **Files**: TrueType (`.ttf`) or a collection (`.ttc`), up to 32 MB each, up
+  to 16 per pack and 64 MB together. That is room for Chinese, Japanese and
+  Korean fonts, which are 5 to 20 MB. An `.otf` with PostScript curves can't
+  be read; use the font's `.ttf` version.
 - **Sizes**: a pixel font is drawn exactly at its own size (the editor detects
   it) or at 2x or 3x. Any other font is drawn at the size you choose, best at
   10px or more.
-- **Missing letters** are drawn in the other case, or else in Minecraft's own
-  font. So a font with no English letters (Thai, Cyrillic, Greek) still works,
-  with accents and tone marks stacked correctly. Thai wraps between letters.
+- **Missing letters** are drawn in the other case, then without their accent,
+  then in Minecraft's own font, then in another font of the pack. So a font
+  with no English letters still works, with accents and tone marks stacked
+  correctly. Thai and Chinese wrap between letters.
 - **Not supported**: scripts written right to left, or whose letters join up
   (Arabic, Hindi).
 - Colour codes still work. **Bold** is only what you tick: a heading keeps the
   font's own weight.
-- Words holding a [live value](#live-values) are drawn by the game, so they
-  stay in Minecraft's font.
+- **What the game draws stays in Minecraft's font**: the title, the footer
+  buttons, tooltips, boxes players type in, and words holding a
+  [live value](#live-values). The game has every alphabet itself, so these
+  show correctly in game. The editor's preview draws letters it doesn't have
+  as `?`.
 
 ### Tooltips
 

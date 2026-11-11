@@ -100,16 +100,28 @@ copied outside Studio, adds it as an image.
 
 Words can be set in a font of your own. Under **Font** in a piece's panel (a
 text, title plate, button, tab or formatted text), choose **Upload a font
-(.ttf)**. The font is kept with the pack, so every GUI and dialog in it can use
-it, and it appears in the Text tool too.
+(.ttf)**. The font is kept with the pack, so every GUI, HUD, dialog and rank
+tag in it can use it. A **Game** style button can use one too, in place of
+Minecraft's letters.
+
+The **Text** tool has the same choice: the editor's own fonts, the pack's, an
+upload and a size. So does the Text tool in the HUD editor.
 
 The words are drawn into the screen as pixels, so nothing extra ships and no
 player needs the font. Fonts work the same way as in dialogs: see [Your own
-fonts](/dialogs#your-own-fonts) for sizes, file types and other scripts. In
-short, a font with no English letters (Thai, say) uploads and draws, with any
-missing English letters and digits taken from Minecraft's font; right-to-left
-and joined scripts (Arabic, Hindi) don't draw correctly. The panel lists which
-characters came from Minecraft's font.
+fonts](/dialogs#your-own-fonts) for sizes, file types and other alphabets. In
+short:
+
+- A font with no English letters (Thai, say) uploads and draws, with any
+  missing English letters and digits taken from Minecraft's font. The panel
+  lists which characters came from Minecraft's font.
+- Words in another alphabet (Thai, Chinese, Japanese, Russian) are set in the
+  first font of the pack that has their letters, even if you haven't picked
+  it for that piece.
+- The editor's own fonts (Classic, Small Caps, Tiny) have English letters
+  only. An accented letter is drawn without its accent, and a symbol they
+  lack is drawn as Minecraft draws it.
+- Right-to-left and joined scripts (Arabic, Hindi) don't draw correctly.
 
 ## Seeing it in game
 
