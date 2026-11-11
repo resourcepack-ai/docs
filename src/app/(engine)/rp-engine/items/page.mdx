@@ -177,6 +177,50 @@ item's look can follow. For an item that changes for another reason (a lamp
 switched on, a Christmas version), make a second item; a placed piece can use
 [states](/rp-engine/furniture#states-lamps-doors-and-screens) instead.
 
+## Tools made of parts
+
+An item can be built out of parts that a player chooses, like a pickaxe made
+of a handle and a head. You make one small item per part, and RP Engine draws
+the tool out of whichever parts it holds. Four handles and four heads are eight
+textures, not sixteen whole pickaxes.
+
+```yaml
+oak_handle:
+  material: STICK
+birch_handle:
+  material: STICK
+iron_head:
+  material: PAPER
+gold_head:
+  material: PAPER
+
+pickaxe:
+  material: IRON_PICKAXE
+  name: Pickaxe
+  parts:
+    handle: [oak_handle, birch_handle]
+    head: [iron_head, gold_head]
+```
+
+- Each slot under `parts:` lists the items that can fill it. A name without a
+  namespace is in the item's own pack.
+- Slots are drawn in the order you write them, so a later slot is drawn over
+  an earlier one where they overlap. Draw each part's texture in the place it
+  takes in the finished tool, on a transparent background.
+- A pickaxe that has not been given any parts (from `/rp give`, say) holds the
+  first option in each slot: here, an oak handle and an iron head.
+- The pickaxe needs no texture or model of its own.
+
+To let players put one together, write a [recipe](/rp-engine/recipes#tools-made-of-parts)
+whose ingredients are the parts. Plugins can set the parts themselves through
+the [API](/rp-engine/api).
+
+<Callout type="note" title="Minecraft 1.21.4 or newer">
+  Drawing an item out of several models arrived in 1.21.4. On an older server
+  the item draws as its own texture or model whatever parts it holds, and the
+  parts are still kept on every stack.
+</Callout>
+
 ## Borrowing another item's model
 
 ```yaml

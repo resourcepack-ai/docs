@@ -66,6 +66,26 @@ A **vanilla potion** is the material, a slash and the potion type:
 `potion/awkward`, `splash_potion/healing`. `minecraft:diamond` means the
 material, the same as `DIAMOND`.
 
+## Tools made of parts
+
+An ingredient can be several items, any one of which will do, written with
+`|` between them:
+
+```yaml
+assemble_pickaxe:
+  type: shapeless
+  result: mypack:pickaxe
+  ingredients:
+    - "mypack:iron_head | mypack:gold_head"
+    - "mypack:oak_handle | mypack:birch_handle"
+```
+
+When the result is an [item made of parts](/rp-engine/items#tools-made-of-parts),
+each ingredient that is one of its slot's options fills that slot. So this one
+recipe makes all four pickaxes, and each comes out with the head and handle
+that went in. `|` works in shaped and shapeless recipes. Quote the line, since
+YAML reads a bare `|` as something else.
+
 ## Smithing
 
 ```yaml
