@@ -165,11 +165,14 @@ Each row is a **track**: one effect on one part of the tag.
 | **Shine** | A diagonal band of light with soft edges, as wide as you set | Where the band is, 0% (before the tag) to 100% (past it) |
 | **Sparkle** | Stars, somewhere new every frame | How many |
 | **Wave** | Bands of light running along the tag, as long and as fast as you set (a negative speed runs them backwards) | How bright, 0 to 100% |
+| **Particles** | Small things that fall, rise, drift or twinkle: rain, snow, embers, hearts. See [Particles](#particles) | About how many are on the tag at once |
+| **Paint** | Frames you paint yourself, pixel by pixel. See [Painting frames](#painting-frames) | How strongly the paint shows, 0 to 100% |
 
-A track lights the **Whole tag**, the **Face**, the **Words**, the **Frame**
-(outline and rim), the **Icon cell** or the **Icon**. The outline and shadow of
-the words are never touched, so the words stay readable whatever the face is
-doing. Tracks run top to bottom, each on what the one above left.
+A track lights the **Whole tag**, **Behind the words** (the whole tag except its
+letters), the **Face**, the **Words**, the **Frame** (outline and rim), the
+**Icon cell** or the **Icon**. Tint, Hue, Shine, Sparkle and Wave never touch
+the outline and shadow of the words, so the words stay readable whatever the
+face is doing. Tracks run top to bottom, each on what the one above left.
 
 The diamonds are **keyframes**. Each sits at a frame and at a height, which is
 its value: drag one sideways to move it in time and up or down to change it, or
@@ -191,12 +194,66 @@ there. **+ Track** adds one (up to six), the eye mutes one without losing it,
 and **Start from** replaces the timeline with one of the built-in animations to
 build on.
 
+### Particles
+
+A Particles track puts small moving things on the tag. Pick the track and its
+settings open under the timeline. **Start from** fills them all in for Rain,
+Snow, Embers, Fire, Bubbles, Stars, Confetti, Hearts, Code rain or a Shooting
+star, and every one of them is then yours to change:
+
+| Setting | What it does |
+| --- | --- |
+| **Colours** | Up to three. **Solid** is how much of a colour is laid on: lower it for glassy rain. With more than one colour, each particle is one of them, or goes through them all as it ages (a flame: pale yellow, then orange, then red) |
+| **Shape** | Dot, Glow, Plus, Square, Dash, Ring, Flake or Heart, or **Your own**: a five by five grid where a click makes a pixel solid, a second click soft, a third clears it |
+| **Across** and **Down** | How far it moves each frame. Down below zero rises. Both at none, it stays put and twinkles |
+| **Trail** | Pixels fading behind it: two or three for rain, five for a shooting star |
+| **Lasts** | How many frames each one lives. At zero it crosses the whole tag. A short life with a rising particle makes flames that die out part way up |
+| **Fades** | In, out, both or not at all |
+| **Wanders** | How far it drifts side to side as it goes: snow, embers, bubbles |
+| **Speeds differ** | At zero they all move alike, which looks mechanical; 40% looks natural |
+| **Appears** | **At the edge** it comes in from, or **Anywhere** on the tag |
+| **Shuffle** | Another arrangement of the same particles |
+
+Its keyframes are how many there are, so a storm can build and ease. Particles
+on **Behind the words** pass over the face, the frame and the letters' outline
+and never over the letters, which is what keeps a tag readable in the rain.
+
+### Painting frames
+
+A Paint track is drawn by hand. Pick it and the tag above the timeline takes
+the brush: drag on it to paint the frame the playhead is on, and use the right
+mouse button (or the **Eraser**) to take paint off. The arrow keys step a frame
+at a time, and a mark under the track shows which frames have paint.
+
+Its **Palette** holds up to fifteen colours, each with its own **Solid**. Under
+**Frame**, **Last frame** copies the paint of the frame before, **Every frame**
+puts this frame's paint on all of them, **Clear** takes it off, and the arrows
+under **Move it** nudge it a pixel at a time, so a moving thing is a copy and a
+nudge per frame. Its keyframes are how strongly the paint shows, which lets
+painted frames fade in and out.
+
+Paint lies only on pixels the tag has (it cannot go outside the tag's shape)
+and only on the part the track is **On**.
+
+### How much a tag can hold
+
+Painted frames and particles are stored inside the tag's own picture, and a tag
+only has so much room for them: the smaller and narrower the tag, the more.
+**Paint** beside **Start from** shows how much is taken. Past 100% the tag
+won't save. To get room back, paint fewer frames or use fewer colours, turn the
+particles down or shorten their trails, make the loop shorter, or make the tag
+narrower or smaller under **In game**.
+
+### Animate with AI
+
 **Animate with AI**, on the timeline or under **Motion**, writes the timeline
-from a sentence: "a slow gold shimmer", "flash white every second", "rainbow
-letters with sparkles on the face", "the frame burns like lava". It looks at
-your tag first, then plays what it wrote frame by frame and fixes what it sees
-before you get it: a shine too faint to notice, words that get hard to read, a
-loop that jumps where it starts again.
+from a sentence: "rain falling behind the words", "embers rising off the
+bottom", "a slow gold shimmer", "flash white every second", "rainbow letters
+with sparkles on the face", "the frame burns like lava". Name a thing and it
+puts that thing on the tag, with particles or painted frames where it needs
+them. It looks at your tag first, then plays what it wrote frame by frame and
+fixes what it sees before you get it: rain you cannot see, a shine too faint to
+notice, words that get hard to read, a loop that jumps where it starts again.
 
 A new animation comes in three versions, playing side by side under
 **Versions**. The first lands on the tracks, and clicking another swaps it in.
@@ -209,6 +266,11 @@ it back. The versions stay in the popover until you leave the editor.
 A custom animation plays in game the same way the built-in ones do, in its own
 colour, which the tag's page puts in the command. A pack can hold sixteen tags
 with their own animation.
+
+If you run your pack through an image optimiser, tell it to leave font
+textures exactly as they are (no colour reduction, and no changes to
+transparent pixels): an animated tag keeps what it needs in them. RP Engine's
+PackSquash setup already does.
 
 ## Sharing it
 
