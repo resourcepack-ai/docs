@@ -903,6 +903,18 @@ many but not what each is called. **How many** can be a number, or a live value
 such as `{home_slots}`. Then the list's own name is the row's number: a button
 `Home {home}` running `home {home}` reads *Home 1*, *Home 2* and so on.
 
+**Scrolling a list.** A list starts at its first item unless you change
+**Start at** in its panel. Give it a number, or a [player
+setting](#player-settings) such as `{warps_from}`, and bind a stepper to that
+setting: each step moves the list, so a list of thirty warps can show five rows
+at a time with no pages. With `{warps_from}` at 6, the first row shows the
+sixth warp, `{warps}` and `{warps_note}` included, and its button runs that
+warp's command. Step the stepper by the number of rows to move a whole screen at
+a time (a stepper holds at most 21 positions, so 1 to 26 in steps of 5 works).
+In a list that is **Repeated a number of times**, the start is the first row's
+number, and rows past **How many** are hidden; the editor shows `{home_1}`,
+`{home_2}` and so on where those numbers go.
+
 ### Items and inventories
 
 The **Items** shelf has an **Item slot**, a **Grid of slots** (up to 13 by 8)
@@ -1082,6 +1094,7 @@ features need at least:
 | PlaceholderAPI placeholders with arguments | 0.2.48 | 0.6.6 |
 | Several commands on one button | 0.2.51 | 0.6.7 |
 | Stay open redrawn after a button's commands | 0.2.57 | |
+| Scrolling a list (Start at) | 0.2.77 | 0.7.1 |
 
 On an older version the feature fails quietly: a bound control shows every
 state at once, a live bar is empty, a conditioned piece is drawn for everybody,
