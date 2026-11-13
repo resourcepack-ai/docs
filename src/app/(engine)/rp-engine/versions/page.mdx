@@ -50,6 +50,7 @@ These do not change with your version at all:
 | Emotes from the content folder | 1.21.4 | No emote rigs (the copy of a player's skin an emote plays on) are built from players' skins, so a hand-written emote plays on nobody and `/emote` says so. Emotes pushed from Studio still work. |
 | VFX | 1.21.4 | VFX do not play, and `/rp cast` says so. |
 | 3D objects | 1.21.4 | [3D objects](/rp-engine/objects) are not available. |
+| Studio Tooltips on items | 1.21.5 | An item's [`tooltip:`](/rp-engine/items#a-designed-tooltip) is ignored and the item shows its own name and lore. |
 | Tinted water and lava | 1.21.6 | Liquids keep their vanilla colour. Everything else about a custom liquid works. |
 | Dialogs | 1.21.6 | Dialogs do not open: the game has no dialog screen before this. A [screen](/rp-engine/screens) is the older way to do the same job, and works everywhere. |
 | Player heads in dialogs | 1.21.9 | A Studio dialog's live player head is left empty. The rest of the dialog, its live words included, works as usual. |
@@ -98,7 +99,7 @@ On a current server, nothing. On an older one, it names each reduced feature,
 the version it needs, and what you get instead:
 
 ```
-[RPEngine] Running on Minecraft 1.20.1, so 12 features are reduced:
+[RPEngine] Running on Minecraft 1.20.1, so 13 features are reduced:
 [RPEngine]   - Multiple resource packs per player (needs 1.20.3). Players hold one
              pack at a time, so a player due more than one bundle gets only the last
              of them and the rest do not arrive. Swapping bundles still works and
@@ -112,8 +113,8 @@ the version it needs, and what you get instead:
 ...
 ```
 
-On 1.21.4 and 1.21.5 it lists three (tinted liquids, dialogs, player heads in
-dialogs). On 1.21.6 to 1.21.8 it lists one, player heads in dialogs. On 1.21.9
+On 1.21.4 it lists four (Studio Tooltips on items, tinted liquids, dialogs,
+player heads in dialogs), and on 1.21.5 the last three. On 1.21.6 to 1.21.8 it lists one, player heads in dialogs. On 1.21.9
 and newer it says nothing. Vehicle controls on Spigot are not listed; the
 startup log and `/rp info` describe which controls vehicles use.
 

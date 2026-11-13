@@ -247,6 +247,44 @@ the [API](/rp-engine/api).
   parts are still kept on every stack.
 </Callout>
 
+## A designed tooltip
+
+A [Tooltip](/tooltips) made in Studio is a picture shown in place of the
+item's hover box. `tooltip:` puts one on an item:
+
+```yaml
+legend_blade:
+  material: DIAMOND_SWORD
+  model: legend_blade
+  name: "&6Legend Blade"          # shown only where the tooltip can't be
+  tooltip: legendary              # or studio:legendary
+```
+
+The id is the Tooltip's id in Studio. The Studio pack it comes from has to be
+on the server: synced to it, published to it, or exported from Studio and
+dropped into the content folder. Every stack of the item RP Engine makes then
+shows the picture.
+
+- **The tooltip replaces the item's own `name:` and `lore:`.** The item has no
+  name of its own while it wears one, so nothing is written over the picture
+  or above the hotbar. Keep `name:` and `lore:` anyway: they are what the item
+  shows when the tooltip can't be used.
+- The tooltip hides the lines the game adds under a hover box (attributes,
+  enchantments and so on), so `flags:` makes no difference to such an item.
+- If no Studio pack on the server has that Tooltip, the item shows its own
+  name and lore and the console says so once, naming the item and the id.
+- A stack already in somebody's inventory keeps what it was made with. Its
+  picture comes from the pack, so a redrawn Tooltip shows on it straight
+  away, but if the Tooltip changes height, starts or stops moving, or gains or
+  loses its shimmer, give a fresh one.
+- A [recipe](/rp-engine/recipes)'s result is made when content loads. If the
+  Tooltip comes from a published pack, which arrives a moment after the server
+  starts, crafted items wear it from the next `/rp reload`.
+
+Needs Minecraft 1.21.5 or newer and RP Engine 0.2.78 or newer. On an older
+server `tooltip:` is ignored with a console warning, and the item shows its own
+name and lore. Works on Spigot and Paper.
+
 ## Borrowing another item's model
 
 ```yaml
