@@ -153,6 +153,7 @@ file and the ID. The common ones:
 | Warning | What it means | Fix |
 |---|---|---|
 | `No pack.yml, so this is not a content pack` | The folder is not one of the [shapes above](#what-can-go-in-content). Usually a resource pack unzipped one folder too deep, so `pack.mcmeta` is not at the top | Add a `pack.yml` if it is your content. If it is a resource pack, move its contents up so `pack.mcmeta` and `assets/` sit directly inside the folder, or drop the original `.zip` in instead |
+| `is a plain resource pack ... did nothing` | You put a `.yml` file inside a resource pack folder (one with `pack.mcmeta` and `assets/`, such as a Studio export). RP Engine copies that folder into the pack as art and never reads definitions from it | Make a separate content pack: a new folder in `content/` with a `pack.yml`, your `.yml` in its `items/` folder and the PNG in its `assets/textures/item/` |
 | `files have capital letters in their names` | A file in `assets/` is named with capitals, like `Aal.png`. Minecraft would skip it, so RP Engine lowercased it in the built pack | Nothing is broken. Rename the files to lowercase (and the `texture:` that names them) to quiet the warning |
 | `Folder name is not a valid namespace` | The folder has capitals, spaces or other characters | Rename it: `My Pack` to `my_pack` |
 | `Not a content category, so nothing in it was read` | A folder in your pack that RP Engine does not read, often a typo (`item/`, `Sounds/`) | Rename it to one from [the layout](#a-content-packs-layout), or move art into `assets/` |
