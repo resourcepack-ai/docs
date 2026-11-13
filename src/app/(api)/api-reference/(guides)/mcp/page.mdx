@@ -202,9 +202,9 @@ and poll it. For an agent, each poll costs a whole turn, so `wait_for_job` does
 the waiting on the server instead. The agent passes every handle it is waiting
 on in one call and gets one answer when they have all finished.
 
-It waits 120 seconds by default, up to 600 with `timeoutSeconds`. If time runs
-out it says which jobs are still going and the agent calls again. Nothing is
-lost or charged twice.
+It waits up to 50 seconds, because most MCP clients give up on a request after
+a minute. If time runs out it says which jobs are still going and the agent
+calls again, as often as it takes. Nothing is lost or charged twice.
 
 ### Files come back as files
 
