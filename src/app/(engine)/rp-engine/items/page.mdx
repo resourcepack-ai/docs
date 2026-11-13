@@ -64,6 +64,14 @@ such as `minecraft:item/custom/ruby`.
 
 A missing texture is a build warning that names the path it looked for.
 
+An item on a sword, axe, pickaxe, shovel or hoe (or a stick, rod or mace) is
+held at an angle like the vanilla one; anything else is held flat. Draw a
+weapon's picture the way vanilla's are drawn, with the handle in the bottom
+left and the tip in the top right, or it points the wrong way in the hand.
+Before RP Engine 0.2.77 every flat item was held flat: on an older version,
+write the model in as shown under [3D items](#3d-items), with
+`parent: minecraft:item/handheld`.
+
 ## 3D items
 
 Point `model:` at a Blockbench file in `assets/models/`:
