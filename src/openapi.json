@@ -8879,6 +8879,1033 @@
         }
       }
     },
+    "/packs/{pack}/tooltips": {
+      "get": {
+        "operationId": "listTooltips",
+        "summary": "List a pack's Tooltips",
+        "description": "A pack's Tooltips: designed boxes an item shows when a player hovers it, in an inventory or in any GUI a server opens (a shop's items, a menu's buttons). The pack carries each as a picture, and any item wearing its components shows it, on Minecraft 1.21.5 and newer. Filed on the GUIs tab.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The Tooltips, last changed first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "tooltips": {
+                      "type": "array",
+                      "description": "Its Tooltips.",
+                      "items": {
+                        "type": "object",
+                        "description": "A Tooltip.",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Its id in the pack."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Its name."
+                          },
+                          "item": {
+                            "type": "string",
+                            "description": "The vanilla item the give command hands out. The Tooltip itself shows on any item carrying its components."
+                          },
+                          "width": {
+                            "type": "integer",
+                            "description": "Its width in GUI pixels."
+                          },
+                          "height": {
+                            "type": "integer",
+                            "description": "Its height in GUI pixels."
+                          },
+                          "blocks": {
+                            "type": "integer",
+                            "description": "How many blocks it has."
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          },
+                          "giveCommand": {
+                            "type": "string",
+                            "description": "A `/give` for the item wearing it, once the pack is on the client (Minecraft 1.21.5+). Over 256 characters it has to run from the console or a command block."
+                          },
+                          "components": {
+                            "type": "object",
+                            "description": "The same item components as JSON, for ItemsAdder, Nexo or any plugin that takes them. Absent from the listing."
+                          },
+                          "spec": {
+                            "type": "object",
+                            "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colours), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "item",
+                          "width",
+                          "height",
+                          "blocks",
+                          "updatedAt",
+                          "giveCommand"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "tooltips"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "tooltips": [
+                    {
+                      "id": "cinder_sovereign",
+                      "name": "Cinder Sovereign",
+                      "item": "netherite_sword",
+                      "width": 216,
+                      "height": 208,
+                      "blocks": 6,
+                      "updatedAt": "2026-11-13T10:00:00.000Z",
+                      "giveCommand": "/give @p minecraft:netherite_sword[...]"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "generateTooltip",
+        "summary": "Design a Tooltip",
+        "description": "Designs a Tooltip from words: the box shown when a player hovers an item. Describe the item or the button it is for and how it should feel (`a legendary fire sword for a level 50 boss drop`, `the VIP rank in a store menu`); the designer picks the blocks (a header, big numbers, stats, a coloured band, an ability card, a bar, sockets), the words, the numbers and the colours, then looks at it drawn and fixes what it sees. Finishes before it answers, so there is no job to wait on; see it with `get_tooltip_picture`. A pack holds up to 200. 5 credits, flat, given back if it fails.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "201": {
+            "description": "Designed and saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`ready`, when it was designed or changed by AI."
+                    },
+                    "tooltip": {
+                      "type": "object",
+                      "description": "The Tooltip, with `spec` and `components`.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "item": {
+                          "type": "string",
+                          "description": "The vanilla item the give command hands out. The Tooltip itself shows on any item carrying its components."
+                        },
+                        "width": {
+                          "type": "integer",
+                          "description": "Its width in GUI pixels."
+                        },
+                        "height": {
+                          "type": "integer",
+                          "description": "Its height in GUI pixels."
+                        },
+                        "blocks": {
+                          "type": "integer",
+                          "description": "How many blocks it has."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "giveCommand": {
+                          "type": "string",
+                          "description": "A `/give` for the item wearing it, once the pack is on the client (Minecraft 1.21.5+). Over 256 characters it has to run from the console or a command block."
+                        },
+                        "components": {
+                          "type": "object",
+                          "description": "The same item components as JSON, for ItemsAdder, Nexo or any plugin that takes them. Absent from the listing."
+                        },
+                        "spec": {
+                          "type": "object",
+                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colours), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "item",
+                        "width",
+                        "height",
+                        "blocks",
+                        "updatedAt",
+                        "giveCommand"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "tooltip"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "ready",
+                  "tooltip": {
+                    "id": "cinder_sovereign",
+                    "name": "Cinder Sovereign",
+                    "item": "netherite_sword",
+                    "width": 216,
+                    "height": 208,
+                    "blocks": 6,
+                    "updatedAt": "2026-11-13T10:00:00.000Z",
+                    "giveCommand": "/give @p minecraft:netherite_sword[...]"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What it is for, and how it should look.",
+                    "maxLength": 600,
+                    "example": "a legendary fire sword for a level 50 boss drop"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label. Absent uses the name the designer gives it.",
+                    "maxLength": 50
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/tooltips/{tooltip}": {
+      "get": {
+        "operationId": "getTooltip",
+        "summary": "Read a Tooltip",
+        "description": "A Tooltip whole: its `spec` (the design), the give command and the item components.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The Tooltip.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`ready`, when it was designed or changed by AI."
+                    },
+                    "tooltip": {
+                      "type": "object",
+                      "description": "The Tooltip, with `spec` and `components`.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "item": {
+                          "type": "string",
+                          "description": "The vanilla item the give command hands out. The Tooltip itself shows on any item carrying its components."
+                        },
+                        "width": {
+                          "type": "integer",
+                          "description": "Its width in GUI pixels."
+                        },
+                        "height": {
+                          "type": "integer",
+                          "description": "Its height in GUI pixels."
+                        },
+                        "blocks": {
+                          "type": "integer",
+                          "description": "How many blocks it has."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "giveCommand": {
+                          "type": "string",
+                          "description": "A `/give` for the item wearing it, once the pack is on the client (Minecraft 1.21.5+). Over 256 characters it has to run from the console or a command block."
+                        },
+                        "components": {
+                          "type": "object",
+                          "description": "The same item components as JSON, for ItemsAdder, Nexo or any plugin that takes them. Absent from the listing."
+                        },
+                        "spec": {
+                          "type": "object",
+                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colours), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "item",
+                        "width",
+                        "height",
+                        "blocks",
+                        "updatedAt",
+                        "giveCommand"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "tooltip"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "ready",
+                  "tooltip": {
+                    "id": "cinder_sovereign",
+                    "name": "Cinder Sovereign",
+                    "item": "netherite_sword",
+                    "width": 216,
+                    "height": 208,
+                    "blocks": 6,
+                    "updatedAt": "2026-11-13T10:00:00.000Z",
+                    "giveCommand": "/give @p minecraft:netherite_sword[...]"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "tooltip",
+            "in": "path",
+            "required": true,
+            "description": "The Tooltip's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Tooltip's `id` from the list.",
+              "example": "cinder_sovereign"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "updateTooltip",
+        "summary": "Change a Tooltip",
+        "description": "Renames it and/or replaces its `spec`, saved as the editor's Save saves. Send the `spec` from `get_tooltip` with your changes; anything out of range is brought back into it, and a field left out keeps its value. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`ready`, when it was designed or changed by AI."
+                    },
+                    "tooltip": {
+                      "type": "object",
+                      "description": "The Tooltip, with `spec` and `components`.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "item": {
+                          "type": "string",
+                          "description": "The vanilla item the give command hands out. The Tooltip itself shows on any item carrying its components."
+                        },
+                        "width": {
+                          "type": "integer",
+                          "description": "Its width in GUI pixels."
+                        },
+                        "height": {
+                          "type": "integer",
+                          "description": "Its height in GUI pixels."
+                        },
+                        "blocks": {
+                          "type": "integer",
+                          "description": "How many blocks it has."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "giveCommand": {
+                          "type": "string",
+                          "description": "A `/give` for the item wearing it, once the pack is on the client (Minecraft 1.21.5+). Over 256 characters it has to run from the console or a command block."
+                        },
+                        "components": {
+                          "type": "object",
+                          "description": "The same item components as JSON, for ItemsAdder, Nexo or any plugin that takes them. Absent from the listing."
+                        },
+                        "spec": {
+                          "type": "object",
+                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colours), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "item",
+                        "width",
+                        "height",
+                        "blocks",
+                        "updatedAt",
+                        "giveCommand"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "tooltip"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "ready",
+                  "tooltip": {
+                    "id": "cinder_sovereign",
+                    "name": "Cinder Sovereign",
+                    "item": "netherite_sword",
+                    "width": 216,
+                    "height": 208,
+                    "blocks": 6,
+                    "updatedAt": "2026-11-13T10:00:00.000Z",
+                    "giveCommand": "/give @p minecraft:netherite_sword[...]"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "tooltip",
+            "in": "path",
+            "required": true,
+            "description": "The Tooltip's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Tooltip's `id` from the list.",
+              "example": "cinder_sovereign"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "A new name.",
+                    "maxLength": 50
+                  },
+                  "spec": {
+                    "type": "object",
+                    "description": "The design, in the shape `get_tooltip` answers."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/tooltips/{tooltip}/picture": {
+      "get": {
+        "operationId": "getTooltipPicture",
+        "summary": "See a Tooltip",
+        "description": "The Tooltip drawn exactly as the game draws it, three times size over an inventory's grey (a still, where it moves). A PNG; an image over MCP.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "An `image/png` body."
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "tooltip",
+            "in": "path",
+            "required": true,
+            "description": "The Tooltip's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Tooltip's `id` from the list.",
+              "example": "cinder_sovereign"
+            }
+          }
+        ]
+      }
+    },
+    "/packs/{pack}/tooltips/{tooltip}/edit": {
+      "post": {
+        "operationId": "editTooltip",
+        "summary": "Change a Tooltip with AI",
+        "description": "The editor's Edit with AI: changes what `instruction` asks (`icy blue colours`, `add a lifesteal stat`) and keeps the rest, then saves it before answering. 5 credits, flat, given back if it fails.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "200": {
+            "description": "Changed and saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`ready`, when it was designed or changed by AI."
+                    },
+                    "tooltip": {
+                      "type": "object",
+                      "description": "The Tooltip, with `spec` and `components`.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "item": {
+                          "type": "string",
+                          "description": "The vanilla item the give command hands out. The Tooltip itself shows on any item carrying its components."
+                        },
+                        "width": {
+                          "type": "integer",
+                          "description": "Its width in GUI pixels."
+                        },
+                        "height": {
+                          "type": "integer",
+                          "description": "Its height in GUI pixels."
+                        },
+                        "blocks": {
+                          "type": "integer",
+                          "description": "How many blocks it has."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "giveCommand": {
+                          "type": "string",
+                          "description": "A `/give` for the item wearing it, once the pack is on the client (Minecraft 1.21.5+). Over 256 characters it has to run from the console or a command block."
+                        },
+                        "components": {
+                          "type": "object",
+                          "description": "The same item components as JSON, for ItemsAdder, Nexo or any plugin that takes them. Absent from the listing."
+                        },
+                        "spec": {
+                          "type": "object",
+                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colours), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "item",
+                        "width",
+                        "height",
+                        "blocks",
+                        "updatedAt",
+                        "giveCommand"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "tooltip"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "ready",
+                  "tooltip": {
+                    "id": "cinder_sovereign",
+                    "name": "Cinder Sovereign",
+                    "item": "netherite_sword",
+                    "width": 216,
+                    "height": 208,
+                    "blocks": 6,
+                    "updatedAt": "2026-11-13T10:00:00.000Z",
+                    "giveCommand": "/give @p minecraft:netherite_sword[...]"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "tooltip",
+            "in": "path",
+            "required": true,
+            "description": "The Tooltip's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Tooltip's `id` from the list.",
+              "example": "cinder_sovereign"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "instruction": {
+                    "type": "string",
+                    "description": "What to change.",
+                    "maxLength": 300,
+                    "example": "add a set bonus card"
+                  }
+                },
+                "required": [
+                  "instruction"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/tooltips/{tooltip}/delete": {
+      "post": {
+        "operationId": "deleteTooltip",
+        "summary": "Delete a Tooltip",
+        "description": "Deletes it. Items already carrying its components show the game's own tooltip once the pack no longer has it.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `deleted`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "tooltip",
+            "in": "path",
+            "required": true,
+            "description": "The Tooltip's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Tooltip's `id` from the list.",
+              "example": "cinder_sovereign"
+            }
+          }
+        ]
+      }
+    },
     "/packs/{pack}/models/{model}/export": {
       "get": {
         "operationId": "exportModel",
