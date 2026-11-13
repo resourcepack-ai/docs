@@ -8699,7 +8699,7 @@
       "post": {
         "operationId": "generateCustomGuiPage",
         "summary": "Write a Custom GUI page with AI",
-        "description": "The Custom GUI editor's AI: writes a page from a sentence, or rewrites one that exists (`page`, the entry page by default), and saves it before answering, so there is no job to wait on. `look: minecraft` draws it in the game's own style (panels, slots, the game's font), and adds the kit's stylesheet to the GUI if it lacks it. 15 credits a request, flat, given back if it fails.",
+        "description": "The Custom GUI editor's AI: writes a page from a sentence, or rewrites one that exists (`page`, the entry page by default), and saves it before answering, so there is no job to wait on. `look: minecraft` draws it in the game's own style (panels, slots, the game's font), and adds the kit's stylesheet to the GUI if it lacks it. 10 credits a request, flat, given back if it fails.",
         "tags": [
           "Generating"
         ],
