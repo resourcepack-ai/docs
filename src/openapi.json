@@ -16500,6 +16500,7 @@
                 "hud",
                 "dialog",
                 "custom_gui",
+                "tooltip",
                 "icon",
                 "rank_tag",
                 "sound",
