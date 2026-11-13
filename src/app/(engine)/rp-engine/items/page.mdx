@@ -11,9 +11,25 @@ Because it is a real vanilla item underneath, it stacks, burns in lava, goes in
 a hopper, and every other plugin sees an ordinary item. Furniture, vehicles
 and armour all start as items.
 
-Items are written in YAML files in the `items/` folder of your pack inside
-`plugins/RPEngine/content/` (your [content folder](/rp-engine/content)). One
-file can hold as many as you like.
+Items are written in YAML files in the `items/` folder of a content pack: a
+folder in `plugins/RPEngine/content/` with a `pack.yml` in it (see
+[the content folder](/rp-engine/content)). One file can hold as many items as
+you like. For an item `ruby` in a pack called `mypack`:
+
+```
+plugins/RPEngine/content/
+  mypack/                          ← the pack, and the first half of its IDs
+    pack.yml                       ← required, can be just: name: My Pack
+    items/gems.yml                 ← the item
+    assets/textures/item/ruby.png  ← its picture
+```
+
+<Callout type="warning" title="Not inside a resource pack">
+  A folder with `pack.mcmeta` and `assets/` in it, such as a pack exported
+  from Studio, is a resource pack. RP Engine adds it to the pack as art and
+  never reads `.yml` files from it, even in its `assets/minecraft/items/`
+  folder. Make your own content pack beside it as shown above.
+</Callout>
 
 ![Custom items in an inventory](/images/items.webp)
 
