@@ -83,7 +83,7 @@ faces. Name a colour for the screen ("a red menu") or use your pack's
 name for one thing ("a red Ban button") goes on that thing only. Then it looks at the
 result as a player would and fixes cut-off labels and screens that are too
 tall before saving. Kits, banners, motion and the rest of the
-[looks](#kits) are yours to add in the editor.
+[textures](#textures) are yours to add in the editor.
 
 - A dialog costs **30 AI Credits**.
 - **Variations** makes up to three dialogs from one prompt, each with a
@@ -296,12 +296,12 @@ Under **Look** in a button's panel:
 | **Greyed out** | Draws it grey with faded words and icon, like a disabled button in the game. It only changes the picture: a click still runs its action, so set **When clicked** to **Nothing** if it shouldn't do anything. |
 | **Words from the left** | Starts its label at the left edge rather than centred, for a sidebar of buttons. |
 
-A **Theme button** also has a **Style**: **Pill** (round ends), **Chunky** (a
+A **Theme button** also has a **Style**, in its **Texture** section: **Pill** (round ends), **Chunky** (a
 thick lip under it, a little taller: the big action), **Glossy**, **Stripes**,
 **Checks**, **Dots**, **Fade**, **Outline** (hollow, for a Cancel beside a
 chunky Buy), **Notched** (corners cut, for sci-fi screens) or **Price tag**.
 Each draws in the button's colour, or the accent when it is selected. Some
-[kits](#kits) dress their theme buttons in a style of their own; a style you
+[textures](#textures) dress their theme buttons in a style of their own; a style you
 pick wins.
 
 These are drawn into the dialog's picture, so a plugin can't switch them as the
@@ -563,19 +563,19 @@ drawn box.
 
 ## Changing how it looks
 
-The look is set at three levels: the **kit** is the style the whole dialog is
-drawn in, the **colours** tint it, and any box can be given a **look** of its
+The look is set at three levels: the **texture** is what the whole dialog is
+made of, the **colours** tint it, and any piece can be given a texture of its
 own. Everything here is drawn into the picture, so it needs nothing on the
 server.
 
-### Kits
+### Textures
 
-A kit is what everything is drawn with: the material the cards are made of,
-how round their corners are, their frame, the dividers, how headings are
-lettered, and whether lit things glow. Pick one under **Kit** in the dialog's
-settings:
+A dialog's texture is what everything is drawn with: the material the cards
+are made of, how round their corners are, their frame, the dividers, how
+headings are lettered, and whether lit things glow. Pick one in the dialog's
+**Texture** section:
 
-| Kit | Looks like |
+| Texture | Looks like |
 | --- | --- |
 | **Classic** | The plain raised cards, in any colours. |
 | **Scroll** | Parchment in a gilded frame, wax-red accents. |
@@ -595,12 +595,12 @@ settings:
 | **Blossom** | Soft pink with drifting petals and pill buttons. |
 | **Regal** | Royal purple cloth in a gold frame, with glossy buttons. |
 
-A kit comes in its own colours, and you can change them under **Colours**
-without losing the kit. Changing kit never moves anything: every piece keeps
-its place and size.
+A texture comes in its own colours, and you can change them under **Theme**
+without losing the texture. Changing texture never moves anything: every piece
+keeps its place and size.
 
-On a dialog with [pages](#pages), each page can have a kit and colours of its
-own. **Kit and colours for** in the dialog's settings says where a change goes:
+On a dialog with [pages](#pages), each page can have a texture and colours of
+its own. **Texture for** and **Colours for** say where a change goes:
 **This page** changes only the page you have open, **Every page** changes them
 all. While every page shares one look, a change goes to every page; once a page
 has its own, it goes to that page only, and **Use this page's look on every
@@ -618,18 +618,20 @@ Cards, controls and highlights are drawn in the dialog's colours.
 Pick one of fourteen under **Colours** (Stone, Slate, Deepslate, Nether, Ocean,
 Jungle, End, Royal, Oak, Parchment, Ice, Cherry, Redstone, Sand), or choose any
 **Card** and **Accent** colour and the rest is worked out from those. What
-they are drawn *with* is the [kit](#kits).
+they are drawn *with* is the [texture](#textures).
 
-### A box's own look
+### A piece's own texture
 
-Any row, column or card has a **Look** section in its panel:
+Every piece that can have one has a **Texture** section in its panel, closed
+until you open it. A row, column or card's **Look** section says what it is
+drawn on and its own **Fill**, in a colour of its own, fading down or across to
+a second one (words on it take colours that read on it). Its **Texture** holds
+the rest:
 
 - **Picture**: an image behind the box's content, cropped to fill it, with
   **Darken for words** so a title reads over it. Choose one of your images, one
   of the **Starter banners** (free), or **Draw it with AI**: describe a scene
   and the image model paints it at exactly the box's size (10 AI Credits).
-- **Fill** in a colour of its own, fading down or across to a second one. Words
-  on it take colours that read on it.
 - **Made of**: planks, parchment, stone, bricks, velvet, glass, frost, magma,
   leaves, metal, stars or grid.
 - **Corners**, **Border** (thin or thick), **Bevel**, **Drop shadow**, **Glow**,
@@ -644,14 +646,14 @@ its right. Its art prompt is already in its panel, ready to draw.
 - **Lettering** on a text piece: an **Outline**, letters that **Fade** to a
   second colour, and a **Shadow** colour or none. **Huge** and **Giant** sizes
   draw words three and four times their size.
-- An icon's **Glow** puts a soft halo behind it, and **Burst of rays** a ring of
-  rays: for the thing to look at.
-- An icon can **Sit in** an item slot, or a **Round**, **Diamond** or **Gem**
-  socket rimmed in its glow colour (or the accent), for rewards, products and
-  portraits. **Outline and shadow** gives an item a dark outline and a soft
-  shadow, so it reads like a polished sticker on any card.
-- A badge can be a **Ribbon** with notched ends. A divider can be an
-  **Ornament**, **Glow**, **Fade** or **Dots** line.
+- In an icon's **Texture**: **Glow** puts a soft halo behind it, and **Burst of
+  rays** a ring of rays, for the thing to look at. It can **Sit in** an item
+  slot, or a **Round**, **Diamond** or **Gem** socket rimmed in its glow colour
+  (or the accent), for rewards, products and portraits. **Outline and shadow**
+  gives an item a dark outline and a soft shadow, so it reads like a polished
+  sticker on any card.
+- In a badge's **Texture** it can be a **Ribbon** with notched ends, and in a
+  divider's an **Ornament**, **Glow**, **Fade** or **Dots** line.
 - A **Decoration** scatters sparkles, stars, confetti or hearts over its box.
   Place it anywhere, over a banner or round a reward.
 
@@ -711,7 +713,7 @@ those words, in its own font, and your pack's shader plays the effect.
 ### A Close in the dialog's style
 
 The game's grey footer button looks the same on every dialog. **Draw it in the
-dialog's kit instead**, under **Footer**, hides it and puts a button that
+dialog's texture instead**, under **Footer**, hides it and puts a button that
 closes the dialog just under the content, which you can move and restyle.
 Most templates start that way.
 
@@ -869,6 +871,12 @@ player's own progress. The **Follow** shortcuts set both at once:
 Any value works, such as `{kills}` out of `100`. Commas and `%` are ignored, so
 `1,250` and `75%` read fine, but a value that is not a plain number (including
 `1.2k`) leaves the bar empty. The editor draws a live bar 60% full.
+
+A bar can also stand up, as a gauge: set its **Direction** to **Up** to fill
+from the bottom, or **Down** to fill from the top (a tank draining, a time
+running out). A standing bar has no words of its own, so put a label or an icon
+beside it, and it can fade from its **Bar colour** at the bottom to a **Top**
+colour. A live one needs RP Engine 0.2.2 or newer, in either direction.
 
 ### Lists the server fills
 
