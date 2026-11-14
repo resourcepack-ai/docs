@@ -177,6 +177,13 @@ arguments are documented in full.
 | [`update_tooltip`](/api-reference/update-tooltip) | Change a Tooltip's design by hand, or rename it. |
 | [`edit_tooltip`](/api-reference/edit-tooltip) | Change a Tooltip with AI. Done when it answers. |
 | [`delete_tooltip`](/api-reference/delete-tooltip) | Delete a Tooltip. |
+| [`list_loading_screens`](/api-reference/list-loading-screens) | A pack's Loading Screens: the screen Minecraft shows while packs load, restyled. |
+| [`generate_loading_screen`](/api-reference/generate-loading-screen) | Design a Loading Screen from words. Done when it answers. |
+| [`create_loading_screen`](/api-reference/create-loading-screen) | Add a Loading Screen from a ready-made look or your own spec. Free. |
+| [`get_loading_screen`](/api-reference/get-loading-screen) | A Loading Screen's design. |
+| [`update_loading_screen`](/api-reference/update-loading-screen) | Change a Loading Screen by hand (a picture logo too), or make it the one the pack shows. |
+| [`edit_loading_screen`](/api-reference/edit-loading-screen) | Change a Loading Screen with AI. Done when it answers. |
+| [`delete_loading_screen`](/api-reference/delete-loading-screen) | Delete a Loading Screen. |
 | [`get_vehicle`](/api-reference/get-vehicle) | A vehicle's settings: seats, handling, hitbox, animations, sounds. |
 | [`set_vehicle`](/api-reference/set-vehicle) | Make a model a vehicle, or change its settings. Free. |
 | [`rig_vehicle`](/api-reference/rig-vehicle) | Animate a vehicle and its riders together. Minutes, not seconds. |
@@ -218,9 +225,9 @@ There are three ways to change an asset, and only one is free:
 
 | Change | Tools | AI Credits |
 | --- | --- | --- |
-| By hand, from a file | `upload_asset` (a file you made), `update_custom_gui` (a Custom GUI's HTML and CSS), `update_tooltip` (a Tooltip's design), the settings tools (`update_sound`, `set_vehicle`, `update_model`, `set_item_state`...) | Free |
+| By hand, from a file | `upload_asset` (a file you made), `update_custom_gui` (a Custom GUI's HTML and CSS), `update_tooltip` (a Tooltip's design), `update_loading_screen` and `create_loading_screen` (a Loading Screen's design), the settings tools (`update_sound`, `set_vehicle`, `update_model`, `set_item_state`...) | Free |
 | Housekeeping | `rename_asset`, `duplicate_asset`, `delete_asset`, `file_assets`, `restore_asset_version` (undo an AI change), `use_asset_candidate` (another of the four versions, Creator, Studio and Teams) | Free |
-| With AI | `edit_asset`, `regenerate_asset`, `rig_vehicle`, `rig_mob`, `generate_custom_gui_page`, `edit_tooltip`, every `generate_*` | Spends credits, at Studio's prices |
+| With AI | `edit_asset`, `regenerate_asset`, `rig_vehicle`, `rig_mob`, `generate_custom_gui_page`, `edit_tooltip`, `edit_loading_screen`, every `generate_*` | Spends credits, at Studio's prices |
 
 **Dialogs have no hand-edit tool.** A Dialog can't be uploaded or written as
 JSON, so an agent changes one only through `edit_asset`, addressed as
