@@ -342,6 +342,7 @@ player runs.
 | `[url] link` | Opens a link |
 | `[copy] text` | Copies to the clipboard |
 | `[suggest] /cmd` | Puts a command in the chat box, ready to finish |
+| `[event] id` | Nothing by itself: it names the click `id` for [your plugin's](#events) `DialogClickEvent`. Placeholders work: `[event] buy_{row.id}` |
 | `[myplugin:tag] ...` | Whatever another plugin registered |
 
 `[url]`, `[copy]` and `[suggest]` are the game's own button actions, so they
@@ -658,11 +659,13 @@ is filled: by PlaceholderAPI, by a plugin, or when opening, as in
 typed text, so an item goes into a command only when it is letters, digits,
 `_`, `.` and `-`.
 
-A drawn dialog does not fire `DialogClickEvent`: its pieces are not YAML
-buttons with an `id:`. To answer one in Java, register an action and name it
-in the piece's command. In the editor that is **When clicked** set to **Run
-command**, with `[myplugin:claim] daily` (or several, `[a] ...; [b] ...`).
-A command with no brackets is run by the player, as on any dialog.
+A drawn dialog's pieces fire [`DialogClickEvent`](#events) too. A piece has no
+`id:`, so name it in its command: in the editor, **When clicked** set to **Run
+command**, with `[event] claim`. Your plugin then answers every piece of a menu
+in one listener, and the event carries the player's settings with it. You can
+also register an action and name it there, `[myplugin:claim] daily` (or
+several, `[a] ...; [b] ...`). A command with no brackets is run by the player,
+as on any dialog.
 
 ### Settings
 
@@ -917,22 +920,47 @@ Everything a plugin registers is dropped when it disables.
 | Event | When |
 |---|---|
 | `DialogOpenEvent` | A dialog is about to be drawn: opened, refreshed, paged or returned to. Cancellable. `values()` can be changed, and `isReopened()` says whether it is the same dialog again |
-| `DialogClickEvent` | A button on a YAML dialog was pressed and its inputs passed, before its actions run. Cancellable. `getButtonId()`, `getInputs()`, `getActions()` (changeable), and `getContext()` to open, refresh or close. Not fired by a [drawn dialog](#drawn-dialogs) |
+| `DialogClickEvent` | A button was pressed and its inputs passed, before its actions run. Cancellable. `getButtonId()`, `getInputs()` (what was typed, chosen and toggled), `getSettings()` (a drawn dialog's switches, sliders and dropdowns), `getValues()`, `getActions()` (changeable), `isDrawn()`, and `getContext()` to open, refresh or close |
+| `DialogCloseEvent` | A dialog left the player's screen. `getReason()` says how, `getButtonId()` which button closed it, `getNextDialogId()` what replaced it, and `getValues()` and `getSettings()` what it was left with. See below |
+| `DialogSettingChangeEvent` | A switch, slider or dropdown on a drawn dialog is about to change a setting. Cancellable: the setting keeps its old value. `getName()`, `getOldValue()`, `getNewValue()` |
+| `DialogSlotMoveEvent` | A stack is about to move between a drawn dialog's item slots. Cancellable: the items stay put. `getFrom()` and `getTo()` (`inv/5`, `ender/3`...), and copies of both stacks |
 | `DialogInputErrorEvent` | An input failed its check. The message can be changed |
 | `DialogEngineReloadEvent` | Everything was read again |
 
-A button with an `id:` and no actions is one your plugin answers:
+A button with an `id:` and no actions is one your plugin answers, and so is
+any button whose actions name it with `[event]`, which is how a drawn dialog's
+pieces are named. One listener can run a whole menu:
 
 ```java
 @EventHandler
 public void onClick(DialogClickEvent event) {
     if (!event.getDialogId().equals("myplugin:menu")) return;
-    if (event.getButtonId().equals("claim")) {
-        rewards.claim(event.getPlayer());
-        event.getContext().close();
+    switch (event.getButtonId()) {
+        case "claim" -> rewards.claim(event.getPlayer());
+        case "save" -> profiles.save(event.getPlayer(), event.getInputs(), event.getSettings());
+        default -> { return; }
     }
+    event.getContext().close();
 }
 ```
+
+`DialogCloseEvent` fires once a dialog has gone, whatever took it away. Drawing
+the same dialog again (a refresh, a page, a setting) is not a close. Its
+reasons:
+
+| Reason | |
+|---|---|
+| `EXIT` | The exit button, or Escape, which presses it: `exit:`, a confirmation's `cancel:`, a drawn dialog's Close |
+| `BUTTON` | A button's actions closed it, or nothing came after them |
+| `REPLACED` | Another dialog took its place, after that one is on the screen |
+| `SCREEN` | A chest or other container, the death screen, or another world's loading screen took the screen |
+| `PLUGIN` | A plugin called `close(player)` |
+| `QUIT` | The player left |
+
+The game tells the server about Escape only by pressing the exit button, so a
+YAML dialog with buttons and no `exit:` closes with Escape unheard. Give it an
+`exit:` (it needs no actions) when you need to know. On Folia, a move to
+another world is not reported either: Folia does not tell plugins about it.
 
 ## Support
 
