@@ -664,6 +664,48 @@ in the piece's command. In the editor that is **When clicked** set to **Run
 command**, with `[myplugin:claim] daily` (or several, `[a] ...; [b] ...`).
 A command with no brackets is run by the player, as on any dialog.
 
+### Settings
+
+A switch, slider, dropdown or segmented control in a drawn dialog can be bound
+to a **setting**: a name like `hud_quest_tracker`. Each player has their own
+value, kept on the player, so it is still there after they log out or the
+server restarts. Clicking the control changes it and the dialog redraws.
+
+- Inside the dialog, `{hud_quest_tracker}` is the player's value.
+- Anywhere else, with PlaceholderAPI, it is `%dialogengine_setting_hud_quest_tracker%`
+  (see [PlaceholderAPI](#placeholderapi)). A scoreboard, a chat format or
+  another plugin's config can read it there.
+- A plugin reads it with [`setting(player, name)`](#for-developers).
+
+Until a player clicks the control, the setting reads as the choice the dialog
+shows first, so `visible` rather than nothing. A dialog drawn before Dialog
+Engine 0.7.2 has no default saved: run `/de edit` on it and press **Send to
+server** once to add it.
+
+### PlaceholderAPI
+
+With [PlaceholderAPI](https://www.spigotmc.org/resources/6245/) installed,
+Dialog Engine answers these anywhere PlaceholderAPI is read:
+
+| Placeholder | Value |
+|---|---|
+| `%dialogengine_setting_<name>%` | The player's value for a drawn dialog's setting, or its default until they set it |
+| `%dialogengine_var_<name>%` | The same, spelled the way RP Engine spells it |
+| `%dialogengine_open%` | `true` when the player has a dialog open |
+| `%dialogengine_dialog%` | The id of the dialog they have open, or nothing |
+| `%dialogengine_value_<key>%` | A value of the dialog they have open, such as what they typed into an input |
+| `%dialogengine_can_open_<id>%` | `true` when they may open that dialog |
+| `%dialogengine_dialogs%` | How many dialogs are loaded |
+| `%dialogengine_version%` | The plugin's version |
+
+A setting no dialog declares is printed as written, so a typo shows rather than
+reading as an empty value.
+
+Dialog Engine does not need RP Engine for any of this. If you also run RP
+Engine, the two keep their settings apart: a dialog Dialog Engine shows saves
+to `%dialogengine_setting_…%`, and one RP Engine shows saves to
+`%rpengine_var_…%`.
+
 The same goes for Dialog Engine's own [actions](#actions). **Open another
 dialog** takes only an id, so to open one with values, set **Run command** to
 `[open] studio:shop item=diamond count={amount}`. That is the `[open]` action:
@@ -860,7 +902,9 @@ dialogs.registerList(this, "myplugin_quests", (viewer, ctx) -> quests.of(viewer)
   under `drawn/<namespace>/` (listed in its `files.txt`), once per version of
   your plugin. Any the server owner has edited are left alone.
 - `setting(player, name)` reads what a drawn dialog's switch, slider or
-  dropdown bound to `name` is set to for that player.
+  dropdown bound to `name` is set to for that player. It is empty until they
+  have set it; `%dialogengine_setting_<name>%` gives the dialog's default
+  instead.
 - Also: `current(player)` and `values(player)` for the dialog a player has
   open, `ids()` and `info(id)` for what is loaded, `canOpen(player, id)`,
   `textJson(...)` to render MiniMessage the way a dialog does, `unregister(plugin)`

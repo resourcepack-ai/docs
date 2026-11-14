@@ -847,8 +847,11 @@ draw them all in that font. The setting still stores the choice itself
 (`human`, `demon`), so commands, conditions and `{character_race}` never see
 the colours. An empty box shows the choice as it is.
 
-Other plugins read a setting as `%rpengine_var_show_sidebar%` through
-PlaceholderAPI, or through [RP Engine's API](/rp-engine/api#player-settings).
+Other plugins read a setting through PlaceholderAPI, by the plugin that shows
+the dialog: `%dialogengine_setting_show_sidebar%` on
+[Dialog Engine](/dialog-engine#placeholderapi), `%rpengine_var_show_sidebar%` on
+RP Engine (or through [RP Engine's API](/rp-engine/api#player-settings)). The
+two plugins keep their settings apart.
 Inside the dialog, `{show_sidebar}` is its value. A player can only set a
 setting to a value some dialog on the server offers.
 
