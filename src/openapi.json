@@ -9906,6 +9906,1201 @@
         ]
       }
     },
+    "/packs/{pack}/loading-screens": {
+      "get": {
+        "operationId": "listLoadingScreens",
+        "summary": "List a pack's Loading Screens",
+        "description": "A pack's Loading Screens: the screen Minecraft shows while resource packs load (normally red, with the Mojang Studios logo and a white bar), restyled with its own colours, logo, a moving effect and its own bar. A pack shows one, the `active` one. Players see it on Minecraft 26.1 to 26.3 whenever the game reloads resources with the pack already loaded (F3+T, the Resource Packs menu, a server sending a second pack); a join switches to it part-way, and the game's very first screen is always Minecraft's. Filed on the Shaders tab.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The Loading Screens, last changed first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "loadingScreens": {
+                      "type": "array",
+                      "description": "Its Loading Screens.",
+                      "items": {
+                        "type": "object",
+                        "description": "A Loading Screen.",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Its id in the pack."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Its name."
+                          },
+                          "active": {
+                            "type": "boolean",
+                            "description": "Whether it is the one the pack shows. A pack shows one."
+                          },
+                          "effect": {
+                            "type": "string",
+                            "description": "Its moving effect.",
+                            "enum": [
+                              "none",
+                              "snow",
+                              "rain",
+                              "stars",
+                              "embers",
+                              "sparkles",
+                              "fireflies"
+                            ]
+                          },
+                          "logo": {
+                            "type": "string",
+                            "description": "Whose logo: its own (`custom`), Minecraft's (`vanilla`) or none.",
+                            "enum": [
+                              "custom",
+                              "vanilla",
+                              "none"
+                            ]
+                          },
+                          "title": {
+                            "type": "string",
+                            "description": "The title on the screen, with a `custom` logo."
+                          },
+                          "preset": {
+                            "type": "string",
+                            "description": "The ready-made look it started from, when it did."
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "description": "ISO 8601."
+                          },
+                          "spec": {
+                            "type": "object",
+                            "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "active",
+                          "effect",
+                          "logo",
+                          "title",
+                          "updatedAt"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "loadingScreens"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "loadingScreens": [
+                    {
+                      "id": "marshmallow-dreams",
+                      "name": "Marshmallow Dreams",
+                      "active": true,
+                      "effect": "sparkles",
+                      "logo": "custom",
+                      "title": "MARSHMALLOW",
+                      "updatedAt": "2026-11-14T10:00:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "generateLoadingScreen",
+        "summary": "Design a Loading Screen",
+        "description": "Designs a Loading Screen from words: the screen Minecraft shows while packs load. Describe the server or the mood (`a spooky Halloween server called Grimfall`, `snow for a winter event`); the designer picks the background, the effect, the title and subtitle, the colours and the bar. It does not draw a picture logo: write one into the `spec` with `update_loading_screen` if you want one. Finishes before it answers, so there is no job to wait on, and becomes the one the pack shows. A pack holds up to 24. 5 credits, flat, given back if it fails. For a free one, `create_loading_screen`.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "201": {
+            "description": "Designed and saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`ready`, when it was just made or changed by AI."
+                    },
+                    "loadingScreen": {
+                      "type": "object",
+                      "description": "The Loading Screen, with `spec`.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "active": {
+                          "type": "boolean",
+                          "description": "Whether it is the one the pack shows. A pack shows one."
+                        },
+                        "effect": {
+                          "type": "string",
+                          "description": "Its moving effect.",
+                          "enum": [
+                            "none",
+                            "snow",
+                            "rain",
+                            "stars",
+                            "embers",
+                            "sparkles",
+                            "fireflies"
+                          ]
+                        },
+                        "logo": {
+                          "type": "string",
+                          "description": "Whose logo: its own (`custom`), Minecraft's (`vanilla`) or none.",
+                          "enum": [
+                            "custom",
+                            "vanilla",
+                            "none"
+                          ]
+                        },
+                        "title": {
+                          "type": "string",
+                          "description": "The title on the screen, with a `custom` logo."
+                        },
+                        "preset": {
+                          "type": "string",
+                          "description": "The ready-made look it started from, when it did."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "spec": {
+                          "type": "object",
+                          "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "active",
+                        "effect",
+                        "logo",
+                        "title",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "loadingScreen"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "ready",
+                  "loadingScreen": {
+                    "id": "marshmallow-dreams",
+                    "name": "Marshmallow Dreams",
+                    "active": true,
+                    "effect": "sparkles",
+                    "logo": "custom",
+                    "title": "MARSHMALLOW",
+                    "updatedAt": "2026-11-14T10:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "What it is for, and how it should look.",
+                    "maxLength": 600,
+                    "example": "a cosy marshmallow-themed server called Puffland, soft pinks"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Your label. Absent uses the name the designer gives it.",
+                    "maxLength": 50
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/loading-screens/create": {
+      "post": {
+        "operationId": "createLoadingScreen",
+        "summary": "Add a Loading Screen without AI",
+        "description": "Adds a Loading Screen from one of the ready-made looks (`preset`: `night-snow`, `nether`, `starfield`, `forest`, `storm`, `royal`, `ocean`, `clean`, `recolour`), whose title becomes `name`, or from a whole `spec` you wrote, in the shape `get_loading_screen` answers. It becomes the one the pack shows. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "201": {
+            "description": "Added.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`ready`, when it was just made or changed by AI."
+                    },
+                    "loadingScreen": {
+                      "type": "object",
+                      "description": "The Loading Screen, with `spec`.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "active": {
+                          "type": "boolean",
+                          "description": "Whether it is the one the pack shows. A pack shows one."
+                        },
+                        "effect": {
+                          "type": "string",
+                          "description": "Its moving effect.",
+                          "enum": [
+                            "none",
+                            "snow",
+                            "rain",
+                            "stars",
+                            "embers",
+                            "sparkles",
+                            "fireflies"
+                          ]
+                        },
+                        "logo": {
+                          "type": "string",
+                          "description": "Whose logo: its own (`custom`), Minecraft's (`vanilla`) or none.",
+                          "enum": [
+                            "custom",
+                            "vanilla",
+                            "none"
+                          ]
+                        },
+                        "title": {
+                          "type": "string",
+                          "description": "The title on the screen, with a `custom` logo."
+                        },
+                        "preset": {
+                          "type": "string",
+                          "description": "The ready-made look it started from, when it did."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "spec": {
+                          "type": "object",
+                          "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "active",
+                        "effect",
+                        "logo",
+                        "title",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "loadingScreen"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "ready",
+                  "loadingScreen": {
+                    "id": "marshmallow-dreams",
+                    "name": "Marshmallow Dreams",
+                    "active": true,
+                    "effect": "sparkles",
+                    "logo": "custom",
+                    "title": "MARSHMALLOW",
+                    "updatedAt": "2026-11-14T10:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "preset": {
+                    "type": "string",
+                    "description": "A ready-made look to start from.",
+                    "enum": [
+                      "night-snow",
+                      "nether",
+                      "starfield",
+                      "forest",
+                      "storm",
+                      "royal",
+                      "ocean",
+                      "clean",
+                      "recolour"
+                    ]
+                  },
+                  "spec": {
+                    "type": "object",
+                    "description": "The design, instead of (or over) a preset. The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Its name, and with a preset alone the title on the screen.",
+                    "maxLength": 50
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/loading-screens/{screen}": {
+      "get": {
+        "operationId": "getLoadingScreen",
+        "summary": "Read a Loading Screen",
+        "description": "A Loading Screen whole, its `spec` (the design) included.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The Loading Screen.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`ready`, when it was just made or changed by AI."
+                    },
+                    "loadingScreen": {
+                      "type": "object",
+                      "description": "The Loading Screen, with `spec`.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "active": {
+                          "type": "boolean",
+                          "description": "Whether it is the one the pack shows. A pack shows one."
+                        },
+                        "effect": {
+                          "type": "string",
+                          "description": "Its moving effect.",
+                          "enum": [
+                            "none",
+                            "snow",
+                            "rain",
+                            "stars",
+                            "embers",
+                            "sparkles",
+                            "fireflies"
+                          ]
+                        },
+                        "logo": {
+                          "type": "string",
+                          "description": "Whose logo: its own (`custom`), Minecraft's (`vanilla`) or none.",
+                          "enum": [
+                            "custom",
+                            "vanilla",
+                            "none"
+                          ]
+                        },
+                        "title": {
+                          "type": "string",
+                          "description": "The title on the screen, with a `custom` logo."
+                        },
+                        "preset": {
+                          "type": "string",
+                          "description": "The ready-made look it started from, when it did."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "spec": {
+                          "type": "object",
+                          "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "active",
+                        "effect",
+                        "logo",
+                        "title",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "loadingScreen"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "ready",
+                  "loadingScreen": {
+                    "id": "marshmallow-dreams",
+                    "name": "Marshmallow Dreams",
+                    "active": true,
+                    "effect": "sparkles",
+                    "logo": "custom",
+                    "title": "MARSHMALLOW",
+                    "updatedAt": "2026-11-14T10:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "screen",
+            "in": "path",
+            "required": true,
+            "description": "The Loading Screen's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Loading Screen's `id` from the list.",
+              "example": "marshmallow-dreams"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "updateLoadingScreen",
+        "summary": "Change a Loading Screen",
+        "description": "Renames it, replaces its `spec` and/or makes it the one the pack shows (`active: true`), saved as the editor's Save saves. Send the `spec` from `get_loading_screen` with your changes; a field left out keeps its value. This is how a picture logo goes in. Free.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`ready`, when it was just made or changed by AI."
+                    },
+                    "loadingScreen": {
+                      "type": "object",
+                      "description": "The Loading Screen, with `spec`.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "active": {
+                          "type": "boolean",
+                          "description": "Whether it is the one the pack shows. A pack shows one."
+                        },
+                        "effect": {
+                          "type": "string",
+                          "description": "Its moving effect.",
+                          "enum": [
+                            "none",
+                            "snow",
+                            "rain",
+                            "stars",
+                            "embers",
+                            "sparkles",
+                            "fireflies"
+                          ]
+                        },
+                        "logo": {
+                          "type": "string",
+                          "description": "Whose logo: its own (`custom`), Minecraft's (`vanilla`) or none.",
+                          "enum": [
+                            "custom",
+                            "vanilla",
+                            "none"
+                          ]
+                        },
+                        "title": {
+                          "type": "string",
+                          "description": "The title on the screen, with a `custom` logo."
+                        },
+                        "preset": {
+                          "type": "string",
+                          "description": "The ready-made look it started from, when it did."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "spec": {
+                          "type": "object",
+                          "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "active",
+                        "effect",
+                        "logo",
+                        "title",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "loadingScreen"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "ready",
+                  "loadingScreen": {
+                    "id": "marshmallow-dreams",
+                    "name": "Marshmallow Dreams",
+                    "active": true,
+                    "effect": "sparkles",
+                    "logo": "custom",
+                    "title": "MARSHMALLOW",
+                    "updatedAt": "2026-11-14T10:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `invalid_json`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "screen",
+            "in": "path",
+            "required": true,
+            "description": "The Loading Screen's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Loading Screen's `id` from the list.",
+              "example": "marshmallow-dreams"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "A new name.",
+                    "maxLength": 50
+                  },
+                  "spec": {
+                    "type": "object",
+                    "description": "The design, in the shape `get_loading_screen` answers."
+                  },
+                  "active": {
+                    "type": "boolean",
+                    "description": "`true` makes this the one the pack shows."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/loading-screens/{screen}/edit": {
+      "post": {
+        "operationId": "editLoadingScreen",
+        "summary": "Change a Loading Screen with AI",
+        "description": "The editor's Edit with AI: changes what `instruction` asks (`make it purple`, `add fireflies`) and keeps the rest, then saves it before answering. 5 credits, flat, given back if it fails.",
+        "tags": [
+          "Generating"
+        ],
+        "responses": {
+          "200": {
+            "description": "Changed and saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "`ready`, when it was just made or changed by AI."
+                    },
+                    "loadingScreen": {
+                      "type": "object",
+                      "description": "The Loading Screen, with `spec`.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Its id in the pack."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Its name."
+                        },
+                        "active": {
+                          "type": "boolean",
+                          "description": "Whether it is the one the pack shows. A pack shows one."
+                        },
+                        "effect": {
+                          "type": "string",
+                          "description": "Its moving effect.",
+                          "enum": [
+                            "none",
+                            "snow",
+                            "rain",
+                            "stars",
+                            "embers",
+                            "sparkles",
+                            "fireflies"
+                          ]
+                        },
+                        "logo": {
+                          "type": "string",
+                          "description": "Whose logo: its own (`custom`), Minecraft's (`vanilla`) or none.",
+                          "enum": [
+                            "custom",
+                            "vanilla",
+                            "none"
+                          ]
+                        },
+                        "title": {
+                          "type": "string",
+                          "description": "The title on the screen, with a `custom` logo."
+                        },
+                        "preset": {
+                          "type": "string",
+                          "description": "The ready-made look it started from, when it did."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "ISO 8601."
+                        },
+                        "spec": {
+                          "type": "object",
+                          "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "active",
+                        "effect",
+                        "logo",
+                        "title",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "loadingScreen"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "ready",
+                  "loadingScreen": {
+                    "id": "marshmallow-dreams",
+                    "name": "Marshmallow Dreams",
+                    "active": true,
+                    "effect": "sparkles",
+                    "logo": "custom",
+                    "title": "MARSHMALLOW",
+                    "updatedAt": "2026-11-14T10:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `invalid_request`, `insufficient_credits`, `asset_limit_reached`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "screen",
+            "in": "path",
+            "required": true,
+            "description": "The Loading Screen's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Loading Screen's `id` from the list.",
+              "example": "marshmallow-dreams"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "instruction": {
+                    "type": "string",
+                    "description": "What to change.",
+                    "maxLength": 300,
+                    "example": "warmer colours and embers instead of snow"
+                  }
+                },
+                "required": [
+                  "instruction"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/packs/{pack}/loading-screens/{screen}/delete": {
+      "post": {
+        "operationId": "deleteLoadingScreen",
+        "summary": "Delete a Loading Screen",
+        "description": "Deletes it. If it was the one the pack shows, the newest left takes over; with none left the pack shows Minecraft's own.",
+        "tags": [
+          "Packs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pack": {
+                      "type": "string",
+                      "description": "The pack."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Always `deleted`."
+                    }
+                  },
+                  "required": [
+                    "pack",
+                    "status"
+                  ]
+                },
+                "example": {
+                  "pack": "medieval-keep",
+                  "status": "deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error. Possible `error.code` values: `missing_api_key`, `invalid_api_key`, `wrong_key_kind`, `plan_required`, `account_suspended`, `not_found`, `forbidden`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Every failure from this API has this shape.",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Stable and machine-readable. Branch on this, never on `message`."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable. The wording may change; the code may not."
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pack",
+            "in": "path",
+            "required": true,
+            "description": "The pack's slug, as returned by the packs endpoints.",
+            "schema": {
+              "type": "string",
+              "description": "The pack's slug, as returned by the packs endpoints.",
+              "example": "medieval-keep"
+            }
+          },
+          {
+            "name": "screen",
+            "in": "path",
+            "required": true,
+            "description": "The Loading Screen's `id` from the list.",
+            "schema": {
+              "type": "string",
+              "description": "The Loading Screen's `id` from the list.",
+              "example": "marshmallow-dreams"
+            }
+          }
+        ]
+      }
+    },
     "/packs/{pack}/models/{model}/export": {
       "get": {
         "operationId": "exportModel",
