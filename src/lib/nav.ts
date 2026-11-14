@@ -465,6 +465,12 @@ export const nav: NavGroup[] = [
         ],
       },
       {
+        title: "Bring your own key",
+        href: "/own-key",
+        description: "Run 3D model generation on your own OpenAI key instead of your AI Credits.",
+        keywords: ["byok", "own key", "openai", "api key", "key", "3d models", "orchestrator", "billing"],
+      },
+      {
         title: "Affiliate programme",
         href: "/affiliate",
         description: "Share a link, earn a share of what everyone who joins through it spends.",

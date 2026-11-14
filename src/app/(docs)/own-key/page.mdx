@@ -1,0 +1,56 @@
+export const metadata = {
+  title: "Bring your own key",
+  description:
+    "Add your own OpenAI key and 3D model generation bills to your OpenAI account instead of your AI Credits.",
+};
+
+# Bring your own key
+
+Add your own OpenAI key, and **3D models (generating, editing and animating
+them) bill to your OpenAI account instead of your AI Credits**. Everything else
+still uses AI Credits.
+
+It's on every paid plan. Starter doesn't include it.
+
+## Set it up
+
+1. Make an API key in your OpenAI account.
+2. In Studio, open **Account** and find **Bring Your Own Key (BYOK)**.
+3. Paste the key and save it.
+4. Optionally, pick the **Orchestrator model** that runs on it, to balance
+   price against quality.
+
+From then on, 3D model actions cost 0 AI Credits and show up on your OpenAI
+bill instead. To go back to AI Credits, remove the key.
+
+For a Team, an admin sets the key in the Team's settings. One key covers the
+whole Team, and Team packs always use the Team's key, never a member's own.
+See [Teams](/teams).
+
+## What your key actually pays for
+
+Your key runs the **orchestration layer**: the language model that plans a 3D
+model, decides what to build and checks the result. That's the only part of
+the work that runs on a standard provider, so it's the only part a key can
+cover.
+
+The rest is ours. Every model goes through our own proprietary build
+pipeline, which we run and pay for ourselves whether or not you bring a key.
+So a key doesn't make a model free to make: we still carry most of the cost,
+and the key takes over the part that can be handed over.
+
+## Why only 3D models
+
+Blocks, items, icons, GUIs and the rest of the picture work come from our own
+image models. There's no orchestration step on a standard provider there, only
+proprietary models we built and host, so there's no key that could stand in for
+them. We'd like to offer the same for pictures, and if that changes, it will be
+listed here.
+
+## Your key is safe with us
+
+Your key is encrypted before it's stored, and it's only read at the moment a
+3D model action runs on it. If a key stops working (revoked, out of funds, or
+your plan ends), Studio stops using it and those actions go back to AI Credits.
+If your plan ends, a key you stored is kept but isn't used until you're on a
+paid plan again.
