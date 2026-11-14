@@ -9955,7 +9955,11 @@
                               "stars",
                               "embers",
                               "sparkles",
-                              "fireflies"
+                              "fireflies",
+                              "bubbles",
+                              "petals",
+                              "hearts",
+                              "confetti"
                             ]
                           },
                           "logo": {
@@ -9981,7 +9985,7 @@
                           },
                           "spec": {
                             "type": "object",
-                            "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                            "description": "The design: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters), `subtitle` (up to 30), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `titleSize` 1-4 (2 is the default), `subtitleSize` 1-2, `spacing` 0-3 (extra pixels between letters), `bold`, `titleColor`, `titleColor2` (the bottom of a gradient title, or null), `subtitleColor`, `outline` (a 1px line round the letters, or null), `shadow` (a shadow colour, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|reversed|side (picture above, below or beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                           }
                         },
                         "required": [
@@ -10115,7 +10119,11 @@
                             "stars",
                             "embers",
                             "sparkles",
-                            "fireflies"
+                            "fireflies",
+                            "bubbles",
+                            "petals",
+                            "hearts",
+                            "confetti"
                           ]
                         },
                         "logo": {
@@ -10141,7 +10149,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                          "description": "The design: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters), `subtitle` (up to 30), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `titleSize` 1-4 (2 is the default), `subtitleSize` 1-2, `spacing` 0-3 (extra pixels between letters), `bold`, `titleColor`, `titleColor2` (the bottom of a gradient title, or null), `subtitleColor`, `outline` (a 1px line round the letters, or null), `shadow` (a shadow colour, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|reversed|side (picture above, below or beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -10301,7 +10309,11 @@
                             "stars",
                             "embers",
                             "sparkles",
-                            "fireflies"
+                            "fireflies",
+                            "bubbles",
+                            "petals",
+                            "hearts",
+                            "confetti"
                           ]
                         },
                         "logo": {
@@ -10327,7 +10339,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                          "description": "The design: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters), `subtitle` (up to 30), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `titleSize` 1-4 (2 is the default), `subtitleSize` 1-2, `spacing` 0-3 (extra pixels between letters), `bold`, `titleColor`, `titleColor2` (the bottom of a gradient title, or null), `subtitleColor`, `outline` (a 1px line round the letters, or null), `shadow` (a shadow colour, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|reversed|side (picture above, below or beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -10433,7 +10445,7 @@
                   },
                   "spec": {
                     "type": "object",
-                    "description": "The design, instead of (or over) a preset. The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it."
+                    "description": "The design, instead of (or over) a preset. The design: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters), `subtitle` (up to 30), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `titleSize` 1-4 (2 is the default), `subtitleSize` 1-2, `spacing` 0-3 (extra pixels between letters), `bold`, `titleColor`, `titleColor2` (the bottom of a gradient title, or null), `subtitleColor`, `outline` (a 1px line round the letters, or null), `shadow` (a shadow colour, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|reversed|side (picture above, below or beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it."
                   },
                   "name": {
                     "type": "string",
@@ -10497,7 +10509,11 @@
                             "stars",
                             "embers",
                             "sparkles",
-                            "fireflies"
+                            "fireflies",
+                            "bubbles",
+                            "petals",
+                            "hearts",
+                            "confetti"
                           ]
                         },
                         "logo": {
@@ -10523,7 +10539,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                          "description": "The design: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters), `subtitle` (up to 30), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `titleSize` 1-4 (2 is the default), `subtitleSize` 1-2, `spacing` 0-3 (extra pixels between letters), `bold`, `titleColor`, `titleColor2` (the bottom of a gradient title, or null), `subtitleColor`, `outline` (a 1px line round the letters, or null), `shadow` (a shadow colour, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|reversed|side (picture above, below or beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -10666,7 +10682,11 @@
                             "stars",
                             "embers",
                             "sparkles",
-                            "fireflies"
+                            "fireflies",
+                            "bubbles",
+                            "petals",
+                            "hearts",
+                            "confetti"
                           ]
                         },
                         "logo": {
@@ -10692,7 +10712,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                          "description": "The design: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters), `subtitle` (up to 30), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `titleSize` 1-4 (2 is the default), `subtitleSize` 1-2, `spacing` 0-3 (extra pixels between letters), `bold`, `titleColor`, `titleColor2` (the bottom of a gradient title, or null), `subtitleColor`, `outline` (a 1px line round the letters, or null), `shadow` (a shadow colour, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|reversed|side (picture above, below or beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -10862,7 +10882,11 @@
                             "stars",
                             "embers",
                             "sparkles",
-                            "fireflies"
+                            "fireflies",
+                            "bubbles",
+                            "petals",
+                            "hearts",
+                            "confetti"
                           ]
                         },
                         "logo": {
@@ -10888,7 +10912,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design: `background` {`style` solid|vertical|radial, `color` (the whole screen, the top, or the edges), `color2` (the bottom, or the middle), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies, `color`, `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters, drawn in chunky pixel capitals), `subtitle` (up to 30), `titleColor`, `subtitleColor`, `shadow` (a one-pixel drop shadow colour, or null), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                          "description": "The design: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effect` {`kind` none|snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}; `logo` {`kind` custom|vanilla|none, `title` (up to 18 characters), `subtitle` (up to 30), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `titleSize` 1-4 (2 is the default), `subtitleSize` 1-2, `spacing` 0-3 (extra pixels between letters), `bold`, `titleColor`, `titleColor2` (the bottom of a gradient title, or null), `subtitleColor`, `outline` (a 1px line round the letters, or null), `shadow` (a shadow colour, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|reversed|side (picture above, below or beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2, `picture` (or null): {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                         }
                       },
                       "required": [
