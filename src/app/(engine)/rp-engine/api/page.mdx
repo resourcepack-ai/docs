@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Plugin API",
   description:
-    "Drive items, models, emotes, vehicles, custom mobs and their skills, 3D armour, 3D shader objects, icons, sounds, HUD overlays and dialogs from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
+    "Drive items, models, custom blocks, emotes, vehicles, custom mobs and their skills, 3D armour, 3D shader objects, icons, sounds, HUD overlays and dialogs from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
 };
 
 # Plugin API
@@ -12,7 +12,7 @@ vehicle, spawn a custom mob, show a HUD, open a dialog with your own values on
 it, and cancel any of those when your rules say no.
 
 Every snippet is shown in Java and Kotlin; pick one and the rest of the docs
-follows your choice. This page matches **RP Engine 0.2.59**.
+follows your choice. This page matches **RP Engine 0.2.82**.
 
 ## Setting up
 
@@ -64,6 +64,8 @@ if (!(Bukkit.getPluginManager().getPlugin("RPEngine") instanceof RPEnginePlugin 
 
 engine.items();         // custom items
 engine.models();        // models, and the ones standing in your worlds
+engine.blocks();        // custom blocks: which one stands here, placing one
+engine.liquids();       // custom liquids, and which one a player is in
 engine.emotes();        // emotes and movement sets
 engine.vehicles();      // vehicles, and the ones standing in your worlds
 engine.shaderObjects(); // 3D shader objects: place them and drive them
@@ -88,6 +90,8 @@ val engine = Bukkit.getPluginManager().getPlugin("RPEngine") as? RPEnginePlugin
 
 engine.items()          // custom items
 engine.models()         // models, and the ones standing in your worlds
+engine.blocks()         // custom blocks: which one stands here, placing one
+engine.liquids()        // custom liquids, and which one a player is in
 engine.emotes()         // emotes and movement sets
 engine.vehicles()       // vehicles, and the ones standing in your worlds
 engine.shaderObjects()  // 3D shader objects: place them and drive them
@@ -258,6 +262,121 @@ handles the clicks itself; cancel `ModelInteractEvent` to stop one. Growing
 fires neither `ModelBreakEvent` nor `ModelPlaceEvent`. See
 [Working furniture](/rp-engine/furniture).
 
+### Sitting somebody down
+
+`sit(player, location)` sits a player at a place the way a chair does, with no
+model needed: a `/sit` command, a bench that is only blocks, a cutscene. The
+location is the surface they sit on, and its yaw is the way they face.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.models().sit(player, bench);     // false if they are already sitting or riding
+engine.models().isSeated(player);       // on a chair, a seat bone, or sit()
+engine.models().stand(player);          // get them up
+```
+
+```kotlin
+engine.models().sit(player, bench)      // false if they are already sitting or riding
+engine.models().isSeated(player)        // on a chair, a seat bone, or sit()
+engine.models().stand(player)           // get them up
+```
+
+</CodeTabs>
+
+It asks [`ModelSeatEvent`](#events) like any other seat, so a plugin that
+refuses sitting refuses this too. They get up by sneaking. A vehicle's seat is
+not one of these: use `engine.vehicles().of(player)` for that. Needs RP Engine
+0.2.82 or newer.
+
+## Custom blocks
+
+A [custom block](/rp-engine/blocks) is a real block in the world, so Bukkit's
+own `BlockPlaceEvent` and `BlockBreakEvent` fire for it like any other block.
+What the API adds is the question those events can't answer: is this block one
+of the pack's, and which one.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+Blocks blocks = engine.blocks();
+ContentId ruby = ContentId.parse("mypack:ruby_ore").orElseThrow();
+
+blocks.at(block);                 // Optional<BlockInfo>: the custom block standing here
+blocks.idAt(block);               // just its id
+blocks.is(block, ruby);           // is it this one?
+blocks.stateAt(block);            // "facing=north,lit=true", or "" for a block with one state
+blocks.place(block, ruby);        // put one here, replacing what stands there
+blocks.setProperty(block, "lit", "true");   // change one property, keep the rest
+
+@EventHandler
+public void onBreak(BlockBreakEvent event) {
+    if (engine.blocks().is(event.getBlock(), ruby)) {
+        quests.mined(event.getPlayer(), "ruby");
+    }
+}
+```
+
+```kotlin
+val blocks = engine.blocks()
+val ruby = ContentId.parse("mypack:ruby_ore").orElseThrow()
+
+blocks.at(block)                  // Optional<BlockInfo>: the custom block standing here
+blocks.idAt(block)                // just its id
+blocks.`is`(block, ruby)          // is it this one?
+blocks.stateAt(block)             // "facing=north,lit=true", or "" for a block with one state
+blocks.place(block, ruby)         // put one here, replacing what stands there
+blocks.setProperty(block, "lit", "true")    // change one property, keep the rest
+
+@EventHandler
+fun onBreak(event: BlockBreakEvent) {
+    if (engine.blocks().`is`(event.block, ruby)) {
+        quests.mined(event.player, "ruby")
+    }
+}
+```
+
+</CodeTabs>
+
+`place` is a plain set: no event fires, no item is taken, no sound plays and
+the neighbours are not updated. It returns false when there is no such block or
+the pack has no state left for it. `setState(block, state)` and `setProperty`
+return false for a shaped block (a stair, a slab, a door), whose state is the
+game's own block data, so change that through Bukkit.
+
+`BlockInfo` is what the pack said: `shape()`, `properties()`, `defaultState()`,
+and `with(state, property, value)` to work a state out without touching the
+world. To give somebody the block's item, use `engine.items()` with the same
+id. Needs RP Engine 0.2.82 or newer.
+
+## Liquids
+
+A [custom liquid](/rp-engine/liquids) is water or lava that counts as something
+else inside a pool the server owner marked out.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+engine.liquids().ids();               // every liquid
+engine.liquids().info(id);            // its base, effect and damage
+engine.liquids().at(location);        // the liquid whose pool this place is in
+engine.liquids().of(player);          // the liquid this player is in right now
+```
+
+```kotlin
+engine.liquids().ids()                // every liquid
+engine.liquids().info(id)             // its base, effect and damage
+engine.liquids().at(location)         // the liquid whose pool this place is in
+engine.liquids().of(player)           // the liquid this player is in right now
+```
+
+</CodeTabs>
+
+`at` asks about the pool, so a bridge over the acid answers too. `of` is
+stricter: in a pool and actually wet, as the engine last saw it (it looks once
+a second). [`PlayerLiquidEvent`](#events) tells you the moment that changes.
+Needs RP Engine 0.2.82 or newer.
+
 ## Emotes
 
 <CodeTabs labels={["Java", "Kotlin"]}>
@@ -267,6 +386,7 @@ engine.emotes().play(player, "wave");              // solo
 engine.emotes().play(lead, "hug", List.of(other)); // with a cast
 engine.emotes().canPerform(player);
 engine.emotes().isEmoting(player.getUniqueId());
+engine.emotes().playing(player);                   // Optional<String>: which one (0.2.82)
 engine.emotes().stop(player);
 ```
 
@@ -275,6 +395,7 @@ engine.emotes().play(player, "wave")               // solo
 engine.emotes().play(lead, "hug", listOf(other))   // with a cast
 engine.emotes().canPerform(player)
 engine.emotes().isEmoting(player.uniqueId)
+engine.emotes().playing(player)                    // Optional<String>: which one (0.2.82)
 engine.emotes().stop(player)
 ```
 
@@ -652,6 +773,7 @@ engine.dialogs().ids();                        // what this server has
 engine.dialogs().info(id);                     // name, command, settings it declares
 engine.dialogs().supported();                  // false before 1.21.6
 engine.dialogs().canShow(player, id);          // would show get as far as the client?
+engine.dialogs().showing(player);              // the dialog they were last shown, if it still counts
 ```
 
 ```kotlin
@@ -661,6 +783,7 @@ engine.dialogs().ids()                         // what this server has
 engine.dialogs().info(id)                      // name, command, settings it declares
 engine.dialogs().supported()                   // false before 1.21.6
 engine.dialogs().canShow(player, id)           // would show get as far as the client?
+engine.dialogs().showing(player)               // the dialog they were last shown, if it still counts
 ```
 
 </CodeTabs>
@@ -683,18 +806,73 @@ A dialog opens straight away even if it was pushed a moment ago. `pending()`
 only tells you whether its id is in the server's registry yet, which matters
 only to a datapack or command block of your own that names it.
 
+`showing(player)` is the dialog a player was last shown, until the server
+closes it or ten minutes pass with no click in it. A player who presses Escape
+tells nobody, so read it as "may still be clicking in it", not "is on their
+screen".
+
 ### When a player clicks a button
 
-**RP Engine fires no event for a dialog click.** A button runs a command, so
-the way to react is to make that command yours: register `/buy` (or whatever
-the button runs) in your `plugin.yml` and handle it in your command executor.
-The command runs as the player who clicked, with `{name}` placeholders already
-filled in. A button can run several commands in order, and a **Run as console**
-button runs its command as the console instead. The one dialog event is
-[`DialogSlotMoveEvent`](#events), for item slots.
+A button runs a command, so the usual way to react is to make that command
+yours: register `/buy` (or whatever the button runs) in your `plugin.yml` and
+handle it in your command executor. The command runs as the player who clicked,
+with `{name}` placeholders already filled in. A button can run several commands
+in order, and a **Run as console** button runs its command as the console
+instead.
 
-If you want click events in Java, with typed inputs, use
+Since RP Engine 0.2.82 there are two events as well, for rules that sit on top
+of somebody else's dialog:
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+@EventHandler
+public void onOpen(DialogOpenEvent event) {
+    if (combat.isTagged(event.getPlayer())) {
+        event.setCancelled(true);            // their screen stays as it is
+    }
+}
+
+@EventHandler
+public void onClick(DialogClickEvent event) {
+    // event.dialog() is the dialog, event.command() what the click runs ("buy sword")
+    if (event.command().startsWith("buy ") && !bank.canAfford(event.getPlayer())) {
+        event.setCancelled(true);            // the command never runs
+    }
+}
+```
+
+```kotlin
+@EventHandler
+fun onOpen(event: DialogOpenEvent) {
+    if (combat.isTagged(event.player)) {
+        event.isCancelled = true             // their screen stays as it is
+    }
+}
+
+@EventHandler
+fun onClick(event: DialogClickEvent) {
+    // event.dialog() is the dialog, event.command() what the click runs ("buy sword")
+    if (event.command().startsWith("buy ") && !bank.canAfford(event.player)) {
+        event.isCancelled = true             // the command never runs
+    }
+}
+```
+
+</CodeTabs>
+
+- **`DialogOpenEvent`** fires every time a dialog is drawn, and a dialog is
+  drawn again when a page turns, an item moves or a setting changes.
+  `followed()` is true for those, so check it before greeting or charging
+  anybody.
+- **`DialogClickEvent`** is a click that reaches the server as a command. A
+  link that opens a URL, copies text, or turns to a page the client already
+  holds never reaches the server, and neither does a plain Close, so there is
+  no event for those.
+
+For typed inputs and an action per button in Java, use
 [Dialog Engine](/dialog-engine), a separate plugin built for that.
+[`DialogSlotMoveEvent`](#events) covers item slots.
 
 ### Values on it
 
@@ -947,6 +1125,11 @@ car.pointOn(-0.7, 0.6, 1.5)    // where a point on the bodywork is, in the world
 ```
 
 </CodeTabs>
+
+`spawn` asks [`VehicleSpawnEvent`](#events) first and returns empty when a
+plugin cancels it. `car.remove()` fires `VehicleRemoveEvent` while the vehicle
+is still whole, which is the moment to read anything you kept in its `data()`.
+Both need RP Engine 0.2.82 or newer.
 
 `submersion()` is a depth; `VehicleState.SUBMERGED` only means "in a water
 block", which a puddle also is. A vehicle whose `medium` isn't `water` floods
@@ -1423,7 +1606,11 @@ ContentId rhino = ContentId.parse("zoo:rhino").orElseThrow();
 
 mobs.info(rhino).ifPresent(info -> info.animations());   // state -> animation name
 Entity spawned = mobs.spawn(location, rhino).orElseThrow();
+mobs.spawn(location, rhino, 12);         // at level 12; 0 rolls its own level: range
 mobs.idOf(entity);                       // which custom mob this is, if any
+mobs.isMob(entity);                      // is it a custom mob at all?
+mobs.level(entity);                      // its level, 1 unless spawned at another
+mobs.near(location, 24);                 // every custom mob in reach, nearest first
 mobs.state(entity);                      // what it is showing: MobState.WALK, ...
 mobs.play(entity, MobState.ATTACK);      // as if it had happened: a one-shot, then back
 mobs.play(entity, "roar", 0);            // any animation of its model, for its own length
@@ -1436,7 +1623,11 @@ val rhino = ContentId.parse("zoo:rhino").orElseThrow()
 
 mobs.info(rhino).ifPresent { it.animations() }       // state -> animation name
 val spawned = mobs.spawn(location, rhino).orElseThrow()
+mobs.spawn(location, rhino, 12)          // at level 12; 0 rolls its own level: range
 mobs.idOf(entity)                        // which custom mob this is, if any
+mobs.isMob(entity)                       // is it a custom mob at all?
+mobs.level(entity)                       // its level, 1 unless spawned at another
+mobs.near(location, 24.0)                // every custom mob in reach, nearest first
 mobs.state(entity)                       // what it is showing: MobState.WALK, ...
 mobs.play(entity, MobState.ATTACK)       // as if it had happened: a one-shot, then back
 mobs.play(entity, "roar", 0.0)           // any animation of its model, for its own length
@@ -1464,6 +1655,14 @@ can have them too.
 A projectile a custom mob fired carries the damage it was given. Setting a
 different damage on it in your own `EntityDamageByEntityEvent`, at a priority
 above `NORMAL`, wins.
+
+`MobSpawnEvent` fires before a custom mob spawns, however it came: an egg, a
+spawner, a command, `spawn`, or the engine's own natural spawning (`natural()`
+is true for that one). Cancel it for "none in the safe zone", or `setLevel` to
+change the level it comes at. The mob does not exist yet, so there is no entity
+on the event; it arrives a moment later in Bukkit's `CreatureSpawnEvent`,
+where `mobs.idOf` already names it. `spawn(…, level)`, `isMob`, `level`, `near`
+and the event need RP Engine 0.2.82 or newer.
 
 Listen for `MobStateChangeEvent` to follow what a mob is doing. It fires when
 what is *playing* changes, so a state the mob has no animation for never
@@ -1582,12 +1781,15 @@ otherwise.
 | `ModelAnimationEndEvent` | One ended: finished, replaced or stopped. Not cancellable |
 | `ModelSeatEvent` | Somebody is about to sit on a chair, a seat bone or a vehicle seat. `placement()` or `vehicle()` says what it belongs to |
 | `ModelBindEvent` | A model is going on, or coming off, an entity that isn't ours (a boss, an NPC) |
+| `VehicleSpawnEvent` | A vehicle is about to be put down, by `/rp vehicle spawn` or a plugin's `spawn`. `id()`, `info()` and `location()`; there is no `Vehicle` yet. Cancelling means no vehicle. A parked one loading with its chunk doesn't fire it |
+| `VehicleRemoveEvent` | A vehicle is being removed for good, by `/rp vehicle remove` or `Vehicle.remove()`. Fires first, with its riders still seated and its `data()` readable. Not cancellable |
 | `VehicleEnterEvent` | Somebody is about to get into a vehicle. Fires after `ModelSeatEvent` for the same seat |
 | `VehicleExitEvent` | Somebody got out or was taken out, with the reason: dismounted, ejected, quit, reloaded, removed, unloaded, shutdown. After `RELOADED` they're put back a tick later with no enter event. Not cancellable |
 | `VehicleMoveEvent` | A vehicle is about to move (once per tick, only while moving). Cancelling stops it like a wall. Use it for regions, not fuel |
 | `VehicleStateEvent` | What a vehicle is doing changed: set off, stopped, took off, went under. Not cancellable |
 | `VehicleImpactEvent` | A vehicle hit another vehicle, the world, or the ground. See [Collisions and parts](#collisions-and-parts). Not cancellable |
 | `VehicleBailEvent` | A bad landing is about to throw a rider off. Cancelling keeps them aboard |
+| `MobSpawnEvent` | A custom mob is about to spawn: an egg, a spawner, a command, a plugin, or naturally (`natural()`). `id()`, `info()`, `location()`, and `level()` with `setLevel`. Cancelling means no mob |
 | `MobStateChangeEvent` | A custom mob's animation state changed: `previous()` and `state()`, null for its rest pose. Not cancellable |
 | `MobSkillEvent` | A custom mob is about to cast a skill: one of its own `skills:` lines (`skill()` is the line as written) or a metaskill (`skill()` is its id), with `trigger()` (`attack`, `timer`, `api` and so on) and `triggerEntity()`. Fires after the line's chance, health and conditions passed. Cancelling skips it and spends no cooldown |
 | `EntityDeathEvent` | A custom entity died. Says what it was, `killer()`, and `drops()`: Bukkit's live drop list, so editing it changes the loot. Not cancellable |
@@ -1595,6 +1797,8 @@ otherwise.
 | `EmoteStartEvent` | An emote is about to start |
 | `EmoteEndEvent` | An emote ended, with the reason: finished, stopped, moved, damaged, quit, shutdown |
 | `EmoteRigSpawnEvent` | A rig's displays were spawned. Carries the new entity ids. Not cancellable |
+| `DialogOpenEvent` | A dialog is about to be put on a player's screen. `dialog()`, `values()`, and `followed()`: true when they reached it from the dialog they were in (a page, a move, a changed setting). Cancelling leaves their screen as it is |
+| `DialogClickEvent` | A player clicked something in a dialog that runs a command. `dialog()`, `values()` and `command()` (no leading slash). Cancelling stops the command running |
 | `DialogSlotMoveEvent` | A player is about to move a stack in a dialog's item slots. `dialog()`, `from()` and `to()` (slot keys like `inv/5`, `ender/3`, `api.bank/0`), `moving()` and `onto()` (the stack already there). The only dialog event: a button click runs a command instead, see [When a player clicks a button](#when-a-player-clicks-a-button) |
 
 **The engine decides whether something can physically happen, never whether it
