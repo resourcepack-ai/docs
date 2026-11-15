@@ -878,6 +878,11 @@ dialogs.open(player, "myplugin:menu", Map.of("coins", "120"));
 dialogs.refresh(player);   // draw the player's current dialog again
 dialogs.close(player);
 
+// Change what an open dialog says, then draw it once.
+dialogs.set(player, "coins", "95");
+dialogs.set(player, "status", "<green>Bought!");
+dialogs.refresh(player);
+
 // A new action: [myplugin:give] diamond 3
 dialogs.registerAction(this, "myplugin:give", (ctx, arg) -> {
     String[] p = arg.split(" ");
@@ -908,18 +913,50 @@ dialogs.registerList(this, "myplugin_quests", (viewer, ctx) -> quests.of(viewer)
   dropdown bound to `name` is set to for that player. It is empty until they
   have set it; `%dialogengine_setting_<name>%` gives the dialog's default
   instead.
-- Also: `current(player)` and `values(player)` for the dialog a player has
-  open, `ids()` and `info(id)` for what is loaded, `canOpen(player, id)`,
+- `setSetting(player, name, value)` sets one, as if they had clicked the
+  control, and a null value clears it back to the dialog's default. It fires no
+  `DialogSettingChangeEvent` (that is for a player's own clicks) and draws
+  nothing, so `refresh` afterwards if they are looking at it. It returns false
+  for a name or value a setting can't have. Since 0.8.1.
+- `set(player, key, value)` changes one value of the dialog a player has open
+  without drawing it, so several changes cost one `refresh`. A null value takes
+  the key away. It returns false when they have no dialog open. Since 0.8.1.
+- Also: `current(player)`, `isOpen(player)` and `values(player)` for the dialog
+  a player has open, `ids()` and `info(id)` for what is loaded, `canOpen(player, id)`,
   `textJson(...)` to render MiniMessage the way a dialog does, `unregister(plugin)`
   and `reload()`.
 
 Everything a plugin registers is dropped when it disables.
 
+### Your own items in a drawn dialog
+
+A drawn dialog's grid of item slots can show a container "from a plugin", by a
+name set in the editor: a bank, a shop's stock, a quiver. Register that name
+and Dialog Engine shows what your inventory holds, each item with its own
+picture, count and tooltip. If the grid lets items move, the player moves them
+between your container and their own inventory with two clicks.
+
+```java
+dialogs.registerContainer(this, "bank", new DialogContainer() {
+    public Inventory inventory(Player viewer) { return banks.of(viewer); }   // null: empty slots
+    public boolean mayPlace(Player viewer, int slot, ItemStack stack) {
+        return stack.getType() != Material.BEDROCK;
+    }
+    public void changed(Player viewer) { banks.save(viewer); }
+});
+```
+
+The inventory stays yours. It is read as the dialog opens and written as each
+move happens, and a move reads both slots at that moment, so a stale screen
+cannot duplicate an item. `mayTake` and `mayPlace` refuse a move per slot, and
+[`DialogSlotMoveEvent`](#events) still fires for every one, with the slot named
+`api.bank/0`. Since 0.8.1.
+
 ### Events
 
 | Event | When |
 |---|---|
-| `DialogOpenEvent` | A dialog is about to be drawn: opened, refreshed, paged or returned to. Cancellable. `values()` can be changed, and `isReopened()` says whether it is the same dialog again |
+| `DialogOpenEvent` | A dialog is about to be drawn: opened, refreshed, paged or returned to. Cancellable. `getValues()` can be changed, and `isReopened()` says whether it is the same dialog again |
 | `DialogClickEvent` | A button was pressed and its inputs passed, before its actions run. Cancellable. `getButtonId()`, `getInputs()` (what was typed, chosen and toggled), `getSettings()` (a drawn dialog's switches, sliders and dropdowns), `getValues()`, `getActions()` (changeable), `isDrawn()`, and `getContext()` to open, refresh or close |
 | `DialogCloseEvent` | A dialog left the player's screen. `getReason()` says how, `getButtonId()` which button closed it, `getNextDialogId()` what replaced it, and `getValues()` and `getSettings()` what it was left with. See below |
 | `DialogSettingChangeEvent` | A switch, slider or dropdown on a drawn dialog is about to change a setting. Cancellable: the setting keeps its old value. `getName()`, `getOldValue()`, `getNewValue()` |
