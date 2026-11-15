@@ -157,3 +157,15 @@ hud:
 Put the exported files in the content folder's `resourcepack/` folder. A
 boss-bar HUD whose picture uses its own font needs **Paper**; on Spigot, use
 the action bar.
+
+Minecraft draws a dark copy of every line of text one pixel down and to the
+right, as a drop shadow. Over flat pixel art or lettering made of glyphs that
+copy can smear. To turn it off for one piece of text, add `"shadow": false` to
+that entry of the JSON's `runs` list:
+
+```json
+{ "x": 12, "text": "{goal}", "color": "#f00008", "font": "", "shift": "", "shadow": false }
+```
+
+Leave it out, or set it to `true`, and the shadow is drawn as usual. Turning it
+off needs **Paper** on **1.21.4** or newer. On anything else the shadow stays.
