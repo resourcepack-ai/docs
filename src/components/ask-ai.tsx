@@ -53,7 +53,12 @@ import { cn } from "@/lib/utils";
 
 const HELP_URL =
   process.env.NEXT_PUBLIC_HELP_URL ?? "https://help.resourcepack.ai";
-const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+// A site key is public: it is in every page that shows the widget. It is written
+// here, and not only in an env file, because the help bot refuses a question
+// with no token once its secret is set, and env files are not committed: a
+// build on another machine would ship a panel that can never ask anything.
+const TURNSTILE_SITE_KEY =
+  process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAAGBa7rWEID8w-v0-";
 const STORAGE_KEY = "rpai-ask-ai";
 const MAX_QUESTION = 1000;
 const DOCS_ORIGIN = "https://resourcepack.ai/docs";
