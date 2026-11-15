@@ -152,6 +152,41 @@ the new version's.
 
 ## For developers
 
+Add `depend: [Punishments]` to your `plugin.yml` (or `softdepend`, and check
+`Punishments.isEnabled()` first) and compile against the jar. The API is in
+`ai.resourcepack.punishments.api`. Needs Punishments 0.1.3 or newer.
+
+```java
+PunishmentsAPI punishments = Punishments.api();
+
+// Online and muted? Answers at once, for a chat plugin.
+if (punishments.isMuted(player)) return;
+
+// Anybody, online or not. Futures complete on the main thread.
+punishments.activeBan(uuid).thenAccept(ban ->
+        ban.ifPresent(b -> sender.sendMessage("Banned for: " + b.reason())));
+punishments.history(uuid, 20).thenAccept(rows -> rows.forEach(this::show));
+punishments.warnings(uuid).thenAccept(count -> { /* the number escalation counts */ });
+
+// Punish and lift, as if the actor had typed the command. null is the console.
+long hour = 60 * 60 * 1000L;
+punishments.punish(null, Punishment.Type.MUTE, "Steve", "Spamming", hour, false);
+punishments.punish(null, Punishment.Type.BAN, "Steve", "#hacking", Punishment.NEVER, true);
+punishments.revoke(null, Punishment.Type.MUTE, "Steve");
+```
+
+- `mute(player)` and `isMuted(player)` are for online players and answer from
+  memory. Everything else reads the database and returns a
+  `CompletableFuture`.
+- `punish` goes through everything the command does: reason presets
+  (`#hacking`), the actor's limits, exemptions, the events below, the broadcast
+  and escalation. The actor is told the outcome in chat. Only the command's own
+  permission is skipped, because your plugin has already decided.
+- The length is in milliseconds. `Punishment.NEVER` is for ever, and `0` is the
+  default from `config.yml`. A warning and a kick ignore it.
+- A `Punishment` says what it is: `type()`, `reason()`, `actorName()`,
+  `created()`, `expires()`, `permanent()` and `inForce(now)`.
+
 Three Bukkit events, all on the main thread, in
 `ai.resourcepack.punishments.api.event`:
 
