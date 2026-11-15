@@ -17569,6 +17569,29 @@
                   "anonymous": {
                     "type": "boolean",
                     "description": "Publish it without your name on it. Defaults to false."
+                  },
+                  "poster": {
+                    "type": "object",
+                    "description": "The page's picture, as a PNG at most 1024 pixels a side. Required for a `loading_screen`, an `emote` and a `custom_gui`, whose picture only a browser can draw (the app's Publish button draws it); ignored for every other type. Exactly one of `upload`, `url`, `base64` or `text`.",
+                    "properties": {
+                      "upload": {
+                        "type": "string",
+                        "description": "The `upload` id from `POST /uploads`, after PUTting the file to its URL. The way to send anything big, or anything already on disk.",
+                        "example": "up_3f2a9c0e5b7d41c8a6e2f19b0d4c7a35"
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "A public https URL to fetch the file from."
+                      },
+                      "base64": {
+                        "type": "string",
+                        "description": "The file's bytes as base64 (a `data:` URI is fine). Up to 8MB."
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "The file as text, for formats that are text (model JSON, .bbmodel). Up to 8MB."
+                      }
+                    }
                   }
                 },
                 "required": [
