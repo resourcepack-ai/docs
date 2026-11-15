@@ -57,6 +57,14 @@ That needs RP Engine 0.2.38 or newer and a zip exported on or after 29 October
 2026. An older zip still works as art, but its shader objects are not listed:
 export it again.
 
+**Keep a Studio pack as its own folder**, straight inside `content/`. Its
+shader objects, dialogs and screens are listed in a `studio-content.json` at
+its top, and RP Engine only looks for that file there. Copying its `assets/`
+into another pack, or putting it under a content pack's `resourcepack/`,
+keeps the art and loses the rest. To add a shader you made in Studio to a
+server that already has your own pack, export the Studio pack and drop it in
+beside yours: RP Engine sends both to players as one pack.
+
 <Callout type="note" title="Updating a Studio pack often?">
   [`/rp distribute`](/distribution) does this for you: the pack you publish in
   Studio is kept in `content/studio-<pack>/` and replaced on each release, with

@@ -125,6 +125,12 @@ like this:
 /give @p iron_sword[minecraft:custom_model_data={strings:["quest_blade"]},minecraft:item_name="Quest Blade"]
 ```
 
+That string is what makes the item look like yours, so a shop, crate or menu
+plugin can show it too: give that plugin the vanilla item and the same
+`custom_model_data` string. An Item is art, not a plugin item: to give it
+behaviour, an ID or a permission in RP Engine, define it in a
+[content pack](/rp-engine/items) and point its `texture:` at this picture.
+
 The string in `custom_model_data` is made from the item's name, so it can come
 out long. To pick a shorter one, press the pencil on the item's page and change
 **Custom Model Data**. Copies handed out before the change stop showing the

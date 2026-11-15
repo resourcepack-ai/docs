@@ -162,6 +162,16 @@ Identity lives in the stack's persistent data, not its name or model. An item
 renamed in an anvil is still itself, and a vanilla diamond somebody named
 "Ruby" is not one. `create(id, amount)` makes a stack of several.
 
+<Callout type="warning" title="A Studio Item is not an item here">
+  `items()` knows the items defined in a [content pack](/rp-engine/items)'s
+  `items/` folder. An Item made in Studio is art plus a give command: a vanilla
+  item wearing a `custom_model_data` string, which is on the item's page in
+  Studio. So `items().create(studio:blank)` is empty, and `/rp reload` reports
+  `0 definitions` for a Studio pack. To give a Studio Item an ID here, define
+  it in a content pack of your own and point its `texture:` at the Studio
+  picture, `minecraft:item/<name>`, with the Studio pack still on the server.
+</Callout>
+
 To make a stack of your own wear a pack's art without becoming that item, call
 `wearModel(stack, modelId)`. Don't set the item model yourself: below 1.21.4
 the model is a number only the engine knows. `create` and `wearModel` are main
