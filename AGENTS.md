@@ -72,37 +72,34 @@ OpenNext shells out to `npm run build`, so the Cloudflare deploy inherits
 this automatically. If someone "fixes" the inconsistency with those apps by
 adding `--webpack`, every deploy breaks.
 
-## `@opennextjs/cloudflare` is patched for Windows builds
-
-`patches/@opennextjs+cloudflare+1.20.7.patch`, applied by `patch-package` on
-`postinstall`. Don't drop it, and if you bump the dependency, regenerate it
-(`npx patch-package @opennextjs/cloudflare`) — the filename carries the version
-and a stale patch fails loudly on install.
+## Windows builds, and the check to run before shipping one
 
 OpenNext's Turbopack plugin matches paths against forward slashes. On Windows
-nothing matched, so it emitted **empty** `requireChunk`/`loadWasmChunk`
+nothing used to match, so it emitted **empty** `requireChunk`/`loadWasmChunk`
 switches: the build passed, `wrangler deploy` reported success, and every SSR
-route 500'd with `ChunkLoadError`. Up to 1.20.1 the patch normalized four
-places; 1.20.2 onward normalize the traced files and the runtime's path
-themselves, so what is left is one line: the `.next/node_modules` symlink
-targets that map hashed external names (shiki's) back to packages, which
-`readlink` answers with backslashes on Windows.
+route 500'd with `ChunkLoadError`. This app carried a `patch-package` patch for
+it until `@opennextjs/cloudflare` 1.20.16, which normalizes every one of those paths
+itself (the last was the `.next/node_modules` symlink targets, which `readlink`
+answers with backslashes on Windows). There is no patch any more.
 
 This only bites here because `docs` is the one app that must build with
-Turbopack — see below. To check a build before shipping it:
+Turbopack — see below. The check is still worth running on a build before
+shipping it:
 
 ```bash
 grep -c 'case "server/chunks' '.open-next/server-functions/default/.next/server/chunks/ssr/[turbopack]_runtime.js'
 ```
 
 Zero means the chunks were not inlined and the deploy would be dead on arrival.
-Building in WSL avoids the whole problem, if you'd rather do that.
 
-## `@opennextjs/cloudflare` is pinned exactly
+## `@opennextjs/cloudflare` and `next` move together
 
-`1.20.7`, not a caret range, because the patch above is written against that
-exact file. It needs `next >=16.3.6` (this app is on 16.3.8) and wrangler
-`^4.125.0`.
+OpenNext is pinned exactly (`1.20.16`), because a version of it only knows the
+manifests of the Next versions it was written for: 1.20.7 built Next 16.4 without
+complaint and then answered every page with
+`Unexpected loadManifest(/.next/server/preview-props.json)`. So bump the two
+together, and open a few pages in `npm run cf:preview` before deploying. There is
+no staging for this app; the local preview is the test.
 
 # Content pipeline
 
