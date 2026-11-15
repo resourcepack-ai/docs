@@ -74,6 +74,29 @@ Both need RP Engine 0.2.77 or newer. On an older version every flat item is
 held flat: write the model in as shown under [3D items](#3d-items), with
 `parent: minecraft:item/handheld`, and draw the picture the vanilla way.
 
+### Choosing how it's held
+
+When the material's way is wrong for your item (a flag on paper that should
+be held like a staff, a wand on a stick that should sit upright), say how
+with `held:`:
+
+| `held:` | Held like |
+| --- | --- |
+| `item` | Paper: flat and upright |
+| `tool` | A sword: at an angle, the bottom left of the picture in the hand |
+| `rod` | A fishing rod: the tool angle turned the other way |
+
+```yaml
+flag:
+  material: PAPER
+  texture: item/flag
+  held: rod
+```
+
+With `held:` set, the picture is used exactly as drawn and never mirrored.
+Needs RP Engine 0.2.80 or newer. Items brought across from Nexo or Oraxen keep
+the way their `parent_model` held them.
+
 ## 3D items
 
 Point `model:` at a Blockbench file in `assets/models/`:
