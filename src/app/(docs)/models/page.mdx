@@ -245,7 +245,12 @@ Two formats upload:
 - **`.bbmodel`** (Blockbench) keeps its cube names, its groups (as bones), its
   animations, its textures and its rotations, so a rigged Blockbench model
   arrives ready to animate.
-- **`.json`** (a vanilla block model) comes in as geometry.
+- **`.json`** (a vanilla block model) comes in as geometry. A `.json` only
+  names its textures and doesn't carry them, so drop the PNGs in with it:
+  each one is matched to the texture of the same file name. The model's row
+  lists every texture it names with its file, or **missing**: **Add
+  texture** fills a missing one, and **Replace texture** swaps one you
+  already added.
 
 **"Model has no valid geometry"** means the file has no cubes in it. A vanilla
 flat item model such as `wheat_seeds.json` (`"parent": "item/generated"`) only

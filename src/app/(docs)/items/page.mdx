@@ -50,7 +50,10 @@ Then either:
   glow along the teeth". See [Generating with AI](/generating).
 - **Blank**: draw it yourself in the pixel editor.
 - **Upload**: bring a PNG you already have, or a model (`.json` or
-  `.bbmodel`) for a 3D item.
+  `.bbmodel`) for a 3D item. Once Studio knows which vanilla item a file is
+  for, its row asks whether it changes **Every one** of that item (a reskin)
+  or **Custom model data only** (a variant), the same choice as **Applies
+  to**.
 
 | Size | Notes |
 | --- | --- |
@@ -79,6 +82,22 @@ were drawn.
 With a reference picture of the thing itself, 2 of the 4 are redrawn from
 your picture and 2 are drawn from a description of it, in no particular
 order, so you can pick whichever came out best.
+
+### How it's held
+
+A flat item is held like paper unless you say otherwise: flat and upright.
+That's wrong for a staff, a wand or a flag. A variant or a custom item has a
+**Held like** card on its page:
+
+| Choice | Held like |
+| --- | --- |
+| **Item** | Paper: flat and upright. The default |
+| **Tool** | A sword: at an angle, the bottom left of the picture in the hand |
+| **Rod** | A fishing rod: the tool angle turned the other way |
+
+For **Tool**, draw the handle in the bottom left and the tip in the top right,
+as vanilla's swords are. Sync to see the change in game; it's in every export
+too. A reskin is held the way its vanilla item is, so it has no card.
 
 ### Drawing a good sprite
 
