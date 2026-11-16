@@ -227,6 +227,59 @@ What to expect with display entities:
   built into the pack, and `/rp armor` says why.
 </Callout>
 
+## Why 3D armour lags behind
+
+Armour drawn by the pack's shaders is part of the player's body, so it cannot
+lag. If the body pieces trail behind a player, that player is being shown the
+display entities instead. The helmet gives it away: the game draws it, so it
+stays on the head while the rest trails.
+
+To see which one your own game gets, put the set on with `/rp armor wear <set>`
+while `/rp armor self` is off (it is off unless you turned it on). If RP Engine
+adds "Everyone else sees the whole set; you see the helmet", your game is being
+sent display entities. If the reply stops at "You're wearing ...", your game
+draws the set with the shaders.
+
+A player gets display entities when:
+
+- **The set has `shaders: false`.** Then every player does. It is usually
+  added because the pack failed to load with "Resource reload failed" on an AMD
+  graphics card on 26.3, which RP Engine 0.2.59 fixed. On 0.2.59 or newer,
+  remove the line and check the pack still loads for your players.
+- **The player is not on Minecraft 26.1 to 26.3.** Older versions joining
+  through ViaVersion, and any version newer than 26.3, always get display
+  entities.
+- **The set cannot be drawn by the shaders.** The console says so when the
+  content loads ("This set cannot be drawn by the client's own shaders"), with
+  the reason.
+- **RP Engine cannot tell which version the player is on.** It asks
+  ViaVersion, and without it treats every player as being on the server's own
+  version, which Spigot does not report. On Spigot without ViaVersion, every
+  player gets display entities, and a player whose game also draws the shaders
+  sees two suits: one on the body and one trailing it. Run Paper, or install
+  ViaVersion. Behind a proxy, ViaVersion has to be on the Minecraft server
+  itself: RP Engine cannot see a copy on the proxy.
+- **The Studio pack is from before 26.3 support.** A pack pushed or published
+  before Studio supported 26.3 carries no shaders for it. Push or publish it
+  again.
+- **RP Engine is older than 0.2.44**, the first version with shaders for 26.3.
+  Update it.
+
+Display entities themselves trail when:
+
+- **You are watching your own armour** (`/rp armor self`, in F5). Your game
+  moves your body the moment you press a key, and the server hears about it a
+  ping later. RP Engine places your copy ahead of you by your ping, so it keeps
+  up while you move steadily and is off for about one ping after you start,
+  stop or turn. Other players do not see this: your body reaches them as late
+  as the armour does.
+- **Your ping is high, or you move very fast.** RP Engine allows for at most
+  0.4 seconds of ping and never puts your copy more than 1.5 blocks ahead, so
+  beyond that it falls behind.
+- **The server is lagging** (running below 20 TPS). The server moves the
+  display entities every tick, so when ticks run late, the armour arrives late
+  and in jumps.
+
 ## On Bedrock
 
 Flat armour reaches Bedrock players through [Geyser](/rp-engine/bedrock),
