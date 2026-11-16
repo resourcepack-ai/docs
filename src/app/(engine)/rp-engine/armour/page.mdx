@@ -252,18 +252,19 @@ A player gets display entities when:
 - **The set cannot be drawn by the shaders.** The console says so when the
   content loads ("This set cannot be drawn by the client's own shaders"), with
   the reason.
-- **RP Engine cannot tell which version the player is on.** It asks
-  ViaVersion, and without it treats every player as being on the server's own
-  version, which Spigot does not report. On Spigot without ViaVersion, every
-  player gets display entities, and a player whose game also draws the shaders
-  sees two suits: one on the body and one trailing it. Run Paper, or install
-  ViaVersion. Behind a proxy, ViaVersion has to be on the Minecraft server
-  itself: RP Engine cannot see a copy on the proxy.
+- **ViaVersion is only on your proxy.** RP Engine asks ViaVersion which
+  version each player is on, and only sees it on the Minecraft server itself.
+  Without it there, every player is taken to be on the server's version, so a
+  player on another version can get the wrong one: a second suit trailing the
+  one on their body, or no body pieces at all. Install ViaVersion on the server
+  too.
 - **The Studio pack is from before 26.3 support.** A pack pushed or published
   before Studio supported 26.3 carries no shaders for it. Push or publish it
   again.
-- **RP Engine is older than 0.2.44**, the first version with shaders for 26.3.
-  Update it.
+- **RP Engine is out of date.** Before 0.2.44 there were no shaders for 26.3.
+  Before 0.2.85, on Spigot without ViaVersion, every player got display
+  entities, and a player whose game also draws the shaders saw two suits: one
+  on the body and one trailing it. Update RP Engine.
 
 Display entities themselves trail when:
 
