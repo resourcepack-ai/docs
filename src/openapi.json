@@ -18973,7 +18973,7 @@
       "post": {
         "operationId": "createUpload",
         "summary": "Get a URL to upload a file to",
-        "description": "For a file too big to send inline — a whole pack — or one you have on disk and would rather not base64. Ask with the file's exact length, `PUT` the bytes to `url` with the `Content-Length` it names (`curl -T pack.zip \"<url>\"` does both), then pass `{\"upload\": \"<upload>\"}` as the `file` of the call that wants it.\n\nThe URL takes exactly `size` bytes and expires after fifteen minutes. An upload is used once: the call that consumes it deletes it.",
+        "description": "For a file too big to send inline — a whole pack — or one you have on disk and would rather not base64. Ask with the file's exact length, `PUT` the bytes to `url` with the `Content-Length` it names (`curl -T pack.zip \"<url>\"` does both), then pass `{\"upload\": \"<upload>\"}` as the `file` of the call that wants it.\n\nThe URL takes exactly `size` bytes and expires after fifteen minutes. An upload is used once: the call that consumes it deletes it. An account can stage 200 uploads a day.",
         "tags": [
           "Uploading"
         ],
