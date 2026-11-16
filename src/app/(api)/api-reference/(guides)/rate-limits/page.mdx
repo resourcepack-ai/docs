@@ -25,6 +25,9 @@ a write).
 The [origin check](/api-reference/origin) endpoints are limited separately, per
 address.
 
+`POST /uploads` also has a daily limit: an account can stage 200 uploads a day,
+across all its keys. Each upload is deleted by the call that uses it.
+
 ## Being refused
 
 A request over budget answers `429` with the usual envelope and a
