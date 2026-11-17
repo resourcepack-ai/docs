@@ -70,6 +70,39 @@ Add components and shapes with the **+** beside Elements.
 Drag components to move them, or nudge the selected one with the arrow keys
 (hold Shift for 10 pixels).
 
+### Containers
+
+A **Container** lines components up for you, like a `<div>` in HTML. Add one
+with the **+**, then put labels, pictures, player heads, progress bars or other
+containers in it from its settings. If you select some components first, the
+new container takes them in.
+
+- **Row** puts what is in it side by side, **Column** one under another.
+- **Gap** is the space between items, and **Pad** the space between the edge
+  and the items.
+- **Pivot** is the point of the container that stays where you put it: with
+  the centre, it stays centred as it grows; with top-right, it grows to the
+  left.
+- **Each item** lines items up across the container (top, middle or bottom of a
+  row; left, centre or right of a column). **Min width** and **Min height**
+  make it at least that big, and the second alignment says where the items sit
+  in the spare room.
+- **Background** gives it a colour and an opacity.
+
+Containers can go inside containers, so three panels side by side is one row
+holding three columns.
+
+**It grows with what is in it, in game too.** RP Engine lays each row out again
+for every player, so a panel showing `{coins}` is as wide as their balance, and
+an item hidden by its **Show when** takes no room in a row. In the editor every
+label is as wide as it is written.
+
+Anything in a container is placed by it, so dragging it moves the whole
+container. **Take out** in its settings puts it back on its own, where it is.
+Shapes and paint can't go in a container, and a container needs a normal
+canvas: turning on **Fill the whole screen** leaves everything where it was and
+removes the containers.
+
 ### Paint
 
 Pick a brush on the left (pencil, eraser, fill, colour picker, line,
@@ -206,7 +239,8 @@ RP Engine 0.2.38 or newer.
 
 - **32 pieces per object.** A label, player head or picture takes one. A
   progress bar takes two, plus one per colour threshold. Each named colour
-  takes one. Paint takes one per 256-pixel tile of drawing. The status bar at
+  takes one. A container with a background takes one. Paint takes one per
+  256-pixel tile of drawing. The status bar at
   the bottom of the editor counts them, and anything past 32 isn't drawn.
 - **A full-screen object draws over the hotbar and crosshair** and under chat
   and titles. Keep it to a handful of shapes: each is worked out for every
