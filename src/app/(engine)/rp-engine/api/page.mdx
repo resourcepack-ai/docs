@@ -767,6 +767,32 @@ val back = engine.overlays().space(-12)            // twelve pixels back, to dra
 `width` knows vanilla's letters, every icon in the pack and the spaces `space`
 makes. Both work in any text drawn in the default font.
 
+A value can also carry a player's face, eight pixels square (RP Engine 0.2.88
+and newer):
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+String face = engine.overlays().head("\"Notch\"", "#ffffff");
+engine.overlays().set(player, "leader", face + " Notch");
+```
+
+```kotlin
+val face = engine.overlays().head("\"Notch\"", "#ffffff")
+engine.overlays().set(player, "leader", "$face Notch")
+```
+
+</CodeTabs>
+
+The first argument is the player's profile as JSON: a name in quotes, an object
+with `name`, `id` and the skin's `properties`, or
+`{"texture":"entity/player/wide/steve"}` for one of the game's own skins. The
+colour tints the face; `#ffffff` leaves it as it is. Faces need Paper and
+Minecraft 1.21.9 or newer. Anywhere else (Spigot, an older client, Bedrock) the
+face is a gap of the same width, so the rest of the line doesn't move. `width`
+counts a face as 8 pixels. Use the string `head` returns straight away rather
+than saving it: it only works on the server run that made it.
+
 ## Dialogs
 
 A [dialog](/dialogs) is a screen of its own, such as a store, a settings menu
