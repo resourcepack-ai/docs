@@ -4891,6 +4891,11 @@
                     ],
                     "default": 16
                   },
+                  "outline": {
+                    "type": "boolean",
+                    "description": "`false` draws a 16x16 sprite with no black outline, edged in its own colours like vanilla's items, filling the canvas and centred. Ignored at other sizes and for 3D.",
+                    "default": true
+                  },
                   "name": {
                     "type": "string",
                     "description": "Your label. Falls back to the prompt."
