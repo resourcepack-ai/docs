@@ -78,6 +78,7 @@ engine.vfx();           // VFX: play one where somebody stands
 engine.transitions();   // Transitions: cover a screen, do something, uncover it
 engine.mobs();          // custom mobs: spawn one, animate one, give an egg
 engine.skills();        // mob skills: add a mechanic, condition or targeter; cast one
+engine.packs();         // the built packs as files, and players who have them from elsewhere
 engine.overlays();      // HUD overlays: show one, hide one, feed it values
 engine.dialogs();       // dialogs: open one, feed it values, read player settings
 engine.registry();      // everything this server holds, by id
@@ -104,6 +105,7 @@ engine.vfx()            // VFX: play one where somebody stands
 engine.transitions()    // Transitions: cover a screen, do something, uncover it
 engine.mobs()           // custom mobs: spawn one, animate one, give an egg
 engine.skills()         // mob skills: add a mechanic, condition or targeter; cast one
+engine.packs()          // the built packs as files, and players who have them from elsewhere
 engine.overlays()       // HUD overlays: show one, hide one, feed it values
 engine.dialogs()        // dialogs: open one, feed it values, read player settings
 engine.registry()       // everything this server holds, by id
@@ -1798,6 +1800,57 @@ included. Names are case-insensitive.
 Listen for `MobSkillEvent` to see a skill before it runs, or cancel it; see
 [Events](#events).
 
+## Resource packs
+
+`engine.packs()` is the packs this server builds, as files: for a plugin that
+builds one pack out of several plugins' (a network pack, a pack manager).
+
+```java
+Packs packs = engine.packs();
+packs.all();                       // every pack players are sent, bottom first
+packs.get("main");                 // Optional<BuiltPack>: file(), sha1(), size()
+packs.readable("main");            // the same pack before PackSquash: a zip any library opens
+packs.defaultBundle();             // the bundle a join sends ("" for none)
+```
+
+`sha1()` is the hash players are told. With `pack.packsquash` on, the file they
+are sent may be one only the game can open, so merge from `readable()`; with it
+off the two are the same file. Where packs stack (1.20.3+) and the engine serves
+its own packs, `all()` ends with the emote rigs pack (`rpengine-rigs`), which is
+rebuilt whenever a new skin arrives; elsewhere the rigs are inside the bundle.
+
+`PackBuildEvent` fires each time the packs are built again: startup, a reload,
+the rigs rebaked on their own, another plugin's text shader merged in again.
+`changed()` names the bundles whose SHA-1 moved, and is empty when a reload
+built the same bytes. It fires before players online are sent the new build. A
+plugin that enables after RP Engine misses the startup one, so read `all()` in
+`onEnable`.
+
+### A player who already has the pack
+
+Once you send a player a pack with RP Engine's files merged into it, say so, and
+RP Engine stops sending its own:
+
+```java
+@EventHandler(priority = EventPriority.LOWEST)
+public void onJoin(PlayerJoinEvent event) {
+    if (myPackHolders.contains(event.getPlayer().getUniqueId())) {
+        engine.packs().markExternal(event.getPlayer().getUniqueId(), "main");
+    }
+}
+```
+
+A marked bundle is never sent to that player, and is taken off them if it
+already was. Everything else still goes on top of your pack (the emote rigs, a
+player's own rig, a Studio push), and every feature works as though RP Engine
+had sent it. Mark before RP Engine sends at join: in `AsyncPlayerPreLoginEvent`,
+or in `PlayerJoinEvent` at `LOWEST`, as above. A later mark works too, but the
+player is sent the bundle first and then has it taken off. A mark lasts until
+the player leaves; `unmarkExternal` sends them RP Engine's own again.
+Keeping your pack current is yours to do: rebuild it on `PackBuildEvent`.
+`%rpengine_holds_<bundle>%` still answers only for packs RP Engine sent. Since
+0.2.90.
+
 ## Events
 
 All in `ai.resourcepack.engine.api.event`, and cancellable unless the row says
@@ -1808,6 +1861,7 @@ otherwise.
 | `ContentLoadEvent` | Content finished loading and the packs are built. A reload replaces every definition, so rebuild anything you cached here. `cause()` is `STARTUP` or a reload. Not cancellable |
 | `PackSendEvent` | A pack went out to a player. `pack()` is the built pack; its `uuid()` is the id `PlayerResourcePackStatusEvent` reports on 1.20.3+, so you can match the two. Not cancellable |
 | `RigPackBuildEvent` | The emote rigs were rebaked: on every content load, or alone for a new skin or `reloadRigs()`. `alone()` and `separate()` say which. Not cancellable |
+| `PackBuildEvent` | The packs were built again (startup, a reload, the rigs alone, a shader re-merge) and are on disk, before players online are sent them. `packs()` is `Packs.all()`; `changed()` the bundles whose SHA-1 moved. Not cancellable |
 | `ItemUseEvent` | A custom item was right- or left-clicked. `block()` and `face()` say what was clicked (null in the air). Cancelling cancels the vanilla use too |
 | `ModelPlaceEvent` | A model is about to be put down. `getPlayer()` is who is placing it, `model()` the model's id, `block()` the block it goes in (its location), and `stack()` the stack in their hand, so you can read what the item carries (null when a plugin placed it). Parking a vehicle from its item and hatching a custom mob from its egg fire it too, with the vehicle's or mob's id as `model()` |
 | `ModelPlacedEvent` | A model was put down and is standing. `placement()` is its handle and `stack()` the stack it came from, so you can copy what the item carries onto the placement's `data()`. Not cancellable |
