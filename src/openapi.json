@@ -4884,6 +4884,7 @@
                     "type": "integer",
                     "description": "Sprite edge length. 2D only.",
                     "enum": [
+                      14,
                       16,
                       32,
                       64,
