@@ -1005,6 +1005,11 @@ as `group.vip` for a LuckPerms group). Choose whether **all** or **any one** mus
 hold. Players they don't hold for see empty space, and the piece's clicks are
 gone too.
 
+A PlaceholderAPI placeholder whose name has a dash or a colon in it, such as
+`redprotect_region_flag_value_allow-home`, is kept with its percent signs:
+`{%redprotect_region_flag_value_allow-home%}`. Compare it with exactly what the
+placeholder gives, `&` colour codes included: a value of `&atrue` is not `true`.
+
 **Show something else instead…** puts a stand-in in its place for everyone else,
 such as a grayed **VIP only** button. The two share a **Show one of** box
 (up to six pieces), and each player sees the first whose condition holds.
