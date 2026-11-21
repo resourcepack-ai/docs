@@ -1384,10 +1384,10 @@
                         },
                         "palette": {
                           "type": "array",
-                          "description": "The pack's colours. A visual generation paints in these.",
+                          "description": "The pack's colors. A visual generation paints in these.",
                           "items": {
                             "type": "object",
-                            "description": "One colour.",
+                            "description": "One color.",
                             "properties": {
                               "hex": {
                                 "type": "string",
@@ -1508,7 +1508,7 @@
       "post": {
         "operationId": "setStyleGuide",
         "summary": "Change a pack's style guide",
-        "description": "Changes the fields you send and keeps the rest, so `{\"palette\": [\"#3b3a36\", \"#6b5a43\"]}` sets the colours and leaves the notes alone. Only the pack's owner may change it: it decides what every collaborator's generations look like.\n\nA reference picture is a `referenceId` from `POST /packs/{pack}/references`; `imageIds` is the whole list, in order, so send the old ids to keep them. A picture taken out of the list is deleted. The pictures are read once, behind the answer, and what is read off them steers generations from then on.",
+        "description": "Changes the fields you send and keeps the rest, so `{\"palette\": [\"#3b3a36\", \"#6b5a43\"]}` sets the colors and leaves the notes alone. Only the pack's owner may change it: it decides what every collaborator's generations look like.\n\nA reference picture is a `referenceId` from `POST /packs/{pack}/references`; `imageIds` is the whole list, in order, so send the old ids to keep them. A picture taken out of the list is deleted. The pictures are read once, behind the answer, and what is read off them steers generations from then on.",
         "tags": [
           "Packs"
         ],
@@ -1538,10 +1538,10 @@
                         },
                         "palette": {
                           "type": "array",
-                          "description": "The pack's colours. A visual generation paints in these.",
+                          "description": "The pack's colors. A visual generation paints in these.",
                           "items": {
                             "type": "object",
-                            "description": "One colour.",
+                            "description": "One color.",
                             "properties": {
                               "hex": {
                                 "type": "string",
@@ -1677,7 +1677,7 @@
                     "maxItems": 64,
                     "items": {
                       "type": "string",
-                      "description": "A colour, `#rrggbb`."
+                      "description": "A color, `#rrggbb`."
                     }
                   },
                   "paletteName": {
@@ -1975,7 +1975,7 @@
       "post": {
         "operationId": "uploadAsset",
         "summary": "Upload an asset",
-        "description": "Puts a file you already have into the pack — the Studio's Upload button. Free: nothing is generated, though it counts toward the pack's asset limit.\n\nWhat `file` must be, and what else each `type` needs:\n\n- `block` — a PNG. `target` is the vanilla block texture it replaces (`stone_bricks`); without one it is a texture of your own, named `name`. Square, 1–256px, or send `size` to resample. `faceSlot` with a `target` replaces one face only.\n- `item` — a PNG. `target` is the vanilla item it replaces (`diamond_sword`); without one it is a custom item named `name`. Square, 8–256px, or send `size`.\n- `icon` — a PNG of any shape, drawn as a chat glyph. Needs `name`. Kept at its own size when 32px tall or less, else 16 tall; `height` overrides it (1–256).\n- `model` — Minecraft block model JSON, or a Blockbench `.bbmodel` (its embedded textures come in with it).\n- `sound` — Ogg Vorbis, or WAV (converted to Ogg). Needs `event`. MP3 is not accepted; convert it first.\n- `gui` — a 256x256 PNG sheet. `target` is the vanilla screen it reskins (`generic_54`, `furnace`…).\n- `hud` — a PNG of the HUD sheet, at its own size.\n- `armor` — a PNG armour sheet (64x32). `target` is the vanilla set (`iron`, `diamond`…).\n- `armor3d` — a Blockbench `.bbmodel` of a 3D armour set.\n\nImages must be PNG. Answers 201 with the asset ready — there is no job to wait for.",
+        "description": "Puts a file you already have into the pack — the Studio's Upload button. Free: nothing is generated, though it counts toward the pack's asset limit.\n\nWhat `file` must be, and what else each `type` needs:\n\n- `block` — a PNG. `target` is the vanilla block texture it replaces (`stone_bricks`); without one it is a texture of your own, named `name`. Square, 1–256px, or send `size` to resample. `faceSlot` with a `target` replaces one face only.\n- `item` — a PNG. `target` is the vanilla item it replaces (`diamond_sword`); without one it is a custom item named `name`. Square, 8–256px, or send `size`.\n- `icon` — a PNG of any shape, drawn as a chat glyph. Needs `name`. Kept at its own size when 32px tall or less, else 16 tall; `height` overrides it (1–256).\n- `model` — Minecraft block model JSON, or a Blockbench `.bbmodel` (its embedded textures come in with it).\n- `sound` — Ogg Vorbis, or WAV (converted to Ogg). Needs `event`. MP3 is not accepted; convert it first.\n- `gui` — a 256x256 PNG sheet. `target` is the vanilla screen it reskins (`generic_54`, `furnace`…).\n- `hud` — a PNG of the HUD sheet, at its own size.\n- `armor` — a PNG armor sheet (64x32). `target` is the vanilla set (`iron`, `diamond`…).\n- `armor3d` — a Blockbench `.bbmodel` of a 3D armor set.\n\nImages must be PNG. Answers 201 with the asset ready — there is no job to wait for.",
         "tags": [
           "Uploading"
         ],
@@ -2156,7 +2156,7 @@
                   },
                   "target": {
                     "type": "string",
-                    "description": "The vanilla thing it replaces: a block texture, an item, a GUI screen id or an armour set."
+                    "description": "The vanilla thing it replaces: a block texture, an item, a GUI screen id or an armor set."
                   },
                   "size": {
                     "type": "integer",
@@ -2449,7 +2449,7 @@
       "post": {
         "operationId": "giveAsset",
         "summary": "Give an asset in game",
-        "description": "What an asset's **Give in game** button does, for whoever is linked to receive a push (see `POST /packs/{pack}/push`): a model, block or item lands in their hands, a GUI or dialog opens, an icon or text effect is said in chat, a sound plays, an armour set is worn, a VFX is cast and a 3D shader object is placed in front of them. The command is built from the pack, never sent: you name the asset, by the `kind` and `name` the asset listing reports (`shader/<id>` and `vfx/<id>` for those two).\n\nThe pack itself has to be on their client for most of these to look right, so push it first. Free.",
+        "description": "What an asset's **Give in game** button does, for whoever is linked to receive a push (see `POST /packs/{pack}/push`): a model, block or item lands in their hands, a GUI or dialog opens, an icon or text effect is said in chat, a sound plays, an armor set is worn, a VFX is cast and a 3D shader object is placed in front of them. The command is built from the pack, never sent: you name the asset, by the `kind` and `name` the asset listing reports (`shader/<id>` and `vfx/<id>` for those two).\n\nThe pack itself has to be on their client for most of these to look right, so push it first. Free.",
         "tags": [
           "Packs"
         ],
@@ -4540,7 +4540,7 @@
       "post": {
         "operationId": "generateMob",
         "summary": "Generate a mob",
-        "description": "Produces a `mob`: a creature RP Engine spawns in the world, which walks, fights and makes its own sounds. The Studio's **Mob** answer on the Add asset dialog, in one run: the creature is built as a 3D model, then set up (behaviour, health, hitbox) and animated for each state, and given its own ambient, hurt, death and attack sounds.\n\n**This is the slowest one**: a model build and a rig, typically ten to twenty minutes. One charge for all of it, refunded in full if the build fails; a rig that fails after the build is not charged, and leaves the mob without animations (animate it again with `POST /packs/{pack}/mobs/{model}/rig`).\n\nChange its behaviour, drops and abilities in the Studio's mob editor.",
+        "description": "Produces a `mob`: a creature RP Engine spawns in the world, which walks, fights and makes its own sounds. The Studio's **Mob** answer on the Add asset dialog, in one run: the creature is built as a 3D model, then set up (behavior, health, hitbox) and animated for each state, and given its own ambient, hurt, death and attack sounds.\n\n**This is the slowest one**: a model build and a rig, typically ten to twenty minutes. One charge for all of it, refunded in full if the build fails; a rig that fails after the build is not charged, and leaves the mob without animations (animate it again with `POST /packs/{pack}/mobs/{model}/rig`).\n\nChange its behavior, drops and abilities in the Studio's mob editor.",
         "tags": [
           "Generating"
         ],
@@ -4894,7 +4894,7 @@
                   },
                   "outline": {
                     "type": "boolean",
-                    "description": "`false` draws a 16x16 sprite with no black outline, edged in its own colours like vanilla's items, filling the canvas and centred. Ignored at other sizes and for 3D.",
+                    "description": "`false` draws a 16x16 sprite with no black outline, edged in its own colors like vanilla's items, filling the canvas and centered. Ignored at other sizes and for 3D.",
                     "default": true
                   },
                   "name": {
@@ -5247,7 +5247,7 @@
                         },
                         "color": {
                           "type": "string",
-                          "description": "Hex colour, `#rrggbb`.",
+                          "description": "Hex color, `#rrggbb`.",
                           "example": "#3f3f3f"
                         },
                         "scale": {
@@ -5329,7 +5329,7 @@
       "post": {
         "operationId": "generateHud",
         "summary": "Generate the in-game HUD",
-        "description": "Produces a `hud` — a type of its own beside the GUIs: where a GUI is one screen a plugin opens, this is the overlay drawn over the world while nothing is open at all: hearts, hunger, armor, air, the hotbar, the crosshair, the experience bar and the boss bar.\n\n**There are two sets**, chosen with `hud`. `hud` is what you read while you play; `overlays` is the full-screen layers — the vignette at the edge of your vision, the Nausea swirl. A pack may hold one of each.\n\n**One asset, many files.** A HUD set replaces up to 82 real vanilla sprites and is edited afterwards as a single sheet. A pack may hold ONE of each set; a second is refused with `conflict`.\n\n**Image spend is per GROUP, not per file.** Each group costs one image call, and everything in it is derived from that one drawing — one heart becomes all forty-four of vanilla's moods, fills and damage flashes, and one strip becomes the experience bar and every boss bar colour. Pass `groups` to narrow what you pay for.\n\n**The crosshair is picked, not described.** Vanilla’s stays readable by inverting whatever is behind it, which a resource pack cannot do, so this one is drawn light with a dark outline from a fixed set of shapes. `crosshair` chooses which; a prompt would not survive contact with a snowfield.",
+        "description": "Produces a `hud` — a type of its own beside the GUIs: where a GUI is one screen a plugin opens, this is the overlay drawn over the world while nothing is open at all: hearts, hunger, armor, air, the hotbar, the crosshair, the experience bar and the boss bar.\n\n**There are two sets**, chosen with `hud`. `hud` is what you read while you play; `overlays` is the full-screen layers — the vignette at the edge of your vision, the Nausea swirl. A pack may hold one of each.\n\n**One asset, many files.** A HUD set replaces up to 82 real vanilla sprites and is edited afterwards as a single sheet. A pack may hold ONE of each set; a second is refused with `conflict`.\n\n**Image spend is per GROUP, not per file.** Each group costs one image call, and everything in it is derived from that one drawing — one heart becomes all forty-four of vanilla's moods, fills and damage flashes, and one strip becomes the experience bar and every boss bar color. Pass `groups` to narrow what you pay for.\n\n**The crosshair is picked, not described.** Vanilla’s stays readable by inverting whatever is behind it, which a resource pack cannot do, so this one is drawn light with a dark outline from a fixed set of shapes. `crosshair` chooses which; a prompt would not survive contact with a snowfield.",
         "tags": [
           "Generating"
         ],
@@ -5553,7 +5553,7 @@
       "post": {
         "operationId": "generateEscapeMenu",
         "summary": "Generate the Escape menu",
-        "description": "Produces the pack's **Escape menu**: a `gui` that reskins the pause screen. A director plans every button from the prompt (its colour, its art and, unless you set them, its words), and the result is one asset: the shared button face with its hover and disabled states, and each button's own label art. Because the button face is shared, the title screen, the options screens and the world list wear the same look.\n\n**A pack holds one.** A second is refused with `conflict`; change the existing one in the Studio instead.\n\n**The heading** over the buttons is either words (`heading`), taken exactly as written, or a picture drawn from a description (`logoPrompt`). Send one or neither: with neither, the director chooses the words.\n\nThe whole menu is one charge, settled by what its run used.",
+        "description": "Produces the pack's **Escape menu**: a `gui` that reskins the pause screen. A director plans every button from the prompt (its color, its art and, unless you set them, its words), and the result is one asset: the shared button face with its hover and disabled states, and each button's own label art. Because the button face is shared, the title screen, the options screens and the world list wear the same look.\n\n**A pack holds one.** A second is refused with `conflict`; change the existing one in the Studio instead.\n\n**The heading** over the buttons is either words (`heading`), taken exactly as written, or a picture drawn from a description (`logoPrompt`). Send one or neither: with neither, the director chooses the words.\n\nThe whole menu is one charge, settled by what its run used.",
         "tags": [
           "Generating"
         ],
@@ -5727,7 +5727,7 @@
       "post": {
         "operationId": "generateDialog",
         "summary": "Generate a dialog",
-        "description": "Produces a `dialog` — the screen a server opens over the game with `/dialog` (Minecraft 1.21.6 and newer), drawn in Minecraft's own look: themed cards, switches, sliders and real clickable buttons.\n\n**The prompt is the whole brief.** A director decides what the screen is — its title, its sections, its controls and its colours (from the pack's style guide when it has one) — and the layout is drawn from that. `layout` narrows which kind of screen it builds; omit it and the director picks.\n\nOne flat charge per dialog, refunded in full if it fails. Edit the result afterwards in the Studio's dialog editor.",
+        "description": "Produces a `dialog` — the screen a server opens over the game with `/dialog` (Minecraft 1.21.6 and newer), drawn in Minecraft's own look: themed cards, switches, sliders and real clickable buttons.\n\n**The prompt is the whole brief.** A director decides what the screen is — its title, its sections, its controls and its colors (from the pack's style guide when it has one) — and the layout is drawn from that. `layout` narrows which kind of screen it builds; omit it and the director picks.\n\nOne flat charge per dialog, refunded in full if it fails. Edit the result afterwards in the Studio's dialog editor.",
         "tags": [
           "Generating"
         ],
@@ -5866,7 +5866,7 @@
                   "prompt": {
                     "type": "string",
                     "description": "What the screen is for, and what it should feel like.",
-                    "example": "a server settings menu for a cosy farming server"
+                    "example": "a server settings menu for a cozy farming server"
                   },
                   "name": {
                     "type": "string",
@@ -6116,7 +6116,7 @@
       "post": {
         "operationId": "generateRankTag",
         "summary": "Generate a rank tag",
-        "description": "Produces a `rank_tag` — the small badge in front of a player's name, used as a LuckPerms (or any permissions plugin's) prefix or suffix: a rounded background with the rank written on it. In the pack it is a font glyph, exactly like an `icon`.\n\n**Name the rank and a colour**: `a red OWNER tag`. A colour in the prompt is the background unless the prompt says it belongs to the letters or the outline. The shape, face, frame, font, icon and animation are chosen for you and drawn pixel-exact; every one of them can be changed afterwards in the Studio's rank tag editor, where a single rank also keeps the designer's other takes. Ask for an animation (`a red OWNER tag with a shine`) and the tag plays in game through the pack's text shader.\n\n**Name several ranks for a matching set** (`VIP, MVP and MVP+ tags`): one call makes a tag per rank, and `tags` lists every one made, first to last, with `id` and `job` the first's.\n\nOne flat charge per call, refunded in full if it fails. Answers when the tags are made.",
+        "description": "Produces a `rank_tag` — the small badge in front of a player's name, used as a LuckPerms (or any permissions plugin's) prefix or suffix: a rounded background with the rank written on it. In the pack it is a font glyph, exactly like an `icon`.\n\n**Name the rank and a color**: `a red OWNER tag`. A color in the prompt is the background unless the prompt says it belongs to the letters or the outline. The shape, face, frame, font, icon and animation are chosen for you and drawn pixel-exact; every one of them can be changed afterwards in the Studio's rank tag editor, where a single rank also keeps the designer's other takes. Ask for an animation (`a red OWNER tag with a shine`) and the tag plays in game through the pack's text shader.\n\n**Name several ranks for a matching set** (`VIP, MVP and MVP+ tags`): one call makes a tag per rank, and `tags` lists every one made, first to last, with `id` and `job` the first's.\n\nOne flat charge per call, refunded in full if it fails. Answers when the tags are made.",
         "tags": [
           "Generating"
         ],
@@ -6279,8 +6279,8 @@
     "/packs/{pack}/armor": {
       "post": {
         "operationId": "generateArmor",
-        "summary": "Generate an armour set",
-        "description": "Produces armour, in one of two shapes:\n\n- `2d` (the default): an `armor` set, a reskin of one of the vanilla sets, named by `setId`. The game's own silhouette is kept, so the face and forearms stay bare. A pack holds one of each vanilla set; a second answers `conflict`.\n- `3d`: an `armor3d` set, new geometry worn on the player, which needs RP Engine on the server to be seen. A pack may hold as many as it likes; `name` labels it and `setId` is ignored.\n\nTakes a few minutes. One charge, refunded in full if it fails. A `2d` set can be changed afterwards with `editAsset`; a `3d` set is changed in the Studio.",
+        "summary": "Generate an armor set",
+        "description": "Produces armor, in one of two shapes:\n\n- `2d` (the default): an `armor` set, a reskin of one of the vanilla sets, named by `setId`. The game's own silhouette is kept, so the face and forearms stay bare. A pack holds one of each vanilla set; a second answers `conflict`.\n- `3d`: an `armor3d` set, new geometry worn on the player, which needs RP Engine on the server to be seen. A pack may hold as many as it likes; `name` labels it and `setId` is ignored.\n\nTakes a few minutes. One charge, refunded in full if it fails. A `2d` set can be changed afterwards with `editAsset`; a `3d` set is changed in the Studio.",
         "tags": [
           "Generating"
         ],
@@ -6418,7 +6418,7 @@
                 "properties": {
                   "prompt": {
                     "type": "string",
-                    "description": "What the armour looks like.",
+                    "description": "What the armor looks like.",
                     "example": "rusted knight's plate with a red sash"
                   },
                   "shape": {
@@ -6689,7 +6689,7 @@
       "post": {
         "operationId": "generateShader",
         "summary": "Generate a shader",
-        "description": "Produces a shader object, of one of three dimensions:\n\n- `2d`: a HUD overlay drawn over the screen (a health bar with the player's head, a compass, a frame). It is laid out while the request waits, so the answer is already `ready` and its `job` needs no polling. Up to 500 characters.\n- `3d`: an object drawn in the world by a shader (a glowing portal, a hologram). Takes minutes. Up to 800 characters.\n- `text`: a text effect, a look any text in its colour wears in game (fire, a rainbow wave, a glitch). Takes minutes, and its `type` is `text_effect`. Up to 600 characters.\n\nEach dimension is billed at its own price, the one the Studio quotes, and refunded in full if it fails. Download one with `GET /packs/{pack}/assets/shader/{id}`: its JSON, or a picture of a 3D object or a text effect. A 3D object or a text effect is changed with `POST /packs/{pack}/assets/shader/{id}/edit`; a HUD overlay is changed in the Studio's shader editor.",
+        "description": "Produces a shader object, of one of three dimensions:\n\n- `2d`: a HUD overlay drawn over the screen (a health bar with the player's head, a compass, a frame). It is laid out while the request waits, so the answer is already `ready` and its `job` needs no polling. Up to 500 characters.\n- `3d`: an object drawn in the world by a shader (a glowing portal, a hologram). Takes minutes. Up to 800 characters.\n- `text`: a text effect, a look any text in its color wears in game (fire, a rainbow wave, a glitch). Takes minutes, and its `type` is `text_effect`. Up to 600 characters.\n\nEach dimension is billed at its own price, the one the Studio quotes, and refunded in full if it fails. Download one with `GET /packs/{pack}/assets/shader/{id}`: its JSON, or a picture of a 3D object or a text effect. A 3D object or a text effect is changed with `POST /packs/{pack}/assets/shader/{id}/edit`; a HUD overlay is changed in the Studio's shader editor.",
         "tags": [
           "Generating"
         ],
@@ -7681,7 +7681,7 @@
       "post": {
         "operationId": "updateModel",
         "summary": "Change a model's settings",
-        "description": "The model page's **Placed behaviour** (`stopsVehicles`: whether a placed copy blocks a vehicle driving into it, on by default) and **Convert to vehicle** or **Convert to mob** (`type`). Converting back to a `model` keeps the vehicle's or mob's settings, so converting again brings them back; a vehicle's own settings are `set_vehicle`, and a new mob is animated with `rig_mob`. A 3D item's geometry can't be converted. Free.",
+        "description": "The model page's **Placed behavior** (`stopsVehicles`: whether a placed copy blocks a vehicle driving into it, on by default) and **Convert to vehicle** or **Convert to mob** (`type`). Converting back to a `model` keeps the vehicle's or mob's settings, so converting again brings them back; a vehicle's own settings are `set_vehicle`, and a new mob is animated with `rig_mob`. A 3D item's geometry can't be converted. Free.",
         "tags": [
           "Packs"
         ],
@@ -9124,7 +9124,7 @@
                           },
                           "spec": {
                             "type": "object",
-                            "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colours), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
+                            "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colors), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
                           }
                         },
                         "required": [
@@ -9214,7 +9214,7 @@
       "post": {
         "operationId": "generateTooltip",
         "summary": "Design a Tooltip",
-        "description": "Designs a Tooltip from words: the box shown when a player hovers an item. Describe the item or the button it is for and how it should feel (`a legendary fire sword for a level 50 boss drop`, `the VIP rank in a store menu`); the designer picks the blocks (a header, big numbers, stats, a coloured band, an ability card, a bar, sockets), the words, the numbers and the colours, then looks at it drawn and fixes what it sees. Finishes before it answers, so there is no job to wait on; see it with `get_tooltip_picture`. A pack holds up to 200. 5 credits, flat, given back if it fails.",
+        "description": "Designs a Tooltip from words: the box shown when a player hovers an item. Describe the item or the button it is for and how it should feel (`a legendary fire sword for a level 50 boss drop`, `the VIP rank in a store menu`); the designer picks the blocks (a header, big numbers, stats, a colored band, an ability card, a bar, sockets), the words, the numbers and the colors, then looks at it drawn and fixes what it sees. Finishes before it answers, so there is no job to wait on; see it with `get_tooltip_picture`. A pack holds up to 200. 5 credits, flat, given back if it fails.",
         "tags": [
           "Generating"
         ],
@@ -9276,7 +9276,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colours), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
+                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colors), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -9454,7 +9454,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colours), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
+                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colors), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -9615,7 +9615,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colours), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
+                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colors), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -9737,7 +9737,7 @@
       "get": {
         "operationId": "getTooltipPicture",
         "summary": "See a Tooltip",
-        "description": "The Tooltip drawn exactly as the game draws it, three times size over an inventory's grey (a still, where it moves). A PNG; an image over MCP.",
+        "description": "The Tooltip drawn exactly as the game draws it, three times size over an inventory's gray (a still, where it moves). A PNG; an image over MCP.",
         "tags": [
           "Packs"
         ],
@@ -9809,7 +9809,7 @@
       "post": {
         "operationId": "editTooltip",
         "summary": "Change a Tooltip with AI",
-        "description": "The editor's Edit with AI: changes what `instruction` asks (`icy blue colours`, `add a lifesteal stat`) and keeps the rest, then saves it before answering. 5 credits, flat, given back if it fails.",
+        "description": "The editor's Edit with AI: changes what `instruction` asks (`icy blue colors`, `add a lifesteal stat`) and keeps the rest, then saves it before answering. 5 credits, flat, given back if it fails.",
         "tags": [
           "Generating"
         ],
@@ -9871,7 +9871,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colours), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
+                          "description": "The design itself: `width`, `padding`, `gap`, `frame`, `theme` (colors), `item`, `glint` and `blocks`, top to bottom. Send it back changed to `update_tooltip`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -10090,7 +10090,7 @@
       "get": {
         "operationId": "listLoadingScreens",
         "summary": "List a pack's Loading Screens",
-        "description": "A pack's Loading Screens: the screen Minecraft shows while resource packs load (normally red, with the Mojang Studios logo and a white bar), restyled with its own colours, logo, a moving effect and its own bar. A pack shows one, the `active` one. Players see it on Minecraft 26.1 to 26.3 whenever the game reloads resources with the pack already loaded (F3+T, the Resource Packs menu, a server sending a second pack); a join switches to it part-way, and the game's very first screen is always Minecraft's. Filed on the Shaders tab.",
+        "description": "A pack's Loading Screens: the screen Minecraft shows while resource packs load (normally red, with the Mojang Studios logo and a white bar), restyled with its own colors, logo, a moving effect and its own bar. A pack shows one, the `active` one. Players see it on Minecraft 26.1 to 26.3 whenever the game reloads resources with the pack already loaded (F3+T, the Resource Packs menu, a server sending a second pack); a join switches to it part-way, and the game's very first screen is always Minecraft's. Filed on the Shaders tab.",
         "tags": [
           "Packs"
         ],
@@ -10189,7 +10189,7 @@
                           },
                           "spec": {
                             "type": "object",
-                            "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                            "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first color), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colors), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colors are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                           }
                         },
                         "required": [
@@ -10284,7 +10284,7 @@
       "post": {
         "operationId": "generateLoadingScreen",
         "summary": "Design a Loading Screen",
-        "description": "Designs a Loading Screen from words: the screen Minecraft shows while packs load. Describe the server or the mood (`a spooky Halloween server called Grimfall`, `snow for a winter event`); the designer picks the background, the effect, the title and subtitle, the colours and the bar. It does not draw a picture logo: write one into the `spec` with `update_loading_screen` if you want one. Finishes before it answers, so there is no job to wait on, and becomes the one the pack shows. A pack holds up to 24. 5 credits, flat, given back if it fails. For a free one, `create_loading_screen`.",
+        "description": "Designs a Loading Screen from words: the screen Minecraft shows while packs load. Describe the server or the mood (`a spooky Halloween server called Grimfall`, `snow for a winter event`); the designer picks the background, the effect, the title and subtitle, the colors and the bar. It does not draw a picture logo: write one into the `spec` with `update_loading_screen` if you want one. Finishes before it answers, so there is no job to wait on, and becomes the one the pack shows. A pack holds up to 24. 5 credits, flat, given back if it fails. For a free one, `create_loading_screen`.",
         "tags": [
           "Generating"
         ],
@@ -10384,7 +10384,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                          "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first color), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colors), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colors are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -10484,7 +10484,7 @@
                     "type": "string",
                     "description": "What it is for, and how it should look.",
                     "maxLength": 600,
-                    "example": "a cosy marshmallow-themed server called Puffland, soft pinks"
+                    "example": "a cozy marshmallow-themed server called Puffland, soft pinks"
                   },
                   "name": {
                     "type": "string",
@@ -10605,7 +10605,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                          "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first color), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colors), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colors are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -10718,7 +10718,7 @@
                   },
                   "spec": {
                     "type": "object",
-                    "description": "The design, instead of (or over) a preset. The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it."
+                    "description": "The design, instead of (or over) a preset. The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first color), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colors), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colors are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it."
                   },
                   "name": {
                     "type": "string",
@@ -10836,7 +10836,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                          "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first color), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colors), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colors are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -11040,7 +11040,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                          "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first color), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colors), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colors are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -11271,7 +11271,7 @@
                         },
                         "spec": {
                           "type": "object",
-                          "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first colour), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colours), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colours are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
+                          "description": "The design, as layers: `background` {`style` solid|vertical|radial|diagonal|stripes|checker|sunburst, `color` (the whole screen, the top, the edges, or a pattern's first color), `color2` (the bottom, the middle, or the pattern's second), `glow` (a soft light behind the logo, or null)}; `effects`, up to 3 drawn in order: [{`id`, `kind` snow|rain|stars|embers|sparkles|fireflies|bubbles|petals|hearts|confetti, `color`, `color2` (confetti's second paper, a bubble's glint, a petal's or heart's shading), `amount` 0-1}]; `logo` {`kind` custom|vanilla|none, `layers`, up to 6 stacked top to bottom: [{`id`, `type` text, `text` (up to 30 characters), `font` rank (chunky capitals, the default)|classic (square capitals)|tiny (has lower case), `size` 1-4 (a title is 2, a line under it 1), `color`, `color2` (the bottom of a gradient, or null), `outline` (a 1px line round the letters, or null), `bold`, `spacing` 0-3} or {`id`, `type` picture, `picture`: {`width` up to 128, `height` up to 64, `palette` (up to 12 colors), `pixels` (one hex digit per pixel, row by row: `0` transparent, `1`-`c` the palette)}}, two pictures at most], `shadow` (a shadow under every layer, or null), `shadowDepth` 1-4 (1 is a drop shadow, more a solid 3D edge), `layout` stacked|side (the pictures beside the words), `offset` -1 to 1 (the logo up or down from the middle), `scale` 0.5-2}; `bar` {`style` solid|gradient|stripes|segments, `frame`, `fill`, `fill2` (the gradient's far end or the second stripe), `track` (the empty part, or null)}. Colors are `#rrggbb`. Send `effects` or `logo.layers` whole: a layer keeps its `id` from `get_loading_screen`. The older single `effect` and a logo's `title`, `subtitle` and `picture` fields are still accepted and change the first effect, the first two words layers and the first picture. Anything left out keeps its value (on a new screen, the default look); anything out of range is brought back into it. Send it back changed to `update_loading_screen`. Absent from the listing."
                         }
                       },
                       "required": [
@@ -11382,7 +11382,7 @@
                     "type": "string",
                     "description": "What to change.",
                     "maxLength": 300,
-                    "example": "warmer colours and embers instead of snow"
+                    "example": "warmer colors and embers instead of snow"
                   }
                 },
                 "required": [
@@ -11576,8 +11576,8 @@
     "/packs/{pack}/armor3d/{set}/file": {
       "get": {
         "operationId": "getArmor3dFile",
-        "summary": "Download a 3D armour set",
-        "description": "A 3D armour set as its page offers it: `bbmodel` (the default) is the whole set as a Blockbench project, to open and change there; `atlas` is the PNG every piece is painted on (an image over MCP). `{set}` is the set's `name` from the asset listing, with or without its `armor3d:`.",
+        "summary": "Download a 3D armor set",
+        "description": "A 3D armor set as its page offers it: `bbmodel` (the default) is the whole set as a Blockbench project, to open and change there; `atlas` is the PNG every piece is painted on (an image over MCP). `{set}` is the set's `name` from the asset listing, with or without its `armor3d:`.",
         "tags": [
           "Packs"
         ],
@@ -12093,7 +12093,7 @@
       "post": {
         "operationId": "rigMob",
         "summary": "Animate a mob",
-        "description": "The mob editor's **Animate with AI**: one run that writes an animation for each of the mob's states (walking, attacking, being hurt, dying...) and wires them into its settings. A mob made with `POST /packs/{pack}/mobs` is already animated; this is for one whose animations you want redone, or a model you made a mob with `POST /packs/{pack}/models/{model}` (`type: mob`).\n\nTakes a minute or two. Charged as an animation, refunded if it fails. One AI edit at a time per model: a second answers `already_running`.\n\n`plan: true` also sets the mob up first from its geometry (its behaviour, health, which way it faces), which is the quickest way from a plain model to something that walks.",
+        "description": "The mob editor's **Animate with AI**: one run that writes an animation for each of the mob's states (walking, attacking, being hurt, dying...) and wires them into its settings. A mob made with `POST /packs/{pack}/mobs` is already animated; this is for one whose animations you want redone, or a model you made a mob with `POST /packs/{pack}/models/{model}` (`type: mob`).\n\nTakes a minute or two. Charged as an animation, refunded if it fails. One AI edit at a time per model: a second answers `already_running`.\n\n`plan: true` also sets the mob up first from its geometry (its behavior, health, which way it faces), which is the quickest way from a plain model to something that walks.",
         "tags": [
           "Generating"
         ],
@@ -12254,7 +12254,7 @@
       "post": {
         "operationId": "editAsset",
         "summary": "Edit an asset with AI",
-        "description": "Changes an asset that already exists from a sentence (`make it rustier`, `slower`, `add a second ring`), exactly as the Studio's **Edit with AI** button does, and at the same price. The asset is changed in place.\n\n**Which assets.** A stored asset is addressed by the `kind` and `name` the asset listing reports, as for a download: a `block` (`texture/mossy_bricks`), an `item` sprite (`texture/item:rusted_key`), a `model`, `item3d` or `vehicle` (`model/lantern`) and an `icon` (`font/heart`). The rest are addressed by their own kind and the `id` their generation returned: a 3D shader object or a text effect (`shader/<id>`), a VFX (`vfx/<id>`) and an emote (`emote/<id>`). A `hud`, a chest `gui` and a 2D `armor` set (`texture/hud:<id>`, `texture/gui:<id>`, `texture/armor:<set>`) are redrawn whole by their generator with the change as its brief, so they take minutes and cost what a generation does. A Dialog-style `dialog` (`texture/gui:<id>`) and a `rank_tag` (`font/<id>`) are changed while you wait and saved before this answers, so their job is already `ready`. Sounds, 3D armour and HUD shaders are changed in the Studio, and are refused here.\n\n**Modes.** `mode` picks which of the asset's AI buttons this is. `edit` (the default) is Edit with AI. `animate` is a model's **Animate with AI**: it writes or changes the model's bones and animations from a description of the motion (`the lid creaks open and shut`); set `addParts` to let it add the cubes the motion needs, and `fromAnimation` to start where one of its animations ends. An emote's edit already is its Animate with AI, so either word works there. On a dialog, `page` says which page (the first by default) and `scope` whether to rewrite only the part that changes per page (`part`, the default when the page has one) or the whole page.\n\n**Limits.** An emote's instruction is up to 500 characters, a VFX's or a text effect's 600, a 3D object's 800. One edit at a time per asset: a second while the first runs answers `already_running`.\n\nThe `job` polls like a generation's. When it is `ready`, the asset holds the change: download it again to see it.",
+        "description": "Changes an asset that already exists from a sentence (`make it rustier`, `slower`, `add a second ring`), exactly as the Studio's **Edit with AI** button does, and at the same price. The asset is changed in place.\n\n**Which assets.** A stored asset is addressed by the `kind` and `name` the asset listing reports, as for a download: a `block` (`texture/mossy_bricks`), an `item` sprite (`texture/item:rusted_key`), a `model`, `item3d` or `vehicle` (`model/lantern`) and an `icon` (`font/heart`). The rest are addressed by their own kind and the `id` their generation returned: a 3D shader object or a text effect (`shader/<id>`), a VFX (`vfx/<id>`) and an emote (`emote/<id>`). A `hud`, a chest `gui` and a 2D `armor` set (`texture/hud:<id>`, `texture/gui:<id>`, `texture/armor:<set>`) are redrawn whole by their generator with the change as its brief, so they take minutes and cost what a generation does. A Dialog-style `dialog` (`texture/gui:<id>`) and a `rank_tag` (`font/<id>`) are changed while you wait and saved before this answers, so their job is already `ready`. Sounds, 3D armor and HUD shaders are changed in the Studio, and are refused here.\n\n**Modes.** `mode` picks which of the asset's AI buttons this is. `edit` (the default) is Edit with AI. `animate` is a model's **Animate with AI**: it writes or changes the model's bones and animations from a description of the motion (`the lid creaks open and shut`); set `addParts` to let it add the cubes the motion needs, and `fromAnimation` to start where one of its animations ends. An emote's edit already is its Animate with AI, so either word works there. On a dialog, `page` says which page (the first by default) and `scope` whether to rewrite only the part that changes per page (`part`, the default when the page has one) or the whole page.\n\n**Limits.** An emote's instruction is up to 500 characters, a VFX's or a text effect's 600, a 3D object's 800. One edit at a time per asset: a second while the first runs answers `already_running`.\n\nThe `job` polls like a generation's. When it is `ready`, the asset holds the change: download it again to see it.",
         "tags": [
           "Generating"
         ],
@@ -12457,7 +12457,7 @@
       "post": {
         "operationId": "renameAsset",
         "summary": "Rename an asset",
-        "description": "Changes an asset's label, the name the Studio shows for it. Addressed exactly as a download is, by the listing's `kind` and `name`. Its id never changes, so nothing that points at it breaks.\n\nA block and a 2D armour set are named by the vanilla thing they reskin, and a part (`block_face`, `model_texture`, `item_model`) by the asset it belongs to, so neither has a label to change. Free.",
+        "description": "Changes an asset's label, the name the Studio shows for it. Addressed exactly as a download is, by the listing's `kind` and `name`. Its id never changes, so nothing that points at it breaks.\n\nA block and a 2D armor set are named by the vanilla thing they reskin, and a part (`block_face`, `model_texture`, `item_model`) by the asset it belongs to, so neither has a label to change. Free.",
         "tags": [
           "Packs"
         ],
@@ -12932,7 +12932,7 @@
       "post": {
         "operationId": "duplicateAsset",
         "summary": "Duplicate an asset",
-        "description": "A copy of an asset in the same pack, under a new name: the right-click menu's **Duplicate**. Free, but it is a new asset, so it counts against the pack's asset limit. Something a pack can hold only one of (a vanilla block or item reskin, a HUD, an armour set) answers `skipped` with the reason rather than an error.",
+        "description": "A copy of an asset in the same pack, under a new name: the right-click menu's **Duplicate**. Free, but it is a new asset, so it counts against the pack's asset limit. Something a pack can hold only one of (a vanilla block or item reskin, a HUD, an armor set) answers `skipped` with the reason rather than an error.",
         "tags": [
           "Packs"
         ],
@@ -15096,7 +15096,7 @@
                   },
                   "color": {
                     "type": "string",
-                    "description": "Its colour.",
+                    "description": "Its color.",
                     "enum": [
                       "gray",
                       "red",
@@ -15132,7 +15132,7 @@
       "post": {
         "operationId": "updateFolder",
         "summary": "Change a folder",
-        "description": "Renames, recolours, or changes the tab a folder holds; assets of another tab are taken out of it and listed in `ejected`.",
+        "description": "Renames, recolors, or changes the tab a folder holds; assets of another tab are taken out of it and listed in `ejected`.",
         "tags": [
           "Packs"
         ],
@@ -15262,7 +15262,7 @@
                   },
                   "color": {
                     "type": "string",
-                    "description": "Its colour.",
+                    "description": "Its color.",
                     "enum": [
                       "gray",
                       "red",
@@ -17948,7 +17948,7 @@
       "get": {
         "operationId": "listGallery",
         "summary": "Browse the gallery",
-        "description": "What people have published to the public gallery at resourcepack.ai/gallery, searched and filtered as the Studio's Gallery page does: by `type`, by words in the title or description, by tag. `hot` (the default) favours what is good right now, `popular` what has been used most, `new` what is newest. Copy one into a pack with `POST /gallery/{item}/copy`. Free.",
+        "description": "What people have published to the public gallery at resourcepack.ai/gallery, searched and filtered as the Studio's Gallery page does: by `type`, by words in the title or description, by tag. `hot` (the default) favors what is good right now, `popular` what has been used most, `new` what is newest. Copy one into a pack with `POST /gallery/{item}/copy`. Free.",
         "tags": [
           "Gallery"
         ],
@@ -18533,11 +18533,11 @@
                   "skins": [
                     {
                       "id": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84",
-                      "name": "a knight in red armour",
+                      "name": "a knight in red armor",
                       "variant": "wide",
                       "status": "ready",
                       "error": null,
-                      "prompt": "a knight in red armour",
+                      "prompt": "a knight in red armor",
                       "createdAt": "2026-10-23T09:12:00.000Z",
                       "updatedAt": "2026-10-23T09:12:00.000Z",
                       "job": "skin:5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84"
@@ -18657,11 +18657,11 @@
                 },
                 "example": {
                   "id": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84",
-                  "name": "a knight in red armour",
+                  "name": "a knight in red armor",
                   "variant": "wide",
                   "status": "generating",
                   "error": null,
-                  "prompt": "a knight in red armour",
+                  "prompt": "a knight in red armor",
                   "createdAt": "2026-10-23T09:12:00.000Z",
                   "updatedAt": "2026-10-23T09:12:00.000Z",
                   "job": "skin:5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84"
@@ -18714,7 +18714,7 @@
                     "type": "string",
                     "description": "Who it is.",
                     "maxLength": 400,
-                    "example": "a knight in red armour with a scarred face"
+                    "example": "a knight in red armor with a scarred face"
                   },
                   "name": {
                     "type": "string",
@@ -18815,11 +18815,11 @@
                 },
                 "example": {
                   "id": "5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84",
-                  "name": "a knight in red armour",
+                  "name": "a knight in red armor",
                   "variant": "wide",
                   "status": "ready",
                   "error": null,
-                  "prompt": "a knight in red armour",
+                  "prompt": "a knight in red armor",
                   "createdAt": "2026-10-23T09:12:00.000Z",
                   "updatedAt": "2026-10-23T09:12:00.000Z",
                   "job": "skin:5b0c2f9e-8d4a-4c1e-9f3b-2a7d6e1c0b84"
@@ -19701,7 +19701,7 @@
                           },
                           "form": {
                             "type": "string",
-                            "description": "Which canonicalisation produced the hash. Absent on `no_record`.",
+                            "description": "Which canonicalization produced the hash. Absent on `no_record`.",
                             "enum": [
                               "png",
                               "json",
@@ -19854,7 +19854,7 @@
                           },
                           "form": {
                             "type": "string",
-                            "description": "Which canonicalisation produced it.",
+                            "description": "Which canonicalization produced it.",
                             "enum": [
                               "png",
                               "json",
