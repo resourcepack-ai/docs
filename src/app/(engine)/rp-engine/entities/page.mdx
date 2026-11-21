@@ -73,7 +73,7 @@ Needs RP Engine 0.2.51 or newer; [skills](/rp-engine/skills), the options under
 |---|---|---|
 | `type` | required | The vanilla mob it is underneath. See [Choosing the type](#choosing-the-type) |
 | `model` | none | The model it wears: a file in `assets/models/`, or an item id |
-| `name` | none | Its name, with `&` colour codes. See [Its name](#its-name) |
+| `name` | none | Its name, with `&` color codes. See [Its name](#its-name) |
 | `name-visible` | shown when named | `true` always shows the name, `false` only when somebody looks at the mob |
 | `health` | the mob's own | Max health, 1 to 1024 |
 | `damage` | the mob's own | Attack damage |
@@ -99,14 +99,14 @@ Needs RP Engine 0.2.51 or newer; [skills](/rp-engine/skills), the options under
 | `spawning` | none | It appears on its own. See [Spawning on its own](#spawning-on-its-own) |
 | `skills` | none | What it does besides walk and bite. See [Skills](/rp-engine/skills) |
 
-The fields that came over from MythicMobs (armour, equipment, levels,
+The fields that came over from MythicMobs (armor, equipment, levels,
 factions, templates and the rest) are under [More options](#more-options).
 
 ## Choosing the type
 
 Pick `type` for how it should behave, not how it should look. A zombie hunts
 players, a polar bear wanders and fights back, an iron golem guards, a pig
-wanders and runs when hit, an allay drifts, a phantom swoops, an armour stand
+wanders and runs when hit, an allay drifts, a phantom swoops, an armor stand
 does nothing at all. It must be a mob that can be spawned.
 
 It is genuinely that mob: every other plugin sees it as one, and `tags` are how
@@ -219,7 +219,7 @@ model's top, or at its `tag_name` bone if it has one, whatever the type and
 `name-visible: true` shows it always. `false` shows it only to a player whose
 crosshair is on the mob, within reach and not through a block, as vanilla does
 for a named mob. Unlike a vanilla name it is not drawn through walls, so it
-never vanishes inside the model. `&` colours and `<fx:...>`
+never vanishes inside the model. `&` colors and `<fx:...>`
 [Text Effects](/rp-engine/text-effects) work in it.
 
 A name can carry live values, kept current until a name tag renames the mob:
@@ -364,7 +364,7 @@ knight:
 | Field | Default | What it does |
 |---|---|---|
 | `extends` | none | Builds this mob on another. See [Templates](#templates) |
-| `armor` | the mob's own | Armour points, 0 to 30 |
+| `armor` | the mob's own | Armor points, 0 to 30 |
 | `armor-toughness` | the mob's own | 0 to 20 |
 | `equipment` | none | What it wears and holds. See [Equipment](#equipment) |
 | `damage-modifiers` | none | Multiplies each kind of damage it takes. 0 makes it immune |
@@ -423,8 +423,8 @@ rolled on top of `drops:`). MythicMobs' list form (`- iron_helmet HEAD`) and
 its slot numbers work too.
 
 **A mob wearing a model shows none of it**, since the model is what is seen. On
-1.21.4 and newer each piece is worn but drawn as nothing, so its armour and
-damage still count. Older servers cannot hide a worn item, so there a modelled
+1.21.4 and newer each piece is worn but drawn as nothing, so its armor and
+damage still count. Older servers cannot hide a worn item, so there a modeled
 mob wears nothing (`armor:` still works). A mob with no model wears its
 equipment as any mob does.
 
@@ -434,7 +434,7 @@ equipment as any mob does.
 cause names (`FIRE`, `FIRE_TICK`, `LAVA`, `PROJECTILE`, `ENTITY_ATTACK`,
 `FALL`, `BLOCK_EXPLOSION` and the rest) or MythicMobs' groups `MELEE`,
 `EXPLOSION` and `BURNING`. 0 makes it immune to that cause: the hit is
-cancelled, so it doesn't even flinch. The list form `- FIRE 0` works too.
+canceled, so it doesn't even flinch. The list form `- FIRE 0` works too.
 
 ### Levels
 
@@ -447,7 +447,7 @@ skill's `summon{level=3}` says which. Each level above the first adds
 |---|---|
 | `health` | Max health |
 | `damage` | Attack damage |
-| `armor` | Armour points |
+| `armor` | Armor points |
 | `speed` | The `speed:` multiplier |
 | `power` | The multiplier its [skills'](/rp-engine/skills) amounts take: `power: 0.25` makes a level 3 mob's skills hit 1.5 times as hard |
 

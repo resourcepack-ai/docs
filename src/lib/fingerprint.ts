@@ -137,7 +137,7 @@ async function decodePng(bytes: Uint8Array): Promise<DecodedPng> {
 
   if (interlace !== 0) throw new Error("Interlaced PNGs are not supported");
   const channels = CHANNELS_BY_COLOR_TYPE[colorType];
-  if (!channels) throw new Error(`Unsupported PNG colour type: ${colorType}`);
+  if (!channels) throw new Error(`Unsupported PNG color type: ${colorType}`);
   if (![1, 2, 4, 8, 16].includes(bitDepth)) throw new Error(`Unsupported PNG bit depth: ${bitDepth}`);
   if (bitDepth < 8 && colorType !== 0 && colorType !== 3) throw new Error("Sub-byte depth needs grayscale or palette");
   if (colorType === 3 && !palette) throw new Error("Palette PNG missing PLTE");

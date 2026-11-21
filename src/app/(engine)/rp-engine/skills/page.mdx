@@ -294,7 +294,7 @@ place; one that needs a place uses an entity's.
 | `particles{p;a;hs;vs;speed;y;color;size;material}` (`effect:particles`) | Particles. MythicMobs' and old Bukkit names (`reddust`, `largeexplode`, `mobspell`) work on every version |
 | `particlering{particle;radius;points}`, `particlesphere`, `particleline` | Shapes of particles |
 | `sound{s;v;p}` (`effect:sound`) | A pack's [sound](/rp-engine/sounds) (`zoo:roar`) or a vanilla one, by key or old constant name |
-| `message{m}`, `actionmessage{m}`, `sendtitle{title;subtitle;fadein;stay;fadeout}`, `speak{m;r}` | Text to player targets, with `&` colours and `<fx:...>` [Text Effects](/rp-engine/text-effects) |
+| `message{m}`, `actionmessage{m}`, `sendtitle{title;subtitle;fadein;stay;fadeout}`, `speak{m;r}` | Text to player targets, with `&` colors and `<fx:...>` [Text Effects](/rp-engine/text-effects) |
 | `barcreate{name;display;color;style;value}`, `barset{...}`, `barremove{name}` | A boss bar of its own, shown to the player targets (no targeter: players within 32). `value` is 0 to 1, a percentage, or a placeholder. Removed when the mob goes |
 
 ### Everything else
@@ -594,11 +594,11 @@ next to the lurker keeps you poisoned and walking away lets it run out.
 
 Each of these is a load warning naming the line:
 
-- variable maths and scopes other than the mob's (`variableMath`, `skill.`
+- variable math and scopes other than the mob's (`variableMath`, `skill.`
   and `global.` variables);
 - `switch` and `foreach`;
 - custom AI goals (`AIGoalSelectors`): pick [`type`](/rp-engine/entities#choosing-the-type)
-  for behaviour, and move it with the mechanics;
+  for behavior, and move it with the mechanics;
 - `disguise` and `onHear`;
 - composite conditions (`a && b`): write two conditions instead;
 - riding a mob as a player (`mountmodel`);

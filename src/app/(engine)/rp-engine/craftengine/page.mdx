@@ -59,7 +59,7 @@ A pack's `subpacks:` are chosen the same way.
 |---|---|
 | item | an [item](/rp-engine/items) |
 | `material`, `lore`, `unbreakable`, `enchantments` | the same |
-| `item_name`, `custom_name` | `name`, with MiniMessage colours turned into colour codes and `<lang:...>` keys resolved to their English text |
+| `item_name`, `custom_name` | `name`, with MiniMessage colors turned into color codes and `<lang:...>` keys resolved to their English text |
 | `attribute_modifiers` | [`attributes`](/rp-engine/stats) |
 | `food`, `max_damage`, `max_stack_size`, `enchantment_glint_override` | `food`, `durability`, `stack`, `glow` |
 | `model:` as a path, a `minecraft:model` definition or an inline model | `model`, read from the pack's `resourcepack/` where it already is |
@@ -75,7 +75,7 @@ A pack's `subpacks:` are chosen the same way.
 | block `states`: `properties`, `appearances` and `variants` | [`properties`](/rp-engine/blocks#turning-and-states) and `appearances`, state for state, each appearance's turn (`x`, `y`, `uvlock`) kept |
 | an appearance with several models | `random:`, a look picked as each is placed |
 | a block whose appearances are a stair's, slab's, door's or trapdoor's `state:` (`stairs_block`, `slab_block`, `door_block`, `trapdoor_block`) | that [`shape:`](/rp-engine/blocks#stairs-slabs-doors-and-other-shapes), on **the same vanilla block** the pack took, so the ones already in a world stay. A grate or bulb hidden in a vanilla grate or bulb does the same |
-| `auto_state` `tripwire`, `sugar_cane`, `sapling` and the like, or a plant behaviour | a [plant](/rp-engine/blocks#plants), on cut tripwire |
+| `auto_state` `tripwire`, `sugar_cane`, `sapling` and the like, or a plant behavior | a [plant](/rp-engine/blocks#plants), on cut tripwire |
 | `leaves_block`, or a leaves `auto_state` | `shape: grate`, the see-through full block |
 | `crop_block`, `stem_block`, `sapling_block` (`grow_speed`, `light_requirement`, bone meal) | [`grow:`](/rp-engine/blocks#growing) on `age` or `stage` |
 | `falling_block` · `strippable_block` (`stripped`) · `simple_storage_block` · `lamp_block` | `falls` · `strip` · `storage` · `shape: bulb` |
@@ -121,7 +121,7 @@ dropped silently.
   still those blocks after the move.
 </Callout>
 
-**Block behaviours with no equivalent**, each named with its reason: fences
+**Block behaviors with no equivalent**, each named with its reason: fences
 and fence gates, buttons and pressure plates (RP Engine has none of those to
 take over), spreading like grass, drawers and items shown on a block
 (`storage:` is the nearest), seats on blocks (a [placed model's

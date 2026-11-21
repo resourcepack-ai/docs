@@ -9,7 +9,7 @@ export const metadata = {
 A Transition covers a player's whole screen, holds while your server
 changes something underneath (a teleport, a match starting, a world loading),
 then uncovers it again. It's what streamers call a stinger transition, put between two scenes,
-in Minecraft: a slanted dash of colour, a cartoon iris, paint splats that
+in Minecraft: a slanted dash of color, a cartoon iris, paint splats that
 join up, blocks that pop in.
 
 Your pack draws it, smoothly at the player's frame rate and sharp at any
@@ -75,11 +75,11 @@ or press Space to pause.
 - **Going out**: the same way it came in, or another way. It either **carries
   on** (a wipe leaves out of the far side) or **goes back** (an iris opens
   again).
-- **Layers**: up to four colours that chase each other in, the classic
+- **Layers**: up to four colors that chase each other in, the classic
   transition look. The front one covers the screen while it holds, and any layer
   can have a moving pattern: stripes, checker, dots, a grid, a gradient or
   noise.
-- **Edge line**: a band of colour along the front layer's moving edge.
+- **Edge line**: a band of color along the front layer's moving edge.
 - **Logo**: words in chunky pixel capitals with an outline (up to three
   lines), or a picture you
   upload (pixel art works best, up to 256 by 256 pixels), shown while the
@@ -122,7 +122,7 @@ uncovers it, so you can do something in between.
 ## How it works
 
 A transition is a title. Its one character, drawn in one of the transition's own
-colours, is stretched over the whole screen by your pack's text shader, which
+colors, is stretched over the whole screen by your pack's text shader, which
 draws the transition there. The game fades a title in and out smoothly between
 ticks, and the shader reads how far through the fade it is, which is why it
 plays at the player's full frame rate even though the server only works in

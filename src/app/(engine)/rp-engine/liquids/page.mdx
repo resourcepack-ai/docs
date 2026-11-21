@@ -8,7 +8,7 @@ export const metadata = {
 
 A custom liquid is a pool of acid, a healing spring or a cursed lake: an area
 of water or lava that does something to whoever is in it, and can have its own
-colour.
+color.
 
 <Callout type="warning" title="What a custom liquid is">
   Minecraft only has water and lava, and a server can't add a third fluid. A
@@ -32,7 +32,7 @@ acid:
 | Field | Default | What it does |
 |---|---|---|
 | `base` | `water` | `water` or `lava`: what it really is |
-| `color` | none (the water keeps its colour) | Hex or a dye name. See [Colour](#colour) |
+| `color` | none (the water keeps its color) | Hex or a dye name. See [Color](#color) |
 | `effect` | none | A potion effect given while inside |
 | `amplifier` | 0 | The effect's level, counting from 0 (0 to 255) |
 | `damage` | 0 | Damage per second, on top of anything lava already does (0 to 100) |
@@ -78,26 +78,26 @@ pool.
 It's a real source block, so it flows. Water that runs outside the pool is
 plain water, so dig a basin as you would for vanilla water.
 
-## Colour
+## Color
 
 `color:` takes `"#3FBF4A"`, `0x3FBF4A`, `3FBF4A`, or a dye name such as `RED`,
 `LIGHT_BLUE` or `LIME`. Quote the `#` form: without quotes, YAML treats it as a
-comment and you get no colour and no error.
+comment and you get no color and no error.
 
 The game can only tint water by biome, so RP Engine paints the pool with a biome
 of its own. That has some side effects:
 
-- **A new colour needs a server restart.** The biomes go into a datapack in your
+- **A new color needs a server restart.** The biomes go into a datapack in your
   world folder (`datapacks/rpengine_liquids`) and the server only reads them at
-  startup. Until then the pool works but is the wrong colour.
+  startup. Until then the pool works but is the wrong color.
 - **It bleeds a little.** Biomes are stored in 4×4×4 cells, so there's a rim of
   tinted water round the pool.
-- **Small pools look paler.** The game blends biome colours over several blocks,
-  so a pool under about 8 blocks across never reaches its full colour, and
+- **Small pools look paler.** The game blends biome colors over several blocks,
+  so a pool under about 8 blocks across never reaches its full color, and
   players with a high biome blend setting see even less.
-- **Colours come out muted**, because the tint is multiplied by vanilla's dark
+- **Colors come out muted**, because the tint is multiplied by vanilla's dark
   water texture. A pack can ship a paler `water_still` texture to get brighter
-  colours, but that makes every ocean on the server pale too, so RP Engine won't
+  colors, but that makes every ocean on the server pale too, so RP Engine won't
   do it for you.
 
 Clearing a pool paints it back to the biome that was there when it was made

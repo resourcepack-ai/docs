@@ -114,7 +114,7 @@ export const nav: NavGroup[] = [
       {
         title: "Mobs",
         href: "/mobs",
-        description: "A model turned into a creature: behaviour, health, animations, sounds and drops.",
+        description: "A model turned into a creature: behavior, health, animations, sounds and drops.",
         keywords: ["mob", "entity", "creature", "monster", "boss", "spawn", "spawn egg", "drops", "loot", "hostile", "convert"],
       },
       {
@@ -296,7 +296,7 @@ export const nav: NavGroup[] = [
         {
         title: "Loading Screens",
         href: "/loading-screens",
-        description: "Restyle the screen Minecraft shows while your pack loads: colours, logo, effects, bar.",
+        description: "Restyle the screen Minecraft shows while your pack loads: colors, logo, effects, bar.",
         keywords: ["loading screen", "mojang", "splash", "logo", "progress bar", "reload", "f3+t", "background"],
       },
       {
@@ -477,7 +477,7 @@ export const nav: NavGroup[] = [
         keywords: ["byok", "own key", "openai", "api key", "key", "3d models", "orchestrator", "billing"],
       },
       {
-        title: "Affiliate programme",
+        title: "Affiliate program",
         href: "/affiliate",
         description: "Share a link, earn a share of what everyone who joins through it spends.",
         keywords: [

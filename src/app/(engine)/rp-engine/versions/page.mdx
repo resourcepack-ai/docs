@@ -41,18 +41,18 @@ These do not change with your version at all:
 | Feature | Needs | On an older server |
 |---|---|---|
 | Stacking several packs on a player | 1.20.3 | One pack at a time; a player due more than one bundle gets only the last. A server using a single bundle is unaffected. |
-| Smithing templates and armour trims | 1.20 | Smithing recipes use the old two-slot table, so their template is not asked for, and trim recipes do nothing. |
+| Smithing templates and armor trims | 1.20 | Smithing recipes use the old two-slot table, so their template is not asked for, and trim recipes do nothing. |
 | Models that glide when they move | 1.20.2 | A model that moves (a walking emote, a bound model following its entity) jumps between positions instead of gliding. Models that stay put are identical. |
 | Per-item stack size, food and durability | 1.20.5 | Those options are reported at load and not applied. The item is otherwise itself. |
-| Any item wearable as armour | 1.21.2 | Only materials that are already armour can be worn. |
-| Per-item armour artwork | 1.21.4 | Worn armour draws with vanilla artwork. |
+| Any item wearable as armor | 1.21.2 | Only materials that are already armor can be worn. |
+| Per-item armor artwork | 1.21.4 | Worn armor draws with vanilla artwork. |
 | Item models addressed by name | 1.21.4 | Items are addressed by an allocated number instead. See below. |
 | Emotes from the content folder | 1.21.4 | No emote rigs (the copy of a player's skin an emote plays on) are built from players' skins, so a hand-written emote plays on nobody and `/emote` says so. Emotes pushed from Studio still work. |
 | VFX | 1.21.4 | VFX do not play, and `/rp cast` says so. |
 | 3D objects | 1.21.4 | [3D objects](/rp-engine/objects) are not available. |
 | HUD text without a drop shadow | 1.21.4 | A HUD run written with `"shadow": false` still draws the game's drop shadow under it. Everything else about the HUD is unchanged. |
 | Studio Tooltips on items | 1.21.5 | An item's [`tooltip:`](/rp-engine/items#a-designed-tooltip) is ignored and the item shows its own name and lore. |
-| Tinted water and lava | 1.21.6 | Liquids keep their vanilla colour. Everything else about a custom liquid works. |
+| Tinted water and lava | 1.21.6 | Liquids keep their vanilla color. Everything else about a custom liquid works. |
 | Dialogs | 1.21.6 | Dialogs do not open: the game has no dialog screen before this. A [screen](/rp-engine/screens) is the older way to do the same job, and works everywhere. |
 | Player heads in dialogs | 1.21.9 | A Studio dialog's live player head is left empty. The rest of the dialog, its live words included, works as usual. |
 | Driving vehicles with the movement keys | Paper 1.21.4 | Vehicles are driven with the mouse: the vehicle steers toward where you look, right-click speeds up a notch, left-click slows down or reverses. The driver cannot look around while driving. Spigot always gets these mouse controls, whatever its version. |

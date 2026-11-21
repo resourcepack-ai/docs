@@ -71,7 +71,7 @@ because the game fades the action bar out after a couple of seconds.
 | `slot` | `action_bar` | `action_bar` (above the hotbar) or `boss_bar` (top of the screen) |
 | `height` | 64 | How tall the picture is drawn, in pixels, 1 to 256. The width follows from the PNG's shape |
 | `ascent` | 32 | How far the picture is raised above the slot's line of text. Bigger is higher. It can't be more than `height`: a bigger value is lowered to `height`, with a warning |
-| `offset` | 0 | Moves the picture left, 0 to 512. The slot's line is centred, so the picture moves by half this many pixels: `offset: 40` moves it 20 to the left. At 0 it is centred |
+| `offset` | 0 | Moves the picture left, 0 to 512. The slot's line is centered, so the picture moves by half this many pixels: `offset: 40` moves it 20 to the left. At 0 it is centered |
 
 **Several overlays at once:** a player can be shown several, but only one is
 drawn at a time, whichever slot it's in: the one shown most recently. So an

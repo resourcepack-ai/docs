@@ -42,10 +42,10 @@ A path with no namespace in a Nexo item or glyph (`model: furniture/chair`) mean
 means that namespace's folder.
 
 There is nothing to turn on and no `pack.yml` (RP Engine's own pack file) is
-needed: each file is recognised by its shape. So one of their files also works
+needed: each file is recognized by its shape. So one of their files also works
 **inside** a pack of yours, which is handy for moving over a piece at a time.
 Both plugins' current formats are read (Nexo 1.28, Oraxen 1.220), and Oraxen's
-older capitalised sections too.
+older capitalized sections too.
 
 ## What comes across
 
@@ -63,7 +63,7 @@ older capitalised sections too.
 | `max_stack_size` | `stack` |
 | `food` | `food` |
 | `enchantment_glint_override: true` | `glow` |
-| custom armour: `equippable`, `trim_pattern`, or an id like `ruby_helmet` | [`armor`](/rp-engine/armour), worn with the set's layer art |
+| custom armor: `equippable`, `trim_pattern`, or an id like `ruby_helmet` | [`armor`](/rp-engine/armour), worn with the set's layer art |
 | `Pack.CustomArmor` layers, or `ruby_armor_layer_1.png` / `_2.png` anywhere in the pack | the layer art, found the way the plugins find it |
 | `equippable` on the head with no `asset_id` / `model` | `hat`, so a 3D helmet shows its model |
 | `ItemFlags` | [`flags`](/rp-engine/stats) |
@@ -133,7 +133,7 @@ What a block does comes across where there is an equivalent:
 | `log_strip` (`stripped_log`, `drop`) | `strip` |
 | `light` | `light` |
 
-## Click commands and other behaviour
+## Click commands and other behavior
 
 A click action's `[console]`, `[player]`, `[message]`, `[actionbar]` and
 `[sound]` (with its volume and pitch) become `console`, `run`, `message`,
@@ -164,7 +164,7 @@ dropped silently.
   hundreds of blocks will not fit as it stands.
 </Callout>
 
-**Furniture behaviour with nothing to land on**: beds (the game only lets a
+**Furniture behavior with nothing to land on**: beds (the game only lets a
 player sleep in a bed block, and wakes anybody lying anywhere else), a
 `connectable` that picks its look from one item model reading the connection
 off the item (name the five looks and it joins), text floating over a piece, a `modelengine_id` (import the `.bbmodel` and give the item that
@@ -182,7 +182,7 @@ Model Engine and CustomModelData states, `conditions` and `next_after` are not
 carried. Of `evolution`, `light_boost`, `rain_boost` and bone meal are
 dropped: a piece here grows at one steady chance.
 
-**Block behaviour with nothing to land on**: of a string block, `sapling`
+**Block behavior with nothing to land on**: of a string block, `sapling`
 (growing into a pasted schematic; [`grow:`](/rp-engine/blocks#growing) steps a
 plant through its own stages instead), `is_tall` (only the lower block is the
 plant), `random_place`, `stackable`, `requires_supporting` and
@@ -212,13 +212,13 @@ put those in `overrides/sounds.json` instead.
 
 ## Good to know
 
-**Armour art stays where it is.** Both plugins pair a set's art with its
+**Armor art stays where it is.** Both plugins pair a set's art with its
 pieces by name, `ruby_armor_layer_1.png` for the body and boots and `_2.png` for
 the leggings of the `ruby` set, and RP Engine does the same: it finds those files
 wherever they are in the pack and serves them on
 [vanilla's equipment path](/rp-engine/armour). Component, trim and the old
-shader armour all use the same art, so all three come across. It is drawn from
-Minecraft 1.21.4; on an older server the armour is still worn but with vanilla
+shader armor all use the same art, so all three come across. It is drawn from
+Minecraft 1.21.4; on an older server the armor is still worn but with vanilla
 art, and the build names every piece that will. An elytra's wings are not
 carried, because RP Engine draws worn items on a player's body only.
 
@@ -226,6 +226,6 @@ carried, because RP Engine draws worn items on a player's body only.
 and Nexo and Oraxen keep them elsewhere. The load warns with the exact path.
 
 **Seats are worth a look in game.** Oraxen measures a seat from where its
-armour stand stands and RP Engine from where the rider sits, so Oraxen seats
+armor stand stands and RP Engine from where the rider sits, so Oraxen seats
 are converted and the load says so. Nexo seats come across as written. Either
 way, if a chair sits people slightly wrong, adjust its `seat:`.

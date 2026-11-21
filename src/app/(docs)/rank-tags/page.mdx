@@ -23,13 +23,13 @@ animation) and you change it by changing those.
 Open a pack, press **Add asset**, pick **Icon** and set **Type** to
 **Rank Tag**. Then either:
 
-- **Generate**: name the rank and a colour. It costs 5 credits and takes a few
+- **Generate**: name the rank and a color. It costs 5 credits and takes a few
   seconds. One rank comes back as **three takes** to choose from. Name several
   ranks (`VIP, MVP and MVP+`) and you get a **matching set**, one tag each, for
   the same price.
-- **Blank**: type the words, pick a colour and a look.
+- **Blank**: type the words, pick a color and a look.
 
-Either way it opens in the editor. A colour in the prompt is the
+Either way it opens in the editor. A color in the prompt is the
 **background**, unless you say it belongs to the letters or the outline:
 
 | Prompt | What you get |
@@ -41,7 +41,7 @@ Either way it opens in the editor. A colour in the prompt is the
 | `an OWNER tag with a shine` | A tag with a shine sweeping across it |
 | `VIP, MVP and MVP+ tags` | A set of three that belong together |
 
-With no colour you get the one servers usually give that rank: red for owner,
+With no color you get the one servers usually give that rank: red for owner,
 blue for moderator, gold for VIP and so on.
 
 ## Putting it on a rank
@@ -63,13 +63,13 @@ blue for moderator, gold for VIP and so on.
 Any chat, tab-list or nametag plugin that shows LuckPerms prefixes then shows
 the tag, because it's just a character in the prefix.
 
-- **Keep the `&f`.** The game tints a character with the colour of the text
-  it's in, so a tag after `&c` comes out red. White leaves its colours alone.
-- **An animated tag uses a hex colour instead of `&f`**, like `&#fcfcf4`. That
-  exact colour is what makes it play, so keep it. If your chat plugin writes hex
+- **Keep the `&f`.** The game tints a character with the color of the text
+  it's in, so a tag after `&c` comes out red. White leaves its colors alone.
+- **An animated tag uses a hex color instead of `&f`**, like `&#fcfcf4`. That
+  exact color is what makes it play, so keep it. If your chat plugin writes hex
   another way, use the same six digits in its spelling (`<#fcfcf4>`,
   `{#fcfcf4}`). Keep the `&r` after the tag too, or many chat plugins draw the
-  player's name in that colour and it shimmers along with the tag.
+  player's name in that color and it shimmers along with the tag.
 - **Priority** (the `100`) decides which prefix wins when a player is in
   several groups. Give higher ranks higher numbers.
 
@@ -88,20 +88,20 @@ it away.
 
 | Section | What it sets |
 | --- | --- |
-| **Text** | The words, the **Font**, the letter **Colour**, the **Effect** (Shadow, Drop, Outline, Outline + shadow or None) and its colour, and a separate colour for the `+` in VIP+ |
-| **Background** | The **Shape** (Square, Rounded, Pill, Chamfer, Ribbon, Slant or Arrow), the **Surface** (Flat, Gradient, Gloss, Panel, Stripes, Dither, Sparkle, or **Block**: a real block texture tinted toward the tag's colour) and the **Fill** colour. Block offers iron, gold, diamond and emerald, and the **+** opens every block in the game |
-| **Frame** | The **Outline** (automatic, your own colour, or none), an **Inner rim**, a **3D edge** that stands the tag up off the line, and the **Padding** round the words |
+| **Text** | The words, the **Font**, the letter **Color**, the **Effect** (Shadow, Drop, Outline, Outline + shadow or None) and its color, and a separate color for the `+` in VIP+ |
+| **Background** | The **Shape** (Square, Rounded, Pill, Chamfer, Ribbon, Slant or Arrow), the **Surface** (Flat, Gradient, Gloss, Panel, Stripes, Dither, Sparkle, or **Block**: a real block texture tinted toward the tag's color) and the **Fill** color. Block offers iron, gold, diamond and emerald, and the **+** opens every block in the game |
+| **Frame** | The **Outline** (automatic, your own color, or none), an **Inner rim**, a **3D edge** that stands the tag up off the line, and the **Padding** round the words |
 | **Icon** | Over a hundred built-in icons, or one of your pack's own [Icons](/icons) under **This pack**, placed **In a cell**, **Beside** the words or on a **Tile** of its own. If you redraw a pack icon later, the section offers **Use the new one** |
-| **Motion** | None, **Glint** (a shine sweeps across), **Rainbow** (the letters cycle colours), **Twinkle** (sparkles come and go), **Pulse** (the frame breathes), or **Custom**: your own, on a timeline (see [Your own animation](#your-own-animation)). Point at one to preview it. **Animate with AI** under them makes a custom one from a sentence |
+| **Motion** | None, **Glint** (a shine sweeps across), **Rainbow** (the letters cycle colors), **Twinkle** (sparkles come and go), **Pulse** (the frame breathes), or **Custom**: your own, on a timeline (see [Your own animation](#your-own-animation)). Point at one to preview it. **Animate with AI** under them makes a custom one from a sentence |
 | **In game** | **Size**, from a quarter to 4x, and **Height**, to sit it higher or lower on the line |
 
-Click any colour swatch for the picker. A **+** beside the letter colour fades
-the words to a second colour; one beside the fill makes a gradient of up to
-three. Colours you don't set follow the background (the outline, the shadow and
+Click any color swatch for the picker. A **+** beside the letter color fades
+the words to a second color; one beside the fill makes a gradient of up to
+three. Colors you don't set follow the background (the outline, the shadow and
 the icon's cell are darker shades of it) until you set them yourself.
 
 **Looks**, at the bottom of the panel, restyles the whole tag in one click and
-keeps the words, colour and icon: Classic, Rounded, Pill, Button, Panel, Frame,
+keeps the words, color and icon: Classic, Rounded, Pill, Button, Panel, Frame,
 Chamfer, Ribbon, Slant, Stripes, Gold block and Obsidian.
 
 **Fonts.** **Block** is chunky 5-pixel capitals, the classic rank look, one
@@ -147,7 +147,7 @@ tag at an in-between size becomes the next whole size up.
 An animated tag plays in chat, the tab list, the scoreboard, and anywhere a
 menu or the HUD draws text. A built-in animation loops sixteen frames at ten
 a second, as the editor plays it. The animation is played by a text shader that comes inside
-your pack, so players need the pack and the command's colour (see above). Over
+your pack, so players need the pack and the command's color (see above). Over
 a player's head it shows its first frame.
 
 ## Your own animation
@@ -160,8 +160,8 @@ Each row is a **track**: one effect on one part of the tag.
 
 | Effect | What it does | Its value |
 | --- | --- | --- |
-| **Tint** | Washes the part toward a colour: white to flash, black to dim, red to burn | How far, 0 to 100% |
-| **Hue** | Turns the colours round the colour wheel. **Spread** turns each column a little more, which makes a rainbow across. White, black and greys have no hue to turn, so tint white words first (Start from Rainbow does) | How far, 0 to 360° |
+| **Tint** | Washes the part toward a color: white to flash, black to dim, red to burn | How far, 0 to 100% |
+| **Hue** | Turns the colors round the color wheel. **Spread** turns each column a little more, which makes a rainbow across. White, black and grays have no hue to turn, so tint white words first (Start from Rainbow does) | How far, 0 to 360° |
 | **Shine** | A diagonal band of light with soft edges, as wide as you set | Where the band is, 0% (before the tag) to 100% (past it) |
 | **Sparkle** | Stars, somewhere new every frame | How many |
 | **Wave** | Bands of light running along the tag, as long and as fast as you set (a negative speed runs them backwards) | How bright, 0 to 100% |
@@ -203,7 +203,7 @@ star, and every one of them is then yours to change:
 
 | Setting | What it does |
 | --- | --- |
-| **Colours** | Up to three. **Solid** is how much of a colour is laid on: lower it for glassy rain. With more than one colour, each particle is one of them, or goes through them all as it ages (a flame: pale yellow, then orange, then red) |
+| **Colors** | Up to three. **Solid** is how much of a color is laid on: lower it for glassy rain. With more than one color, each particle is one of them, or goes through them all as it ages (a flame: pale yellow, then orange, then red) |
 | **Shape** | Dot, Glow, Plus, Square, Dash, Ring, Flake or Heart, or **Your own**: a five by five grid where a click makes a pixel solid, a second click soft, a third clears it |
 | **Across** and **Down** | How far it moves each frame. Down below zero rises. Both at none, it stays put and twinkles |
 | **Trail** | Pixels fading behind it: two or three for rain, five for a shooting star |
@@ -225,7 +225,7 @@ the brush: drag on it to paint the frame the playhead is on, and use the right
 mouse button (or the **Eraser**) to take paint off. The arrow keys step a frame
 at a time, and a mark under the track shows which frames have paint.
 
-Its **Palette** holds up to fifteen colours, each with its own **Solid**. Under
+Its **Palette** holds up to fifteen colors, each with its own **Solid**. Under
 **Frame**, **Last frame** copies the paint of the frame before, **Every frame**
 puts this frame's paint on all of them, **Clear** takes it off, and the arrows
 under **Move it** nudge it a pixel at a time, so a moving thing is a copy and a
@@ -240,7 +240,7 @@ and only on the part the track is **On**.
 Painted frames and particles are stored inside the tag's own picture, and a tag
 only has so much room for them: the smaller and narrower the tag, the more.
 **Paint** beside **Start from** shows how much is taken. Past 100% the tag
-won't save. To get room back, paint fewer frames or use fewer colours, turn the
+won't save. To get room back, paint fewer frames or use fewer colors, turn the
 particles down or shorten their trails, make the loop shorter, or make the tag
 narrower or smaller under **In game**.
 
@@ -264,11 +264,11 @@ lands is an unsaved edit, like Edit with AI: **Save** keeps it and undo takes
 it back. The versions stay in the popover until you leave the editor.
 
 A custom animation plays in game the same way the built-in ones do, in its own
-colour, which the tag's page puts in the command. A pack can hold sixteen tags
+color, which the tag's page puts in the command. A pack can hold sixteen tags
 with their own animation.
 
-If you run your pack through an image optimiser, tell it to leave font
-textures exactly as they are (no colour reduction, and no changes to
+If you run your pack through an image optimizer, tell it to leave font
+textures exactly as they are (no color reduction, and no changes to
 transparent pixels): an animated tag keeps what it needs in them. RP Engine's
 PackSquash setup already does.
 

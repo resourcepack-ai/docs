@@ -54,7 +54,7 @@ the list is drawn on top. Use the arrows on a row to move it.
   three can change while people play.
 - **Paint**: freehand pixels on layers.
 - **Shapes**: rectangles, circles, triangles and polygons, drawn as smooth
-  maths so they stay crisp at any GUI scale.
+  math so they stay crisp at any GUI scale.
 
 Add components and shapes with the **+** beside Elements.
 
@@ -64,7 +64,7 @@ Add components and shapes with the **+** beside Elements.
 | --- | --- |
 | **Label** | A line of Minecraft text. It can include [live values](#live-values) like `{player}` or `{health}` |
 | **Player head** | The face of the player looking at it. In the editor, and in an exported or distributed pack, it is Steve. A pack sent with **Sync** shows the real faces of the players it was sent to |
-| **Progress bar** | Fills from a live value, solid or in segments. It can change colour as the value passes thresholds you set, and **Glow** gives it a soft halo (leave room round it: the glow stops at the canvas edge) |
+| **Progress bar** | Fills from a live value, solid or in segments. It can change color as the value passes thresholds you set, and **Glow** gives it a soft halo (leave room round it: the glow stops at the canvas edge) |
 | **Picture** | An image you upload or have drawn. Pictures are shared across the pack, so one upload can be used by any number of objects |
 
 Drag components to move them, or nudge the selected one with the arrow keys
@@ -81,13 +81,13 @@ new container takes them in.
 - **Gap** is the space between items, and **Pad** the space between the edge
   and the items.
 - **Pivot** is the point of the container that stays where you put it: with
-  the centre, it stays centred as it grows; with top-right, it grows to the
+  the center, it stays centered as it grows; with top-right, it grows to the
   left.
 - **Each item** lines items up across the container (top, middle or bottom of a
-  row; left, centre or right of a column). **Min width** and **Min height**
+  row; left, center or right of a column). **Min width** and **Min height**
   make it at least that big, and the second alignment says where the items sit
   in the spare room.
-- **Background** gives it a colour and an opacity.
+- **Background** gives it a color and an opacity.
 
 Containers can go inside containers, so three panels side by side is one row
 holding three columns.
@@ -105,7 +105,7 @@ removes the containers.
 
 ### Paint
 
-Pick a brush on the left (pencil, eraser, fill, colour picker, line,
+Pick a brush on the left (pencil, eraser, fill, color picker, line,
 rectangle, ellipse or pixel text) and draw. It draws on the paint layer
 selected in the list, and picking a brush makes one if there are none. Layers
 can be hidden, renamed (double-click), duplicated, merged down, cleared or
@@ -147,7 +147,7 @@ corner, tick **Fill the whole screen** on the Canvas row. The object then
 covers every player's screen at any size.
 
 Each element is then **pinned** to one of nine points of the screen (a corner,
-the middle of an edge, or the centre), chosen in its **On the screen**
+the middle of an edge, or the center), chosen in its **On the screen**
 settings. Its X and Y are measured from that point, so a bar pinned
 bottom-right at -4, -4 always sits four pixels in from that corner.
 
@@ -197,17 +197,17 @@ bottom of its settings. Each field takes a live value, the same way a
 | Field | What it does |
 | --- | --- |
 | **Show when** | Hides the piece while a condition is false, such as `{rank} == "vip"`, `{mana} > 10` or `perm:hud.extra`, joined with `&&` and `\|\|`. The same language as a dialog's Show when |
-| **Add a colour** / **Picked by** | Named colours (such as `poisoned`, `frozen`) and the value that picks one. Any other value draws the normal colour. On a bar, a named colour wins over the thresholds |
+| **Add a color** / **Picked by** | Named colors (such as `poisoned`, `frozen`) and the value that picks one. Any other value draws the normal color. On a bar, a named color wins over the thresholds |
 | **Length from** | A progress bar's length in pixels |
-| **Thresholds from** | Moves a colour threshold, as a percentage |
+| **Thresholds from** | Moves a color threshold, as a percentage |
 
 ```java
 engine.overlays().set(player, "status", "poisoned");
 engine.overlays().set(player, "mana_len", "120");
 ```
 
-Shapes and paint are fixed in the pack, so their size and colour can't change
-in game, and code can only pick colours you set in Studio.
+Shapes and paint are fixed in the pack, so their size and color can't change
+in game, and code can only pick colors you set in Studio.
 
 ## Showing it in game
 
@@ -238,7 +238,7 @@ RP Engine 0.2.38 or newer.
 ## Limits
 
 - **32 pieces per object.** A label, player head or picture takes one. A
-  progress bar takes two, plus one per colour threshold. Each named colour
+  progress bar takes two, plus one per color threshold. Each named color
   takes one. A container with a background takes one. Paint takes one per
   256-pixel tile of drawing. The status bar at
   the bottom of the editor counts them, and anything past 32 isn't drawn.
@@ -252,8 +252,8 @@ RP Engine 0.2.38 or newer.
 
 If something looks wrong, it helps to know how it works: the server can only
 send a line of text to the action bar or boss bar. Your object ships as special
-characters in the pack's font, and a text shader in the pack recognises them by
-their exact colour and moves them where you placed them. Another plugin's
+characters in the pack's font, and a text shader in the pack recognizes them by
+their exact color and moves them where you placed them. Another plugin's
 resource pack that also replaces the text shader can stop it drawing.
 
 ## 3D objects
@@ -269,7 +269,7 @@ for example "a slowly spinning plasma orb with a purple core and crackling
 white arcs". It costs 30 credits and takes a few minutes. There is nothing to
 draw by hand, so **Blank** isn't offered.
 
-Glow, smoke, energy, glass and motion work best. One centred object works
+Glow, smoke, energy, glass and motion work best. One centered object works
 better than a whole scene.
 
 ### Its page

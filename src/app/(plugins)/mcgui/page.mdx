@@ -153,7 +153,7 @@ they were changed on the server since. Any picture a page uses as a
 restart before it shows.
 
 A page made on mcgui.dev is drawn with a faint mark: some blocks of plain
-colour are one shade bluer, in a pattern mcgui.dev can read back from a
+color are one shade bluer, in a pattern mcgui.dev can read back from a
 screenshot. It holds nothing about the player or the server.
 `builder-mark: false` draws every page exactly as written.
 
@@ -435,8 +435,8 @@ stops on its last frame. A few things to know:
   wouldn't fit shows only its first frame.
 
 **On an overlay page** the world shows through, and each pixel is either drawn
-or not: colour less than half opaque with only the world behind it isn't drawn
-in game (a browser draws it faint), and colour at half or more is drawn solid.
+or not: color less than half opaque with only the world behind it isn't drawn
+in game (a browser draws it faint), and color at half or more is drawn solid.
 Use 0.5 opacity or more for anything that must show, like a thin border.
 
 **Fonts:** Inter (`sans-serif` and every system font name), Source Serif 4
@@ -526,7 +526,7 @@ part of the page that changed has to be drawn again, and quicker still when it
 was drawn before the pointer got there, which MC GUI does for the hovers
 nearest the pointer. To keep it that way:
 
-- **Animate `opacity`, colours, `transform`, `filter` and shadows**, not
+- **Animate `opacity`, colors, `transform`, `filter` and shadows**, not
   `width`, `height`, `margin`, `top` or `font-size`, which lay the whole page
   out again every frame.
 - **Keep what moves small.** A spinner costs little; a whole panel that bobs is
@@ -549,9 +549,9 @@ so one heavy page cannot hold a thread for good; raise it for very large pages.
 
 ## The resource pack
 
-With the pack, maps show full colour, smoothly scaled, a fullscreen page fills
+With the pack, maps show full color, smoothly scaled, a fullscreen page fills
 the window and the pointer follows the mouse every frame. Pages a player opens
-need it; wall screens work without it, in dithered map colours.
+need it; wall screens work without it, in dithered map colors.
 
 MC GUI builds the pack at start (with your sounds and cursors in it) and,
 under `resource-pack`:
@@ -560,8 +560,8 @@ under `resource-pack`:
 | --- | --- |
 | `upload` (default) | Uploads the pack to ResourcePack AI's free pack host, `packs.resourcepack.ai`, and players download it from there. Nothing to open or set up |
 | `serve` | Serves `pack.zip` itself on `port`; set `public-url` to an address players can reach, such as `http://play.example.com:25602/pack.zip`, and open that port |
-| `external` | Serves nothing: host `plugins/MCGUI/pack.zip` yourself and set `public-url`, or merge it into another plugin's pack (ItemsAdder, Nexo) and leave `public-url` blank. The pack is also unpacked into `plugins/MCGUI/pack/` for plugins that merge folders: for ItemsAdder, add `MCGUI/pack` under `resource-pack.zip.merge_other_plugins_resourcepacks_folders` in its `config.yml` and run `/iazip`. **Merge again after every MC GUI update**: an old merged pack draws pages wrong, often in the wrong colours |
-| `off` | No pack: walls show plain map colours, and pages do not open |
+| `external` | Serves nothing: host `plugins/MCGUI/pack.zip` yourself and set `public-url`, or merge it into another plugin's pack (ItemsAdder, Nexo) and leave `public-url` blank. The pack is also unpacked into `plugins/MCGUI/pack/` for plugins that merge folders: for ItemsAdder, add `MCGUI/pack` under `resource-pack.zip.merge_other_plugins_resourcepacks_folders` in its `config.yml` and run `/iazip`. **Merge again after every MC GUI update**: an old merged pack draws pages wrong, often in the wrong colors |
+| `off` | No pack: walls show plain map colors, and pages do not open |
 
 With `upload`, the pack is only uploaded again when it changes, it is kept for
 as long as your server uses it (one nothing has used for 30 days is deleted),
@@ -603,10 +603,10 @@ and action bar from the server side
 | --- | --- |
 | Low FPS while a page is open | Every map on screen costs frame time, so a smaller page is faster. Set `views.size` to `14x8` (about 25% more FPS) or `12x7` (50% or more), or `ui:size` on one page. See [Size](#size) |
 | The page flashes, then closes or shows wrong | Another plugin's resource pack replaced MC GUI's shaders. When MC GUI sends its own pack, it sends it again on top before the next page (a short reload), so open the page again. If you merged MC GUI's pack into another plugin's, merge it again after every MC GUI update, and check what MC GUI says about shaders in the console at startup |
-| Part of a page is missing on an overlay page (a faint border, a see-through panel) | Colour under half opaque with only the world behind it isn't drawn in game. Use 0.5 opacity or more ([What pages can use](#what-pages-can-use)) |
+| Part of a page is missing on an overlay page (a faint border, a see-through panel) | Color under half opaque with only the world behind it isn't drawn in game. Use 0.5 opacity or more ([What pages can use](#what-pages-can-use)) |
 | "Your game could not load the resource pack of this server" | The pack failed to load for that player, often a merged pack. The console says why |
 | "This menu can't be shown while shaders are on" | The player has Iris or OptiFine shaders on. Shader packs replace what MC GUI draws with, so they need to turn shaders off |
-| Bedrock players can't open pages | Pages are Java only. Bedrock players see wall screens in plain map colours |
+| Bedrock players can't open pages | Pages are Java only. Bedrock players see wall screens in plain map colors |
 | Letters show as boxes | The built-in fonts lack that script. Load one that has it ([Fonts](#what-pages-can-use)) |
 | A page takes long to open | Leave `network-compression-threshold` in `server.properties` at 256. To find where the time goes, run `/mcgui debug <player> trace on`, have them open it a few times, then send us the `Open trace:` lines from `logs/latest.log` |
 

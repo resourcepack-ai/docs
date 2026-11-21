@@ -8,7 +8,7 @@ export const metadata = {
 **Two unauthenticated endpoints that answer one question: did this file come
 out of ResourcePack AI?**
 
-They exist for marketplaces. If you require AI-generated work to be labelled,
+They exist for marketplaces. If you require AI-generated work to be labeled,
 or don't accept it at all, you can't reliably tell by looking. We don't support
 reselling generated packs, and these endpoints let you check for yourself. No
 key or account is needed.
@@ -34,7 +34,7 @@ its owner brought in, and the two are tracked separately. Imported artwork is
 never fingerprinted, so a creator who edits their own texture in Studio can't
 have it called ours.
 
-**Generic content is left out.** A blank tile, a square of one colour or a
+**Generic content is left out.** A blank tile, a square of one color or a
 model with no geometry of its own is something thousands of people have made
 independently. Anything below a minimum of distinctness is skipped, so the
 registry can't hold a hash that belongs to somebody else's work.
@@ -56,7 +56,7 @@ Three forms, chosen by file extension.
 ### `.png`
 
 Decode to 8-bit RGBA. Set every **fully transparent** pixel to `00 00 00 00`
-first (encoders disagree about what goes in the colour channels under alpha
+first (encoders disagree about what goes in the color channels under alpha
 0). Then hash:
 
 ```
@@ -68,7 +68,7 @@ same pixels hash differently.
 
 ### `.json`
 
-Parse it, then serialise canonically: object keys sorted, **array order kept**
+Parse it, then serialize canonically: object keys sorted, **array order kept**
 (in a block model, element order is the geometry), numbers rounded to six
 decimal places with `-0` written as `0`, and no whitespace anywhere. Then hash:
 

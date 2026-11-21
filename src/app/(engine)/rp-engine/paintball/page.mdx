@@ -58,8 +58,8 @@ holds:
 
 | Item | What it does |
 |---|---|
-| **Colour** (the marker) | Right-click for the next colour, and round again to Any. Your paint in a free for all; in a team match, your marker |
-| **Practise** (the target) | Down onto the field to practise until the match starts. See [Practising](#practising) |
+| **Color** (the marker) | Right-click for the next color, and round again to Any. Your paint in a free for all; in a team match, your marker |
+| **Practise** (the target) | Down onto the field to practice until the match starts. See [Practicing](#practicing) |
 | **Play for Red** / **Play for Blue** | Pick a side for the next match. Click the same one again to leave it to chance |
 | **Scoreboard** | The scoreboard of the last match |
 | **Leave** | Back to where you were, with your things |
@@ -69,31 +69,31 @@ within one player of each other, so if too many pick one side, the last to
 pick is moved and told. Late joiners go onto the smaller team.
 
 `/pb colour <colour|auto>` does the same as the marker. In a free for all your
-colour is your paint (marker, mask, suit and splats). In a team match your
+color is your paint (marker, mask, suit and splats). In a team match your
 paint stays your team's and only the marker changes. `colour-pick: false` in
 the config turns choosing off.
 
 More players than spawns is fine: they share them.
 
-### Practising
+### Practicing
 
 While the lobby waits for a match, the target in the hotbar (or
 `/pb practice`) takes you down onto the field to try the marker and learn the
-map. You get the marker and the grenade, in the colour you chose or your
+map. You get the marker and the grenade, in the color you chose or your
 side's, and everybody down there plays against everybody. A hit sends whoever
 it hit straight back to a spawn, the HUD keeps a practice score, and nothing
 counts towards anything. The feather in your last slot, or `/pb practice`
 again, takes you back up to the lobby.
 
-When the match starts, everybody practising is put at their spawn like
+When the match starts, everybody practicing is put at their spawn like
 everybody else and the paint comes off the walls. `practice: false` in the
-config, or for one arena with `/pb arena set`, turns practising off.
+config, or for one arena with `/pb arena set`, turns practicing off.
 
 ### In a match
 
 Every match opens with a three-second countdown, frozen in place, then a
 whistle. You carry a marker, a paint grenade, a paint mine, a mask and a suit
-in your team's colour.
+in your team's color.
 
 | Key | What it does |
 |---|---|
@@ -138,7 +138,7 @@ blocks, so the arena is never changed and is clean for the next match.
 There is not a title or a boss bar in the game. **The whole screen is one
 HUD**:
 
-- **Top centre**, the score strip: both teams' kills and the clock.
+- **Top center**, the score strip: both teams' kills and the clock.
 - **Top left**, the kill feed: the last three splats, who by, and with what.
 - **Bottom right**, your weapon: the grenade's card, filling as it recharges,
   and the ammo panel with its bar.
@@ -154,11 +154,11 @@ both teams' tables, the top five of each, best first: each player's face,
 kills, deaths and accuracy.
 
 **The player list** (Tab) is a scoreboard too. Under the name, the mode, the
-map, the score and the clock, every player has a tile in their colour with
+map, the score and the clock, every player has a tile in their color with
 their name and their kills and deaths: a column a team, red on the left, or in
 a free for all everybody best first with their place. Your own tile is lit,
-and the name of somebody who is out is greyed. In the lobby it shows who is
-waiting, in the colour of the side they picked. On Paper the players in the
+and the name of somebody who is out is grayed. In the lobby it shows who is
+waiting, in the color of the side they picked. On Paper the players in the
 match are taken off the list under the tiles, which already show them; Spigot
 has no way to, so there they stay. `tab.scoreboard: false` keeps the game's own
 list instead.
@@ -183,7 +183,7 @@ Every arena plays one of three modes, `teams` unless it says otherwise.
 | Mode | How it plays |
 |---|---|
 | **Team deathmatch** (`teams`) | Red against blue. Most splats when the clock runs out wins, or the first team to the kill limit if there is one |
-| **Free for all** (`ffa`) | Everybody against everybody, each in a paint colour of their own. First to 15 splats, or the most when the clock runs out, wins |
+| **Free for all** (`ffa`) | Everybody against everybody, each in a paint color of their own. First to 15 splats, or the most when the clock runs out, wins |
 | **Capture the flag** (`ctf`) | Red against blue, for each other's flag. First team to 3 captures, or the most when the clock runs out, wins |
 
 Choose an arena's mode with `/pb arena set <arena> mode ffa`, or play another
@@ -197,8 +197,8 @@ full. Bots are not counted, and 0 is no limit.
 
 ### Free for all
 
-Every player gets one of eight paint colours (red, blue, green, orange, yellow,
-purple, pink and cyan), unless they chose one. More players than colours share
+Every player gets one of eight paint colors (red, blue, green, orange, yellow,
+purple, pink and cyan), unless they chose one. More players than colors share
 them. Everybody else is an enemy, and nobody's name tag shows. You respawn at
 whichever spawn is furthest from everybody still in.
 
@@ -271,7 +271,7 @@ box a player cannot walk out of during a match. Arenas are kept in
 /pb arena generate <id> confirm [name]
 ```
 
-Builds a speedball field centred on you and sets the arena up on it, ready to
+Builds a speedball field centered on you and sets the arena up on it, ready to
 play: a floor, a netted fence, a base and flag at each end, mirrored bunkers,
 and a glass box over the middle to wait in. Without `confirm` it only says
 what it is about to do.
@@ -304,7 +304,7 @@ To play on a map you built yourself, stand in the right places and run:
   </Step>
   <Step title="Spawns">
     `/pb arena addspawn <id> red`, and again for `blue`, up to five a team
-    (past five the oldest goes). With no colour, `/pb arena addspawn <id>` adds
+    (past five the oldest goes). With no color, `/pb arena addspawn <id>` adds
     a spawn for anybody (up to ten), used by free for all and by any team with
     no spawns of its own, so a free-for-all arena needs no team spawns.
     `/pb arena clearspawns <id> [red|blue]` clears them.
@@ -363,8 +363,8 @@ what you may run.
 |---|---|
 | `/pb join [arena]` | Into the lobby. `/pb` on its own does the same |
 | `/pb team <red\|blue\|auto>` | The side you would like, from the next match |
-| `/pb colour <colour\|auto>` | Your colour from the next match: your paint in a free for all, your marker in a team match |
-| `/pb practice` | Down onto the field to practise while the lobby waits, or back up |
+| `/pb colour <colour\|auto>` | Your color from the next match: your paint in a free for all, your marker in a team match |
+| `/pb practice` | Down onto the field to practice while the lobby waits, or back up |
 | `/pb leave` | Out, with your inventory and position back |
 | `/pb scoreboard` | The match scoreboard (F in a match or its lobby) |
 | `/pb start [arena] [teams\|ffa\|ctf]` | Start a match now, in the arena's mode or another, joining you first if you are not in |
@@ -376,8 +376,8 @@ what you may run.
 | `/pb arena generate <id> at <world> <x> <y> <z> [name]` | The same, from the console |
 | `/pb arena create <id> [name]` | A new, empty arena in your world |
 | `/pb arena setwaiting <id>` | Its waiting spot, where you stand |
-| `/pb arena addspawn <id> [red\|blue]` | A team spawn where you stand, or with no colour a spawn for anybody |
-| `/pb arena clearspawns <id> [red\|blue]` | Remove a team's spawns, or with no colour the spawns for anybody |
+| `/pb arena addspawn <id> [red\|blue]` | A team spawn where you stand, or with no color a spawn for anybody |
+| `/pb arena clearspawns <id> [red\|blue]` | Remove a team's spawns, or with no color the spawns for anybody |
 | `/pb arena setflag <id> <red\|blue>` | Where that team's flag stands in capture the flag, where you stand |
 | `/pb arena wand` | The bounds wand |
 | `/pb arena setbounds <id>` | Its bounds, from the two corners you marked |
@@ -395,12 +395,12 @@ grant the nodes under them. `/pb leave` needs no permission.
 
 | Node | What it allows | Default |
 |---|---|---|
-| `paintball.play` | Everything a player does: join, pick a team and a colour, the scoreboard, practising. Grants the five below | Everyone |
+| `paintball.play` | Everything a player does: join, pick a team and a color, the scoreboard, practicing. Grants the five below | Everyone |
 | `paintball.join` | `/pb join`: into an arena's lobby | Everyone |
 | `paintball.team` | `/pb team`, and the red and blue items in the lobby's hotbar | Everyone |
-| `paintball.colour` | `/pb colour`, and the marker in the lobby's hotbar, which picks your colour | Everyone |
+| `paintball.colour` | `/pb colour`, and the marker in the lobby's hotbar, which picks your color | Everyone |
 | `paintball.scoreboard` | `/pb scoreboard`, F in a match or its lobby, and the lobby's scoreboard item | Everyone |
-| `paintball.practice` | `/pb practice`, and the target in the lobby's hotbar, which takes you down onto the field to practise | Everyone |
+| `paintball.practice` | `/pb practice`, and the target in the lobby's hotbar, which takes you down onto the field to practice | Everyone |
 | `paintball.admin` | Every staff node: start, stop, reload, `/pb as`, arenas, the command bypass. Grants the eight below | Operators |
 | `paintball.start` | `/pb start`: start a match now, in any mode (it joins you first if you are not in) | Operators |
 | `paintball.stop` | `/pb stop`: end a match, or empty a lobby | Operators |
@@ -590,7 +590,7 @@ settings apply on top of both (`/pb arena set <arena> modes.ctf.respawn-seconds 
 **Every word a player reads** is under `messages:` in the same file, in
 [MiniMessage](https://docs.advntr.dev/minimessage/format.html): the HUD's, the
 scoreboard's (its headings and its Close button), the player list's, and the
-names of the teams, the paint colours and the markers (`team-red`,
+names of the teams, the paint colors and the markers (`team-red`,
 `colour-purple`, `marker-ember`...). The big words in the middle of the HUD
 (GO!, SPLATTED BY, VICTORY...) can use only A to Z, digits, `!`, `-`, `'` and
 spaces.

@@ -48,10 +48,10 @@ Each step is one key with its own `-`.
 | `interact` | Right-clicked where it stands, as a placed model or a custom block |
 | `remove` | Punched out or mined by a player, as a placed model or a custom block |
 
-`break` runs after the item is already gone, so it cannot be cancelled. It is
+`break` runs after the item is already gone, so it cannot be canceled. It is
 still useful for a sound or a message.
 
-There is no trigger for putting armour on or taking it off, and none for a
+There is no trigger for putting armor on or taking it off, and none for a
 player joining the server. For something on join, have a join-command plugin
 run the `/rp` command you want.
 
@@ -76,7 +76,7 @@ doorbell:
 - On `interact`, `cancel` stops what the click would otherwise do: nobody sits,
   nothing opens, and nothing is placed against the block.
 - `place` and `remove` run once the piece is down or gone, so they cannot be
-  cancelled.
+  canceled.
 - `take` does nothing in these three, because the click is on the piece, not
   the item in the player's hand.
 - On an item with no `place:` block, these triggers are a load warning, since
@@ -86,7 +86,7 @@ doorbell:
 
 | Step | What it does |
 |---|---|
-| `message` | A line of chat to whoever used it. `&` colour codes |
+| `message` | A line of chat to whoever used it. `&` color codes |
 | `broadcast` | The same, to everybody |
 | `actionbar` | A line above their hotbar |
 | `console` | Runs a command as the console |
@@ -121,7 +121,7 @@ fills with water.
 `happy_villager`; names from before Minecraft 1.20.5 renamed them work too.
 Count defaults to 8 (up to 200) and spread to 0.3 blocks. Particles appear at
 the block or piece the action is about, or at the player for a held item. A
-particle that needs extra data, such as a colour or a block, draws nothing.
+particle that needs extra data, such as a color or a block, draws nothing.
 
 A step that cannot run is skipped and the rest still run, so a misspelled
 potion costs only that line.
@@ -141,5 +141,5 @@ installed.
 Actions have no conditions, variables or branching, and that is deliberate.
 For anything more, write a small plugin that listens for
 [`ItemUseEvent`](/rp-engine/api), which carries the item ID, the stack, the
-click and the block. Cancelling that event cancels the vanilla use and stops
+click and the block. Canceling that event cancels the vanilla use and stops
 the item's own actions running.

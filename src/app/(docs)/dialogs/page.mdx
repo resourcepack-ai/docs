@@ -76,10 +76,10 @@ Several features need a recent plugin version: see [Plugin versions](#plugin-ver
 
 Say what the screen is for: "a settings menu with video, audio and chat", "a
 pet menu where you can rename and summon your pet", "a crate menu for a prison
-server". The AI builds it in the game's own look: plain grey cards, rows of
+server". The AI builds it in the game's own look: plain gray cards, rows of
 settings with switches, segmented choices, sliders and dropdowns, items and
-faces. Name a colour for the screen ("a red menu") or use your pack's
-[Style Guide](/generating#writing-a-prompt) palette to theme it; a colour you
+faces. Name a color for the screen ("a red menu") or use your pack's
+[Style Guide](/generating#writing-a-prompt) palette to theme it; a color you
 name for one thing ("a red Ban button") goes on that thing only. Then it looks at the
 result as a player would and fixes cut-off labels and screens that are too
 tall before saving. Kits, banners, motion and the rest of the
@@ -235,7 +235,7 @@ one click.
 
 **Moving.** Drag a piece to move it between rows and columns. Hold **Shift**
 while dragging, or use **Place anywhere**, to lift it out of the layout and put
-it at any pixel; it snaps to edges and centres (hold **Alt** not to). **Back
+it at any pixel; it snaps to edges and centers (hold **Alt** not to). **Back
 into the layout** returns it. With one placed piece selected, **Ctrl**-click
 others to select them too: the panel lines them up by their edges or middles, or
 spreads them with even gaps, and the arrow keys and Delete act on all of them.
@@ -248,11 +248,11 @@ paste into your other dialogs too, even in another tab. `Ctrl+Z` undoes and `Ctr
 at the bottom of the tools) for every shortcut.
 
 **Copying a style.** **Copy style** (`Ctrl+Alt+C`, in a piece's panel or its
-right-click menu) copies how a piece looks: its colours, its **Colour when**
+right-click menu) copies how a piece looks: its colors, its **Color when**
 looks, its font, its motion and, for a box, its surface and padding. Its words,
 clicks, conditions and size are not copied. **Paste style** (`Ctrl+Alt+V`) gives
 that look to another piece of the same kind. On a different kind of piece it
-pastes only the parts that mean the same on both, such as a colour. **Apply style
+pastes only the parts that mean the same on both, such as a color. **Apply style
 to all** gives every other piece of the same kind on the page this piece's look,
 in one step that `Ctrl+Z` undoes. For words, this means words with the same
 role (every heading, for example).
@@ -266,7 +266,7 @@ press Escape) for: **Title** (and whether the game shows it), **Players open it
 with**, the live values it uses, **Content width** (160 to 388 pixels, with a
 note on which screens it fits), **Theme**, tooltip style, **Click sound**,
 **Footer** (**One button**, **Yes / No** or **None**), **Inputs**, and
-**Behaviour** (**Escape closes it**, **Pauses singleplayer** and [After a
+**Behavior** (**Escape closes it**, **Pauses singleplayer** and [After a
 click](#after-a-click)).
 
 **JSON** shows the layout, and its **minecraft:dialog** tab shows the file the
@@ -292,15 +292,15 @@ game scrolls it. These are the pieces you can add:
 
 | Piece | What it is |
 | --- | --- |
-| **Button** | The game's grey button, the theme's button or the GUI's light panel one, in its own colour if you like. Its icon can be [a picture of your own](#pictures-in-buttons-and-bars). See [Button looks](#button-looks). |
+| **Button** | The game's gray button, the theme's button or the GUI's light panel one, in its own color if you like. Its icon can be [a picture of your own](#pictures-in-buttons-and-bars). See [Button looks](#button-looks). |
 | **Link** | Clickable words, for a contents list. |
-| **Text**, **Heading**, **Big title** | Words in the game's font, or [one of your own](#your-own-fonts). Colour codes work: `&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` grey, `&l` bold, `&r` reset, `&#55ff55` any colour. |
+| **Text**, **Heading**, **Big title** | Words in the game's font, or [one of your own](#your-own-fonts). Color codes work: `&a` green, `&c` red, `&6` gold, `&e` yellow, `&b` aqua, `&7` gray, `&l` bold, `&r` reset, `&#55ff55` any color. |
 | **Page of text** | `# Title`, `## Heading`, `### Heading` (gold), `- bullets`, `> notes`, `**gold words**`, `---` for a rule. |
 | **Icon** | Any vanilla item, a player head, your pack's own sprites and textures, one of more than a hundred drawn icons (the **Small** shelf of the picker has nine-pixel ones for labels), or one of your own pictures (the **Pictures** shelf). Bare or in a slot. |
 | **Image** | A PNG, JPG, GIF or WebP up to 512 pixels a side. Add it from **Add component** or drop the file on the screen. An animated GIF, or several pictures chosen at once, [plays in game](#animated-pictures). It is kept with the pack for its other dialogs. To put a picture *behind* other pieces, give their box a [Picture](#a-boxs-own-look). |
 | **Drawing** | A picture you draw in the editor. See [Drawing a picture](#drawing-a-picture). |
 | **Chip**, **Badge**, **Check line**, **Label and value** | A balance or tag; a small solid tag such as NEW; a ✔ or ✘ line; a label left and a value right. |
-| **Progress bar** | A label, a count and a bar, in its own **Bar colour** and **Track colour** if you like. **Icon before the label** puts a small icon at the start of its line. It can [follow the player](#bars-that-follow-the-player). |
+| **Progress bar** | A label, a count and a bar, in its own **Bar color** and **Track color** if you like. **Icon before the label** puts a small icon at the start of its line. It can [follow the player](#bars-that-follow-the-player). |
 | **Controls** | Switch, segmented (two to four choices), slider, dropdown, checkbox, stepper, search box and text box, drawn in the theme. They are pictures unless bound to a [player setting](#player-settings); players can [type in a text box](#typing-in-a-drawn-box). |
 | **Sidebar button**, **List option**, **Icon button**, **Theme button** | The parts of a settings screen. A sidebar button can be taller than its 18 pixels, carry a badge, and show [a picture of your own](#pictures-in-buttons-and-bars). |
 | **Item slots** | See [Items and inventories](#items-and-inventories). |
@@ -313,33 +313,33 @@ Under **Look** in a button's panel:
 | Look | What it does |
 | --- | --- |
 | **Selected** | Draws it lit (gold on the game's button, the accent on the theme's): "you are here", or a card's main action. |
-| **Greyed out** | Draws it grey with faded words and icon, like a disabled button in the game. It only changes the picture: a click still runs its action, so set **When clicked** to **Nothing** if it shouldn't do anything. |
-| **Words from the left** | Starts its label at the left edge rather than centred, for a sidebar of buttons. |
+| **Grayed out** | Draws it gray with faded words and icon, like a disabled button in the game. It only changes the picture: a click still runs its action, so set **When clicked** to **Nothing** if it shouldn't do anything. |
+| **Words from the left** | Starts its label at the left edge rather than centered, for a sidebar of buttons. |
 
 A **Theme button** also has a **Style**, in its **Texture** section: **Pill** (round ends), **Chunky** (a
 thick lip under it, a little taller: the big action), **Glossy**, **Stripes**,
 **Checks**, **Dots**, **Fade**, **Outline** (hollow, for a Cancel beside a
 chunky Buy), **Notched** (corners cut, for sci-fi screens) or **Price tag**.
-Each draws in the button's colour, or the accent when it is selected. Some
+Each draws in the button's color, or the accent when it is selected. Some
 [textures](#textures) dress their theme buttons in a style of their own; a style you
 pick wins.
 
 These are drawn into the dialog's picture, so a plugin can't switch them as the
-dialog opens. To show a button lit or greyed for some players only, draw it both
+dialog opens. To show a button lit or grayed for some players only, draw it both
 ways and let [Show when](#show-when) choose, on a permission, a [player
 setting](#player-settings) or a [live value](#live-values) your plugin sets.
 
 ### Drawing a picture
 
 **Add component** › **Drawing** starts a blank picture as wide as the dialog,
-drawn with the same tools and colours as the texture editor. Set its size on
+drawn with the same tools and colors as the texture editor. Set its size on
 the right (one pixel per pixel of the dialog) and press **Done** to place it.
 
 - Every text, rectangle, ellipse, line and paste lands on a layer of its own.
   The **Move** tool (`V`) picks one by clicking it; the arrows nudge it and
   Delete removes it.
 - Text stays editable: its words, font (Minecraft, Classic, Small Caps, Tiny,
-  Block or your pack's own), size, colour, fade or rainbow, bold, italic,
+  Block or your pack's own), size, color, fade or rainbow, bold, italic,
   underline, strikethrough, shadow, outline, alignment and spacing.
 - **Turn into pixels** lets you paint over text. **Draw on it**, in any image's
   panel, opens a drawing again with its layers as you left them.
@@ -409,7 +409,7 @@ With no font in the pack that has a letter, it is drawn as `?`.
   correctly. Thai and Chinese wrap between letters.
 - **Not supported**: scripts written right to left, or whose letters join up
   (Arabic, Hindi).
-- Colour codes still work. **Bold** is only what you tick: a heading keeps the
+- Color codes still work. **Bold** is only what you tick: a heading keeps the
   font's own weight.
 - **What the game draws stays in Minecraft's font**: the title, the footer
   buttons, tooltips, boxes players type in, and words holding a
@@ -431,8 +431,8 @@ Click to claim!
 ```
 
 The first line is the title. A line above a list of `∙` items is its heading,
-lines starting ✔ are green, ⌀ or ✘ red, and "Click" yellow. Colour codes work
-too. The dialog's tooltip setting changes the box, rim and colours for the
+lines starting ✔ are green, ⌀ or ✘ red, and "Click" yellow. Color codes work
+too. The dialog's tooltip setting changes the box, rim and colors for the
 whole dialog, or takes them **From the theme**. A footer button's tooltip always
 keeps the game's box, and a slot of the player's own inventory shows the
 item's real tooltip.
@@ -504,7 +504,7 @@ areas** shows the real shape.
 
 ### After a click
 
-Under **Behaviour**, choose what the dialog does once something is clicked:
+Under **Behavior**, choose what the dialog does once something is clicked:
 
 | Choice | What happens |
 | --- | --- |
@@ -559,11 +559,11 @@ block $(player)
 ```
 
 Studio sets the game's own text box exactly on your drawn one and hides the
-game's look of it. The game writes what players type, in light grey from the
+game's look of it. The game writes what players type, in light gray from the
 box's left edge, so a dark theme reads best. Where the game puts its box is the
 game's choice, and the editor follows it:
 
-- **The box is always centred.** A text box as wide as its card lines up by
+- **The box is always centered.** A text box as wide as its card lines up by
   itself. One off to the side is marked in amber with where the game will put
   it; **Line it up** in its panel moves it there.
 - **A second box goes 10 pixels under the first**, a third 10 under that.
@@ -584,7 +584,7 @@ drawn box.
 ## Changing how it looks
 
 The look is set at three levels: the **texture** is what the whole dialog is
-made of, the **colours** tint it, and any piece can be given a texture of its
+made of, the **colors** tint it, and any piece can be given a texture of its
 own. Everything here is drawn into the picture, so it needs nothing on the
 server.
 
@@ -597,7 +597,7 @@ headings are lettered, and whether lit things glow. Pick one in the dialog's
 
 | Texture | Looks like |
 | --- | --- |
-| **Classic** | The plain raised cards, in any colours. |
+| **Classic** | The plain raised cards, in any colors. |
 | **Scroll** | Parchment in a gilded frame, wax-red accents. |
 | **Luxe** | Near-black velvet with gold trim and glowing highlights. |
 | **Glass** | Dark glass with bright corner brackets and scanlines. |
@@ -606,27 +606,27 @@ headings are lettered, and whether lit things glow. Pick one in the dialog's
 | **Forge** | Cracked rock with glowing seams. |
 | **Arcade** | Black with neon outlines. |
 | **Meadow** | Leafy green and sunshine gold. |
-| **Castle** | Grey stone bricks and gold. |
-| **Toy** | Flat grey plastic, round corners and a chunky shadow, for friendly hubs and tutorials. |
+| **Castle** | Gray stone bricks and gold. |
+| **Toy** | Flat gray plastic, round corners and a chunky shadow, for friendly hubs and tutorials. |
 | **Night** | A starry sky. |
-| **Comic** | Bold black ink outlines, printed dots and sunny colours, with chunky buttons. |
+| **Comic** | Bold black ink outlines, printed dots and sunny colors, with chunky buttons. |
 | **Terminal** | A green-on-black screen with scanlines and hollow buttons. |
 | **Tide** | Rolling water with coral gold and pill buttons. |
 | **Blossom** | Soft pink with drifting petals and pill buttons. |
 | **Regal** | Royal purple cloth in a gold frame, with glossy buttons. |
 
-A texture comes in its own colours, and you can change them under **Theme**
+A texture comes in its own colors, and you can change them under **Theme**
 without losing the texture. Changing texture never moves anything: every piece
 keeps its place and size.
 
-On a dialog with [pages](#pages), each page can have a texture and colours of
-its own. **Texture for** and **Colours for** say where a change goes:
+On a dialog with [pages](#pages), each page can have a texture and colors of
+its own. **Texture for** and **Colors for** say where a change goes:
 **This page** changes only the page you have open, **Every page** changes them
 all. While every page shares one look, a change goes to every page; once a page
 has its own, it goes to that page only, and **Use this page's look on every
 page** puts them all back in one.
 
-### Surfaces and colours
+### Surfaces and colors
 
 Any box can sit on a surface, chosen under **Behind it**: the theme's **Card**
 (with or without a **Heading band**), a sunk **Tray**, a highlight **Band**
@@ -634,18 +634,18 @@ behind one row, the GUI's light **Panel** or **Dark panel**, an item **Slot**,
 or the see-through **Shade**, **Deep shade** and **Gold**. Tick **Clicking** on a
 row or column to make the whole box one button.
 
-Cards, controls and highlights are drawn in the dialog's colours.
-Pick one of fourteen under **Colours** (Stone, Slate, Deepslate, Nether, Ocean,
+Cards, controls and highlights are drawn in the dialog's colors.
+Pick one of fourteen under **Colors** (Stone, Slate, Deepslate, Nether, Ocean,
 Jungle, End, Royal, Oak, Parchment, Ice, Cherry, Redstone, Sand), or choose any
-**Card** and **Accent** colour and the rest is worked out from those. What
+**Card** and **Accent** color and the rest is worked out from those. What
 they are drawn *with* is the [texture](#textures).
 
 ### A piece's own texture
 
 Every piece that can have one has a **Texture** section in its panel, closed
 until you open it. A row, column or card's **Look** section says what it is
-drawn on and its own **Fill**, in a colour of its own, fading down or across to
-a second one (words on it take colours that read on it). Its **Texture** holds
+drawn on and its own **Fill**, in a color of its own, fading down or across to
+a second one (words on it take colors that read on it). Its **Texture** holds
 the rest:
 
 - **Picture**: an image behind the box's content, cropped to fill it, with
@@ -664,11 +664,11 @@ its right. Its art prompt is already in its panel, ready to draw.
 ### Lettering, glows and decorations
 
 - **Lettering** on a text piece: an **Outline**, letters that **Fade** to a
-  second colour, and a **Shadow** colour or none. **Huge** and **Giant** sizes
+  second color, and a **Shadow** color or none. **Huge** and **Giant** sizes
   draw words three and four times their size.
 - In an icon's **Texture**: **Glow** puts a soft halo behind it, and **Burst of
   rays** a ring of rays, for the thing to look at. It can **Sit in** an item
-  slot, or a **Round**, **Diamond** or **Gem** socket rimmed in its glow colour
+  slot, or a **Round**, **Diamond** or **Gem** socket rimmed in its glow color
   (or the accent), for rewards, products and portraits. **Outline and shadow**
   gives an item a dark outline and a soft shadow, so it reads like a polished
   sticker on any card.
@@ -716,7 +716,7 @@ show them as they will look. Two things stay still, and the piece's panel says
 so when it happens:
 
 - a piece drawn differently for each player, or inside one: anything with a
-  [Show when](#show-when) or other colours under a condition, a control bound to
+  [Show when](#show-when) or other colors under a condition, a control bound to
   a [player setting](#player-settings), a row of a list, a sorted box;
 - a piece with something the game draws itself inside it: live words, a live
   player head, an inventory slot, a bar that follows the player.
@@ -732,7 +732,7 @@ those words, in its own font, and your pack's shader plays the effect.
 
 ### A Close in the dialog's style
 
-The game's grey footer button looks the same on every dialog. **Draw it in the
+The game's gray footer button looks the same on every dialog. **Draw it in the
 dialog's texture instead**, under **Footer**, hides it and puts a button that
 closes the dialog just under the content, which you can move and restyle.
 Most templates start that way.
@@ -867,12 +867,12 @@ with that name is the one that works.
 
 A segmented control or dropdown shows its choices as you typed them. To show
 something else, tick **Show something else for each choice** under **Shown
-as**, and a box appears for each choice. Colour codes work there (`&c`, `&l`,
+as**, and a box appears for each choice. Color codes work there (`&c`, `&l`,
 `&#91b8b2`), so the choices `Human` and `Demon` can be shown as
 `&#91b8b2Human` and `&#ff2424Demon`. Pick one of your pack's fonts under it to
 draw them all in that font. The setting still stores the choice itself
 (`human`, `demon`), so commands, conditions and `{character_race}` never see
-the colours. An empty box shows the choice as it is.
+the colors. An empty box shows the choice as it is.
 
 Other plugins read a setting through PlaceholderAPI, by the plugin that shows
 the dialog: `%dialogengine_setting_show_sidebar%` on
@@ -903,8 +903,8 @@ Any value works, such as `{kills}` out of `100`. Commas and `%` are ignored, so
 A bar can also stand up, as a gauge: set its **Direction** to **Up** to fill
 from the bottom, or **Down** to fill from the top (a tank draining, a time
 running out). A standing bar has no words of its own, so put a label or an icon
-beside it, and it can fade from its **Bar colour** at the bottom to a **Top**
-colour. A live one needs RP Engine 0.2.2 or newer, in either direction.
+beside it, and it can fade from its **Bar color** at the bottom to a **Top**
+color. A live one needs RP Engine 0.2.2 or newer, in either direction.
 
 ### Lists the server fills
 
@@ -956,7 +956,7 @@ leaves out on an older server so the dialog still opens.
 Oraxen or a resource pack of your own works too. Pick the item it is made from
 (often Paper), then under **Your server's own item** give its **Item model**
 (like `nexo:ruby`) and **Custom model data** (numbers, strings, flags or
-colours, comma separated; a plugin's number like `1001` goes in **Numbers**).
+colors, comma separated; a plugin's number like `1001` goes in **Numbers**).
 Studio can't see your server's pack, so choose a **Picture in the slot** to
 draw it; without one the slot shows a question mark.
 
@@ -1006,14 +1006,14 @@ hold. Players they don't hold for see empty space, and the piece's clicks are
 gone too.
 
 **Show something else instead…** puts a stand-in in its place for everyone else,
-such as a greyed **VIP only** button. The two share a **Show one of** box
+such as a grayed **VIP only** button. The two share a **Show one of** box
 (up to six pieces), and each player sees the first whose condition holds.
 
-**Colour when** keeps the piece for everyone but changes its colours for some
+**Color when** keeps the piece for everyone but changes its colors for some
 players: a talent-tree button that turns green from level 4. The first matching
 look wins.
 
-This is also how a plugin lights up or greys out a button for one player (see
+This is also how a plugin lights up or grays out a button for one player (see
 [Button looks](#button-looks)). In **Components**, a crossed-out eye marks a piece with
 conditions, and a palette marks one with looks.
 
@@ -1081,9 +1081,9 @@ moves up and down in 9-pixel steps.
 
 A [live value](#live-values) works in a pasted glyph too, so a placeholder can
 choose the glyph for each player: `{"text":"%card_face%","font":"cards:pixels"}`
-shows whatever `%card_face%` returns, in that font. The colour codes in the
+shows whatever `%card_face%` returns, in that font. The color codes in the
 value are kept (`§a`,
-`§x§f§f§8§8§0§0`, `&a` and `&#ff8800`), so a placeholder that colours its glyphs
+`§x§f§f§8§8§0§0`, `&a` and `&#ff8800`), so a placeholder that colors its glyphs
 for each player, such as a face built from one-pixel glyphs, looks the way it
 does in chat. The glyph's place is as
 wide as you set, so set **Width** to what the value draws.
@@ -1107,12 +1107,12 @@ features need at least:
 | Live words that stay inside their line, live heads | 0.1.69 | |
 | Inventories and storage, lists, a command of its own | 0.1.74 | |
 | Bars that follow the player | 0.1.75 | |
-| Show when, Show one of, Colour when, repeated rows | 0.2.2 | |
+| Show when, Show one of, Color when, repeated rows | 0.2.2 | |
 | Click sounds | 0.2.5 | newer than 0.3.5 |
 | Seamless after a click | 0.2.6 | 0.4.0 |
 | RP Engine icons in a Pack glyph | 0.2.10 | not supported |
 | The Quick Actions key | 0.2.17 | 0.6.0 (straight to a drawn dialog: 0.6.5) |
-| Colour codes from a placeholder in a Pack glyph | 0.2.34 | 0.6.4 |
+| Color codes from a placeholder in a Pack glyph | 0.2.34 | 0.6.4 |
 | Run as console | 0.2.41 | 0.6.6 |
 | Sorting a box's pieces | 0.2.46 | not supported |
 | PlaceholderAPI placeholders with arguments | 0.2.48 | 0.6.6 |
@@ -1138,7 +1138,7 @@ placeholder glyphs come out white, and so on.
   changes it.
 - **Can a dialog show a 3D Model or a `.bbmodel`?** Not as a model: a dialog is
   flat pictures and items. Add an **Image** of a render or screenshot of it.
-- **Can a plugin grey out or select a button when it opens the dialog?** Not
+- **Can a plugin gray out or select a button when it opens the dialog?** Not
   directly; see [Button looks](#button-looks).
 
 ## Older UI-style dialogs
@@ -1158,7 +1158,7 @@ Tick **Keep a backup** to keep a copy of it as it was, named "(backup)". Keep
 as it is is remembered in that browser.
 
 - **Button guides** are the dashed boxes where the game draws each button.
-  Paint inside one to give the button a face; leave it empty for the game's grey
+  Paint inside one to give the button a face; leave it empty for the game's gray
   button.
 - **Clickable areas**: pick the **Areas** tool (`A`) and drag a box over any part
   of the picture to give it an action and a tooltip.

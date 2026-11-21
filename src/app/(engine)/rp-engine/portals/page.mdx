@@ -32,7 +32,7 @@ engine builds its resource pack from), and the engine reloads once.
 To draw real block textures in the window, the plugin downloads the Minecraft
 client jar for your version from Mojang once, into `plugins/RPEPortals/cache/`.
 Set `textures.download: false` to skip that; blocks are then drawn in flat
-colours.
+colors.
 
 ## Placing portals
 
@@ -124,7 +124,7 @@ MiniMessage.
 ## What you see through one
 
 The window shows the far side's blocks in full detail for 128 blocks across,
-63 deep and 28 tall, with textures, water, biome colours and light. Beyond that
+63 deep and 28 tall, with textures, water, biome colors and light. Beyond that
 the land carries on in coarser columns for a few hundred blocks, then the far
 side's sky and clouds. A block changed over there shows up within a second or
 so.
@@ -155,11 +155,11 @@ api.open(
 Add `depend: [RPEPortals]` (or `softdepend`) to your `plugin.yml` and compile
 against the Portals jar. The events are `PortalOpenEvent`, `PortalToggleEvent`,
 `PortalRemoveEvent` and `PortalTravelEvent`, all cancellable; the last can also
-send the traveller somewhere else.
+send the traveler somewhere else.
 
 ## Source
 
-Portals is free software under the GPL-3.0 licence, at
+Portals is free software under the GPL-3.0 license, at
 [github.com/resourcepack-ai/rpe-portals](https://github.com/resourcepack-ai/rpe-portals).
 Its README explains how the window is drawn, and issues and pull requests are
 welcome there.

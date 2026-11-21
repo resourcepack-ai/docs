@@ -191,7 +191,7 @@ Without one, a state change cuts straight across.
 model with that file's clips, matched by bone name, and the other file is not
 loaded as a model. `retarget: {translate: [Body]}` limits which bones' movement
 carries over (all by default), and `rebind: [Bone]` moves the vertices of a bone
-nothing animates onto its neighbours. `legs:` lists IK chains,
+nothing animates onto its neighbors. `legs:` lists IK chains,
 `{chain: [Upper, Lower], target: IKFoot}`, that keep feet planted.
 
 ### Points
@@ -325,7 +325,7 @@ of flame, a black hole. Put `.glsl` files in `plugins/3DEngine/effects/` and run
 across. `/3d effect` alone lists them, and `/3d effect clear` removes every one
 the command put down. Effects are not saved, so a restart clears them too.
 
-An effect file defines one function, from a ray to a colour:
+An effect file defines one function, from a ray to a color:
 
 ```glsl
 vec4 object(vec3 ro, vec3 rd, float t0, float t1, float time, vec3 light, inout float depth) {
@@ -475,4 +475,4 @@ A model has no health of its own: what a hit does is up to you.
 
 The meshes are drawn by [obj³](https://github.com/JagerMeistars/obj-cubed),
 after Godlander's [objmc](https://github.com/Godlander/objmc). Its core shaders
-ship in the pack, with their licence.
+ship in the pack, with their license.

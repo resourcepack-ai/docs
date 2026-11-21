@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Plugin API",
   description:
-    "Drive items, models, custom blocks, emotes, vehicles, custom mobs and their skills, 3D armour, 3D shader objects, icons, sounds, HUD overlays and dialogs from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
+    "Drive items, models, custom blocks, emotes, vehicles, custom mobs and their skills, 3D armor, 3D shader objects, icons, sounds, HUD overlays and dialogs from your own Spigot or Paper plugin, and refuse what your server shouldn't allow.",
 };
 
 # Plugin API
@@ -230,7 +230,7 @@ There are two ways to place:
   (hitbox, seat, light, storage, states, animated rig, the item's `place`
   actions). With a `placer` set, [`ModelPlaceEvent`](#events) fires first, with
   `stack()` null. It returns empty when the item has no `place:` block, the
-  block is occupied, or a listener cancelled it.
+  block is occupied, or a listener canceled it.
 
 A `Placement` is a handle on a model standing in a world:
 
@@ -351,7 +351,7 @@ fun onBreak(event: BlockBreakEvent) {
 </CodeTabs>
 
 `place` is a plain set: no event fires, no item is taken, no sound plays and
-the neighbours are not updated. It returns false when there is no such block or
+the neighbors are not updated. It returns false when there is no such block or
 the pack has no state left for it. `setState(block, state)` and `setProperty`
 return false for a shaped block (a stair, a slab, a door), whose state is the
 game's own block data, so change that through Bukkit.
@@ -450,7 +450,7 @@ wears. Moving doesn't end it, and calling it again swaps without restarting.
 - `seek`, called every tick with a placement's `playhead()`, keeps a rig in
   step with a model's animation (a paddler's arms on a paddle).
 - `seekProp` drives a carried prop by your own clock, such as a wheel that
-  turns with distance travelled. It survives a swap to another emote carrying
+  turns with distance traveled. It survives a swap to another emote carrying
   the same prop.
 - `anchor(player, feet)` pins the rig to a point you move every tick (a seat
   you move yourself), so the two arrive together; `null` hands it back.
@@ -505,7 +505,7 @@ players in emotes), call `engine.reloadRigs()` on the main thread. On 1.20.3+,
 where packs stack, that resends only the small rig pack and fires
 `RigPackBuildEvent`; on older versions it is a full `reload()`.
 
-## 3D armour
+## 3D armor
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -534,7 +534,7 @@ engine.armor().strip(player)                          // every 3D piece off
 </CodeTabs>
 
 A set from a content folder is `namespace:path`; one pushed from Studio is
-`studio:<id>`. Each piece is an ordinary item that goes on by hand like armour,
+`studio:<id>`. Each piece is an ordinary item that goes on by hand like armor,
 so `wear` is a shortcut for all four. Whatever was in a slot goes back to the
 player (or drops at their feet if their inventory is full) and is listed in
 `ArmorResult.displaced()`. `strip` removes only 3D pieces and gives them to
@@ -542,7 +542,7 @@ nobody. `ArmorResult` has a reason: `WORN`, `UNKNOWN_SET` or `UNSUPPORTED`.
 
 A set pushed from Studio is only drawn for players holding that push's pack.
 Main thread only, except `available`, `ids` and `info`. See
-[3D armour](/rp-engine/armour).
+[3D armor](/rp-engine/armour).
 
 ## 3D shader objects
 
@@ -718,8 +718,8 @@ the values [dialogs](#dialogs) print.
 
 The same values can change more than words. A piece of a Studio overlay can be
 told, in its **From code** settings, to show only while a condition holds, to
-switch to one of its named colours, or (a progress bar) to take its length or a
-colour threshold from a value. Your plugin just sets the value:
+switch to one of its named colors, or (a progress bar) to take its length or a
+color threshold from a value. Your plugin just sets the value:
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -737,7 +737,7 @@ engine.overlays().set(player, "mana_len", "120")     // a bar 120 pixels long
 
 </CodeTabs>
 
-Colours can only be ones the overlay names, and shapes can't change at all:
+Colors can only be ones the overlay names, and shapes can't change at all:
 they are compiled into the resource pack. See
 [Changing it from code](/shaders#changing-it-from-code).
 
@@ -789,7 +789,7 @@ engine.overlays().set(player, "leader", "$face Notch")
 The first argument is the player's profile as JSON: a name in quotes, an object
 with `name`, `id` and the skin's `properties`, or
 `{"texture":"entity/player/wide/steve"}` for one of the game's own skins. The
-colour tints the face; `#ffffff` leaves it as it is. Faces need Paper and
+color tints the face; `#ffffff` leaves it as it is. Faces need Paper and
 Minecraft 1.21.9 or newer. Anywhere else (Spigot, an older client, Bedrock) the
 face is a gap of the same width, so the rest of the line doesn't move. `width`
 counts a face as 8 pixels. Use the string `head` returns straight away rather
@@ -1269,7 +1269,7 @@ takes. That is yours to track in `data()`.
 
 <Callout type="note" title="Who may get in is an event, not a method">
   There is no `setLocked`. Cancel `VehicleEnterEvent` and they stay standing.
-  `VehicleExitEvent` can't be cancelled, so a player is never trapped; to keep
+  `VehicleExitEvent` can't be canceled, so a player is never trapped; to keep
   somebody in a race, put them back with `seat`.
 </Callout>
 
@@ -1450,9 +1450,9 @@ chat. `format` ignores both.
 
 ## Text Effects in your own text
 
-A [Text Effect](/rp-engine/text-effects) is a colour: text drawn in exactly
-that colour wears the effect, whatever sent it. So the API hands you the
-colour, and two ways to write text in it.
+A [Text Effect](/rp-engine/text-effects) is a color: text drawn in exactly
+that color wears the effect, whatever sent it. So the API hands you the
+color, and two ways to write text in it.
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -1496,7 +1496,7 @@ effects.find("fire").ifPresent { fire ->
 
 `TextEffectInfo` has `id()`, `name()`, `color()` (`#rrggbb`), `rgb()`,
 `source()` (`CONTENT` or `STUDIO`) and `preset()`. `apply` and `format` write
-legacy codes (`§x§f§c...`), which every Spigot API takes. A colour code inside
+legacy codes (`§x§f§c...`), which every Spigot API takes. A color code inside
 the text ends the effect; bold and italic do not. Safe from any thread.
 
 ## VFX
@@ -1634,7 +1634,7 @@ runs on the player's own thread (their region's, on Folia).
 ## Custom mobs
 
 The [custom mobs](/rp-engine/entities) a content folder's `entities/` declares
-and the ones a Studio sync carries (`studio:<id>`) are one catalogue.
+and the ones a Studio sync carries (`studio:<id>`) are one catalog.
 
 <CodeTabs labels={["Java", "Kotlin"]}>
 
@@ -1862,33 +1862,33 @@ otherwise.
 | `PackSendEvent` | A pack went out to a player. `pack()` is the built pack; its `uuid()` is the id `PlayerResourcePackStatusEvent` reports on 1.20.3+, so you can match the two. Not cancellable |
 | `RigPackBuildEvent` | The emote rigs were rebaked: on every content load, or alone for a new skin or `reloadRigs()`. `alone()` and `separate()` say which. Not cancellable |
 | `PackBuildEvent` | The packs were built again (startup, a reload, the rigs alone, a shader re-merge) and are on disk, before players online are sent them. `packs()` is `Packs.all()`; `changed()` the bundles whose SHA-1 moved. Not cancellable |
-| `ItemUseEvent` | A custom item was right- or left-clicked. `block()` and `face()` say what was clicked (null in the air). Cancelling cancels the vanilla use too |
+| `ItemUseEvent` | A custom item was right- or left-clicked. `block()` and `face()` say what was clicked (null in the air). Canceling cancels the vanilla use too |
 | `ModelPlaceEvent` | A model is about to be put down. `getPlayer()` is who is placing it, `model()` the model's id, `block()` the block it goes in (its location), and `stack()` the stack in their hand, so you can read what the item carries (null when a plugin placed it). Parking a vehicle from its item and hatching a custom mob from its egg fire it too, with the vehicle's or mob's id as `model()` |
 | `ModelPlacedEvent` | A model was put down and is standing. `placement()` is its handle and `stack()` the stack it came from, so you can copy what the item carries onto the placement's `data()`. Not cancellable |
-| `ModelBreakEvent` | A model is about to be broken. `model()`, `location()`, `player()` (null if nobody broke it), `hitbox()` (its Interaction entity, whose UUID tells two copies of one model apart) and `placement()`. Has a drop flag separate from cancelling |
-| `ModelInteractEvent` | A placed model was right-clicked, from your content folder or from Studio. Has `hitbox()`, `placement()` and `clickedPosition()`. Cancelling stops everything the engine would do with the click |
+| `ModelBreakEvent` | A model is about to be broken. `model()`, `location()`, `player()` (null if nobody broke it), `hitbox()` (its Interaction entity, whose UUID tells two copies of one model apart) and `placement()`. Has a drop flag separate from canceling |
+| `ModelInteractEvent` | A placed model was right-clicked, from your content folder or from Studio. Has `hitbox()`, `placement()` and `clickedPosition()`. Canceling stops everything the engine would do with the click |
 | `ModelAnimationEvent` | A model is about to play an animation: `getPlacement()`, `getAnimation()`, `getCause()` and `getPlayer()` (who triggered it, if anyone) |
 | `ModelAnimationEndEvent` | One ended: finished, replaced or stopped. Not cancellable |
 | `ModelSeatEvent` | Somebody is about to sit on a chair, a seat bone or a vehicle seat. `placement()` or `vehicle()` says what it belongs to |
 | `ModelBindEvent` | A model is going on, or coming off, an entity that isn't ours (a boss, an NPC) |
-| `VehicleSpawnEvent` | A vehicle is about to be put down, by `/rp vehicle spawn` or a plugin's `spawn`. `id()`, `info()` and `location()`; there is no `Vehicle` yet. Cancelling means no vehicle. A parked one loading with its chunk doesn't fire it |
+| `VehicleSpawnEvent` | A vehicle is about to be put down, by `/rp vehicle spawn` or a plugin's `spawn`. `id()`, `info()` and `location()`; there is no `Vehicle` yet. Canceling means no vehicle. A parked one loading with its chunk doesn't fire it |
 | `VehicleRemoveEvent` | A vehicle is being removed for good, by `/rp vehicle remove` or `Vehicle.remove()`. Fires first, with its riders still seated and its `data()` readable. Not cancellable |
 | `VehicleEnterEvent` | Somebody is about to get into a vehicle. Fires after `ModelSeatEvent` for the same seat |
 | `VehicleExitEvent` | Somebody got out or was taken out, with the reason: dismounted, ejected, quit, reloaded, removed, unloaded, shutdown. After `RELOADED` they're put back a tick later with no enter event. Not cancellable |
-| `VehicleMoveEvent` | A vehicle is about to move (once per tick, only while moving). Cancelling stops it like a wall. Use it for regions, not fuel |
+| `VehicleMoveEvent` | A vehicle is about to move (once per tick, only while moving). Canceling stops it like a wall. Use it for regions, not fuel |
 | `VehicleStateEvent` | What a vehicle is doing changed: set off, stopped, took off, went under. Not cancellable |
 | `VehicleImpactEvent` | A vehicle hit another vehicle, the world, or the ground. See [Collisions and parts](#collisions-and-parts). Not cancellable |
-| `VehicleBailEvent` | A bad landing is about to throw a rider off. Cancelling keeps them aboard |
-| `MobSpawnEvent` | A custom mob is about to spawn: an egg, a spawner, a command, a plugin, or naturally (`natural()`). `id()`, `info()`, `location()`, and `level()` with `setLevel`. Cancelling means no mob |
+| `VehicleBailEvent` | A bad landing is about to throw a rider off. Canceling keeps them aboard |
+| `MobSpawnEvent` | A custom mob is about to spawn: an egg, a spawner, a command, a plugin, or naturally (`natural()`). `id()`, `info()`, `location()`, and `level()` with `setLevel`. Canceling means no mob |
 | `MobStateChangeEvent` | A custom mob's animation state changed: `previous()` and `state()`, null for its rest pose. Not cancellable |
-| `MobSkillEvent` | A custom mob is about to cast a skill: one of its own `skills:` lines (`skill()` is the line as written) or a metaskill (`skill()` is its id), with `trigger()` (`attack`, `timer`, `api` and so on) and `triggerEntity()`. Fires after the line's chance, health and conditions passed. Cancelling skips it and spends no cooldown |
+| `MobSkillEvent` | A custom mob is about to cast a skill: one of its own `skills:` lines (`skill()` is the line as written) or a metaskill (`skill()` is its id), with `trigger()` (`attack`, `timer`, `api` and so on) and `triggerEntity()`. Fires after the line's chance, health and conditions passed. Canceling skips it and spends no cooldown |
 | `EntityDeathEvent` | A custom entity died. Says what it was, `killer()`, and `drops()`: Bukkit's live drop list, so editing it changes the loot. Not cancellable |
 | `PlayerLiquidEvent` | Somebody went into or came out of one of your liquids. Not cancellable |
 | `EmoteStartEvent` | An emote is about to start |
 | `EmoteEndEvent` | An emote ended, with the reason: finished, stopped, moved, damaged, quit, shutdown |
 | `EmoteRigSpawnEvent` | A rig's displays were spawned. Carries the new entity ids. Not cancellable |
-| `DialogOpenEvent` | A dialog is about to be put on a player's screen. `dialog()`, `values()`, and `followed()`: true when they reached it from the dialog they were in (a page, a move, a changed setting). Cancelling leaves their screen as it is |
-| `DialogClickEvent` | A player clicked something in a dialog that runs a command. `dialog()`, `values()` and `command()` (no leading slash). Cancelling stops the command running |
+| `DialogOpenEvent` | A dialog is about to be put on a player's screen. `dialog()`, `values()`, and `followed()`: true when they reached it from the dialog they were in (a page, a move, a changed setting). Canceling leaves their screen as it is |
+| `DialogClickEvent` | A player clicked something in a dialog that runs a command. `dialog()`, `values()` and `command()` (no leading slash). Canceling stops the command running |
 | `DialogSlotMoveEvent` | A player is about to move a stack in a dialog's item slots. `dialog()`, `from()` and `to()` (slot keys like `inv/5`, `ender/3`, `api.bank/0`), `moving()` and `onto()` (the stack already there). The only dialog event: a button click runs a command instead, see [When a player clicks a button](#when-a-player-clicks-a-button) |
 
 **The engine decides whether something can physically happen, never whether it
@@ -1941,7 +1941,7 @@ are deliberately arbitrating with another plugin, and treat `MONITOR` as
 read-only (a cancel there still counts).
 
 Vanilla's own events are different. The engine listens to those at `LOW` with
-`ignoreCancelled = true`, so cancelling a `PlayerInteractEvent` at `LOWEST`
+`ignoreCancelled = true`, so canceling a `PlayerInteractEvent` at `LOWEST`
 stops a custom item's use before RP Engine sees the click, which is usually
 what a protection plugin wants.
 

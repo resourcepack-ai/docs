@@ -258,7 +258,7 @@ A state's `model:` can name a model you never made an item for, such as
 goes for `playing-model` and the `connects` shapes below. If there is no item
 or model by that name, the build says so.
 
-A piece turns about its own centre and then moves, so a door hinged at one edge
+A piece turns about its own center and then moves, so a door hinged at one edge
 is a quarter `turn` plus an `offset` that puts that edge back where it was. It
 swings over a quarter of a second. Its hitbox, and what a vehicle drives into,
 stay where it was placed.
@@ -379,5 +379,5 @@ one block. Use those for crops you want to farm in rows.
 
 `ModelInfo` says what a piece's `place:` block declared: `storage()`,
 `jukebox()`, `states()` and `grow()`. The engine handles every click itself;
-cancelling `ModelInteractEvent` stops all of it. Growing fires neither
+canceling `ModelInteractEvent` stops all of it. Growing fires neither
 `ModelBreakEvent` nor `ModelPlaceEvent`. See [the plugin API](/rp-engine/api).

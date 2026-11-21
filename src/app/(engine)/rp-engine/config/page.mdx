@@ -179,7 +179,7 @@ pack:
     options: "packsquash/packsquash.toml"
 ```
 
-PackSquash's options are in `packsquash.toml`, written the first time it runs. The defaults keep font and 3D armour textures exactly as they are, because RP Engine's HUDs, dialogs, text effects and 3D armour read exact colours from them. Sounds are re-encoded, which is where most of the saving is; the file says how to stop that.
+PackSquash's options are in `packsquash.toml`, written the first time it runs. The defaults keep font and 3D armor textures exactly as they are, because RP Engine's HUDs, dialogs, text effects and 3D armor read exact colors from them. Sounds are re-encoded, which is where most of the saving is; the file says how to stop that.
 
 A pack is only squashed again when it changes, so a restart is as quick as before. A pack that comes out no smaller, or that PackSquash would have left files out of, is sent unsquashed and the console says why. On `/rp reload`, a squash that takes longer than 20 seconds finishes in the background and is used from the next reload.
 
@@ -216,9 +216,9 @@ chat:
     success: "#55ff55"
 ```
 
-Every line the plugin writes starts with `[prefix]`, and the colours are
-yours to change so it matches your server. `accent` colours names, counts and
-codes, and the headings in `/rp` help. Colours are hex, with or without the
+Every line the plugin writes starts with `[prefix]`, and the colors are
+yours to change so it matches your server. `accent` colors names, counts and
+codes, and the headings in `/rp` help. Colors are hex, with or without the
 `#`; anything else falls back to the default.
 
 ## Icons in chat
@@ -326,7 +326,7 @@ vehicles:
 | `debug-seats` | `false` | Once a second, reports where each rider actually ended up against where the plugin put them. For tracking down one seat that is out while others are fine |
 | `push-players` | `false` | Whether a moving vehicle shoves players out of the way. Mobs are always shoved, and vehicles always stop at walls |
 | `collide` | `true` | Whether vehicles bump into each other. The result depends on speed, angle and each vehicle's weight. Turn it off for a race track or a crowded car park |
-| `speedometer` | `true` | Shows the driver's speed above the hotbar in km/h, yellow while the tyres slide. A single vehicle can opt out; see [the speedometer](/rp-engine/vehicles#the-speedometer) |
+| `speedometer` | `true` | Shows the driver's speed above the hotbar in km/h, yellow while the tires slide. A single vehicle can opt out; see [the speedometer](/rp-engine/vehicles#the-speedometer) |
 | `mount-hint` | `true` | Tells somebody the controls once when they get in. Passengers are told which seat they took either way |
 | `seat-rig` | `true` | Shows occupants sitting or standing in their emote rig, even when the pack gives the seat no emote. Off shows ordinary players, which costs fewer entities on a full vehicle |
 
@@ -346,7 +346,7 @@ frozen tripwire updates (`block-updates.disable-tripwire-updates` in
 `config/paper-global.yml`): 32 if it has, 2 if not. `auto` reads Paper's
 setting. `true` or `false` states it outright, for a server whose Paper config
 lives somewhere else. Saying `true` when tripwire is not frozen makes
-neighbouring plants turn into each other.
+neighboring plants turn into each other.
 
 ## HUD overlays
 

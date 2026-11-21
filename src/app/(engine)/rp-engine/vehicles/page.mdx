@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Vehicles",
   description:
-    "A model people ride (cars, boats, helicopters and aeroplanes) with up to eight seats, per-state animation and sound, rider capes, particles, and a plugin API.",
+    "A model people ride (cars, boats, helicopters and airplanes) with up to eight seats, per-state animation and sound, rider capes, particles, and a plugin API.",
 };
 
 # Vehicles
@@ -92,7 +92,7 @@ anything except the road.
   stopped. In the air, S only reverses once you are back on the ground.
 - **Space is a drift button.** Pull the handbrake in a corner and the rear lets
   go; ease off and get back on the power to recover. Corner harder than the
-  tyres can hold and the car runs wide.
+  tires can hold and the car runs wide.
 - **`jump: true`** makes space jump (about a block and a half) instead of
   braking, for a dirt bike or a skateboard. On water it pops off the surface,
   like a surfboard off a wave.
@@ -140,7 +140,7 @@ are passengers 1, 2, 3 in the order written.
 | `role` | `driver` or `passenger` (the default) |
 | `x`, `y`, `z` | Right, up from the base, and forward, in blocks. They turn with the vehicle. Each is 0 if left out, and at most 8 |
 | `yaw` | Turns the occupant as they sit down, degrees clockwise from the vehicle's heading. A rear-facing bench is `yaw: 180` |
-| `pose` | `sitting` (default): the point is where their backside goes. `standing`: where their feet go. About a metre apart |
+| `pose` | `sitting` (default): the point is where their backside goes. `standing`: where their feet go. About a meter apart |
 | `name` | What the seat is called when somebody takes it |
 | `hidden` | `true` draws nobody in the seat |
 | `animations` | What the occupant's body does, per state. See [What the occupant does](#what-the-occupant-does) |
@@ -176,7 +176,7 @@ through a shallow ford, but deep water floods it: it wallows to a stop and
 sinks.
 
 **`medium: air`** on its own is a helicopter: it lifts straight up, holds its
-height and never falls. Add a `flight:` block to make an aeroplane:
+height and never falls. Add a `flight:` block to make an airplane:
 
 ```yaml
 cessna:
@@ -206,14 +206,14 @@ about both.
 ## States
 
 At any moment a vehicle is in one or more of these states. A car coming off a
-kerb mid-corner is `airborne`, `turning` and `moving` at once.
+curb mid-corner is `airborne`, `turning` and `moving` at once.
 
 | State | When |
 |---|---|
 | `airborne` | Off the ground with nothing holding it up: a jump, a fall, or an aircraft in flight |
 | `turning` | Actually swinging round faster than a nudge (not just steering) |
-| `reversing` | Travelling backwards |
-| `moving` | Travelling forwards |
+| `reversing` | Traveling backwards |
+| `moving` | Traveling forwards |
 | `idle` | Stationary, or near enough |
 | `submerged` | Its base is in water |
 
@@ -346,7 +346,7 @@ rowing on `moving`.
 
 ### The speedometer
 
-The driver sees their speed above the hotbar in km/h, yellow while the tyres
+The driver sees their speed above the hotbar in km/h, yellow while the tires
 are sliding. `speedometer: false` turns it off for one vehicle (a skateboard
 or a horse has no dashboard), and `vehicles.speedometer: false` in
 [config.yml](/rp-engine/config#vehicles) turns it off for all of them. Nothing

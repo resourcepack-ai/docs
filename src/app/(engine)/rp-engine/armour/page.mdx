@@ -1,25 +1,25 @@
 export const metadata = {
-  title: "Armour",
+  title: "Armor",
   description:
-    "Any item worn on a body with its own art, on vanilla's own equipment path, plus 3D armour sets.",
+    "Any item worn on a body with its own art, on vanilla's own equipment path, plus 3D armor sets.",
 };
 
-# Armour
+# Armor
 
-Any item can be worn as armour, with your own art drawn on the player's body.
+Any item can be worn as armor, with your own art drawn on the player's body.
 There are two kinds:
 
-- **Flat armour**: a texture painted onto the player's body shape, like vanilla
-  armour. Set up below.
-- **3D armour**: a set built from cubes that stands off the body (pauldrons, a
-  tall crown). Made in [Studio](#3d-armour-from-studio) or
-  [in Blockbench](#3d-armour-in-your-content-folder).
+- **Flat armor**: a texture painted onto the player's body shape, like vanilla
+  armor. Set up below.
+- **3D armor**: a set built from cubes that stands off the body (pauldrons, a
+  tall crown). Made in [Studio](#3d-armor-from-studio) or
+  [in Blockbench](#3d-armor-in-your-content-folder).
 
-## Flat armour
+## Flat armor
 
 Add `armor:` to an [item](/rp-engine/items), saying which slot it goes in:
 
-![Custom armour sets worn by a player](/images/armor.webp)
+![Custom armor sets worn by a player](/images/armor.webp)
 
 ```yaml
 crown:
@@ -49,9 +49,9 @@ ruby_leggings:
   armor-art: armour/ruby_layer_2    # assets/textures/armour/ruby_layer_2.png
 ```
 
-An old-style armour layer sheet is exactly the picture the game wants: layer 1
+An old-style armor layer sheet is exactly the picture the game wants: layer 1
 for every slot except legs, layer 2 for legs. A file you put at the equipment
-path yourself wins over `armor-art`. This is how armour from
+path yourself wins over `armor-art`. This is how armor from
 [ItemsAdder](/rp-engine/itemsadder) and [Nexo or Oraxen](/rp-engine/nexo-oraxen)
 is worn without moving files.
 
@@ -68,7 +68,7 @@ crown:
 `namespace:name` means the PNG at
 `assets/<namespace>/textures/entity/equipment/<layer>/<name>.png`.
 
-### The model and the armour are separate
+### The model and the armor are separate
 
 `model:` is what the item looks like in a hand or a chest. `armor:` is what it
 looks like on a body. A crown can be a 3D model in your hand and a flat texture
@@ -76,21 +76,21 @@ on your head; the game draws the two separately. An item with `armor:` and no
 `model:` looks like its vanilla material in the inventory and wears your art.
 
 <Callout type="warning" title="Needs Minecraft 1.21.4">
-  Custom armour art uses vanilla's equipment system, which arrived in 1.21.4.
+  Custom armor art uses vanilla's equipment system, which arrived in 1.21.4.
   On an older server the item still works, the plugin says which case you are
-  in at startup, and each build lists the armour that will look vanilla:
+  in at startup, and each build lists the armor that will look vanilla:
 
-  - **below 1.21.2**, only materials that are already armour can be worn, so
+  - **below 1.21.2**, only materials that are already armor can be worn, so
     `armor:` on a stick does nothing;
   - **on 1.21.2 and 1.21.3**, any item can be worn but shows vanilla artwork.
 
   See [Minecraft versions](/rp-engine/versions).
 </Callout>
 
-## 3D armour from Studio
+## 3D armor from Studio
 
-Flat armour is a texture on the player's body shape. A
-[3D armour set from Studio](/armor#3d-armor) is built from cubes instead
+Flat armor is a texture on the player's body shape. A
+[3D armor set from Studio](/armor#3d-armor) is built from cubes instead
 (pauldrons that stand off the shoulder, a crown taller than the head), and RP
 Engine puts it on the player. [Push the pack to your server](/testing/plugin) from Studio, then:
 
@@ -101,10 +101,10 @@ Engine puts it on the player. [Push the pack to your server](/testing/plugin) fr
 /rp armor self                                # see your own pieces in F5
 ```
 
-The pieces are ordinary items. Wear them however you wear armour (shift-click,
+The pieces are ordinary items. Wear them however you wear armor (shift-click,
 drag into a slot, a dispenser) and take them off the same way.
 
-## 3D armour in your content folder
+## 3D armor in your content folder
 
 You can also make a set yourself in Blockbench and put it in `armor3d/`:
 
@@ -121,7 +121,7 @@ santa:
 That is the set `mypack:santa`. The model is a `.bbmodel` project built on
 Blockbench's player template: feet at y = 0, 16 units to a block. It can face
 either way: front toward +Z with the right arm on the −X side, or front toward
-−Z with the left arm on the −X side (how the template and Bedrock armour
+−Z with the left arm on the −X side (how the template and Bedrock armor
 templates stand). RP Engine works out which from where the arms and legs are.
 Put cubes in groups named after the bone they ride:
 
@@ -137,12 +137,12 @@ set. A group inside a bone (a `cape` inside `body`) rides that bone. A group
 with any other name is a load warning. Cubes and groups can be rotated any way
 you like.
 
-### Armour points and durability
+### Armor points and durability
 
 Needs RP Engine 0.2.37 or newer.
 
-The pieces `/rp armor give` hands out only look like armour: they give no
-armour points. To make a 3D set protect its wearer, write the pieces as
+The pieces `/rp armor give` hands out only look like armor: they give no
+armor points. To make a 3D set protect its wearer, write the pieces as
 ordinary [items](/rp-engine/items) and add `armor3d:` with the set's id. The
 item keeps everything it already has (name, attributes, durability, recipes)
 and wears that set's piece for its `armor:` slot:
@@ -179,7 +179,7 @@ Only the client's shaders can draw a mesh (see below), so:
 - A mesh on the head needs `shader-helmet: true`.
 - Mesh faces are not nudged apart the way cube faces are, so keep two of them
   out of one plane.
-- Each bone costs one armour layer per four faces, drawn every frame. A few
+- Each bone costs one armor layer per four faces, drawn every frame. A few
   hundred faces per bone is a lot.
 
 **`shader-helmet: true`** hands the helmet to the shaders too, instead of the
@@ -187,13 +187,13 @@ game drawing it as a head item. It can then be anything the body can (any
 turn, meshes), but a player on a version the shaders don't cover sees no
 helmet at all.
 
-## How 3D armour is drawn
+## How 3D armor is drawn
 
 - **The helmet** is drawn by the game, as an item on the head. It follows the
   head exactly, on every client. With `shader-helmet: true` the shaders draw it
   instead.
 - **On Minecraft 26.1 to 26.3**, the pack's shaders draw the rest of the set as
-  part of the player's body, so it never lags and also shows on armour stands.
+  part of the player's body, so it never lags and also shows on armor stands.
   RP Engine checks each viewer's version (through ViaVersion when it is
   installed) and spawns nothing extra for these players.
 - **Every other viewer** sees the body pieces as display entities, posed onto
@@ -204,7 +204,7 @@ helmet at all.
 <Callout type="warning" title="If the pack stops loading when you add a set">
 The shaders need a graphics card and driver with OpenGL 4.5 and subgroup
 support. A player whose computer lacks them (older integrated graphics, or a
-Mac) does not just miss the armour: Minecraft rejects the whole pack and shows
+Mac) does not just miss the armor: Minecraft rejects the whole pack and shows
 "Resource reload failed". Add `shaders: false` to the set (RP Engine 0.2.45 or
 newer) and the pack carries no shader for it, so it loads for everybody and
 every player sees the display entities instead. Leave `displays` on when you
@@ -216,20 +216,20 @@ What to expect with display entities:
 - Swimming, crawling, gliding and sleeping hide the body pieces until you stand
   up again.
 - You do not see your own body pieces unless you turn on `/rp armor self`.
-- Anyone who cannot see you cannot see your armour either, so vanished staff
+- Anyone who cannot see you cannot see your armor either, so vanished staff
   stay vanished.
 - A set is roughly ten to forty entities per player wearing it. They are never
   saved and never collide with anything.
 
 <Callout type="note" title="Needs Minecraft 1.21.4">
-  3D armour pieces are named with a string `custom_model_data`, which arrived in
+  3D armor pieces are named with a string `custom_model_data`, which arrived in
   1.21.4. On an older server the sets still load and are checked, nothing is
   built into the pack, and `/rp armor` says why.
 </Callout>
 
-## Why 3D armour lags behind
+## Why 3D armor lags behind
 
-Armour drawn by the pack's shaders is part of the player's body, so it cannot
+Armor drawn by the pack's shaders is part of the player's body, so it cannot
 lag. If the body pieces trail behind a player, that player is being shown the
 display entities instead. The helmet gives it away: the game draws it, so it
 stays on the head while the rest trails.
@@ -268,25 +268,25 @@ A player gets display entities when:
 
 Display entities themselves trail when:
 
-- **You are watching your own armour** (`/rp armor self`, in F5). Your game
+- **You are watching your own armor** (`/rp armor self`, in F5). Your game
   moves your body the moment you press a key, and the server hears about it a
   ping later. RP Engine places your copy ahead of you by your ping, so it keeps
   up while you move steadily and is off for about one ping after you start,
   stop or turn. Other players do not see this: your body reaches them as late
-  as the armour does.
+  as the armor does.
 - **Your ping is high, or you move very fast.** RP Engine allows for at most
   0.4 seconds of ping and never puts your copy more than 1.5 blocks ahead, so
   beyond that it falls behind.
 - **The server is lagging** (running below 20 TPS). The server moves the
-  display entities every tick, so when ticks run late, the armour arrives late
+  display entities every tick, so when ticks run late, the armor arrives late
   and in jumps.
 
 ## On Bedrock
 
-Flat armour reaches Bedrock players through [Geyser](/rp-engine/bedrock),
+Flat armor reaches Bedrock players through [Geyser](/rp-engine/bedrock),
 drawn from the same equipment texture.
 
-3D armour from Studio does too: the Bedrock pack carries each piece as a
-Bedrock worn model. RP Engine only recognises pieces it handed out itself, so a
+3D armor from Studio does too: the Bedrock pack carries each piece as a
+Bedrock worn model. RP Engine only recognizes pieces it handed out itself, so a
 piece from a plain `/give` shows as paper on Bedrock until it is given again
 with `/rp armor give` or `/rp armor wear`.

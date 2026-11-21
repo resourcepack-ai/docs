@@ -38,13 +38,13 @@ folder, or make one in [Studio](#effects-from-studio).
 
 ## How it works
 
-Each effect is tied to **one exact colour**. Any text in that colour wears the
-effect, however it got there; `<fx:fire>` just writes that colour for you. So
-any plugin that can colour text can use an effect. `/rp effects` shows each effect's colour, so you can write it as
+Each effect is tied to **one exact color**. Any text in that color wears the
+effect, however it got there; `<fx:fire>` just writes that color for you. So
+any plugin that can color text can use an effect. `/rp effects` shows each effect's color, so you can write it as
 `&#fc80f8` in a plugin that takes hex, `<#fc80f8>` in MiniMessage, or
 `{"color":"#fc80f8"}` in `/tellraw`.
 
-A player whose pack lacks the effect sees the text in that colour: very nearly
+A player whose pack lacks the effect sees the text in that color: very nearly
 white.
 
 It works on text standing in the world too: holograms, text displays, signs
@@ -75,13 +75,13 @@ rainbow:
 | `blaze` | Pixel flames licking up off every letter |
 | `frostbite` | Ice-blue letters with snow on top and icicles underneath |
 | `fishtank` | Each letter is a tank of water with a rolling surface |
-| `corrupted` | Bursts of glitching, colour splitting and dead pixels |
+| `corrupted` | Bursts of glitching, color splitting and dead pixels |
 
 ## Making your own effect
 
 Your own effect goes in the same `text-effects/` YAML as the presets. It is one
 GLSL (shader code) function. It is given a pixel of a letter and returns
-that pixel's colour:
+that pixel's color:
 
 ```yaml
 wobble:
@@ -106,14 +106,14 @@ What the function is given:
 | Field | What it is |
 |---|---|
 | `f.p` | Where in the letter this pixel is, in the letter's own pixels: 0 to 8 across and down |
-| `f.q` | The centre of the letter pixel `f.p` is in. Use it for a pixel-art look |
+| `f.q` | The center of the letter pixel `f.p` is in. Use it for a pixel-art look |
 | `f.o` | The letter's top-left on screen. One value per letter, so `sin(f.t - f.o.x * 0.3)` gives each letter its own phase |
 | `f.g` | This pixel's place on screen, for a pattern across the whole word |
 | `f.t` | Seconds |
 | `f.w` | How wide the letter's ink is, 1 to 8 |
 
 And what it can call: `G(p)` (the letter's alpha at `p`, 0 outside it),
-`N4(p)` and `N8(p)` (the most of the neighbours), `inkDist(p)`, the hashes
+`N4(p)` and `N8(p)` (the most of the neighbors), `inkDist(p)`, the hashes
 `h1`, `h2` and `h3`, `vnoise` and `fbm`, `hsv(h, s, v)`, `over(a, b)` and
 `inkShadow(colour, alpha, shadowAlpha)`. An effect draws its own shadow, which
 is why the example reads the letter twice.
@@ -146,7 +146,7 @@ false` in [`config.yml`](/rp-engine/config#text-effects-in-chat) turns it off.
 ## Effects from Studio
 
 A Text Effect made in Studio needs nothing on the server: the pack carries it,
-and its colour works from any plugin. RP Engine also learns its name when the
+and its color works from any plugin. RP Engine also learns its name when the
 pack is synced or distributed, so `<fx:studio:<id>>` works too, and so does
 the bare name when no content folder has an effect called the same thing.
 Studio's Text Effect page shows the exact tag.
@@ -157,8 +157,8 @@ Studio's Text Effect page shows the exact tag.
   `<fx:mypack:fire>` or `<fx:studio:fire>` to choose.
 - `</fx>` ends it. Without one, the effect runs to the end of the text, and a
   second `<fx:...>` ends the first.
-- Bold and other formatting inside an effect are fine. A **colour** code
-  inside one (`&c`) is that colour and no effect, because the colour is the
+- Bold and other formatting inside an effect are fine. A **color** code
+  inside one (`&c`) is that color and no effect, because the color is the
   effect.
 - A tag naming no effect is left as written, so a typo stays visible.
 
@@ -177,10 +177,10 @@ check that your pack has them.
 ## Limits
 
 - A pack can tell **32** effects apart. Studio's effects and a content
-  folder's take colours from opposite ends, so on one server they do not
+  folder's take colors from opposite ends, so on one server they do not
   collide.
-- An effect keeps its colour for good, even after it is deleted, because items
-  already named in it carry that colour. Delete its line in
+- An effect keeps its color for good, even after it is deleted, because items
+  already named in it carry that color. Delete its line in
   `plugins/RPEngine/text-effect-ids.properties` to free it.
 - **One text shader per screen.** A player's game draws only one pack's text
   shader. If a player has a Studio pack with its own shader objects or text

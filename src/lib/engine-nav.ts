@@ -154,7 +154,7 @@ export const engineNav: EngineGroup[] = [
       {
         title: "Vehicles",
         href: "/rp-engine/vehicles",
-        description: "A model people ride: cars, boats, helicopters and aeroplanes, with up to eight seats.",
+        description: "A model people ride: cars, boats, helicopters and airplanes, with up to eight seats.",
         keywords: ["vehicle", "car", "boat", "plane", "aeroplane", "helicopter", "drive", "seat",
           "passenger", "driver", "flight", "takeoff", "scale", "particles", "fuel"],
       },
@@ -187,7 +187,7 @@ export const engineNav: EngineGroup[] = [
         ],
       },
       {
-        title: "Armour",
+        title: "Armor",
         href: "/rp-engine/armour",
         description: "Any item worn on a body, with its own art.",
         keywords: ["armor", "armour", "equipment", "helmet", "leggings", "humanoid", "trim"],

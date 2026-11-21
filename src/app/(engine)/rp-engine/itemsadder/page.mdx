@@ -31,7 +31,7 @@ plugins/RPEngine/content/
 
 Both layouts work, and art kept in folders of its own (`textures/<set>/`
 rather than `textures/item/`) is found too. There is nothing to turn on: a
-file is recognised by its own shape (an `info:` block beside `items:`,
+file is recognized by its own shape (an `info:` block beside `items:`,
 `font_images:` or `recipes:`). So one of their files also works inside a pack
 of yours, which is a handy way to move over a piece at a time.
 
@@ -166,15 +166,15 @@ included.
 you write beside it, use `assets/`, as the [content folder](/rp-engine/content)
 page describes.
 
-**Armour art stays where it is.** A set's `layer_1` and `layer_2` are exactly
+**Armor art stays where it is.** A set's `layer_1` and `layer_2` are exactly
 the two pictures [vanilla's equipment path](/rp-engine/armour) draws (body and
 leggings), so the build serves them there for you. That needs Minecraft 1.21.4;
-on an older server the armour is still worn but draws with vanilla art, and the
+on an older server the armor is still worn but draws with vanilla art, and the
 build names every piece that will.
 
 What does not come across from a set, each a warning naming the item: an
 **animated** layer, which is a strip of frames a worn layer cannot play (save one
 frame as `assets/textures/entity/equipment/humanoid/<id>.png`, or
 `humanoid_leggings/` for legs); a `use_color` **tint** and **emissive** layers,
-which needed ItemsAdder's shaders; and **colour-only** armour, which has no art
+which needed ItemsAdder's shaders; and **color-only** armor, which has no art
 and is worn as plain leather.
