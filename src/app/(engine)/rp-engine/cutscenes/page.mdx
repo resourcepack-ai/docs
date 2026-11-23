@@ -1,0 +1,142 @@
+export const metadata = {
+  title: "Cutscenes",
+  description:
+    "An addon for RP Engine: select an area, build a cutscene in a 3D editor in your browser with people, creatures, models, cameras, transitions and dialogue, and play it for your players.",
+};
+
+# Cutscenes
+
+An **addon** for [RP Engine](/rp-engine): a plugin that installs into the
+engine and adds one thing. This one is cutscenes.
+
+You select an area of your world with a wand and open it in a 3D editor in
+your browser, where it looks exactly as it does in game, your own blocks and
+models included. You put people, creatures, models, vehicles and cameras in
+it, animate them on a timeline, add transitions, subtitles, dialogs, sounds and
+effects, and press **Send to server**. Players watch through your cameras,
+see a figure wearing their own skin act the scene out, and nobody outside the
+scene sees any of it.
+
+## Installing
+
+It needs **Spigot or Paper 1.21.4 or newer**, **Java 21**, and **RP Engine
+0.2.92 or newer**.
+
+<Steps>
+  <Step title="Drop it in">
+    Put `RPE-cutscenes.jar` in `plugins/` beside `RPEngine.jar` and start the
+    server. Cutscenes copies its walk, run and gesture animations into
+    `plugins/RPEngine/content/cutscenes/` and the engine reloads once.
+  </Step>
+  <Step title="Select an area">
+    As an op, run `/cutscene wand`. Left-click a block for one corner and
+    right-click another for the opposite corner. The box is drawn in
+    particles and its size shows on your action bar. A WorldEdit selection
+    works too.
+  </Step>
+  <Step title="Make the scene">
+    `/cutscene create intro`, then `/cutscene edit intro`. Click the link in
+    chat.
+  </Step>
+  <Step title="Play it">
+    Press **Send to server** in the editor, then `/cutscene play intro`.
+  </Step>
+</Steps>
+
+An area is at most 128 × 96 × 128 blocks by default (`area.max-size` in
+`config.yml`, up to 256 × 128 × 256), because the editor draws every block of
+it.
+
+## The editor
+
+The editor shows your area in 3D, seen from outside, with everything in the
+scene posed at the playhead. It uses your server's own resource packs, so
+custom blocks and models look as they do in game. The link lasts three hours.
+
+| Part | What it does |
+|---|---|
+| **Library** (left) | Everything you can add, from what your server has: NPCs, the Viewer, custom mobs, models, vehicles, items, vanilla mobs, cameras, transitions, dialogs, HUDs, VFX, sounds, music, world changes and markers. Click to add, or drag into the world to put it where it lands |
+| **View** (middle) | Drag to turn, right-drag to pan, scroll to zoom. **G** moves the selected thing and **R** turns it; letting go sets a key at the playhead. **C** looks through the live camera, with the subtitles, titles, fades and letterbox drawn over it |
+| **Timeline** (bottom) | Camera cuts on top, then a row per camera and per actor with its keys and clips, then the screen and the world rows. Drag a key or a clip to retime it, drag a clip's right edge to change its length, drag the gold line to change the scene's length |
+| **Outliner and inspector** (right) | Every actor and camera, and every field of whatever is selected. Positions are in world coordinates, as F3 shows them |
+
+**Space** plays and pauses, **K** sets a key at the playhead, **Ctrl+Z** undoes,
+**Ctrl+D** duplicates and **Delete** deletes. The editor saves as you work, but
+nothing reaches your server until you press **Send to server**. **Play on
+server** plays the scene as it stands for you in game, without saving it.
+
+## What goes in a scene
+
+| Thing | In game |
+|---|---|
+| **NPC** | A player figure with any skin: a username or an uploaded skin. It walks and runs on its own as it moves along its path, plays any emote, holds items, rides vehicles, turns its head toward an actor or a camera, and you can pose it bone by bone |
+| **Viewer** | The same, wearing the skin of whoever is watching. This is how a player sees themselves in the scene |
+| **Custom mob, model, vehicle, item** | Your RP Engine content, moved along its path, playing its own animations |
+| **Vanilla mob** | A real mob with its AI off. It walks because it moves, and can swing and flinch |
+| **Camera** | A path with its own easing, a target to look at or follow, a zoom and a shake. Cut between cameras on the camera row |
+| **Screen** | Transitions, subtitles (letter by letter, with a voice sound), titles, fades, a letterbox, HUDs, and dialogs that can pause the scene |
+| **World** | Sounds, music, VFX, particles, block changes the viewers see, the time of day and weather they see, console commands, and events for other plugins |
+
+Everything a scene spawns is seen only by its viewers, unless you set an actor
+to **Everyone nearby**. While a scene plays, its viewers are hidden from
+everybody else and, with **Hide other players**, see nobody else themselves.
+
+## Playing a scene
+
+```
+/cutscene play intro                     for yourself
+/cutscene play intro Steve,Alex          for them, together
+/cutscene play intro @a                  for everybody online
+/cutscene play intro radius:10           for everybody within 10 blocks of you
+/cutscene stop [player|all]              take somebody out of a scene
+/cutscene skip                           leave the scene you are watching
+```
+
+Viewers become spectators looking through the scene's camera and are put back
+exactly as they were when it ends: where they stood, their game mode, flight,
+health, food, effects and held slot. That is written to disk before anything
+changes, so a viewer is put back even if the server stops mid-scene. Holding
+sneak for a second skips a scene that allows it.
+
+A scene can also start on its own: when a player walks into a box, when a
+player joins, or when a player right-clicks an entity tagged
+`cutscene:<scene id>`. Each can fire once per player, for that player alone or
+for everybody near them, and can need a permission.
+
+## Choices
+
+A dialog can pause the scene until the viewer answers. Give its buttons the
+command `/cutscene jump <marker>`, with a marker you set on the timeline, and
+the scene carries on from that marker. That is how a choice branches a scene.
+
+## Permissions
+
+| Node | Default | What |
+|---|---|---|
+| `cutscenes.admin` | op | Everything below |
+| `cutscenes.player` | everybody | `cutscenes.skip` and `cutscenes.jump` |
+| `cutscenes.wand`, `cutscenes.pos1`, `cutscenes.pos2` | op | Selecting an area |
+| `cutscenes.create`, `cutscenes.delete`, `cutscenes.resize` | op | Making and changing scenes |
+| `cutscenes.list`, `cutscenes.info`, `cutscenes.area` | op | Looking at scenes |
+| `cutscenes.edit` | op | Opening the editor |
+| `cutscenes.play`, `cutscenes.play.others` | op | Playing a scene for yourself, or for others |
+| `cutscenes.stop`, `cutscenes.stop.others` | op | Stopping your own scene, or somebody else's |
+| `cutscenes.reload` | op | Re-reading `config.yml` and every scene |
+
+## What it cannot do
+
+- **The field of view cannot be set** from a server, so a zoom moves the
+  camera forward instead.
+- **There is no camera roll.** A spectator's view only turns and tilts.
+- **A vanilla mob cannot be posed bone by bone.** Use a custom mob or a model
+  for that.
+- **The editor's lighting is approximate.** It shades blocks by the way they
+  face; Play on server shows the real thing.
+- **Blocks the game draws in code** (chests, signs, beds, banners, heads) are
+  boxes in the editor.
+- **Bedrock players (Geyser) are untested**, and Folia is not supported yet.
+- A new NPC skin is added to RP Engine's rigs pack, which sends every player
+  the pack again. It waits until no scene is playing.
+
+For plugin developers, the addon has an API: play a scene, seek, jump to a
+marker, and events for start, end, markers and custom events.

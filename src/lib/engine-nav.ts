@@ -463,6 +463,13 @@ export const engineNav: EngineGroup[] = [
         keywords: ["addon", "gokarts", "go kart", "kart", "karts", "racing", "race", "track", "circuit", "drift",
           "minigame", "bots", "/kart", "vehicle"],
       },
+      {
+        title: "Cutscenes",
+        href: "/rp-engine/cutscenes",
+        description: "Cutscenes made in a 3D editor in your browser: people, creatures, cameras, transitions and dialogue on a timeline.",
+        keywords: ["addon", "cutscene", "cutscenes", "cinematic", "camera", "timeline", "keyframe", "npc", "story",
+          "editor", "/cutscene", "mine-imator", "dialogue", "subtitle"],
+      },
     ],
   },
   {
