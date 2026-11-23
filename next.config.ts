@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
    * Security response headers.
    *
    * The same set studio sends from its Worker (see
-   * ../studio/src/lib/security-headers.ts, which has the reasoning) — this app
+   * ../studio-engine/src/lib/security-headers.ts, which has the reasoning) — this app
    * has no custom worker branch to hang them off, so they go through Next's own
    * `headers()`.
    *
