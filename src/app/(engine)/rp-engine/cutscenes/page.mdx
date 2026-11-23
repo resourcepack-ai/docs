@@ -65,14 +65,44 @@ custom blocks and models look as they do in game. The link lasts three hours.
 nothing reaches your server until you press **Send to server**. **Play on
 server** plays the scene as it stands for you in game, without saving it.
 
+## The AI director
+
+Press **AI** in the editor's header and describe the cutscene, or what to
+change in it: *"a villager greets the player at the door and shows them the
+map"*, *"slow orbit around the king here"*, *"write their argument as
+subtitles"*. The AI writes the scene back: who is in it and where they walk,
+what they do, what they say, the cameras and cuts, sounds, weather and fades.
+It knows your area's floors and walls and uses only what your server has, and
+anybody it puts in the scene is set down on the nearest real floor. The change
+is one step, so **Ctrl+Z** takes it back.
+
+The AI runs on your ResourcePack AI account, not on the server: sign in to
+Studio in the same browser (the editor offers the button) and it uses your AI
+Credits. A request costs what it uses, about 35 credits for most and never more
+than 100, and failed ones are given back. The same account can draw an NPC a
+new skin from a description (**Make a skin with AI**, under the NPC's skin),
+which is also kept in your Skins.
+
+## Cameras
+
+| Tool | What it does |
+|---|---|
+| **Fly** (**P**) | Moves the selected camera by hand, seen through it: **WASD** across, **E** and **Q** up and down, drag to look, **Shift** to go faster, the wheel to change speed. **K** keys the view at the playhead, and **R** records while the scene plays (a key every quarter second, as one step you can undo). **Esc** lands |
+| **Camera move** (in the camera's inspector) | Orbit, dolly in or out, crane up or down, pan, truck, or rise and reveal, about an actor (followed as it moves) or what the camera looks at, for as long as you say, eased in and out, from the playhead |
+| **Points at** | Keeps an actor in frame, or follows it from an offset. **Lag** trails behind it, which makes a follow feel handheld |
+| **Blend** (on a camera cut) | Glides from the camera before into this one instead of cutting |
+| **Live camera** (corner) | While you orbit, the shot the viewer sees, in the corner of the view |
+
+Each key also has an ease, from **Linear** to **Smoother (cinematic)**.
+
 ## What goes in a scene
 
 | Thing | In game |
 |---|---|
-| **NPC** | A player figure with any skin: a username or an uploaded skin. It walks and runs on its own as it moves along its path, plays any emote, holds items, rides vehicles, turns its head toward an actor or a camera, and you can pose it bone by bone |
-| **Viewer** | The same, wearing the skin of whoever is watching. This is how a player sees themselves in the scene |
-| **Custom mob, model, vehicle, item** | Your RP Engine content, moved along its path, playing its own animations |
-| **Vanilla mob** | A real mob with its AI off. It walks because it moves, and can swing and flinch |
+| **NPC** | A player figure with any skin: a username, an uploaded skin or one the AI draws. It walks and runs on its own as it moves along its path (with **Match its stride** its legs keep pace with how fast it goes), can turn to face the way it walks, plays any emote, holds items, rides vehicles, turns its head toward an actor or a camera, and you can pose it bone by bone. Standing still it can sit, sneak, lie down or loop an emote of your choice |
+| **Viewer** | The same, wearing the skin of whoever is watching. This is how a player sees themselves in the scene. It can hold what the viewer is holding, and can be played by a stand-in skin when fewer people watch than the scene has Viewers |
+| **Custom mob, model, vehicle, item** | Your RP Engine content, moved along its path, playing its own animations, with a resting loop when no clip plays |
+| **Vanilla mob** | A real mob with its AI off. It walks because it moves, and can swing and flinch. It can be a baby, take any look the game has (a cat's coat, a villager's job, a sheep's colour, a slime's size), wear armour and hold items, sit or sleep, burn, be invisible, and make its own sounds |
 | **Camera** | A path with its own easing, a target to look at or follow, a zoom and a shake. Cut between cameras on the camera row |
 | **Screen** | Transitions, subtitles (letter by letter, with a voice sound), titles, fades, a letterbox, HUDs, and dialogs that can pause the scene |
 | **World** | Sounds, music, VFX, particles, block changes the viewers see, the time of day and weather they see, console commands, and events for other plugins |
@@ -130,6 +160,8 @@ the scene carries on from that marker. That is how a choice branches a scene.
 - **There is no camera roll.** A spectator's view only turns and tilts.
 - **A vanilla mob cannot be posed bone by bone.** Use a custom mob or a model
   for that.
+- **An NPC cannot wear armour or be made invisible** yet: it shows what it
+  holds. A vanilla mob can do both.
 - **The editor's lighting is approximate.** It shades blocks by the way they
   face; Play on server shows the real thing.
 - **Blocks the game draws in code** (chests, signs, beds, banners, heads) are
