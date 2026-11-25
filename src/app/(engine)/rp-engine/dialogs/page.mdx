@@ -167,6 +167,30 @@ command. After a server restart, page turns happen instantly on the client.
 always closes with Esc). `pause: true` pauses a single-player world, and only
 works with `close` or `wait_for_response`.
 
+## Hide button
+
+`hide-button: true` hides the button at the bottom of the dialog (0.2.93+), for
+one that closes another way: Esc, or a button of your own in the body. It works
+on a dialog with one button, or none (the hidden one then closes it, as Done
+would). With two or more buttons it does nothing, and `/rp reload` says so.
+
+<Callout type="warning" title="The button is still there">
+It is hidden, not removed: the game will not open a dialog without one. Esc
+still presses it, so does a click on the two pixels at the bottom middle where
+it sits, and the empty strip it sat in stays. A player who has not loaded the
+server's pack sees a thin sliver.
+</Callout>
+
+```yaml
+intro:
+  title: Welcome
+  body: [Press Esc when you are ready.]
+  hide-button: true
+  buttons:
+    - label: Ready              # never seen; Esc presses it
+      command: spawn
+```
+
 ## Click sounds
 
 The game makes no sound for a click on a dialog's picture, so RP Engine plays

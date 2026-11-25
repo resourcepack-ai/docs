@@ -174,6 +174,7 @@ shop:
 | `type:` | `notice`, `confirmation`, `multi_action` (or `menu`) or `links`. Leave it out and the buttons decide |
 | `columns:` | Buttons side by side. Default 2 |
 | `escape:` | Whether Escape closes it. Default `true` |
+| `hide-button:` | Hides the button at the bottom. It is still there. See [Hide button](#hide-button) |
 | `pause:` | Whether it pauses a single-player game. Default `false`. Ignored with `after: none` or `seamless` |
 | `after:` | What happens on screen when a button is pressed: `seamless`, `wait`, `close` or `none`. See [After a click](#after-a-click) |
 | `body:` | What is drawn above the inputs. See [Body](#body) |
@@ -190,6 +191,22 @@ with no button at all gets the game's Ok button). More buttons make a grid,
 
 For a yes/no screen, write `confirm:` and `cancel:` in place of `buttons:` (or
 say `type: confirmation`). `type: links` is the game's server links screen.
+
+### Hide button
+
+`hide-button: true` hides a notice's button (0.8.2+), for a dialog that closes
+another way: Escape, or a click in the body. It works with one button (or
+`exit:`), or none, when the hidden one closes it as Ok would. With more it does
+nothing and the console says so. It needs [the resource
+pack](#the-resource-pack), which is then built even with no drawn dialogs, and
+sent to a player the first time they open such a dialog.
+
+<Callout type="warning" title="The button is still there">
+It is hidden, not removed: the game will not open a dialog without one. Escape
+still presses it, so does a click on the two pixels at the bottom middle where
+it sits, and the empty strip it sat in stays. A player who has not loaded the
+pack sees a thin sliver.
+</Callout>
 
 ```yaml
 rules_decline:
@@ -720,8 +737,8 @@ closes the dialog and opens a new one, so the world flashes in between.
 
 All drawn dialogs share one small pack, which is sent alongside any pack your
 server already sends, not instead of it. It is only built once you have a drawn
-dialog, so a server that never uses `/de edit` never asks anybody to download
-anything.
+dialog (or a dialog with [`hide-button: true`](#hide-button)), so a server that
+never uses either never asks anybody to download anything.
 
 The plugin uploads the pack to ResourcePack AI's free pack host
 (`packs.resourcepack.ai`) and players download it from there, so there is
