@@ -440,7 +440,10 @@ item's real tooltip.
 A tooltip can hold [live values](#live-values), filled in for each player:
 `You have {coins} coins`, or a PlaceholderAPI placeholder written either way,
 `{vault_eco_balance}` or `%vault_eco_balance%`. **Insert a live value** under
-the tooltip picks one. An item slot's name and lore take them too.
+the tooltip picks one. An item slot's name and lore take them too. A value
+keeps its own color codes (`§6`, `&6`, `§x§f§f§8§8§0§0` or `&#ff8800`), so a
+balance PlaceholderAPI colors gold is gold in the tooltip too. The color stops
+where the value ends. A value with no color code takes the line's color.
 
 A tooltip holds up to 2,000 characters. A live value counts as one, however
 long its name is.
@@ -1133,6 +1136,7 @@ features need at least:
 | Several commands on one button | 0.2.51 | 0.6.7 |
 | Stay open redrawn after a button's commands | 0.2.57 | |
 | Scrolling a list (Start at) | 0.2.77 | 0.7.1 |
+| Color codes from a placeholder in a tooltip | 0.2.93 | 0.8.2 |
 
 On an older version the feature fails quietly: a bound control shows every
 state at once, a live bar is empty, a conditioned piece is drawn for everybody,
