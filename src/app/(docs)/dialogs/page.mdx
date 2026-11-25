@@ -975,6 +975,14 @@ can be duplicated. There is no dragging, shift-click or right-click, and keep
 such a dialog short enough not to scroll, since it redraws from the top.
 Plugins can refuse a move with `DialogSlotMoveEvent`.
 
+**Clicking a slot.** With **Players can move items** off, a grid showing the
+inventory, the ender chest or other storage can run something instead: set
+**When a slot is clicked** and every slot runs it. Write `{slot}` where the
+slot's number goes and each slot fills in its own, so `sell {slot}` tells your
+plugin which stack was clicked. In the inventory that is Bukkit's numbering
+(0 to 8 the hotbar, 9 to 35 above it); in any other grid it counts from 0, row
+by row.
+
 **Other storage.** A grid can also show:
 
 - **The item it opened from**, like a backpack. Give an item in RP Engine's
