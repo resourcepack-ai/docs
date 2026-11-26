@@ -6,8 +6,6 @@ export const metadata = {
 
 # Scoreboards
 
-![Three scoreboards: a dark rounded panel, one with a blue header and border, and one with a gold frame](/images/scoreboards.webp)
-
 A scoreboard is the sidebar on the right of the screen. Write its title and
 lines in YAML, put your [icons](/rp-engine/icons) and
 [rank tags](/rp-engine/rank-tags) in them, and give it a background of your
@@ -16,15 +14,17 @@ own in place of the game's gray box. There is no other plugin to install.
 ```yaml
 # scoreboards/main.yml
 main:
-  title: "&b&lMY SERVER"
+  title: "&a&lSURVIVAL"
   lines:
-    - "&f➜ Your rank"
-    - " %rpengine_tag% &f{name}"
+    - "%rpengine_tag% &f{name}"
     - ""
-    - "&f➜ Coins  &e%vault_eco_balance%"
-    - " :mypack:coin: &7{online} online"
+    - "&7Balance"
+    - ":mypack:coin: &e%vault_eco_balance%"
     - ""
-    - { text: "&7play.example.com", align: center }
+    - "&7Players online"
+    - "&f{online}&7/{max_online}"
+    - ""
+    - { text: "&8play.example.com", align: center }
   background:
     color: "#10121a"
     opacity: 78
