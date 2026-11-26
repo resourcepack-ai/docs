@@ -118,16 +118,15 @@ in. Your projects are kept in your browser.
 
 ![The mcgui.dev editor](/images/mcgui-editor.webp)
 
-There is no palette of buttons and pictures to drag in. You make a page by
-describing it to the AI, starting from a template, or writing the HTML, and
-then wire up its buttons by clicking them. Along the top:
+You can build a page by hand in **Design**, describe it to the AI, start from
+a template, or write the HTML. Along the top:
 
 | Control | What it does |
 | --- | --- |
 | **New** | A blank project, or one of your recent ones |
 | **Templates** | Start from Server menu, Shop, Server selector, Leaderboard, Rules or Style guide |
 | **Map** | Every page in the project as a card, with where each button goes |
-| **Page** | One page. Click anything on it to make it a link: to another page, **Go back**, **Close the page** or **Run a command**. **Try it** lets you click through it as a player would |
+| **Design** | One page, to build by dragging. See [Designing a page](#designing-a-page). **Try it** lets you click through it as a player would |
 | **Code** | The HTML and CSS beside a live preview. The line under the code says what won't work in MC GUI |
 | The AI bar | Describe a new page, or a change to the open one. **Minecraft** or **Modern** is the look it designs in, and you can attach a sketch or screenshot for it to copy (or paste one with Ctrl+V). Each request costs 10 AI Credits from your ResourcePack AI account |
 | **Export** | Download everything as a .zip for `plugins/MCGUI/pages/`, or just the open page |
@@ -138,6 +137,67 @@ In the pages list, **+** makes a new page: name it, say what's on it and press
 Confirm. Each page's menu can copy the `/mcgui open` command that opens it.
 The same editor is in Studio as a **Custom GUI**, kept in a pack on its GUIs
 tab.
+
+### Designing a page
+
+**Design** shows the page as a player sees it, with three panels round it:
+
+- **Add**, on the left: buttons, titles, panels, item slots, icons, progress
+  bars, tooltips, player heads, pictures, rows, columns, grids and more. Drag
+  one onto the page, or click it to add it to what is selected. A line shows
+  where it will land; let go on open space and it stays exactly there.
+- **Layers**: everything on the page as a tree. Click to select, drag to move
+  something into or out of a box, double-click a name to rename it.
+- **Saved**: pieces of your own. Select a button, a card or a whole panel and
+  **Save the selection** to use it again on any page of any project.
+
+Click anything to select it (click again to go inside it, Alt-click to pick
+exactly what is under the pointer). Drag it to move it, pull its handles to
+resize it, and double-click words to type into them. On the right you change
+the rest: what it says, what clicking it does in game (go to a page, go back,
+close, run a command as the player or the console, send a chat message, tell a
+plugin, open a website), its key, its sounds, size, layout, spacing, colours,
+border, text, and an animation as the page opens or one that repeats.
+
+**Placed: Free** takes something out of the layout so you can drag it anywhere
+over the rest, with guides that snap it to the edges and middles of what is
+round it. A **Free** area from Add is a box where everything dropped in stays
+where you put it.
+
+**Normal**, **Hover** and **Pressed** at the top of the right panel are three
+looks: pick **Hover** and change the colour, and that is how it looks under the
+player's pointer in game. **Lift**, **Grow**, **Brighten**, **White edge** and
+**Gold text** do it in one click, and **Animate hover and press** makes the
+change slide rather than jump.
+
+| Key | Does |
+| --- | --- |
+| Ctrl+D | Duplicate |
+| Ctrl+C, Ctrl+X, Ctrl+V | Copy, cut, paste, between pages too |
+| Ctrl+G, Ctrl+Shift+G | Group, ungroup |
+| Delete | Delete |
+| Arrows | Nudge something Free (Shift for further), or move it earlier or later |
+| Esc, Enter | Select the box it is in, or the first thing inside |
+| Ctrl+Z, Ctrl+Shift+Z | Undo, redo |
+| Space+drag, Ctrl+wheel | Pan, zoom |
+
+Everything you do is written into the page's HTML, so **Code**, the AI and
+your server all see the same page.
+
+### Editing live from the game
+
+```
+/mcgui edit [page]
+```
+
+opens your server's pages folder in mcgui.dev and gives you a link in chat
+(only you get it). Everything you change there is on the server a second later:
+open the page with `/mcgui open <page>`, or look at it on a wall, and watch it
+change as you drag things about. Naming a page that does not exist yet starts
+a blank one. `/mcgui edit stop` ends it, and it ends by itself after six hours.
+It needs the `mcgui.edit` permission (op by default) and the server to reach
+mcgui.dev. The header in the editor says **Live on** your server while it is
+connected.
 
 Press **Send to server** and you get an eight-letter code. On the server:
 
@@ -624,6 +684,7 @@ and action bar from the server side
 | `/mcgui list` | Every page, and where every screen is |
 | `/mcgui reload` | Reads the config and every page again |
 | `/mcgui import <code>` | Brings in pages from [mcgui.dev](#pages-from-mcguidev) |
+| `/mcgui edit [page]` · `edit stop` | Edits the pages folder [live in mcgui.dev](#editing-live-from-the-game) |
 | `/mcgui test wall\|view [cols] [rows] [player]` | A test picture on the wall you look at, or fullscreen |
 | `/mcgui fov <degrees>` | Tells the server your field of view, which it cannot read |
 | `/mcgui pointer [speed]` | Your pointer speed, 0.25 to 4 times the server's |
@@ -647,6 +708,7 @@ Pointing a command at another player needs that command's `.others` node too.
 | `mcgui.list` | `/mcgui list` | op |
 | `mcgui.reload` | `/mcgui reload` | op |
 | `mcgui.import` | `/mcgui import`, which writes files into the pages folder | op |
+| `mcgui.edit` | `/mcgui edit`, which writes each change from mcgui.dev into the pages folder | op |
 | `mcgui.test` | `/mcgui test` for yourself | op |
 | `mcgui.test.others` | `/mcgui test` for somebody else | op |
 | `mcgui.stats` | `/mcgui stats` | op |
