@@ -6,6 +6,8 @@ export const metadata = {
 
 # Scoreboards
 
+![Five scoreboards: the game's gray box with rounded corners, a green one with a header, a red match board, a parchment journal in a wooden frame, and a purple profile with an XP bar](/images/scoreboards.webp)
+
 A scoreboard is the sidebar on the right of the screen. Write its title and
 lines in YAML, put your [icons](/rp-engine/icons) and
 [rank tags](/rp-engine/rank-tags) in them, and give it a background of your
@@ -103,6 +105,21 @@ background:
 
 `background: true` is the default panel, and `background: "#1a1020"` is the
 default panel in that color.
+
+### The game's gray box, rounded
+
+To keep Minecraft's own look and only round the corners, use black at half
+opacity. No picture is needed:
+
+```yaml
+background:
+  color: "#000000"
+  opacity: 50
+  radius: 4
+```
+
+Keep `opacity` at 46 or more. Below that the panel is lighter than the game's
+own box, which then shows through behind the title.
 
 ### Your own picture
 
