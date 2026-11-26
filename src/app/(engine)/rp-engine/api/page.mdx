@@ -72,6 +72,7 @@ engine.shaderObjects(); // 3D shader objects: place them and drive them
 engine.armor();         // 3D armour sets, and putting them on people
 engine.sounds();        // custom sounds
 engine.music();         // background music: playlists, one per player
+engine.scoreboards();   // scoreboards: show one, hide one
 engine.icons();         // icons, and putting one into text
 engine.textEffects();   // Text Effects, and writing text in one
 engine.vfx();           // VFX: play one where somebody stands
@@ -99,6 +100,7 @@ engine.shaderObjects()  // 3D shader objects: place them and drive them
 engine.armor()          // 3D armour sets, and putting them on people
 engine.sounds()         // custom sounds
 engine.music()          // background music: playlists, one per player
+engine.scoreboards()    // scoreboards: show one, hide one
 engine.icons()          // icons, and putting one into text
 engine.textEffects()    // Text Effects, and writing text in one
 engine.vfx()            // VFX: play one where somebody stands
@@ -671,6 +673,40 @@ music.track(player)              // and the track
 when the boss dies. `play` returns false for an unknown id, `skip` when nothing
 is playing. Calling `stop` with nothing started silences the place's music
 until they leave that place. Main thread only, except `ids()` and `info()`.
+
+## Scoreboards
+
+A [scoreboard](/rp-engine/scoreboards) is the sidebar a pack declares in
+`scoreboards/`. Each player sees one: what your plugin showed them, otherwise
+the one for where they are.
+
+<CodeTabs labels={["Java", "Kotlin"]}>
+
+```java
+Scoreboards scoreboards = engine.scoreboards();
+scoreboards.show(player, questBoard);   // this one, wherever they are, until reset
+scoreboards.reset(player);              // back to the scoreboard of where they are
+scoreboards.setHidden(player, true);    // none at all, until shown again
+scoreboards.hidden(player);             // whether theirs is hidden
+scoreboards.showing(player);            // the one they are being shown, if any
+```
+
+```kotlin
+val scoreboards = engine.scoreboards()
+scoreboards.show(player, questBoard)    // this one, wherever they are, until reset
+scoreboards.reset(player)               // back to the scoreboard of where they are
+scoreboards.setHidden(player, true)     // none at all, until shown again
+scoreboards.hidden(player)              // whether theirs is hidden
+scoreboards.showing(player)             // the one they are being shown, if any
+```
+
+</CodeTabs>
+
+A line prints the values you publish with `overlays().set`, as a HUD does:
+`engine.overlays().set(player, "coins", "1,250")` fills `{coins}` the next time
+that player's scoreboard is filled in. `show` returns false for an unknown id
+and also un-hides the player's scoreboard. Main thread only, except `ids()`
+and `info()`. Needs RP Engine 0.2.94.
 
 ## HUD overlays
 

@@ -205,6 +205,13 @@ export const engineNav: EngineGroup[] = [
         keywords: ["hud", "overlay", "action bar", "boss bar", "mana", "health"],
       },
       {
+        title: "Scoreboards",
+        href: "/rp-engine/scoreboards",
+        description: "The sidebar, written in YAML, with a background of your own.",
+        keywords: ["scoreboard", "sidebar", "board", "background", "panel", "lines", "placeholder", "rank",
+          "logo", "nine-slice", "toggle"],
+      },
+      {
         title: "Dialogs",
         href: "/rp-engine/dialogs",
         description: "Menus the game draws itself: buttons, pages, a command of their own, per-player settings.",
