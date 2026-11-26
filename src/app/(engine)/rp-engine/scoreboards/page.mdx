@@ -30,7 +30,7 @@ main:
   background:
     color: "#10121a"
     opacity: 78
-    radius: 3
+    radius: 8
 ```
 
 Save it, run `/rp reload`, and every player sees it.
@@ -86,8 +86,8 @@ down its right. Every part is optional:
 background:
   color: "#0e1116"
   opacity: 82              # percent
-  radius: 4                # rounded corners, 0 to 16
-  padding: [5, 7, 5, 8]    # top, right, bottom, left. Or one number for all four
+  radius: 8                # rounded corners, 0 to 16
+  padding: [6, 8, 7, 9]    # top, right, bottom, left. Or one number for all four
   border: "#3b82f6"        # an outline
   header: "#1d4ed8"        # a band behind the title
   stripe: "#3b82f6"        # a stripe down the left edge
@@ -97,7 +97,7 @@ background:
 |---|---|---|
 | `color` | `#10121a` | The panel's color. `#rrggbbaa` sets its opacity too |
 | `opacity` | 78 | How solid it is, 0 to 100 |
-| `radius` | 3 | How round the corners are, in pixels. 0 is square |
+| `radius` | 3 | How round the corners are, in pixels, up to 16. 0 is square. The curve is smoothed, so a big one stays round |
 | `padding` | 5 | The room between the panel's edge and the text, in pixels |
 | `border` | none | An outline in this color. `border-width` (1) and `border-opacity` (100) adjust it |
 | `header` | none | A band of this color behind the title. `header-opacity` adjusts it |
@@ -115,8 +115,13 @@ opacity. No picture is needed:
 background:
   color: "#000000"
   opacity: 50
-  radius: 4
+  radius: 12
+  padding: 8
 ```
+
+A bigger `radius` wants more `padding`, or the title sits in the curve. The
+panel always keeps at least six tenths of the radius clear above and below the
+text, so a big radius makes it a little taller.
 
 Keep `opacity` at 46 or more. Below that the panel is lighter than the game's
 own box, which then shows through behind the title.
@@ -242,4 +247,5 @@ engine.overlays().set(player, "coins", "1,250");
 | 1.19.4 to 1.20.2 | The scoreboard in the game's gray box, with the red numbers down its right. Lines, icons and placeholders all work |
 | Bedrock players (Geyser) | The lines, without the background |
 
-Works on Spigot, Paper and Folia. Needs RP Engine 0.2.94 or newer.
+Works on Spigot, Paper and Folia. Needs RP Engine 0.2.94 or newer; smooth
+corners need 0.2.95.
