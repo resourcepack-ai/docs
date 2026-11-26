@@ -241,7 +241,7 @@ A body entry is a string (one line of text) or a map:
 | Key | What it does |
 |---|---|
 | `text:` | MiniMessage. A list is several lines. `width:` 1 to 1024, default 200 |
-| `item:` | An item id, drawn with `description:` beside it. Also takes `name:`, `lore:`, `amount:`, `model:` (an item model id), `custom-model-data:`, `glow:`, `tooltip:` (`false` turns off its hover tooltip), `decorations:` (`false` hides its count and durability bar), and `width:`/`height:` 1 to 256 |
+| `item:` | An item id, drawn with `description:` beside it. Also takes `name:`, `lore:`, `amount:`, `model:` (an item model id), `custom-model-data:`, `glow:`, `tooltip:` (`false` turns off its hover tooltip), `decorations:` (`false` hides its count and durability bar), and `width:`/`height:` 1 to 256. `api.<name>` is an item a plugin hands over: see [An item from your plugin](#an-item-from-your-plugin) |
 | `head:` | A player's name, drawn as their head |
 | `if:` | Only drawn when this holds. See [Conditions](#conditions) |
 | `for-each:` | Drawn once per row of a list. See [Lists and pages](#lists-and-pages) |
@@ -977,6 +977,31 @@ dialogs.registerList(this, "myplugin_quests", (viewer, ctx) -> quests.of(viewer)
   and `reload()`.
 
 Everything a plugin registers is dropped when it disables.
+
+### An item from your plugin
+
+A YAML dialog's body item, its icon, can be an item stack your plugin makes
+rather than an id: a custom item with its own components, a head with a
+texture, whatever a shop is selling. Register a name, and write
+`item: api.<name>` in the dialog. Anything after a colon is handed to you as
+an argument, placeholders filled, so one name answers every row of a list:
+
+```java
+dialogs.registerItem(this, "shop", (viewer, ctx, id) -> shop.icon(id));   // null leaves the entry out
+```
+
+```yaml
+body:
+  - item: "api.shop:{row.id}"
+    for-each: shop_stock
+    description: "{row.name} <gray>for {row.price}"
+```
+
+Your item is asked for each time the dialog is drawn, so `refresh` shows a new
+one. The entry's own `name:`, `lore:`, `amount:`, `model:`,
+`custom-model-data:` and `glow:` are put over it where it has them. On Paper
+every component of your item is shown; Spigot can only send its name, lore,
+model, custom model data, glint and a head's owner. Since 0.8.3.
 
 ### Your own items in a drawn dialog
 
