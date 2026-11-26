@@ -767,6 +767,26 @@ and `pack.url` says where you put it.
 Players with `dialogengine.pack.notify` are told the download address when the
 pack fails to load for them.
 
+### Other plugins' items
+
+A drawn dialog that shows a player's inventory draws each item as itself,
+including custom items from ItemsAdder, Nexo, Oraxen or a resource pack of your
+own (0.8.3+). While it builds the drawn pack, Dialog Engine reads the packs other
+plugins keep in their folders, draws every flat item in them (a layered tool
+too) and adds the pictures to the drawn pack. Each item shows the picture its
+item model and custom model data pick, as it does in the inventory.
+
+- A pack that is not in a plugin's folder, such as one your server sends from
+  `server.properties`, can be dropped into `plugins/DialogEngine/item-packs/`,
+  as a zip or a folder.
+- 3D items (models made of cubes) still show as a question mark, with their
+  real tooltip.
+- If a plugin rebuilds its pack while the server is running (`/iazip`), run
+  `/de reload` to pick up the change.
+- `pack.item-pictures: false` turns this off.
+
+The console says how many items it drew and from how many packs.
+
 ### Other plugins' shaders
 
 A drawn dialog that shows a player's head does it by replacing the game's text
@@ -874,6 +894,7 @@ Give them out with your permissions plugin as usual:
 | `pack.public-host` | blank | The address players download it from: your server's public address or domain |
 | `pack.url` | blank | Host the pack yourself and put its URL here. The built-in server is then off |
 | `pack.prompt` | | The line shown when the pack is offered |
+| `pack.item-pictures` | `true` | Draw other plugins' custom items in a drawn dialog's item slots. See [Other plugins' items](#other-plugins-items) |
 
 ## How clicks are kept safe
 
