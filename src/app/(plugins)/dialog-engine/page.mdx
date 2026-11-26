@@ -121,6 +121,18 @@ is `samples:welcome`. Subfolders stay in the same namespace. Files directly in
   without a namespace means one in the same namespace.
 - Text is [MiniMessage](https://docs.advntr.dev/minimessage/format.html)
   (`<gold>`, `<bold>`, `<#3670f8>`), never `&` codes.
+- **Symbols and glyphs**: `❤` in any text is ❤, and so is any other code
+  point: `` for a resource pack's own glyph, `\U0001F600` or `\u{1F600}`
+  above U+FFFF. Leave the text unquoted or in single quotes; inside double
+  quotes YAML reads the escape itself, and refuses `\u{...}`.
+- **JSON text components**: any text can be the game's own JSON instead, the
+  format `/tellraw`, Paper and most other plugins use, when the whole of it is
+  one. Put it in single quotes:
+  `title: '{"text":" Shop","font":"myicons:icons","color":"gold"}'`, or
+  an array, `'[{"text":"★ ","color":"gold"},"Shop"]'`. Placeholders work in
+  its strings. In a click's command, or any string that is not words, a value a
+  player typed goes in only if it is a name, and is otherwise left as written.
+  JSON the game cannot read is reported by `/de reload` and shown as written.
 - Quote any string that starts with `<`, `[`, `{`, `%` or `*`, or contains
   `: `, or YAML will read it as something else.
 
