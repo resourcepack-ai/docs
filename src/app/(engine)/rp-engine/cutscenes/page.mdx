@@ -81,7 +81,9 @@ Studio in the same browser (the editor offers the button) and it uses your AI
 Credits. A request costs what it uses, about 35 credits for most and never more
 than 100, and failed ones are given back. The same account can draw an NPC a
 new skin from a description (**Make a skin with AI**, under the NPC's skin),
-which is also kept in your Skins.
+which is also kept in your Skins, and translate every subtitle and title into
+other languages at once (**Languages**, in the scene's settings): usually a few
+credits for a whole scene.
 
 ## Cameras
 
@@ -104,8 +106,9 @@ Each key also has an ease, from **Linear** to **Smoother (cinematic)**.
 | **Custom mob, model, vehicle, item** | Your RP Engine content, moved along its path, playing its own animations, with a resting loop when no clip plays |
 | **Vanilla mob** | A real mob with its AI off. It walks because it moves, and can swing and flinch. It can be a baby, take any look the game has (a cat's coat, a villager's job, a sheep's colour, a slime's size), wear armour and hold items, sit or sleep, burn, be invisible, and make its own sounds |
 | **Camera** | A path with its own easing, a target to look at or follow, a zoom and a shake. Cut between cameras on the camera row |
-| **Screen** | Transitions, subtitles (letter by letter, with a voice sound), titles, fades, a letterbox, HUDs, and dialogs that can pause the scene |
-| **World** | Sounds, music, VFX, particles, block changes the viewers see, the time of day and weather they see, console commands, and events for other plugins |
+| **Screen** | Transitions, subtitles (letter by letter, with a voice sound), titles, fades in any colour, flashes, a letterbox, HUDs, and dialogs that can pause the scene |
+| **World** | Sounds, music, VFX, particles, block changes the viewers see, doors, trapdoors and gates opening and closing, the time of day and weather they see, console commands, and events for other plugins |
+| **Set pieces** | An **explosion**, which can break the blocks around it so they fly apart (the viewers see them back afterwards), and **potion effects** on the viewers, such as darkness or nausea. Their own effects come back when the scene ends |
 
 Everything a scene spawns is seen only by its viewers, unless you set an actor
 to **Everyone nearby**. While a scene plays, its viewers are hidden from
@@ -118,26 +121,122 @@ everybody else and, with **Hide other players**, see nobody else themselves.
 /cutscene play intro Steve,Alex          for them, together
 /cutscene play intro @a                  for everybody online
 /cutscene play intro radius:10           for everybody within 10 blocks of you
+/cutscene play intro at:here             a portable scene, where you stand
 /cutscene stop [player|all]              take somebody out of a scene
 /cutscene skip                           leave the scene you are watching
+/cutscene stats intro                    how it has been watched
 ```
 
 Viewers become spectators looking through the scene's camera and are put back
 exactly as they were when it ends: where they stood, their game mode, flight,
 health, food, effects and held slot. That is written to disk before anything
 changes, so a viewer is put back even if the server stops mid-scene. Holding
-sneak for a second skips a scene that allows it.
+sneak for a second skips a scene that allows it. When several people watch
+together, the scene says what one person's skip does: take only them out, end
+it for everybody, or end it once most of them want to (holding sneak, or typing
+`/cutscene skip`, is their vote).
 
-A scene can also start on its own: when a player walks into a box, when a
-player joins, or when a player right-clicks an entity tagged
-`cutscene:<scene id>`. Each can fire once per player, for that player alone or
-for everybody near them, and can need a permission.
+### Starting on its own
 
-## Choices
+A scene can start by itself when:
+
+| Trigger | When |
+|---|---|
+| **Walks into a box** | A player walks into a box of the area |
+| **Joins** | A player joins the server |
+| **Clicks an entity** | A player right-clicks an entity tagged `cutscene:<scene id>` (`/tag @e[type=villager,limit=1,sort=nearest] add cutscene:intro`) |
+| **Clicks a block** | A player right-clicks a block inside a box of the area |
+| **Arrives in a world** | A player arrives in a world you name |
+| **Respawns** | A player respawns after dying |
+| **Earns an advancement** | A player earns the advancement you name, like `minecraft:story/mine_diamond` |
+| **Uses an item** | A player right-clicks holding an item, vanilla (`minecraft:compass`) or one of yours |
+| **Clicks a Citizens NPC** | A player right-clicks the Citizens NPC with that id or name |
+| **A MythicMobs mob spawns** | A MythicMobs mob of that type spawns; everybody near it watches |
+
+Each can fire once per player or after a cooldown, for that player alone or for
+everybody near them, and can need a permission.
+
+### Playing it anywhere
+
+A scene normally plays in the area it was made in. Turn on **Play it
+anywhere** in the scene's settings and it gets an **anchor**: a point of the
+scene that lands wherever you play it, with everything else keeping its place
+around it. Then `/cutscene play intro at:here` plays it where you stand,
+`at:Steve` where a player stands and `at:100,64,-20` at a place, and a trigger
+can play it at the player who set it off or at what they clicked (the NPC, the
+block, the mob that spawned). With **Turn it to face the way the place faces**
+it turns to match too.
+
+The scene's actors, cameras and effects move with it; the blocks do not, so
+the place it plays should look the part. That is what makes one boss intro
+work at every spawn, or one conversation work wherever its NPC stands.
+
+### When it's over
+
+A scene can say what happens next: **play another scene** straight after, for
+the same viewers, and **run console commands** for each of them once they are
+back where they stand (`give {player} diamond 1`). Both happen when it plays to
+the end, and also after a skip if you ask for it. A preview from the editor
+never does either.
+
+## Choices and branches
 
 A dialog can pause the scene until the viewer answers. Give its buttons the
 command `/cutscene jump <marker>`, with a marker you set on the timeline, and
 the scene carries on from that marker. That is how a choice branches a scene.
+
+A **Branch** (in the library, under World) chooses without asking: at its
+moment it tests a condition for the viewer and jumps to one marker if it
+holds, to another (or nowhere) if not.
+
+| Condition | Holds when |
+|---|---|
+| `perm:vip.gold` | the viewer has the permission |
+| `tag:met_the_king` | the viewer carries the scoreboard tag |
+| `seen:intro` | the viewer has watched that scene to the end |
+| `world:world_nether` | the viewer was in that world |
+| `holding:minecraft:diamond` | the viewer holds that item |
+| `%vault_eco_balance% >= 100` | a comparison: `==` `!=` `>=` `<=` `>` `<` and `contains` |
+
+Join them with `&&` and `||`, turn one round with `!`, and group with brackets:
+`perm:vip && !seen:intro`. With several viewers, the first one decides.
+
+## Words, placeholders and languages
+
+Subtitles, titles, HUD values and commands can say `{player}`, any
+[PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
+placeholder (`%vault_eco_balance%`), and any value another plugin sets through
+RP Engine. Each viewer sees their own.
+
+Every subtitle and title can also have its words in other languages, and each
+viewer sees the one for their game's language. Add them by hand in the
+inspector, or have the AI translate the whole scene at once.
+
+## Recording in game
+
+You can act a part out instead of keying it:
+
+```
+/cutscene record intro guard                 into the actor "guard" (made if it is new)
+/cutscene record intro camera:camera_1       into a camera, from your eyes
+/cutscene record intro guard from:5 for:20   start 5 seconds in, for at most 20
+/cutscene record stop                        keep the take
+/cutscene record cancel                      drop it
+```
+
+After a three-second countdown, where you walk, which way you look, when you
+crouch, swing and what you hold become the actor's path and clips over that
+stretch of the scene; everything else in it stays as it was. Close the editor
+before recording (`/cutscene edit close`): its next **Send to server** would
+replace the take.
+
+## Watching how it does
+
+`/cutscene stats intro` says how many people started a scene, how many watched
+to the end, skipped, were stopped or left the server, and at which seconds the
+skips came. The editor shows the same on the scene's settings and as a red strip
+under the timeline where people skipped, which is usually the shot that runs
+too long.
 
 ## Permissions
 
@@ -150,6 +249,9 @@ the scene carries on from that marker. That is how a choice branches a scene.
 | `cutscenes.list`, `cutscenes.info`, `cutscenes.area` | op | Looking at scenes |
 | `cutscenes.edit` | op | Opening the editor |
 | `cutscenes.play`, `cutscenes.play.others` | op | Playing a scene for yourself, or for others |
+| `cutscenes.play.at` | op | Playing a portable scene somewhere else (`at:`) |
+| `cutscenes.record` | op | Recording a part in game |
+| `cutscenes.stats`, `cutscenes.stats.reset` | op | Seeing a scene's watch counts, and forgetting them |
 | `cutscenes.stop`, `cutscenes.stop.others` | op | Stopping your own scene, or somebody else's |
 | `cutscenes.reload` | op | Re-reading `config.yml` and every scene |
 
@@ -170,5 +272,6 @@ the scene carries on from that marker. That is how a choice branches a scene.
 - A new NPC skin is added to RP Engine's rigs pack, which sends every player
   the pack again. It waits until no scene is playing.
 
-For plugin developers, the addon has an API: play a scene, seek, jump to a
-marker, and events for start, end, markers and custom events.
+For plugin developers, the addon has an API: play a scene (here or, for a
+portable one, at any place), seek, jump to a marker, and events for start, end,
+markers and custom events.
