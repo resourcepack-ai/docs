@@ -17788,7 +17788,7 @@
       "get": {
         "operationId": "getAccount",
         "summary": "Check your credits",
-        "description": "The AI Credits this key spends from and the limits it works within, as the Studio's billing page shows them. A team key answers the team's shared pool and the team's limits; a personal key answers your own.\n\nCheck it before a run of generations rather than finding out from `insufficient_credits` halfway through: every generation reserves its price up front, so a balance under it is refused before anything starts. Free, and not recorded in the key's history.",
+        "description": "The AI Credits this key can spend and the limits it works within. A personal key answers your own balance. A team key answers the team's pool as `balance`, the number the Studio shows, and in `canSpend` what a generation in the team's packs can actually draw on: your own balance if you pay with your own credits in that team, otherwise the team's pool or any member's shared credits (one source pays each generation in full, so it is the largest of them, not their sum). `sources` lists each pot in the order they are spent.\n\nCheck it before a run of generations rather than finding out from `insufficient_credits` halfway through: every generation reserves its price up front, so a price above `canSpend` is refused before anything starts. Free, and not recorded in the key's history.",
         "tags": [
           "Account"
         ],
@@ -17818,7 +17818,23 @@
                           "properties": {
                             "balance": {
                               "type": "integer",
-                              "description": "Spendable right now."
+                              "description": "This key's context's own balance, as the Studio shows it: your own for a personal key, the team's pool for a team key."
+                            },
+                            "canSpend": {
+                              "type": "integer",
+                              "description": "The most one generation can cost right now, counting your own credits if you pay with them in this team and members' shared credits: a price at or under it is let through."
+                            },
+                            "payingFrom": {
+                              "type": "string",
+                              "description": "What pays first: `own` (your balance) or `team` (the team's pool).",
+                              "enum": [
+                                "own",
+                                "team"
+                              ]
+                            },
+                            "sources": {
+                              "type": "array",
+                              "description": "Every pot this key can draw on, in the order they are spent, as `{from, credits, member?}`: `from` is `own`, `team` or `shared` (a member's credits shared with the team, `member` naming them, or `you`). One pot pays each generation in full."
                             },
                             "neverExpires": {
                               "type": "integer",
@@ -17843,6 +17859,9 @@
                           },
                           "required": [
                             "balance",
+                            "canSpend",
+                            "payingFrom",
+                            "sources",
                             "neverExpires",
                             "nextExpiry",
                             "monthly",
@@ -17892,6 +17911,14 @@
                     "team": null,
                     "credits": {
                       "balance": 1240,
+                      "canSpend": 1240,
+                      "payingFrom": "own",
+                      "sources": [
+                        {
+                          "from": "own",
+                          "credits": 1240
+                        }
+                      ],
                       "neverExpires": 1240,
                       "nextExpiry": null,
                       "monthly": 500,
