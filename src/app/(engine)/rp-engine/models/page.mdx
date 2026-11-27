@@ -158,6 +158,11 @@ see [Bones that do something](/rp-engine/bones).
   it. Without one, anybody holding it may.
 - **WorldGuard**: the `rpengine-place` region flag allows or denies placing and
   breaking models in a region. See [WorldGuard](/rp-engine/worldguard).
+- **Claim plugins** (GriefPrevention, Towny, Lands, Residence, PlotSquared):
+  turn on `models.protection-check` and a player cannot place or break models
+  in a claim that is not theirs. It is off by default because of what it does
+  to logging and reward plugins; see
+  [Protection plugins](/rp-engine/config#protection-plugins).
 - **`ModelPlaceEvent`** is for any other rule, from your own plugin. Cancel it
   and the model is not placed and the item is not used up. See
   [the API](/rp-engine/api).

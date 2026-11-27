@@ -305,6 +305,31 @@ Moves every seat on placed models up or down, in blocks. Positive is higher.
 If everybody sits slightly too high or low on every chair, set the difference
 here and `/rp reload`. You should not need it.
 
+### Protection plugins
+
+```yaml
+models:
+  protection-check: false
+```
+
+A placed model is not a block, so claim plugins (GriefPrevention, Towny, Lands,
+Residence, PlotSquared) don't stop a player placing or breaking one in somebody
+else's claim. Set this to `true` and restart, and before a player places or
+breaks a model, RP Engine asks those plugins with a block place or break event
+at that spot. If one says no, the model isn't placed or broken. Nothing is
+actually placed or broken by the question.
+
+It's off by default because **every** plugin hears that event, not only the
+claim plugins:
+
+- **Logging plugins** such as CoreProtect record it as a real block placed or
+  broken, and a rollback of that player acts on it too.
+- **Reward plugins** such as Jobs or mcMMO may pay for it, so placing and picking
+  up a model could be farmed. Check their settings before turning this on.
+
+WorldGuard doesn't need it: its `rpengine-place` flag is checked directly. See
+[WorldGuard](/rp-engine/worldguard).
+
 ## Vehicles
 
 ```yaml
