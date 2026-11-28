@@ -56,12 +56,13 @@ custom blocks and models look as they do in game. The link lasts three hours.
 | Part | What it does |
 |---|---|
 | **Library** (left) | Everything you can add, from what your server has: NPCs, the Viewer, custom mobs, models, vehicles, items, vanilla mobs, cameras, transitions, dialogs, HUDs, VFX, sounds, music, world changes and markers. Click to add, or drag into the world to put it where it lands |
-| **View** (middle) | Drag to turn, right-drag to pan, scroll to zoom. **G** moves the selected thing and **R** turns it; letting go sets a key at the playhead. **C** looks through the live camera, with the subtitles, titles, fades and letterbox drawn over it |
-| **Timeline** (bottom) | Camera cuts on top, then a row per camera and per actor with its keys and clips, then the screen and the world rows. Drag a key or a clip to retime it, drag a clip's right edge to change its length, drag the gold line to change the scene's length |
+| **View** (middle) | Drag to turn, right-drag to pan, scroll to zoom toward the pointer, **WASD** to walk across the area, and double-click a block to turn around it. **V** flies through the area freely: right-drag to look, **WASD** across, **E** and **Q** up and down, **Shift** faster, the wheel for speed, while clicking and dragging things works as usual. **F** brings the selected thing into view. **G** moves the selected thing and **R** turns it; letting go sets a key at the playhead. **C** looks through the live camera, with the subtitles, titles, fades and letterbox drawn over it. The bar at the top switches between these views and holds the view settings (shadows, the block outline, fog, the area's edges) |
+| **Timeline** (bottom) | Camera cuts on top, then a row per camera and per actor with its keys and clips, then the screen and the world rows. Drag a key or a clip to retime it, drag a clip's right edge to change its length, drag the gold line to change the scene's length. **Ctrl** and the wheel zoom it. Drag the edges between the panels to resize them |
 | **Outliner and inspector** (right) | Every actor and camera, and every field of whatever is selected. Positions are in world coordinates, as F3 shows them |
 
-**Space** plays and pauses, **K** sets a key at the playhead, **Ctrl+Z** undoes,
-**Ctrl+D** duplicates and **Delete** deletes. The editor saves as you work, but
+**Space** plays and pauses, **Up** and **Down** jump to the next and previous
+key, **K** sets a key at the playhead, **Ctrl+Z** undoes, **Ctrl+D** duplicates
+and **Delete** deletes. **?** lists every shortcut. The editor saves as you work, but
 nothing reaches your server until you press **Send to server**. **Play on
 server** plays the scene as it stands for you in game, without saving it.
 
@@ -89,11 +90,11 @@ credits for a whole scene.
 
 | Tool | What it does |
 |---|---|
-| **Fly** (**P**) | Moves the selected camera by hand, seen through it: **WASD** across, **E** and **Q** up and down, drag to look, **Shift** to go faster, the wheel to change speed. **K** keys the view at the playhead, and **R** records while the scene plays (a key every quarter second, as one step you can undo). **Esc** lands |
+| **Pilot** (**P**) | Moves the selected camera by hand, seen through it: **WASD** across, **E** and **Q** up and down, drag to look, **Shift** to go faster, the wheel to change speed. **K** keys the view at the playhead, and **R** records while the scene plays (a key every quarter second, as one step you can undo). **Esc** lands |
 | **Camera move** (in the camera's inspector) | Orbit, dolly in or out, crane up or down, pan, truck, or rise and reveal, about an actor (followed as it moves) or what the camera looks at, for as long as you say, eased in and out, from the playhead |
 | **Points at** | Keeps an actor in frame, or follows it from an offset. **Lag** trails behind it, which makes a follow feel handheld |
 | **Blend** (on a camera cut) | Glides from the camera before into this one instead of cutting |
-| **Live camera** (corner) | While you orbit, the shot the viewer sees, in the corner of the view |
+| **Live camera** (corner) | While you orbit or fly, the shot the viewer sees, in the corner of the view |
 
 Each key also has an ease, from **Linear** to **Smoother (cinematic)**.
 
